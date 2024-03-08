@@ -1,0 +1,26 @@
+{
+    "id": "363BBD11",
+    "path": "~/hiaa/r-packages/baton/sample_project/baton.yml",
+    "project_path": "sample_project/baton.yml",
+    "type": "yaml",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1709320701899.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "1,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1709319196,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1709319196,
+    "read_only": false,
+    "read_only_alternatives": []
+}

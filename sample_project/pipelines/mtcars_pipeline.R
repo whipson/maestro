@@ -1,0 +1,14 @@
+#' Simple mtcars print function
+#'
+#' @batonFrequency daily
+#' @batonInterval 1
+#' @batonStartTime 2024-03-01 09:00:00
+#' @batonEndTime NULL
+#' @batonTz UTC
+#'
+#' @batonName mtcars_simple
+#'
+#' @export
+get_mtcars <- function() {
+  mtcars
+}
