@@ -1,4 +1,10 @@
 roxy_tag_parse.roxy_tag_batonFrequency <- function(x) {
+
+  # Cast lower and trim whitespace
+  x$raw <- x$raw |>
+    tolower() |>
+    trimws()
+
   if(x$raw == "") {
     x$val <- "daily"
   }
