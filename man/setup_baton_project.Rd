@@ -17,6 +17,9 @@ setup_baton_project(
 
 \item{multithreaded}{run multithreaded}
 }
+\value{
+quarto or R script
+}
 \description{
 asdasdasdasdasdasd
 }
