@@ -8,10 +8,8 @@
 #' @param cached_table use a cached schedule table or in memory
 #' @param multithreaded run multithreaded
 #'
-#' @return
+#' @return quarto or R script
 #' @export
-#'
-#' @examples
 setup_baton_project <- function(
     as_quarto = TRUE,
     cached_table = FALSE,
