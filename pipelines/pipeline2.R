@@ -1,5 +1,5 @@
 ########################################
-# Pipline 2 -- Hourly GeoMet AQHI observations
+# Pipeline 2 -- Hourly GeoMet AQHI observations
 # Frequency: Hourly
 # Interval: 1
 ########################################

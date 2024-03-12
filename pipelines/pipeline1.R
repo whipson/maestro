@@ -1,5 +1,5 @@
 ########################################
-# Pipline 1 -- Daily GeoMet Climate Daily
+# Pipeline 1 -- Daily GeoMet Climate Daily
 # Frequency: Daily
 # Interval: 1
 ########################################

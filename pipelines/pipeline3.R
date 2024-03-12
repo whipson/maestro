@@ -1,5 +1,5 @@
 ########################################
-# Pipline 3 -- Hourly GeoMet AQHI forecasts
+# Pipeline 3 -- Hourly GeoMet AQHI forecasts
 # Frequency: Hourly
 # Interval: 1
 ########################################

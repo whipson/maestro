@@ -1,5 +1,5 @@
 ########################################
-# Pipline 1 -- Monthly GeoMet Climate Monthly
+# Pipeline 5 -- Monthly GeoMet Climate Monthly
 # Frequency: Monthly
 # Interval: 1
 ########################################
