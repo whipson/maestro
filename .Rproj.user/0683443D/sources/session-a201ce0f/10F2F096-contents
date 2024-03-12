@@ -1,0 +1,18 @@
+
+
+```{r}
+setup_baton_project(
+  as_quarto = TRUE
+) # set up file structure
+
+#create_orchestrator() # from template
+
+create_pipeline() # from template with roxygen tags
+
+build_schedule() # for 'verification' or for caching (optional)
+
+# Optional testing
+test_pipeline() # run a single pipeline once
+test_orchestrator(run_all = TRUE) # run the orchestrator once
+```
+

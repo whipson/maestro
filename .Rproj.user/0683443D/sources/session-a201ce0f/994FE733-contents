@@ -1,0 +1,24 @@
+Package: baton
+Type: Package
+Title: Orchestration
+Version: 0.1.0
+Authors@R: 
+    c(
+      person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
+      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut"))
+    )
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: Simple, lightweight orchestrator for R pipelines.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    cli,
+    glue
+RoxygenNote: 7.3.1
+Depends: 
+    R (>= 4.1.0),
+    roxygen2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

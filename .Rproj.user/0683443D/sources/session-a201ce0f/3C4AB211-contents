@@ -1,0 +1,21 @@
+---
+title: Template Baton
+resources: 
+  - pipelines/*
+  - R/*
+---
+
+```{r}
+# Generate the schedule table (optional cache)
+schedule <- build_schedule()
+
+# Find pipelines that are scheduled to run
+pipelines_to_run <- check_against_schedule(schedule) # return character string of .Rs
+
+# Run the scheduled pipelines in parallel
+run_scheduled_pipelines(multicore = TRUE)
+# future_apply(pipelines_to_run, ~{
+#   x <- source(.x)
+#   do.call(x)
+# })
+```
