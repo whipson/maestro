@@ -101,10 +101,8 @@ MaestroSchedule <- R6::R6Class(
         status_table <- self$PipelineList$get_status()
 
         # Get the number of statuses
-        total <- nrow(status_table)
         invoked <- sum(status_table$invoked)
         error_count <- length(run_errors)
-        skip_count <- sum(!status_table$invoked)
         success_count <- invoked - error_count
         warning_count <- length(run_warnings)
 
@@ -112,10 +110,9 @@ MaestroSchedule <- R6::R6Class(
           cli::cli_text(
             "
         {cli::col_green(cli::symbol$tick)} {success_count} success{?es} |
-        {cli::col_black(cli::symbol$arrow_right)} {skip_count} skipped |
         {cli::col_magenta('!')} {warning_count} warning{?s} |
         {cli::col_red(cli::symbol$cross)} {error_count} error{?s} |
-        {cli::col_cyan(cli::symbol$square_small_filled)} {total} total
+        {cli::col_cyan(cli::symbol$square_small_filled)} {invoked} total
         "
           )
 
