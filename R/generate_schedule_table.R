@@ -11,7 +11,37 @@ generate_schedule_table <- function(pipeline_dir = "./pipelines") {
   # Parse all the files in the `pipeline_dir` directory
   pipelines <- list.files(pipeline_dir, full.names = TRUE)
 
-  purrr::imap(pipelines, schedule_entry_from_script) |>
+  # Try to generate a schedule entry for each script
+  # We use safely to ensure it continues in an error condition and capture the errors
+  attempted_sch_parses <- purrr::map(
+    pipelines, purrr::safely(schedule_entry_from_script)
+  ) |>
+    setNames(basename(pipelines))
+
+  # Get the results
+  sch_results <- purrr::map(
+    attempted_sch_parses,
+    ~.x$result
+  ) |>
+    purrr::discard(is.null)
+
+  # Get the errors
+  sch_errors <- purrr::map(
+    attempted_sch_parses,
+    ~.x$error
+  ) |>
+    purrr::discard(is.null)
+
+  if(length(sch_errors) > 0) {
+    # Assign the errors to the pkgenv
+    baton_pkgenv$latest_parsing_errors <- sch_errors
+
+    # Report the failed parses
+    btn_cli_gen_sch_tab_stat(sch_errors)
+  }
+
+  # Return the results
+  sch <- sch_results |>
     purrr::list_rbind() |>
     # Supply default values for missing
     dplyr::mutate(
@@ -26,4 +56,6 @@ generate_schedule_table <- function(pipeline_dir = "./pipelines") {
       start_time = lubridate::as_datetime(start_time, tz = tz)
     ) |>
     dplyr::ungroup()
+
+  return(sch)
 }
