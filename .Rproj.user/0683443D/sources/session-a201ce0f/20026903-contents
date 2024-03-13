@@ -1,3 +1,0 @@
-test_that("generate_schedule_table works when tags are provided but empty", {
-  generate_schedule_table(test_path("test_pipelines"))
-})
