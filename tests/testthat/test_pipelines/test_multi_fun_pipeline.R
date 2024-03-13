@@ -4,10 +4,25 @@
 #' 2024-03-01 09:00:00
 #'
 #' @batonFrequency daily
+#' @batonInterval 1
 #' @batonStartTime 2024-03-01 09:00:00
 #' @batonTz UTC
 #'
 #' @export
 get_mtcars <- function() {
   mtcars
+}
+
+#' Multiply
+#'
+#' @batonFrequency monthly
+#' @batonInterval 3
+#'
+#' @export
+multiply <- function(val, by) {
+  val * by
+}
+
+something_else <- function() {
+
 }

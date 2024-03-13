@@ -1,21 +1,29 @@
 Package: baton
 Type: Package
-Title: Orchestration
+Title: Baton
 Version: 0.1.0
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
       person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut"))
     )
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: will.e.hipson@gmail.com
+Description: Simple, lightweight orchestrator for R pipelines.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports: 
     cli,
+    dplyr,
     glue,
-    roxygen2
+    lubridate,
+    purrr,
+    rlang,
+    tibble
 RoxygenNote: 7.3.1
-
+Depends: 
+    R (>= 4.1.0),
+    roxygen2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
