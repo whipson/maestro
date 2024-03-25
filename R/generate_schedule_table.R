@@ -8,8 +8,20 @@
 #' @examples
 generate_schedule_table <- function(pipeline_dir = "./pipelines") {
 
-  # Parse all the files in the `pipeline_dir` directory
-  pipelines <- list.files(pipeline_dir, full.names = TRUE)
+  # Parse all the .R files in the `pipeline_dir` directory
+  pipelines <- list.files(
+    pipeline_dir,
+    pattern = "*.R$",
+    full.names = TRUE
+  )
+
+  # Error if the directory has no .R scripts
+  if(length(pipelines) == 0) {
+    cli::cli_abort(
+      "No directory called {.emph {pipeline_dir}} containing any R scripts exists.
+      `pipeline_dir` must reference a directory with at least one R script."
+    )
+  }
 
   # Try to generate a schedule entry for each script
   # We use safely to ensure it continues in an error condition and capture the errors
@@ -32,13 +44,10 @@ generate_schedule_table <- function(pipeline_dir = "./pipelines") {
   ) |>
     purrr::discard(is.null)
 
-  if(length(sch_errors) > 0) {
-    # Assign the errors to the pkgenv
-    baton_pkgenv$latest_parsing_errors <- sch_errors
+  # Assign the errors to the pkgenv
+  baton_pkgenv$latest_parsing_errors <- sch_errors
 
-    # Report the failed parses
-    btn_cli_gen_sch_tab_stat(sch_errors)
-  }
+  baton_parse_cli(sch_results, sch_errors)
 
   # Return the results
   sch <- sch_results |>

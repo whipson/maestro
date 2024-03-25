@@ -1,38 +1,46 @@
 #' cli output for generate schedule table
 #'
+#' @param parse_succeeds list of parse results (i.e., succeeded)
 #' @param parse_errors list of parse errors
 #'
 #' @return cli output
-btn_cli_gen_sch_tab_stat <- function(parse_errors) {
+baton_parse_cli <- function(parse_succeeds, parse_errors) {
 
   n_fails <- length(parse_errors)
+  n_succeeds <- length(parse_succeeds)
 
-  if (n_fails == 0) {
-    return(invisible())
-  }
+  if(n_succeeds == 0) {
 
-  cli::cli_alert_warning("{n_fails} pipeline(s) failed to parse:")
-
-  # Print the name and error message
-  if (n_fails <= 3) {
-    purrr::iwalk(parse_errors[1:min(n_fails, 3)], ~{
-      cli::cli_li(.y)
-      cli::cli_text(cli::col_yellow(.x$message))
-    })
-    # Print just the name
+    cli::cli_abort(
+      c(
+        "x" = "All pipelines failed to parse",
+        "i" = "See full error output with {.fn latest_parsing_errors}"
+      ),
+      call = rlang::caller_env()
+    )
   } else {
-    purrr::iwalk(parse_errors[1:min(n_fails, 6)], ~{
-      cli::cli_li(cli::col_yellow(.y))
-    })
-  }
 
-  if(n_fails > 6) {
-    n_additional <- n_fails - 6
-    cli::cli_text("{n_additional} additional parsing error(s)")
-  }
+    if (n_succeeds > 0) {
+      cli::cli_inform(
+        c("i" = "{n_succeeds} pipeline(s) successfully parsed")
+      )
+    }
 
-  cli::cli_alert_info("See full error output with {.fn latest_parsing_errors}")
-  cli::cli_end()
+    if (n_fails > 0) {
+      fail_vec <- purrr::map_chr(parse_errors, ~{
+        .x$message
+      }) |>
+        setNames("!")
+
+      cli::cli_warn(
+        c(
+          "{n_fails} pipeline(s) failed to parse:",
+          fail_vec,
+          "i" = "See full error output with {.fn latest_parsing_errors}"
+        )
+      )
+    }
+  }
 
   return(invisible())
 }
