@@ -46,3 +46,10 @@ test_that("can create a schedule entry from a multi-function script", {
     )
   )
 })
+
+test_that("Errors on a pipeline with no tagged functions", {
+  schedule_entry_from_script(
+    test_path("test_pipelines_all_bad/test_pipeline_no_func.R")
+  ) |>
+    expect_error(regexp = "No functions with baton")
+})

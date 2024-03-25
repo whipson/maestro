@@ -17,9 +17,9 @@ schedule_entry_from_script <- function(script_path) {
   tag_list <- tryCatch({
     roxygen2::parse_file(script_path)
   }, error = \(e) {
-    rlang::abort(e$message)
+    cli::cli_abort(e$message, call = NULL)
   }, warning = \(w) {
-    rlang::abort(w$message)
+    cli::cli_abort(w$message, call = NULL)
   })
 
   # Get specifically the tags used by baton
@@ -34,6 +34,15 @@ schedule_entry_from_script <- function(script_path) {
     )
     val
   })
+
+  if(length(baton_tag_vals) == 0) {
+    cli::cli_abort(
+      c("No functions with {.pkg baton} tags present in {basename(script_path)}.",
+        "i" = "A valid pipeline must have at least one function with one or
+        more {.pkg baton} tags: e.g., `#' @batonFrequency daily`."),
+      call = NULL
+    )
+  }
 
   # Get function names
   func_names <- purrr::map_chr(tag_list, ~.x$object$topic)

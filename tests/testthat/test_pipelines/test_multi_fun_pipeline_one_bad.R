@@ -22,3 +22,10 @@ get_mtcars <- function() {
 multiply <- function(val, by) {
   val * by
 }
+
+#' Bad
+#'
+#' @batonTz BLA
+something_else <- function() {
+
+}
