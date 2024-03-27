@@ -3,7 +3,7 @@
 #' @param script_path path to script
 #'
 #' @return data.frame row
-schedule_entry_from_script <- function(script_path) {
+build_schedule_entry <- function(script_path) {
 
   # Current list of baton tags and their equivalent table names
   baton_tag_names <- list(

@@ -4,10 +4,10 @@
 \alias{run_schedule}
 \title{Run a schedule}
 \usage{
-run_schedule(schedule_table, resources = list())
+run_schedule(schedule, resources = list())
 }
 \arguments{
-\item{schedule_table}{a table of scheduled pipelines generated from `build_schedule()`}
+\item{schedule}{a table of scheduled pipelines generated from `build_schedule()`}
 
 \item{resources}{list of shared resources made available to pipelines as needed}
 }

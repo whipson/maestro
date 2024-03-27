@@ -10,6 +10,7 @@
 #'
 #' @export
 get_mtcars <- function() {
+  Sys.sleep(0.2)
   mtcars
 }
 
@@ -19,6 +20,6 @@ get_mtcars <- function() {
 #' @batonInterval 3
 #'
 #' @export
-multiply <- function(val, by) {
-  val * by
+wait <- function() {
+  Sys.sleep(0.1)
 }

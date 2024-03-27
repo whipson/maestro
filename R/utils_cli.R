@@ -22,7 +22,7 @@ baton_parse_cli <- function(parse_succeeds, parse_errors) {
 
     if (n_succeeds > 0) {
       cli::cli_inform(
-        c("i" = "{n_succeeds} pipeline(s) successfully parsed")
+        c("i" = "{n_succeeds} pipeline{?s} successfully parsed")
       )
     }
 
@@ -30,11 +30,11 @@ baton_parse_cli <- function(parse_succeeds, parse_errors) {
       fail_vec <- purrr::map_chr(parse_errors, ~{
         .x$message
       }) |>
-        setNames("!")
+        stats::setNames("!")
 
       cli::cli_warn(
         c(
-          "{n_fails} pipeline(s) failed to parse:",
+          "{n_fails} pipeline{?s} failed to parse:",
           fail_vec,
           "i" = "See full error output with {.fn latest_parsing_errors}"
         )
