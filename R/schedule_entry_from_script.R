@@ -10,7 +10,8 @@ schedule_entry_from_script <- function(script_path) {
     frequency = "batonFrequency",
     interval = "batonInterval",
     start_time = "batonStartTime",
-    tz = "batonTz"
+    tz = "batonTz",
+    skip = "batonSkip"
   )
 
   # Get all the roxygen tags
