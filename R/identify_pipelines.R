@@ -15,10 +15,10 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.ti
   # Check input parameters data type
   assertthat::assert_that(is.numeric(orch_interval), msg = "orch_interval must be a numeric value")
   assertthat::assert_that(is.character(orch_unit), msg = "orch_unit must be chacter value")
-  assertthat::assert_that(is.POSIXct(check_datetime), msg = "check_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
+  assertthat::assert_that(lubridate::is.POSIXct(check_datetime), msg = "check_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
   assertthat::assert_that(is.numeric(pipeline_interval), msg = "pipeline_interval must be a numeric value")
   assertthat::assert_that(is.character(pipeline_freq), msg = "pipeline_freq must be a character value")
-  assertthat::assert_that(is.POSIXct(pipeline_datetime), msg = "pipeline_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
+  assertthat::assert_that(lubridate::is.POSIXct(pipeline_datetime), msg = "pipeline_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
 
   # Check input parameters values
   assertthat::assert_that(orch_unit %in% c("mins", "hour", "day", "week", "month", "quarter", "year"), msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year")
@@ -37,8 +37,8 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.ti
 
   # Assertion tests
   # Check object data type
-  assertthat::assert_that(is.POSIXct(check_datetime_round), msg = "check_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
-  assertthat::assert_that(is.POSIXct(pipeline_datetime_round), msg = "pipeline_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
+  assertthat::assert_that(lubridate::is.POSIXct(check_datetime_round), msg = "check_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
+  assertthat::assert_that(lubridate::is.POSIXct(pipeline_datetime_round), msg = "pipeline_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
   assertthat::assert_that(is.logical(pipeline_check), msg = "pipeline_check is not a logic data type")
   assertthat::assert_that(is.vector(pipeline_sequence), msg = "pipeline_sequence is not a vector")
 

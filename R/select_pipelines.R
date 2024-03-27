@@ -13,7 +13,7 @@ select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = S
   # Check input parameters data type
   assertthat::assert_that(is.numeric(orch_interval), msg = "orch_interval must be a numeric value")
   assertthat::assert_that(is.character(orch_unit), msg = "orch_unit must be chacter value")
-  assertthat::assert_that(is.POSIXct(check_datetime), msg = "check_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
+  assertthat::assert_that(lubridate::is.POSIXct(check_datetime), msg = "check_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
 
   # Check input parameters values
   assertthat::assert_that(orch_unit %in% c("mins", "hour", "day", "week", "month", "quarter", "year"), msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year")
@@ -28,10 +28,9 @@ select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = S
     }
   )
 
-  .data[is_scheduled,]
-
-
   # Assertion tests
   # Check objects have a length great than zero
   assertthat::assert_that(length(is_scheduled) > 0)
+
+  .data[is_scheduled,]
 }
