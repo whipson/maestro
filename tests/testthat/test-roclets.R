@@ -130,3 +130,31 @@ test_that("bad usage of batonTz warns and returns null val", {
 
   expect_null(res$val)
 })
+
+test_that("parse batonSkip works", {
+  res <- roc_proc_text(
+    batonSkip_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_skip.R"))
+  )
+  expect_true(res$val)
+})
+
+test_that("Nonexistent batonSkip is NULL", {
+  res <- roc_proc_text(
+    batonSkip_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
+  )
+  expect_null(res$val)
+})
+
+test_that("Invalid usage of batonSkip warns but still returns a value of TRUE", {
+
+  expect_warning({
+    res <- roc_proc_text(
+      batonSkip_roclet(),
+      readLines(test_path("test_pipelines/test_pipeline_skip_bad.R"))
+    )
+  })
+
+  expect_true(res$val)
+})
