@@ -10,6 +10,6 @@
 #'
 #'
 #' @export
-get_mtcars <- function() {
+get_mtcars2 <- function() {
   mtcars
 }

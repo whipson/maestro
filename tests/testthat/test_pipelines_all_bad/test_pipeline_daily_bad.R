@@ -5,6 +5,6 @@
 #' @batonStartTime
 #'
 #' @export
-get_mtcars <- function() {
+get_mtcars3 <- function() {
   mtcars
 }
