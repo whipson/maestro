@@ -96,7 +96,7 @@ A simple orchestrator looks like this:
 
 ``` r
 # Look through the pipelines directory for baton pipelines to create a schedule
-schedule_table <- generate_schedule_table(pipeline_dir = "pipelines")
+schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them (optionally in parallel)
 run_schedule(schedule_table, cores = 4)
@@ -105,7 +105,7 @@ run_schedule(schedule_table, cores = 4)
 logs <- latest_run_logs()
 ```
 
-The function `generate_schedule_table()` scours through all the
+The function `build_schedule()` scours through all the
 pipelines in the provided directory and builds a schedule. Then
 `run_schedule()` checks each pipeline’s scheduled time against the
 system time within some margin of rounding[^1] and calls those pipelines

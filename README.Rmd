@@ -80,7 +80,7 @@ A simple orchestrator looks like this:
 
 ```{r, eval=FALSE}
 # Look through the pipelines directory for baton pipelines to create a schedule
-schedule_table <- generate_schedule_table(pipeline_dir = "pipelines")
+schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them (optionally in parallel)
 run_schedule(schedule_table, cores = 4)
@@ -89,7 +89,7 @@ run_schedule(schedule_table, cores = 4)
 logs <- latest_run_logs()
 ```
 
-The function `generate_schedule_table()` scours through all the pipelines in the provided directory and builds a schedule. Then `run_schedule()` checks each pipeline's scheduled time against the system time within some margin of rounding[^1] and calls those pipelines to run. `baton` also includes several helper functions pertaining to observability and monitoring, such as `latest_run_logs()` to get the full set of logs across all pipelines that ran.
+The function `build_schedule()` scours through all the pipelines in the provided directory and builds a schedule. Then `run_schedule()` checks each pipeline's scheduled time against the system time within some margin of rounding[^1] and calls those pipelines to run. `baton` also includes several helper functions pertaining to observability and monitoring, such as `latest_run_logs()` to get the full set of logs across all pipelines that ran.
 
 [^1]: Depending on the frequency and start time of pipeline and the frequency and start time of the orchestrator, this may be a key consideration. \`baton\` does not look for an exact match of the scheduled time with the current time because then it would almost never run. Rather, it rounds the times to within a unit compatible with the particular pipeline frequency.
 

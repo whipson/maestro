@@ -6,7 +6,7 @@ test_that("can create a schedule entry from a single well-documented fun", {
   expect_equal(nrow(res), 1)
   expect_true(
     all(
-      c("script_path", "func_name", "frequency", "interval",
+      c("script_path", "pipe_name", "frequency", "interval",
         "start_time", "tz") %in% names(res)
     )
   )
@@ -20,7 +20,7 @@ test_that("can create a schedule entry from a default tagged fun", {
   expect_equal(nrow(res), 1)
   expect_true(
     all(
-      c("script_path", "func_name", "frequency", "interval",
+      c("script_path", "pipe_name", "frequency", "interval",
         "start_time", "tz") %in% names(res)
     )
   )
@@ -41,7 +41,7 @@ test_that("can create a schedule entry from a multi-function script", {
   expect_equal(nrow(res), 2)
   expect_true(
     all(
-      c("script_path", "func_name", "frequency", "interval",
+      c("script_path", "pipe_name", "frequency", "interval",
         "start_time", "tz") %in% names(res)
     )
   )
@@ -52,4 +52,18 @@ test_that("Errors on a pipeline with no tagged functions", {
     test_path("test_pipelines_all_bad/test_pipeline_no_func.R")
   ) |>
     expect_error(regexp = "No functions with baton")
+})
+
+test_that("Works on pipeline that doesn't use functions", {
+  res <- schedule_entry_from_script(
+    test_path("test_pipelines_all_good/tagged_but_no_func.R")
+  )
+  expect_s3_class(res, "tbl_df")
+  expect_equal(nrow(res), 1)
+  expect_true(
+    all(
+      c("script_path", "pipe_name", "frequency", "interval",
+        "start_time", "tz") %in% names(res)
+    )
+  )
 })

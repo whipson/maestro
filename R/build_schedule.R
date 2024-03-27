@@ -1,12 +1,10 @@
-#' Generate schedule table
+#' Build schedule table
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
 #'
 #' @return data.frame
 #' @export
-#'
-#' @examples
-generate_schedule_table <- function(pipeline_dir = "./pipelines") {
+build_schedule <- function(pipeline_dir = "./pipelines") {
 
   # Parse all the .R files in the `pipeline_dir` directory
   pipelines <- list.files(
@@ -29,6 +27,23 @@ generate_schedule_table <- function(pipeline_dir = "./pipelines") {
     pipelines, purrr::safely(schedule_entry_from_script)
   ) |>
     setNames(basename(pipelines))
+
+  # Check uniqueness of the function names
+  pipe_names <- purrr::map(attempted_sch_parses, ~{
+    .x$result$pipe_name
+  }) |>
+    purrr::list_c()
+
+  # Check for uniqueness of pipe names
+  # if (length(unique(pipe_names)) < length(pipe_names)) {
+  #   non_unique_names <- pipe_names[duplicated(pipe_names)]
+  #   cli::cli_abort(
+  #     c("Function names must all be unique",
+  #       "i" = "{.fn {non_unique_names}} used more than once.")
+  #   )
+  # }
+
+
 
   # Get the results
   sch_results <- purrr::map(

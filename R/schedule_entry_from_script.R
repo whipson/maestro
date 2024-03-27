@@ -44,16 +44,52 @@ schedule_entry_from_script <- function(script_path) {
     )
   }
 
-  # Get function names
-  func_names <- purrr::map_chr(tag_list, ~.x$object$topic)
+  # Get pipe names from the function name
+  # It'll be NULL if it's not a function or an assignment, in this case,
+  # use the script_path and the line number
+  pipe_names <- purrr::map(tag_list, ~{
+    is_func <- "function" %in% class(.x$object)
+    if (!is_func) {
+      topic <- paste0(basename(.x$file), "-", .x$line)
+    } else {
+      topic <- .x$object$topic
+    }
+    list(
+      pipe_name = topic,
+      is_func = is_func
+    )
+  })
 
   # Create table entries
-  purrr::map2(func_names, baton_tag_vals, ~{
+  table_entities <- purrr::map2(pipe_names, baton_tag_vals, ~{
     tibble::tibble(
       script_path = script_path,
-      func_name = .x,
+      pipe_name = .x$pipe_name,
+      is_func = .x$is_func,
       !!!.y
     )
   }) |>
     purrr::list_rbind()
+
+  # Check that non function pipes have only one set of tags per script
+  if (any(!table_entities$is_func)) {
+    multi_tag_non_func <- table_entities |>
+      dplyr::filter(!is_func) |>
+      dplyr::filter(dplyr::n() > 1, .by = script_path)
+
+    if (nrow(multi_tag_non_func) > 0) {
+
+      offending_scripts <- basename(unique(multi_tag_non_func$script_path))
+      cli::cli_abort(
+        c("Multiple pipelines in a single script must use functions.",
+          "i" = "{offending_scripts} uses multiple sets of tags but are not
+          attached to functions.",
+          "i" = "Either make each pipeline a function or separate into different
+          files."
+        )
+      )
+    }
+  }
+
+  table_entities
 }
