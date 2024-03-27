@@ -71,8 +71,9 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     dplyr::mutate(
       frequency = dplyr::coalesce(frequency, "daily"),
       interval = dplyr::coalesce(interval, 1L),
-      start_time = dplyr::coalesce(start_time, as.character(Sys.time())),
-      tz = dplyr::coalesce(tz, "UTC")
+      start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
+      tz = dplyr::coalesce(tz, "UTC"),
+      skip = dplyr::coalesce(skip, FALSE)
     ) |>
     dplyr::rowwise() |>
     # Format timestamp with timezone

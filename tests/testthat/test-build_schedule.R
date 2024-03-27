@@ -7,6 +7,7 @@ test_that("build_schedule works on a directory of all good pipelines", {
       "start_time", "tz"),
     names(res)
   )
+  expect_snapshot(res)
 }) |>
   suppressMessages()
 
