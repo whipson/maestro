@@ -24,7 +24,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
   # Try to generate a schedule entry for each script
   # We use safely to ensure it continues in an error condition and capture the errors
   attempted_sch_parses <- purrr::map(
-    pipelines, purrr::safely(schedule_entry_from_script)
+    pipelines, purrr::safely(build_schedule_entry)
   ) |>
     setNames(basename(pipelines))
 
@@ -80,7 +80,8 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     dplyr::mutate(
       start_time = lubridate::as_datetime(start_time, tz = tz)
     ) |>
-    dplyr::ungroup()
+    dplyr::ungroup() |>
+    dplyr::select(-tz)
 
   return(sch)
 }

@@ -4,7 +4,7 @@ test_that("build_schedule works on a directory of all good pipelines", {
   expect_gte(nrow(res), 1)
   expect_in(
     c("script_path", "pipe_name", "frequency", "interval",
-      "start_time", "tz"),
+      "start_time"),
     names(res)
   )
   expect_snapshot(res)
@@ -21,7 +21,7 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
   expect_gte(nrow(res), 1)
   expect_in(
     c("script_path", "pipe_name", "frequency", "interval",
-      "start_time", "tz"),
+      "start_time"),
     names(res)
   )
 }) |>
