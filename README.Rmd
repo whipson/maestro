@@ -72,7 +72,7 @@ What makes this a `baton` pipeline is the use of special *roxygen*-style comment
 
 ### Orchestrator
 
-The orchestrator is a script that checks the schedules of all the functions in a \`baton\` project and executes them if they're due to go. The orchestrator also handles global execution tasks such as collecting logs and managing shared resources like database connections, global objects, and custom functions.
+The orchestrator is a script that checks the schedules of all the functions in a `baton` project and executes them if they're due to go. The orchestrator also handles global execution tasks such as collecting logs and managing shared resources like database connections, global objects, and custom functions.
 
 You have the option of using Quarto, RMarkdown, or a straight-up R script for the orchestrator, but the former two have some advantages with respect to deployment on Posit Connect.
 

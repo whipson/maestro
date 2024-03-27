@@ -83,7 +83,7 @@ the orchestrator.
 ### Orchestrator
 
 The orchestrator is a script that checks the schedules of all the
-functions in a \`baton\` project and executes them if they’re due to go.
+functions in a `baton` project and executes them if they’re due to go.
 The orchestrator also handles global execution tasks such as collecting
 logs and managing shared resources like database connections, global
 objects, and custom functions.
@@ -105,13 +105,13 @@ run_schedule(schedule_table, cores = 4)
 logs <- latest_run_logs()
 ```
 
-The function `build_schedule()` scours through all the
-pipelines in the provided directory and builds a schedule. Then
-`run_schedule()` checks each pipeline’s scheduled time against the
-system time within some margin of rounding[^1] and calls those pipelines
-to run. `baton` also includes several helper functions pertaining to
-observability and monitoring, such as `latest_run_logs()` to get the
-full set of logs across all pipelines that ran.
+The function `build_schedule()` scours through all the pipelines in the
+provided directory and builds a schedule. Then `run_schedule()` checks
+each pipeline’s scheduled time against the system time within some
+margin of rounding[^1] and calls those pipelines to run. `baton` also
+includes several helper functions pertaining to observability and
+monitoring, such as `latest_run_logs()` to get the full set of logs
+across all pipelines that ran.
 
 ## Deployment
 
