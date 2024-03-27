@@ -6,6 +6,7 @@
 #' @batonStartTime 2024-03-11 09:00:00
 #'
 #' @export
-get_mtcars <- function() {
-  mtcars
+write_data <- function(data) {
+  write.csv(data, "~/Downloads/test_data.csv")
 }
+
