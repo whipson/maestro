@@ -107,7 +107,7 @@ roxy_tag_parse.roxy_tag_batonStartTime <- function(x) {
     trimws()
 
   if (x$raw == "") {
-    x$val <- strftime(Sys.time(), format = "%Y-%m-%d %H:%M:%S")
+    x$val <- "1970-01-01 00:00:00"
   } else {
     tryCatch({
       x_ts <- as.POSIXct(x$raw) # check if coercible
@@ -191,6 +191,46 @@ roclet_process.roclet_batonTz <- function(x, blocks, env, base_path) {
 
 #' @export
 roclet_output.roclet_batonTz <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
+
+
+# batonSkip ---------------------------------------------------------------
+
+#' @export
+roxy_tag_parse.roxy_tag_batonSkip <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw != "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      "Invalid batonSkip. Use tag name with no value to indicate pipeline should be skipped (e.g., `#' @batonSkip`)."
+    )
+  }
+
+  x$val <- TRUE
+  x
+}
+
+#' @export
+batonSkip_roclet <- function() {
+  roxygen2::roclet("batonSkip")
+}
+
+#' @export
+roclet_process.roclet_batonSkip <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "batonSkip")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @export
+roclet_output.roclet_batonSkip <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
