@@ -7,6 +7,7 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
+library(dplyr)
 library(baton)
 
 test_check("baton")

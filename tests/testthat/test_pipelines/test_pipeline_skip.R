@@ -4,8 +4,7 @@
 #' 2024-03-01 09:00:00
 #'
 #' @batonFrequency daily
-#' @batonStartTime 2024-03-01 09:00:00
-#' @batonTz UTC
+#' @batonSkip
 #'
 #' @export
 get_mtcars <- function() {
