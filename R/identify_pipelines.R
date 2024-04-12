@@ -25,7 +25,7 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.ti
   assertthat::assert_that(pipeline_freq %in% c("minute", "hour", "day", "week", "month", "quarter", "year"), msg = "pipeline_freq must be one of the following units: mins, hour, day, week, month, quarter, year")
 
   # Convert minute to mins for compatibility with seq
-  orch_unit <- ifelse(orch_unit == "minute", "mins", orch_unit)
+  pipeline_freq <- ifelse(pipeline_freq == "minute", "mins", pipeline_freq)
 
   # Code within the function
   # Validation to see if pipeline should be run
@@ -35,17 +35,4 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.ti
 
   pipeline_check <- check_datetime_round == tail(pipeline_sequence, n = 1)
   return(pipeline_check)
-
-
-  # Assertion tests
-  # Check object data type
-  assertthat::assert_that(lubridate::is.POSIXct(check_datetime_round), msg = "check_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
-  assertthat::assert_that(lubridate::is.POSIXct(pipeline_datetime_round), msg = "pipeline_datetime_round is not a datatime with a yyyy-mm-dd hh:mm:ss format")
-  assertthat::assert_that(is.logical(pipeline_check), msg = "pipeline_check is not a logic data type")
-  assertthat::assert_that(is.vector(pipeline_sequence), msg = "pipeline_sequence is not a vector")
-
-  # Check objects have a length great than zero
-  assertthat::assert_that(length(check_datetime_round) > 0)
-  assertthat::assert_that(length(pipeline_datetime_round) > 0)
-  assertthat::assert_that(length(pipeline_check) > 0)
 }
