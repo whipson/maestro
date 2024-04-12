@@ -1,5 +1,5 @@
 test_that("build_schedule works on a directory of all good pipelines", {
-  res <- build_schedule(test_path("test_pipelines_all_good"))
+  res <- build_schedule(test_path("test_pipelines_parse_all_good"))
   expect_s3_class(res, "tbl_df")
   expect_gte(nrow(res), 1)
   expect_in(
@@ -14,7 +14,7 @@ test_that("build_schedule works on a directory of all good pipelines", {
 test_that("build_schedule works on a directory of some good pipelines, warns", {
 
   expect_warning({
-    res <- build_schedule(test_path("test_pipelines_some_good"))
+    res <- build_schedule(test_path("test_pipelines_parse_some_good"))
   }, regexp = "failed to parse")
 
   expect_s3_class(res, "tbl_df")
@@ -29,8 +29,12 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
 
 test_that("build_schedule errors on a directory of all bad pipelines", {
   expect_error({
-    res <- build_schedule(test_path("test_pipelines_all_bad"))
+    res <- build_schedule(test_path("test_pipelines_parse_all_bad"))
   }, regexp = "All pipelines failed to parse")
+
+  errors <- latest_parsing_errors()
+  expect_type(errors, "list")
+  expect_gt(length(errors), 0)
 }) |>
   suppressMessages()
 

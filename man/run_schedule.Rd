@@ -4,10 +4,22 @@
 \alias{run_schedule}
 \title{Run a schedule}
 \usage{
-run_schedule(schedule, resources = list())
+run_schedule(
+  schedule,
+  orch_interval = "day",
+  orch_unit = 1,
+  check_datetime = Sys.time(),
+  resources = list()
+)
 }
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from `build_schedule()`}
+
+\item{orch_interval}{a numeric value representing how often the orchestration runs}
+
+\item{orch_unit}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+
+\item{check_datetime}{datetime used to check against the pipeline start datetime, default is the system time}
 
 \item{resources}{list of shared resources made available to pipelines as needed}
 }

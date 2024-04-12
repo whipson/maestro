@@ -16,13 +16,15 @@ select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = S
   assertthat::assert_that(lubridate::is.POSIXct(check_datetime), msg = "check_datetime must be a datatime with a yyyy-mm-dd hh:mm:ss format")
 
   # Check input parameters values
-  assertthat::assert_that(orch_unit %in% c("mins", "hour", "day", "week", "month", "quarter", "year"), msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year")
-
+  assertthat::assert_that(
+    orch_unit %in% c("mins", "hour", "day", "week", "month", "quarter", "year"),
+    msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year"
+  )
 
   # Code within the function
 
   is_scheduled <- purrr::pmap_lgl(
-    list(.data$interval, .data$frequency, .data$start_datetime),
+    list(.data$interval, .data$frequency, .data$start_time),
     ~{
       identify_pipelines(orch_interval, orch_unit, check_datetime, ..1, ..2, ..3)
     }

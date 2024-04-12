@@ -40,7 +40,7 @@ test_that("can create a schedule entry from a multi-function script", {
 
 test_that("Errors on a pipeline with no tagged functions", {
   build_schedule_entry(
-    test_path("test_pipelines_all_bad/test_pipeline_no_func.R")
+    test_path("test_pipelines_parse_all_bad/test_pipeline_no_func.R")
   ) |>
     expect_error(regexp = "No functions with baton")
 }) |>
@@ -48,7 +48,7 @@ test_that("Errors on a pipeline with no tagged functions", {
 
 test_that("Works on pipeline that doesn't use functions", {
   res <- build_schedule_entry(
-    test_path("test_pipelines_all_good/tagged_but_no_func.R")
+    test_path("test_pipelines_parse_all_good/tagged_but_no_func.R")
   )
   expect_s3_class(res, "tbl_df")
   expect_equal(nrow(res), 1)

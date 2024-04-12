@@ -13,12 +13,12 @@ test_that(
     expect_s3_class(res, "data.frame")
 
     expect_type(res$pipeline_name, "character")
-    expect_s3_class(res$start_datetime, c("POSIXct", "POSIXt"))
+    expect_s3_class(res$start_time, c("POSIXct", "POSIXt"))
     expect_type(res$frequency, "character")
     expect_equal(class(res$interval), "numeric")
 
     expect_in(
-      c("pipeline_name", "start_datetime", "frequency", "interval"),
+      c("pipeline_name", "start_time", "frequency", "interval"),
       names(res)
     )
 

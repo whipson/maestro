@@ -5,3 +5,7 @@
 latest_parsing_errors <- function() {
   baton_pkgenv$latest_parsing_errors
 }
+
+latest_runtime_errors <- function() {
+  baton_pkgenv$latest_runtime_errors
+}
