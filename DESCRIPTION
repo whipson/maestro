@@ -7,7 +7,6 @@ Authors@R:
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
       person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut"))
     )
-Maintainer: will.e.hipson@gmail.com
 Description: Simple, lightweight orchestrator for R pipelines.
 License: What license is it under?
 Encoding: UTF-8
