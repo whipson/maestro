@@ -24,6 +24,8 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.ti
   assertthat::assert_that(orch_unit %in% c("minute", "hour", "day", "week", "month", "quarter", "year"), msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year")
   assertthat::assert_that(pipeline_freq %in% c("minute", "hour", "day", "week", "month", "quarter", "year"), msg = "pipeline_freq must be one of the following units: mins, hour, day, week, month, quarter, year")
 
+  # Convert minute to mins for compatibility with seq
+  orch_unit <- ifelse(orch_unit == "minute", "mins", orch_unit)
 
   # Code within the function
   # Validation to see if pipeline should be run
