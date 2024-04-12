@@ -8,17 +8,17 @@ roxy_tag_parse.roxy_tag_batonFrequency <- function(x) {
     trimws()
 
   if (x$raw == "") {
-    x$val <- "daily"
-  } else if (x$raw %in% c("minutely", "hourly", "daily", "weekly",
-                          "monthly", "quarterly", "yearly")) {
+    x$val <- "day"
+  } else if (x$raw %in% c("minute", "hour", "day", "week",
+                          "month", "quarter", "year")) {
     x$val <- x$raw
   } else {
     roxygen2::roxy_tag_warning(
       x,
       glue::glue(
         "Invalid batonFrequency `{x$raw}`.
-        Must be one of 'minutely', 'hourly', 'daily', 'weekly',
-        'monthly', 'quarterly', 'yearly'"
+        Must be one of 'minute', 'hour', 'day', 'week',
+        'month', 'quarter', 'year'"
       )
     )
     return()

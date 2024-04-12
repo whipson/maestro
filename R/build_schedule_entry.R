@@ -40,7 +40,7 @@ build_schedule_entry <- function(script_path) {
     cli::cli_abort(
       c("No functions with {.pkg baton} tags present in {basename(script_path)}.",
         "i" = "A valid pipeline must have at least one function with one or
-        more {.pkg baton} tags: e.g., `#' @batonFrequency daily`."),
+        more {.pkg baton} tags: e.g., `#' @batonFrequency day`."),
       call = NULL
     )
   }

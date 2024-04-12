@@ -4,9 +4,12 @@
 #' 2024-03-01 09:00:00
 #'
 #' @batonFrequency day
-#' @batonSkip some content
+#' @batonInterval 1
+#' @batonStartTime 2024-03-01 09:00:00
+#' @batonTz UTC
+#'
 #'
 #' @export
-get_mtcars <- function() {
+get_mtcars2 <- function() {
   mtcars
 }

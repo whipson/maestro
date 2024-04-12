@@ -1,6 +1,6 @@
 #' Simple mtcars print function
 #'
-#' @batonFrequency daily
+#' @batonFrequency day
 #' @batonInterval not a number
 #' @batonStartTime
 #'

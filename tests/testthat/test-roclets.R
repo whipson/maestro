@@ -4,8 +4,8 @@ test_that("parse batonFrequency tag works", {
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
-  expect_in(res$val, c("minutely", "hourly", "daily", "weekly", "monthly",
-                       "quarterly", "yearly"))
+  expect_in(res$val, c("minute", "hour", "day", "week", "month",
+                       "quarter", "year"))
 })
 
 test_that("batonFrequency default value is expected", {
@@ -15,7 +15,7 @@ test_that("batonFrequency default value is expected", {
   ) |>
     expect_no_message()
 
-  expect_equal(res$val, "daily")
+  expect_equal(res$val, "day")
 })
 
 test_that("bad usage of batonFrequency warns and gives no val", {

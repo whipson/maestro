@@ -18,6 +18,8 @@ round_time <- function(check_datetime, unit_value) {
 #' @return invisible or error
 schedule_validity_check <- function(schedule) {
 
+  # This function should process checks in increasing order of computational complexity!
+
   # A list of required columns, where the value is the check to perform
   # against the column type. Note if there are more than 1, 1st is preferred
   req_col_typed_check <- list(
@@ -33,6 +35,15 @@ schedule_validity_check <- function(schedule) {
   if (!"data.frame" %in% class(schedule)) {
     cli::cli_abort(
       c("Schedule must be a data.frame and not an object of class {class(schedule)}.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."),
+      call = rlang::caller_env()
+    )
+  }
+
+  # Check that schedule has at least one row
+  if (nrow(schedule) == 0) {
+    cli::cli_abort(
+      c("Empty schedule. Schedule must have at least one row.",
         "i" = "Use {.fn build_schedule} to create a valid schedule."),
       call = rlang::caller_env()
     )

@@ -40,6 +40,13 @@ A `baton` project needs at least two components:
 2.  A single orchestrator script that kicks off the scripts when they’re
     scheduled to run
 
+### Step-by-Step
+
+1.  Create a new R project
+2.  Create a Quarto or R script for the orchestrator
+3.  Create a directory of pipelines called ‘pipelines’
+4.  Inside of ‘pipelines’ add .R scripts with baton tags
+
 Let’s look at each of these in more detail.
 
 ### Pipelines
@@ -51,7 +58,7 @@ pipeline does, but rather *when* you want to run it. Here’s a simple
 pipeline in `baton`:
 
 ``` r
-#' @batonFrequency daily
+#' @batonFrequency day
 #' @batonInterval 1
 #' @batonStartTime 2024-03-25 12:30:00
 my_etl <- function() {
@@ -71,7 +78,7 @@ my_etl <- function() {
 ```
 
 What makes this a `baton` pipeline is the use of special *roxygen*-style
-comments above the function definition. `#' @batonFrequency daily`
+comments above the function definition. `#' @batonFrequency day`
 indicates that this function should execute at a daily frequency,
 `#' @batonInterval 1` tells us it should be every day, and
 `#' @batonStartTime 2024-03-25 12:30:00` denotes the first time it
@@ -112,10 +119,6 @@ margin of rounding[^1] and calls those pipelines to run. `baton` also
 includes several helper functions pertaining to observability and
 monitoring, such as `latest_run_logs()` to get the full set of logs
 across all pipelines that ran.
-
-## Deployment
-
-More to come
 
 [^1]: Depending on the frequency and start time of pipeline and the
     frequency and start time of the orchestrator, this may be a key

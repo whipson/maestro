@@ -1,4 +1,4 @@
-#' @batonFrequency daily
+#' @batonFrequency day
 data <- iris |>
   dplyr::filter() |>
   dplyr::summarise()

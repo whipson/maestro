@@ -69,7 +69,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     purrr::list_rbind() |>
     # Supply default values for missing
     dplyr::mutate(
-      frequency = dplyr::coalesce(frequency, "daily"),
+      frequency = dplyr::coalesce(frequency, "day"),
       interval = dplyr::coalesce(interval, 1L),
       start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
       tz = dplyr::coalesce(tz, "UTC"),
