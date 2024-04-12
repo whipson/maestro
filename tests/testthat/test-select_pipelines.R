@@ -4,7 +4,7 @@ test_that(
     res <- select_pipelines(
       df_schedule,
       orch_interval = 15,
-      orch_unit = "mins",
+      orch_unit = "minute",
       check_datetime = lubridate::force_tz(lubridate::as_datetime("2024-03-27 07:13:12"), "America/Halifax")
     )
 
@@ -33,7 +33,7 @@ test_that(
       select_pipelines(
         df_schedule,
         orch_interval = "a",
-        orch_unit = "mins",
+        orch_unit = "minute",
         check_datetime = Sys.time()
       )
     )
