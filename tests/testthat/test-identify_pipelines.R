@@ -2,7 +2,7 @@ test_that(
   "Check input types",
   {
     res_false <- identify_pipelines(orch_interval = 15,
-                                    orch_unit = "mins",
+                                    orch_unit = "minute",
                                     check_datetime = lubridate::force_tz(lubridate::as_datetime("2024-03-27 05:05:00"), tzone = "America/Halifax"),
                                     pipeline_interval = 1,
                                     pipeline_freq = "day",
@@ -10,7 +10,7 @@ test_that(
     )
 
     res_true <- identify_pipelines(orch_interval = 15,
-                                   orch_unit = "mins",
+                                   orch_unit = "minute",
                                    check_datetime = lubridate::force_tz(lubridate::as_datetime("2024-03-27 05:05:00"), tzone = "America/Halifax"),
                                    pipeline_interval = 1,
                                    pipeline_freq = "day",
