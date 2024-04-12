@@ -48,7 +48,7 @@ library(dplyr)
 ```{r}
 # Orchestraction paramaters
 orch_interval <- 15
-orch_unit <- "mins"
+orch_unit <- "minute"
 #check_datetime <- Sys.time()
 check_datetime <- lubridate::force_tz(lubridate::as_datetime("2024-03-27 05:05:00"), tzone = "America/Halifax")
 check_datetime_round <- lubridate::round_date(check_datetime, unit = paste(orch_interval, orch_unit, sep = " "))

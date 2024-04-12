@@ -17,8 +17,8 @@ select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = S
 
   # Check input parameters values
   assertthat::assert_that(
-    orch_unit %in% c("mins", "hour", "day", "week", "month", "quarter", "year"),
-    msg = "orch_unit must be one of the following units: mins, hour, day, week, month, quarter, year"
+    orch_unit %in% c("minute", "hour", "day", "week", "month", "quarter", "year"),
+    msg = "orch_unit must be one of the following units: minute, hour, day, week, month, quarter, year"
   )
 
   # Code within the function
