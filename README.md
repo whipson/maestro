@@ -29,7 +29,7 @@ stabilized.
 be installed from Github directly like so:
 
 ``` r
-devtools::install("https://github.com/whipson/baton")
+devtools::install_github("https://github.com/whipson/baton")
 ```
 
 ## Project Setup

@@ -21,8 +21,5 @@ setup_baton_project(
 quarto or R script
 }
 \description{
-asdasdasdasdasdasd
-}
-\details{
-asdasdasdasdasdasdas
+Setup a Baton Project Structure
 }
