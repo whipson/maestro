@@ -32,7 +32,7 @@ In `baton` there are pipelines (functions) that can be scheduled and configured 
 `baton` is currently pre-release and not available yet on CRAN. It can be installed from Github directly like so:
 
 ``` r
-devtools::install("https://github.com/whipson/baton")
+devtools::install_github("https://github.com/whipson/baton")
 ```
 
 ## Project Setup

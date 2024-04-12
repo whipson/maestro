@@ -6,10 +6,11 @@
 \usage{
 run_schedule(
   schedule,
-  orch_interval = "day",
-  orch_unit = 1,
+  orch_interval = 1,
+  orch_unit = "day",
   check_datetime = Sys.time(),
-  resources = list()
+  resources = list(),
+  run_all = FALSE
 )
 }
 \arguments{
