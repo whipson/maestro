@@ -1,8 +1,8 @@
-#' @batonFrequency day
+#' @maestroFrequency day
 data <- iris |>
   dplyr::filter() |>
   dplyr::summarise()
 
-#' @batonInterval 1
+#' @maestroInterval 1
 data |>
   head(n = 6)

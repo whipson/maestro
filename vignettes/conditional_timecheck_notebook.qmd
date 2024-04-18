@@ -4,47 +4,41 @@ format: html
 editor: visual
 ---
 
-
-- scenario 1: Geomet daily - updated at 6am local
-  - run pipeline every day at 06:05:00
-  - run orchestrator every 15 mimutes
-    - freq = daily, inter: 1, start: 2024-01-01 06:05:00
-    - data.frame(name = "geomet_daily_climate.R", frequency = "daily", interval = 1, starttime = "2024-01-01 06:05:00 America/Halifax")
-    - check 1 == 05:30:00 -- FALSE
-    - check 2 == 05:45:00 -- FALSE
-    - check 3 == 06:00:00 -- TRUE
-    - check 4 == 06:15:00 -- FALSE
-
-
-- scenario 2: Annual statement - updated at January 2nd at 08:03:00
-  - run pipeline once a year at 08:05:00
-  - run orchestrator once a month at 00:00:00 on the 15th day of the month
-    - freq = annual, inter: 1, start: 2025-01-02 08:05:00
-    - data.frame(name = "annual_statement.R", frequency = "annual", interval = 1, starttime = "2025-01-02 08:05:00 America/Halifax")
-    - check 1 == 2024-04-15 00:00:00 -- FALSE
-    - check 2 == 2024-10-15 00:00:00 -- FALSE
-    - check 3 == 2024-12-15 00:00:00 -- FALSE
-    - check 4 == 2025-01-01 00:00:00 -- TRUE
-
-
-- scenario 3: Geomet month sum - updated at January 10th at 15:20:00
-  - run pipeline once a month at 15:25:00
-  - run orchestrator every 15 mimutes
-    - freq = monthly, inter: 1, start: 2024-01-10 15:25:00
-    - data.frame(name = "geomet_monthly_sum.R", frequency = "monthly", interval = 1, starttime = "2024-01-10 15:25:00 America/Halifax")
-    - check 1 == 2024-03-22 11:00:00 -- FALSE
-    - check 2 == 2024-03-10 15:30:00 -- TRUE
-    - check 2 == 2024-03-11 15:30:00 -- FALSE
-    - check 3 == 2024-04-10 15:30:00 -- TRUE
-
+-   scenario 1: Geomet daily - updated at 6am local
+    -   run pipeline every day at 06:05:00
+    -   run orchestrator every 15 mimutes
+        -   freq = daily, inter: 1, start: 2024-01-01 06:05:00
+        -   data.frame(name = "geomet_daily_climate.R", frequency = "daily", interval = 1, starttime = "2024-01-01 06:05:00 America/Halifax")
+        -   check 1 == 05:30:00 -- FALSE
+        -   check 2 == 05:45:00 -- FALSE
+        -   check 3 == 06:00:00 -- TRUE
+        -   check 4 == 06:15:00 -- FALSE
+-   scenario 2: Annual statement - updated at January 2nd at 08:03:00
+    -   run pipeline once a year at 08:05:00
+    -   run orchestrator once a month at 00:00:00 on the 15th day of the month
+        -   freq = annual, inter: 1, start: 2025-01-02 08:05:00
+        -   data.frame(name = "annual_statement.R", frequency = "annual", interval = 1, starttime = "2025-01-02 08:05:00 America/Halifax")
+        -   check 1 == 2024-04-15 00:00:00 -- FALSE
+        -   check 2 == 2024-10-15 00:00:00 -- FALSE
+        -   check 3 == 2024-12-15 00:00:00 -- FALSE
+        -   check 4 == 2025-01-01 00:00:00 -- TRUE
+-   scenario 3: Geomet month sum - updated at January 10th at 15:20:00
+    -   run pipeline once a month at 15:25:00
+    -   run orchestrator every 15 mimutes
+        -   freq = monthly, inter: 1, start: 2024-01-10 15:25:00
+        -   data.frame(name = "geomet_monthly_sum.R", frequency = "monthly", interval = 1, starttime = "2024-01-10 15:25:00 America/Halifax")
+        -   check 1 == 2024-03-22 11:00:00 -- FALSE
+        -   check 2 == 2024-03-10 15:30:00 -- TRUE
+        -   check 2 == 2024-03-11 15:30:00 -- FALSE
+        -   check 3 == 2024-04-10 15:30:00 -- TRUE
 
 ```{r}
 library(lubridate)
 library(dplyr)
 ```
 
-
 # Sequencial Approach
+
 ```{r}
 # Orchestraction paramaters
 orch_interval <- 15
@@ -66,7 +60,6 @@ pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = pip
 check_datetime_round == tail(pipeline_sequence, n = 1)
 ```
 
-
 ```{r}
 identify_pipelines <- function(orch_interval, orch_unit, check_datetime, pipeline_interval, pipeline_freq, pipeline_datetime) {
   check_datetime_round <- lubridate::round_date(check_datetime, unit = paste(orch_interval, orch_unit, sep = " "))
@@ -87,7 +80,6 @@ identify_pipelines(orch_interval = 15,
                    )
 ```
 
-
 ```{r}
 df_schedule <- data.frame(
   pipeline_name = c("pipeline1.R", "pipeline2.R", "pipeline3.R", "pipeline4.R", "pipeline5.R"),
@@ -101,11 +93,6 @@ df_schedule <- data.frame(
   interval = c(1, 1, 1, 1, 1)
 )
 ```
-
-
-
-
-
 
 ```{r}
 select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = Sys.time(), pipeline_interval, pipeline_freq, pipeline_datetime) {
@@ -126,15 +113,10 @@ select_pipelines(
 )
 ```
 
-
-
-
-
-
-
-
 # Custom Functions
+
 ## Round Time
+
 ```{r}
 # Round time
 round_time <- function(datetime, unit_value) {
@@ -149,7 +131,6 @@ round_time <- function(datetime, unit_value) {
 round_time(Sys.time(), "15 mins")
 ```
 
-
 ```{r}
 # Round minute
 round_minute <- function(datetime, unit_value) {
@@ -163,14 +144,11 @@ round_minute <- function(datetime, unit_value) {
 round_minute(Sys.time(), "15 mins")
 ```
 
-
 # Conditional Statement
+
 ## Annual Check
-Geomet annual average - updated at 1nd day of January at 05:02:00
-  - run pipeline once a year on the 2nd of January at 05:05:00
-  - run orchestrator every 15 mimutes
-    - freq = annually, inter: 1, start: 2024-01-02 05:05:00
-    - data.frame(name = "geomet_annually_sum.R", frequency = "annually", interval = 1, starttime = "2024-01-02 05:05:00 America/Halifax")
+
+Geomet annual average - updated at 1nd day of January at 05:02:00 - run pipeline once a year on the 2nd of January at 05:05:00 - run orchestrator every 15 mimutes - freq = annually, inter: 1, start: 2024-01-02 05:05:00 - data.frame(name = "geomet_annually_sum.R", frequency = "annually", interval = 1, starttime = "2024-01-02 05:05:00 America/Halifax")
 
 ```{r}
 orch_interval <- 15
@@ -199,14 +177,9 @@ return(run)
 check_annually(pipeline_sdate, orch_interval, orch_unit)
 ```
 
-
-
 ## Quarterly Check
-Geomet quarterly average - updated at 1st day of the quarter at 15:20:00
-  - run pipeline once a quarter at 15:25:00
-  - run orchestrator every 15 mimutes
-    - freq = quarterly, inter: 1, start: 2024-04-01 15:25:00
-    - data.frame(name = "geomet_quarterly_sum.R", frequency = "quarterly", interval = 1, starttime = "2024-04-01 15:25:00 America/Halifax")
+
+Geomet quarterly average - updated at 1st day of the quarter at 15:20:00 - run pipeline once a quarter at 15:25:00 - run orchestrator every 15 mimutes - freq = quarterly, inter: 1, start: 2024-04-01 15:25:00 - data.frame(name = "geomet_quarterly_sum.R", frequency = "quarterly", interval = 1, starttime = "2024-04-01 15:25:00 America/Halifax")
 
 ```{r}
 orch_interval <- 15
@@ -216,17 +189,9 @@ pipeline_sdate <- lubridate::force_tz(lubridate::as_datetime("2024-04-01 15:25:0
 orchestration_datetime <- lubridate::force_tz(lubridate::as_datetime("2024-04-01 15:30:00"), tzone = "America/Halifax")
 ```
 
-
-
-
-
-
 ## Monthly Check
-Geomet month sum - updated at January 10th at 15:20:00
-  - run pipeline once a month at 15:25:00
-  - run orchestrator every 15 mimutes
-    - freq = monthly, inter: 1, start: 2024-01-10 15:25:00
-    - data.frame(name = "geomet_monthly_sum.R", frequency = "monthly", interval = 1, starttime = "2024-01-10 15:25:00 America/Halifax")
+
+Geomet month sum - updated at January 10th at 15:20:00 - run pipeline once a month at 15:25:00 - run orchestrator every 15 mimutes - freq = monthly, inter: 1, start: 2024-01-10 15:25:00 - data.frame(name = "geomet_monthly_sum.R", frequency = "monthly", interval = 1, starttime = "2024-01-10 15:25:00 America/Halifax")
 
 ```{r}
 orch_interval <- 15
@@ -235,7 +200,6 @@ orch_unit <- "mins"
 pipeline_sdate <- lubridate::force_tz(lubridate::as_datetime("2024-01-10 15:25:00"), tzone = "America/Halifax")
 orchestration_datetime <- lubridate::force_tz(lubridate::as_datetime("2024-03-10 15:15:00"), tzone = "America/Halifax")
 ```
-
 
 ```{r}
 # Note this should consider timezones
@@ -254,14 +218,9 @@ return(run)
 check_monthly(pipeline_sdate, orch_interval, orch_unit)
 ```
 
-
-
 ## Weekly Check
-Geomet weekly sum - updated Friday's at 13:22:00
-  - run pipeline once a week (Friday) at 13:25:00
-  - run orchestrator every 15 mimutes
-    - freq = weekly, inter: 1, start: 2024-03-22 13:25:00
-    - data.frame(name = "geomet_weekly_sum.R", frequency = "weekly", interval = 1, starttime = "2024-03-22 13:25:00 America/Halifax")
+
+Geomet weekly sum - updated Friday's at 13:22:00 - run pipeline once a week (Friday) at 13:25:00 - run orchestrator every 15 mimutes - freq = weekly, inter: 1, start: 2024-03-22 13:25:00 - data.frame(name = "geomet_weekly_sum.R", frequency = "weekly", interval = 1, starttime = "2024-03-22 13:25:00 America/Halifax")
 
 ```{r}
 orch_interval <- 15
@@ -288,14 +247,9 @@ return(run)
 check_weekly(pipeline_sdate, orch_interval, orch_unit)
 ```
 
-
-
 ## Daily Check
-Geomet daily - updated daily at 06:02:00
-  - run pipeline once a day at 06:05:00
-  - run orchestrator every 15 mimutes
-    - freq = daily, inter: 1, start: 2024-01-01 06:05:00
-    - data.frame(name = "geomet_daily_sum.R", frequency = "daily", interval = 1, starttime = "2024-01-01 06:05:00 America/Halifax")
+
+Geomet daily - updated daily at 06:02:00 - run pipeline once a day at 06:05:00 - run orchestrator every 15 mimutes - freq = daily, inter: 1, start: 2024-01-01 06:05:00 - data.frame(name = "geomet_daily_sum.R", frequency = "daily", interval = 1, starttime = "2024-01-01 06:05:00 America/Halifax")
 
 ```{r}
 orch_interval <- 15
@@ -322,9 +276,8 @@ return(run)
 check_daily(pipeline_sdate, orch_interval, orch_unit)
 ```
 
-
-
 ## Hourly Check
+
 ```{r}
 current_datetime <- Sys.time()
 check_datetime <- lubridate::as_datetime("2024-01-22 06:45:05", tz = "America/Halifax")
@@ -335,6 +288,5 @@ if (round_minute(current_datetime, "15 mins") == round_time(check_datetime, "15 
   print("Minute is different")
 }
 ```
-
 
 ## Minutely Check

@@ -25,7 +25,7 @@ test_that("invalid tags trigger error", {
   build_schedule_entry(
     test_path("test_pipelines/test_pipeline_daily_bad.R")
   ) |>
-    expect_error(regexp = "Invalid batonFrequency")
+    expect_error(regexp = "Invalid maestroFrequency")
 }) |>
   suppressMessages()
 
@@ -42,7 +42,7 @@ test_that("Errors on a pipeline with no tagged functions", {
   build_schedule_entry(
     test_path("test_pipelines_parse_all_bad/test_pipeline_no_func.R")
   ) |>
-    expect_error(regexp = "No functions with baton")
+    expect_error(regexp = "No functions with maestro")
 }) |>
   suppressMessages()
 

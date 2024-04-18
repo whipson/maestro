@@ -3,8 +3,8 @@
 #' This is a function that runs every hour starting at
 #' 2024-03-01 09:00:00
 #'
-#' @batonFrequency day
-#' @batonSkip
+#' @maestroFrequency day
+#' @maestroSkip
 #'
 #' @export
 get_mtcars <- function() {

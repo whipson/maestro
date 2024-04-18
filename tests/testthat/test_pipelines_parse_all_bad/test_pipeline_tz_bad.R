@@ -1,9 +1,9 @@
 #' Simple mtcars print function
 #'
-#' @batonFrequency
-#' @batonInterval
-#' @batonStartTime
-#' @batonTz ADT
+#' @maestroFrequency
+#' @maestroInterval
+#' @maestroStartTime
+#' @maestroTz ADT
 #'
 #' @export
 get_mtcars2 <- function() {

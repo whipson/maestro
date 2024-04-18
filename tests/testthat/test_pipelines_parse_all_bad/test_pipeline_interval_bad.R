@@ -1,8 +1,8 @@
 #' Simple mtcars print function
 #'
-#' @batonFrequency day
-#' @batonInterval not a number
-#' @batonStartTime
+#' @maestroFrequency day
+#' @maestroInterval not a number
+#' @maestroStartTime
 #'
 #' @export
 get_mtcars <- function() {
