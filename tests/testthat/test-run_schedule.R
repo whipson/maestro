@@ -34,6 +34,7 @@ test_that("run_schedule propagates warnings", {
   expect_message({
     run_schedule(schedule, run_all = TRUE)
   })
+  expect_gt(length(latest_runtime_warnings()), 0)
 }) |>
   suppressMessages()
 
