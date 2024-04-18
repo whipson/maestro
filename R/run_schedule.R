@@ -29,9 +29,6 @@ run_schedule <- function(
 
   cli::cli_h3("Running pipelines {cli::col_green(cli::symbol$play)}")
 
-  warning_count <- 0
-  warnings <- list()
-
   # Execute the schedule
   runs <- purrr::pmap(
     list(
@@ -43,14 +40,7 @@ run_schedule <- function(
       ~{
 
         cli::cli_progress_step("{ ..2}")
-
-        # Catch warnings
-        tryCatch({
-          run_schedule_entry(..1, ..2, ..3, resources = resources)
-        }, warning = \(w) {
-          warning_count <<- warning_count + 1
-          warnings <<- append(warnings, w$message)
-        })
+        run_schedule_entry(..1, ..2, ..3, resources = resources)
       }, quiet = TRUE
     )
   )
@@ -66,6 +56,8 @@ run_schedule <- function(
     ~.x$error
   ) |>
     purrr::discard(is.null)
+
+  warning_count <- length(warnings())
 
   maestro_pkgenv$latest_runtime_errors <- run_errors
 
