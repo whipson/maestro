@@ -57,13 +57,20 @@ run_schedule <- function(
   ) |>
     purrr::discard(is.null)
 
-  warning_count <- length(warnings())
+  # Get the warnings
+  run_warnings <- purrr::map(
+    runs,
+    ~.x$result
+  ) |>
+    purrr::discard(is.null)
 
   maestro_pkgenv$latest_runtime_errors <- run_errors
+  maestro_pkgenv$latest_runtime_warnings <- run_warnings
 
   total <- length(runs)
   error_count <- length(run_errors)
   success_count <- total - error_count
+  warning_count <- length(run_warnings)
 
   cli::cli_h3("Pipeline execution completed {cli::col_silver(cli::symbol$stop)}")
 
