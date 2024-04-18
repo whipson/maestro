@@ -1,40 +1,40 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# baton
+# maestro
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-`baton` is a lightweight and easy-to-use framework for creating and
+`maestro` is a lightweight and easy-to-use framework for creating and
 orchestrating data pipelines in R. No additional orchestration tools are
 needed.
 
-In `baton` there are pipelines (functions) that can be scheduled and
+In `maestro` there are pipelines (functions) that can be scheduled and
 configured using `roxygen2` tags - these are special comment above each
 function. There is also an orchestrator script responsible for executing
 the scheduled pipelines (optionally in parallel).
 
 ## Pre-release Disclaimer
 
-`baton` is in early development and its API may undergo changes without
-notice or deprecation. We encourage people to try it out in real world
-scenarios, but we do not yet advise using it in critical production
-environments until it has been thoroughly tested and the API has
-stabilized.
+`maestro` is in early development and its API may undergo changes
+without notice or deprecation. We encourage people to try it out in real
+world scenarios, but we do not yet advise using it in critical
+production environments until it has been thoroughly tested and the API
+has stabilized.
 
 ## Installation
 
-`baton` is currently pre-release and not available yet on CRAN. It can
+`maestro` is currently pre-release and not available yet on CRAN. It can
 be installed from Github directly like so:
 
 ``` r
-devtools::install_github("https://github.com/whipson/baton")
+devtools::install_github("https://github.com/whipson/maestro")
 ```
 
 ## Project Setup
 
-A `baton` project needs at least two components:
+A `maestro` project needs at least two components:
 
 1.  A collection of R pipelines (functions) that you want to schedule
 2.  A single orchestrator script that kicks off the scripts when they’re
@@ -45,7 +45,7 @@ A `baton` project needs at least two components:
 1.  Create a new R project
 2.  Create a Quarto or R script for the orchestrator
 3.  Create a directory of pipelines called ‘pipelines’
-4.  Inside of ‘pipelines’ add .R scripts with baton tags
+4.  Inside of ‘pipelines’ add .R scripts with maestro tags
 
 Let’s look at each of these in more detail.
 
@@ -53,14 +53,14 @@ Let’s look at each of these in more detail.
 
 A pipeline is task we want to run. This task may involve retrieving data
 from a source, performing cleaning and computation on the data, then
-sending it to a destination. `baton` is not concerned with what your
+sending it to a destination. `maestro` is not concerned with what your
 pipeline does, but rather *when* you want to run it. Here’s a simple
-pipeline in `baton`:
+pipeline in `maestro`:
 
 ``` r
-#' @batonFrequency day
-#' @batonInterval 1
-#' @batonStartTime 2024-03-25 12:30:00
+#' @maestroFrequency day
+#' @maestroInterval 1
+#' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
   
   # Extract data from random user generator
@@ -77,20 +77,20 @@ my_etl <- function() {
 }
 ```
 
-What makes this a `baton` pipeline is the use of special *roxygen*-style
-comments above the function definition. `#' @batonFrequency day`
-indicates that this function should execute at a daily frequency,
-`#' @batonInterval 1` tells us it should be every day, and
-`#' @batonStartTime 2024-03-25 12:30:00` denotes the first time it
-should run. In other words, we’d expect it to run every day at 12:30
-starting the 25th of March 2024. But this pipeline won’t run at all
-unless there is another process *telling* it to run. That is the job of
-the orchestrator.
+What makes this a `maestro` pipeline is the use of special
+*roxygen*-style comments above the function definition.
+`#' @maestroFrequency day` indicates that this function should execute
+at a daily frequency, `#' @maestroInterval 1` tells us it should be
+every day, and `#' @maestroStartTime 2024-03-25 12:30:00` denotes the
+first time it should run. In other words, we’d expect it to run every
+day at 12:30 starting the 25th of March 2024. But this pipeline won’t
+run at all unless there is another process *telling* it to run. That is
+the job of the orchestrator.
 
 ### Orchestrator
 
 The orchestrator is a script that checks the schedules of all the
-functions in a `baton` project and executes them if they’re due to go.
+functions in a `maestro` project and executes them if they’re due to go.
 The orchestrator also handles global execution tasks such as collecting
 logs and managing shared resources like database connections, global
 objects, and custom functions.
@@ -102,7 +102,7 @@ with respect to deployment on Posit Connect.
 A simple orchestrator looks like this:
 
 ``` r
-# Look through the pipelines directory for baton pipelines to create a schedule
+# Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them (optionally in parallel)
@@ -115,14 +115,14 @@ logs <- latest_run_logs()
 The function `build_schedule()` scours through all the pipelines in the
 provided directory and builds a schedule. Then `run_schedule()` checks
 each pipeline’s scheduled time against the system time within some
-margin of rounding[^1] and calls those pipelines to run. `baton` also
+margin of rounding[^1] and calls those pipelines to run. `maestro` also
 includes several helper functions pertaining to observability and
 monitoring, such as `latest_run_logs()` to get the full set of logs
 across all pipelines that ran.
 
 [^1]: Depending on the frequency and start time of pipeline and the
     frequency and start time of the orchestrator, this may be a key
-    consideration. \`baton\` does not look for an exact match of the
+    consideration. \`maestro\` does not look for an exact match of the
     scheduled time with the current time because then it would almost
     never run. Rather, it rounds the times to within a unit compatible
     with the particular pipeline frequency.

@@ -4,7 +4,7 @@
 #' @param parse_errors list of parse errors
 #'
 #' @return cli output
-baton_parse_cli <- function(parse_succeeds, parse_errors) {
+maestro_parse_cli <- function(parse_succeeds, parse_errors) {
 
   n_fails <- length(parse_errors)
   n_succeeds <- length(parse_succeeds)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/latest_errors.R
 \name{latest_parsing_errors}
 \alias{latest_parsing_errors}
-\title{Retrieve latest baton parsing errors from}
+\title{Retrieve latest maestro parsing errors from}
 \usage{
 latest_parsing_errors()
 }
@@ -10,5 +10,5 @@ latest_parsing_errors()
 error and trace output
 }
 \description{
-Retrieve latest baton parsing errors from
+Retrieve latest maestro parsing errors from
 }

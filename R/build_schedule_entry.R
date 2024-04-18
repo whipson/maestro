@@ -5,13 +5,13 @@
 #' @return data.frame row
 build_schedule_entry <- function(script_path) {
 
-  # Current list of baton tags and their equivalent table names
-  baton_tag_names <- list(
-    frequency = "batonFrequency",
-    interval = "batonInterval",
-    start_time = "batonStartTime",
-    tz = "batonTz",
-    skip = "batonSkip"
+  # Current list of maestro tags and their equivalent table names
+  maestro_tag_names <- list(
+    frequency = "maestroFrequency",
+    interval = "maestroInterval",
+    start_time = "maestroStartTime",
+    tz = "maestroTz",
+    skip = "maestroSkip"
   )
 
   # Get all the roxygen tags
@@ -23,11 +23,11 @@ build_schedule_entry <- function(script_path) {
     cli::cli_abort(w$message, call = NULL)
   })
 
-  # Get specifically the tags used by baton
-  baton_tag_vals <- purrr::map(tag_list, ~{
+  # Get specifically the tags used by maestro
+  maestro_tag_vals <- purrr::map(tag_list, ~{
     tag <- .x
     val <- purrr::map(
-      baton_tag_names,
+      maestro_tag_names,
       ~{
         val <- roxygen2::block_get_tag_value(tag, .x)
         ifelse(is.null(val), NA, val)
@@ -36,11 +36,11 @@ build_schedule_entry <- function(script_path) {
     val
   })
 
-  if(length(baton_tag_vals) == 0) {
+  if(length(maestro_tag_vals) == 0) {
     cli::cli_abort(
-      c("No functions with {.pkg baton} tags present in {basename(script_path)}.",
+      c("No functions with {.pkg maestro} tags present in {basename(script_path)}.",
         "i" = "A valid pipeline must have at least one function with one or
-        more {.pkg baton} tags: e.g., `#' @batonFrequency day`."),
+        more {.pkg maestro} tags: e.g., `#' @maestroFrequency day`."),
       call = NULL
     )
   }
@@ -62,7 +62,7 @@ build_schedule_entry <- function(script_path) {
   })
 
   # Create table entries
-  table_entities <- purrr::map2(pipe_names, baton_tag_vals, ~{
+  table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
     tibble::tibble(
       script_path = script_path,
       pipe_name = .x$pipe_name,

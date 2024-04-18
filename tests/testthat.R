@@ -8,6 +8,6 @@
 
 library(testthat)
 library(dplyr)
-library(baton)
+library(maestro)
 
-test_check("baton")
+test_check("maestro")

@@ -3,10 +3,10 @@
 #' This is a function that runs every hour starting at
 #' 2024-03-01 09:00:00
 #'
-#' @batonFrequency day
-#' @batonInterval 1
-#' @batonStartTime 2024-03-01 09:00:00
-#' @batonTz UTC
+#' @maestroFrequency day
+#' @maestroInterval 1
+#' @maestroStartTime 2024-03-01 09:00:00
+#' @maestroTz UTC
 #'
 #' @export
 get_mtcars <- function() {
@@ -16,8 +16,8 @@ get_mtcars <- function() {
 
 #' Multiply
 #'
-#' @batonFrequency month
-#' @batonInterval 3
+#' @maestroFrequency month
+#' @maestroInterval 3
 #'
 #' @export
 wait <- function() {

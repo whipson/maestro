@@ -1,6 +1,6 @@
-# batonFrequency ----------------------------------------------------------
+# maestroFrequency ----------------------------------------------------------
 #' @export
-roxy_tag_parse.roxy_tag_batonFrequency <- function(x) {
+roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
 
   # Cast lower and trim whitespace
   x$raw <- x$raw |>
@@ -16,7 +16,7 @@ roxy_tag_parse.roxy_tag_batonFrequency <- function(x) {
     roxygen2::roxy_tag_warning(
       x,
       glue::glue(
-        "Invalid batonFrequency `{x$raw}`.
+        "Invalid maestroFrequency `{x$raw}`.
         Must be one of 'minute', 'hour', 'day', 'week',
         'month', 'quarter', 'year'"
       )
@@ -27,13 +27,13 @@ roxy_tag_parse.roxy_tag_batonFrequency <- function(x) {
 }
 
 #' @export
-batonFrequency_roclet <- function() {
-  roxygen2::roclet("batonFrequency")
+maestroFrequency_roclet <- function() {
+  roxygen2::roclet("maestroFrequency")
 }
 
 #' @export
-roclet_process.roclet_batonFrequency <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "batonFrequency")
+roclet_process.roclet_maestroFrequency <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroFrequency")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
@@ -41,15 +41,15 @@ roclet_process.roclet_batonFrequency <- function(x, blocks, env, base_path) {
 }
 
 #' @export
-roclet_output.roclet_batonFrequency <- function(x, results, base_path, ...) {
+roclet_output.roclet_maestroFrequency <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
 
 
-# batonInterval -----------------------------------------------------------
+# maestroInterval -----------------------------------------------------------
 #' @export
-roxy_tag_parse.roxy_tag_batonInterval <- function(x) {
+roxy_tag_parse.roxy_tag_maestroInterval <- function(x) {
 
   x$raw <- x$raw |>
     trimws()
@@ -66,7 +66,7 @@ roxy_tag_parse.roxy_tag_batonInterval <- function(x) {
       roxygen2::roxy_tag_warning(
         x,
         glue::glue(
-          "Invalid batonInterval `{x$raw}`.
+          "Invalid maestroInterval `{x$raw}`.
           Must be a positive, non-zero integer value"
         )
       )
@@ -78,13 +78,13 @@ roxy_tag_parse.roxy_tag_batonInterval <- function(x) {
 }
 
 #' @export
-batonInterval_roclet <- function() {
-  roxygen2::roclet("batonInterval")
+maestroInterval_roclet <- function() {
+  roxygen2::roclet("maestroInterval")
 }
 
 #' @export
-roclet_process.roclet_batonInterval <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "batonInterval")
+roclet_process.roclet_maestroInterval <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInterval")
   list(
     val = as.integer(tags$val),
     node = blocks[[1]]$object$topic
@@ -92,16 +92,16 @@ roclet_process.roclet_batonInterval <- function(x, blocks, env, base_path) {
 }
 
 #' @export
-roclet_output.roclet_batonInterval <- function(x, results, base_path, ...) {
+roclet_output.roclet_maestroInterval <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
 
 
-# batonStartTime ----------------------------------------------------------
+# maestroStartTime ----------------------------------------------------------
 
 #' @export
-roxy_tag_parse.roxy_tag_batonStartTime <- function(x) {
+roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
 
   x$raw <- x$raw |>
     trimws()
@@ -117,7 +117,7 @@ roxy_tag_parse.roxy_tag_batonStartTime <- function(x) {
       roxygen2::roxy_tag_warning(
         x,
         glue::glue(
-          "Invalid batonStartTime `{x$raw}`.
+          "Invalid maestroStartTime `{x$raw}`.
           Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS"
         )
       )
@@ -129,13 +129,13 @@ roxy_tag_parse.roxy_tag_batonStartTime <- function(x) {
 }
 
 #' @export
-batonStartTime_roclet <- function() {
-  roxygen2::roclet("batonStartTime")
+maestroStartTime_roclet <- function() {
+  roxygen2::roclet("maestroStartTime")
 }
 
 #' @export
-roclet_process.roclet_batonStartTime <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "batonStartTime")
+roclet_process.roclet_maestroStartTime <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroStartTime")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
@@ -143,16 +143,16 @@ roclet_process.roclet_batonStartTime <- function(x, blocks, env, base_path) {
 }
 
 #' @export
-roclet_output.roclet_batonStartTime <- function(x, results, base_path, ...) {
+roclet_output.roclet_maestroStartTime <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
 
 
-# batonTz -----------------------------------------------------------------
+# maestroTz -----------------------------------------------------------------
 
 #' @export
-roxy_tag_parse.roxy_tag_batonTz <- function(x) {
+roxy_tag_parse.roxy_tag_maestroTz <- function(x) {
 
   x$raw <- x$raw |>
     trimws()
@@ -164,7 +164,7 @@ roxy_tag_parse.roxy_tag_batonTz <- function(x) {
       roxygen2::roxy_tag_warning(
         x,
         glue::glue(
-          "Invalid batonTz `{x$raw}`.
+          "Invalid maestroTz `{x$raw}`.
           Must be a valid timezone string. See valid tzs with `OlsonNames()`"
         )
       )
@@ -176,13 +176,13 @@ roxy_tag_parse.roxy_tag_batonTz <- function(x) {
 }
 
 #' @export
-batonTz_roclet <- function() {
-  roxygen2::roclet("batonTz")
+maestroTz_roclet <- function() {
+  roxygen2::roclet("maestroTz")
 }
 
 #' @export
-roclet_process.roclet_batonTz <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "batonTz")
+roclet_process.roclet_maestroTz <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroTz")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
@@ -190,16 +190,16 @@ roclet_process.roclet_batonTz <- function(x, blocks, env, base_path) {
 }
 
 #' @export
-roclet_output.roclet_batonTz <- function(x, results, base_path, ...) {
+roclet_output.roclet_maestroTz <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
 
 
-# batonSkip ---------------------------------------------------------------
+# maestroSkip ---------------------------------------------------------------
 
 #' @export
-roxy_tag_parse.roxy_tag_batonSkip <- function(x) {
+roxy_tag_parse.roxy_tag_maestroSkip <- function(x) {
 
   x$raw <- x$raw |>
     trimws()
@@ -207,7 +207,7 @@ roxy_tag_parse.roxy_tag_batonSkip <- function(x) {
   if (x$raw != "") {
     roxygen2::roxy_tag_warning(
       x,
-      "Invalid batonSkip. Use tag name with no value to indicate pipeline should be skipped (e.g., `#' @batonSkip`)."
+      "Invalid maestroSkip. Use tag name with no value to indicate pipeline should be skipped (e.g., `#' @maestroSkip`)."
     )
   }
 
@@ -216,13 +216,13 @@ roxy_tag_parse.roxy_tag_batonSkip <- function(x) {
 }
 
 #' @export
-batonSkip_roclet <- function() {
-  roxygen2::roclet("batonSkip")
+maestroSkip_roclet <- function() {
+  roxygen2::roclet("maestroSkip")
 }
 
 #' @export
-roclet_process.roclet_batonSkip <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "batonSkip")
+roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroSkip")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
@@ -230,7 +230,7 @@ roclet_process.roclet_batonSkip <- function(x, blocks, env, base_path) {
 }
 
 #' @export
-roclet_output.roclet_batonSkip <- function(x, results, base_path, ...) {
+roclet_output.roclet_maestroSkip <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
