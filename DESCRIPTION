@@ -1,6 +1,6 @@
-Package: baton
+Package: maestro
 Type: Package
-Title: Baton
+Title: maestro
 Version: 0.1.0
 Authors@R: 
     c(

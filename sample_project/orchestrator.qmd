@@ -1,12 +1,12 @@
 ---
-title: Template Baton
+title: Template maestro
 resources: 
   - pipelines/*
   - R/*
 ---
 
 ```{r}
-# Look through the pipelines directory for baton pipelines to create a schedule
+# Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them (optionally in parallel)

@@ -67,7 +67,7 @@ run_schedule <- function(
   ) |>
     purrr::discard(is.null)
 
-  baton_pkgenv$latest_runtime_errors <- run_errors
+  maestro_pkgenv$latest_runtime_errors <- run_errors
 
   total <- length(runs)
   error_count <- length(run_errors)

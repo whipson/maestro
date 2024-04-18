@@ -1,6 +1,6 @@
-test_that("parse batonFrequency tag works", {
+test_that("parse maestroFrequency tag works", {
   res <- roc_proc_text(
-    batonFrequency_roclet(),
+    maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
@@ -8,9 +8,9 @@ test_that("parse batonFrequency tag works", {
                        "quarter", "year"))
 })
 
-test_that("batonFrequency default value is expected", {
+test_that("maestroFrequency default value is expected", {
   res <- roc_proc_text(
-    batonFrequency_roclet(),
+    maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
     expect_no_message()
@@ -18,9 +18,9 @@ test_that("batonFrequency default value is expected", {
   expect_equal(res$val, "day")
 })
 
-test_that("bad usage of batonFrequency warns and gives no val", {
+test_that("bad usage of maestroFrequency warns and gives no val", {
   res <- roc_proc_text(
-    batonFrequency_roclet(),
+    maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_bad.R"))
   ) |>
     expect_warning(regexp = "Must be one of")
@@ -28,9 +28,9 @@ test_that("bad usage of batonFrequency warns and gives no val", {
   expect_null(res$val)
 })
 
-test_that("parse batonInterval tag works", {
+test_that("parse maestroInterval tag works", {
   res <- roc_proc_text(
-    batonInterval_roclet(),
+    maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
@@ -38,9 +38,9 @@ test_that("parse batonInterval tag works", {
   expect_type(res$val, "integer")
 })
 
-test_that("batonInterval default value is returned", {
+test_that("maestroInterval default value is returned", {
   res <- roc_proc_text(
-    batonInterval_roclet(),
+    maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
     expect_no_message()
@@ -48,9 +48,9 @@ test_that("batonInterval default value is returned", {
   expect_type(res$val, "integer")
 })
 
-test_that("bad usage of batonInterval warns and gives no val", {
+test_that("bad usage of maestroInterval warns and gives no val", {
   res <- roc_proc_text(
-    batonInterval_roclet(),
+    maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_interval_bad.R"))
   ) |>
     expect_warning(regexp = "Must be a positive")
@@ -58,9 +58,9 @@ test_that("bad usage of batonInterval warns and gives no val", {
   expect_null(res$val)
 })
 
-test_that("parse batonStartTime tag works", {
+test_that("parse maestroStartTime tag works", {
   res <- roc_proc_text(
-    batonStartTime_roclet(),
+    maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
@@ -69,9 +69,9 @@ test_that("parse batonStartTime tag works", {
   expect_s3_class(as.POSIXct(res$val), "POSIXct")
 })
 
-test_that("batonStartTime default value is returned", {
+test_that("maestroStartTime default value is returned", {
   res <- roc_proc_text(
-    batonStartTime_roclet(),
+    maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
     expect_no_message()
@@ -80,9 +80,9 @@ test_that("batonStartTime default value is returned", {
   expect_s3_class(as.POSIXct(res$val), "POSIXct")
 })
 
-test_that("integer batonStartTime fails", {
+test_that("integer maestroStartTime fails", {
   res <- roc_proc_text(
-    batonInterval_roclet(),
+    maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_int.R"))
   ) |>
     expect_warning(regexp = "Must be a timestamp")
@@ -90,9 +90,9 @@ test_that("integer batonStartTime fails", {
   expect_null(res$val)
 })
 
-test_that("partial batonStartTime works", {
+test_that("partial maestroStartTime works", {
   res <- roc_proc_text(
-    batonStartTime_roclet(),
+    maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_date.R"))
   ) |>
     expect_no_message()
@@ -101,9 +101,9 @@ test_that("partial batonStartTime works", {
   expect_s3_class(as.POSIXct(res$val), "POSIXct")
 })
 
-test_that("parse batonTz tag works", {
+test_that("parse maestroTz tag works", {
   res <- roc_proc_text(
-    batonTz_roclet(),
+    maestroTz_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
@@ -111,9 +111,9 @@ test_that("parse batonTz tag works", {
   expect_type(res$val, "character")
 })
 
-test_that("batonTz default returns value", {
+test_that("maestroTz default returns value", {
   res <- roc_proc_text(
-    batonStartTime_roclet(),
+    maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
     expect_no_message()
@@ -121,9 +121,9 @@ test_that("batonTz default returns value", {
   expect_type(res$val, "character")
 })
 
-test_that("bad usage of batonTz warns and returns null val", {
+test_that("bad usage of maestroTz warns and returns null val", {
   res <- roc_proc_text(
-    batonTz_roclet(),
+    maestroTz_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_tz_bad.R"))
   ) |>
     expect_warning(regexp = "Must be a valid timezone")
@@ -131,27 +131,27 @@ test_that("bad usage of batonTz warns and returns null val", {
   expect_null(res$val)
 })
 
-test_that("parse batonSkip works", {
+test_that("parse maestroSkip works", {
   res <- roc_proc_text(
-    batonSkip_roclet(),
+    maestroSkip_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_skip.R"))
   )
   expect_true(res$val)
 })
 
-test_that("Nonexistent batonSkip is NULL", {
+test_that("Nonexistent maestroSkip is NULL", {
   res <- roc_proc_text(
-    batonSkip_roclet(),
+    maestroSkip_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   )
   expect_null(res$val)
 })
 
-test_that("Invalid usage of batonSkip warns but still returns a value of TRUE", {
+test_that("Invalid usage of maestroSkip warns but still returns a value of TRUE", {
 
   expect_warning({
     res <- roc_proc_text(
-      batonSkip_roclet(),
+      maestroSkip_roclet(),
       readLines(test_path("test_pipelines/test_pipeline_skip_bad.R"))
     )
   })

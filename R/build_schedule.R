@@ -43,8 +43,6 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
   #   )
   # }
 
-
-
   # Get the results
   sch_results <- purrr::map(
     attempted_sch_parses,
@@ -60,9 +58,9 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     purrr::discard(is.null)
 
   # Assign the errors to the pkgenv
-  baton_pkgenv$latest_parsing_errors <- sch_errors
+  maestro_pkgenv$latest_parsing_errors <- sch_errors
 
-  baton_parse_cli(sch_results, sch_errors)
+  maestro_parse_cli(sch_results, sch_errors)
 
   # Return the results
   sch <- sch_results |>

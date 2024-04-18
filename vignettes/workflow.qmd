@@ -1,7 +1,7 @@
 
 
 ```{r}
-setup_baton_project(
+setup_maestro_project(
   as_quarto = TRUE
 ) # set up file structure
 
