@@ -63,3 +63,11 @@ test_that("Errors on pipeline with isolated tags", {
     )
   }, regexp = "has tags but no function")
 })
+
+test_that("Informative error on parsing schedule entry with an error", {
+  expect_error({
+    res <- build_schedule_entry(
+      test_path("test_pipelines_parse_all_bad/test_pipeline_script_with_error.R")
+    )
+  }, regexp = "Could not build")
+})

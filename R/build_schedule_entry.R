@@ -14,14 +14,22 @@ build_schedule_entry <- function(script_path) {
     skip = "maestroSkip"
   )
 
-  # Get all the roxygen tags
+  # Get all the roxygen tags - this actually executes the script, which is fine
+  # if it's functions but can be problematic if it includes other code that
+  # evaluates immediately
   tag_list <- tryCatch({
     roxygen2::parse_file(script_path)
   }, error = \(e) {
-    cli::cli_abort(e$message, call = NULL)
+    cli::cli_abort(
+      c("Could not build schedule entry with error: {e$message}",
+        "i" = "Pipeline scripts should not typically include code that's run
+        outside of a function. Be sure to wrap code in a function block."),
+      call = NULL
+    )
   }, warning = \(w) {
     cli::cli_abort(w$message, call = NULL)
-  })
+  }) |>
+    suppressMessages()
 
   # Get specifically the tags used by maestro
   maestro_tag_vals <- purrr::map(tag_list, ~{
