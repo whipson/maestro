@@ -4,16 +4,17 @@
 \alias{run_schedule_entry}
 \title{Runs a single pipeline}
 \usage{
-run_schedule_entry(script_path, pipe_name, is_func, resources = list())
+run_schedule_entry(script_path, pipe_name, resources = list())
 }
 \arguments{
 \item{script_path}{path to the script containing the pipeline}
 
 \item{pipe_name}{name of the pipeline}
 
-\item{is_func}{whether the pipeline is a function or not}
-
 \item{resources}{list of resources for the pipeline}
+}
+\value{
+invisible
 }
 \description{
 Runs a single pipeline

@@ -33,14 +33,12 @@ run_schedule <- function(
   runs <- purrr::pmap(
     list(
       schedule$script_path,
-      schedule$pipe_name,
-      schedule$is_func
+      schedule$pipe_name
     ),
     purrr::safely(
       ~{
-
         cli::cli_progress_step("{ ..2}")
-        run_schedule_entry(..1, ..2, ..3, resources = resources)
+        run_schedule_entry(..1, ..2, resources = resources)
       }, quiet = TRUE
     )
   )
