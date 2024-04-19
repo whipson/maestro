@@ -2,11 +2,10 @@
 #'
 #' @param script_path path to the script containing the pipeline
 #' @param pipe_name name of the pipeline
-#' @param is_func whether the pipeline is a function or not
 #' @param resources list of resources for the pipeline
 #'
-#' @return
-run_schedule_entry <- function(script_path, pipe_name, is_func, resources = list()) {
+#' @return invisible
+run_schedule_entry <- function(script_path, pipe_name, resources = list()) {
 
   # Check that it's an R script
   if (!grepl(".*.R$", script_path)) {

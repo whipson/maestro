@@ -5,7 +5,7 @@ test_that("can create a schedule entry from a single well-documented fun", {
   expect_s3_class(res, "tbl_df")
   expect_equal(nrow(res), 1)
   expect_in(
-    c("script_path", "pipe_name", "is_func", "frequency", "interval",
+    c("script_path", "pipe_name", "frequency", "interval",
       "start_time", "tz", "skip"),
     names(res)
   )
@@ -42,15 +42,24 @@ test_that("Errors on a pipeline with no tagged functions", {
   build_schedule_entry(
     test_path("test_pipelines_parse_all_bad/test_pipeline_no_func.R")
   ) |>
-    expect_error(regexp = "No functions with maestro")
+    expect_error(regexp = "tags present in")
 }) |>
   suppressMessages()
 
-test_that("Works on pipeline that doesn't use functions", {
-  res <- build_schedule_entry(
-    test_path("test_pipelines_parse_all_good/tagged_but_no_func.R")
-  )
-  expect_s3_class(res, "tbl_df")
-  expect_equal(nrow(res), 1)
+test_that("Errors on pipeline that doesn't use functions and returns null", {
+
+  expect_error({
+    res <- build_schedule_entry(
+      test_path("test_pipelines_parse_all_bad/tagged_but_no_func.R")
+    )
+  }, regexp = "has tags but no function")
 }) |>
   suppressMessages()
+
+test_that("Errors on pipeline with isolated tags", {
+  expect_error({
+    res <- build_schedule_entry(
+      test_path("test_pipelines_parse_all_bad/tagged_but_no_func_multi.R")
+    )
+  }, regexp = "has tags but no function")
+})

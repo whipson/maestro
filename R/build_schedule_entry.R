@@ -36,61 +36,42 @@ build_schedule_entry <- function(script_path) {
     val
   })
 
-  if(length(maestro_tag_vals) == 0) {
+  if (length(maestro_tag_vals) == 0) {
     cli::cli_abort(
-      c("No functions with {.pkg maestro} tags present in {basename(script_path)}.",
+      c("No {.pkg maestro} tags present in {basename(script_path)}.",
         "i" = "A valid pipeline must have at least one function with one or
         more {.pkg maestro} tags: e.g., `#' @maestroFrequency day`."),
       call = NULL
     )
   }
 
-  # Get pipe names from the function name
-  # It'll be NULL if it's not a function or an assignment, in this case,
-  # use the script_path and the line number
-  pipe_names <- purrr::map(tag_list, ~{
-    is_func <- "function" %in% class(.x$object)
-    if (!is_func) {
-      topic <- paste0(basename(.x$file), "-", .x$line)
-    } else {
-      topic <- .x$object$topic
+  # Get pipe names from the function name and check
+  pipe_names <- purrr::imap(tag_list, ~{
+
+    obj_class <- class(.x$object)
+
+    # Check that it is a function
+    if (!"function" %in% obj_class) {
+      cli::cli_abort(
+        c("{basename(script_path)} line {(.x$line)} has tags but no function. Be sure place
+          tags above the function you want to schedule."),
+        call = NULL
+      )
     }
-    list(
-      pipe_name = topic,
-      is_func = is_func
-    )
+
+    # Return the name
+    .x$object$topic
   })
 
   # Create table entries
   table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
     tibble::tibble(
       script_path = script_path,
-      pipe_name = .x$pipe_name,
-      is_func = .x$is_func,
+      pipe_name = .x,
       !!!.y
     )
   }) |>
     purrr::list_rbind()
-
-  # Check that non function pipes have only one set of tags per script
-  if (any(!table_entities$is_func)) {
-    multi_tag_non_func <- table_entities |>
-      dplyr::filter(!is_func) |>
-      dplyr::filter(dplyr::n() > 1, .by = script_path)
-
-    if (nrow(multi_tag_non_func) > 0) {
-
-      offending_scripts <- basename(unique(multi_tag_non_func$script_path))
-      cli::cli_abort(
-        c("Multiple pipelines in a single script must use functions.",
-          "i" = "{offending_scripts} uses multiple sets of tags but are not
-          attached to functions.",
-          "i" = "Either make each pipeline a function or separate into different
-          files."
-        )
-      )
-    }
-  }
 
   table_entities
 }

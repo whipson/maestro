@@ -7,7 +7,7 @@
 #' @param pipeline_freq unit of how often the pipeline runs (i.e. min, hour, day, month, etc.)
 #' @param pipeline_datetime datatime of the first time the pipeline is to run
 #'
-#' @return
+#' @return boolean
 #'
 identify_pipelines <- function(orch_interval, orch_unit, check_datetime = Sys.time(), pipeline_interval, pipeline_freq, pipeline_datetime) {
 

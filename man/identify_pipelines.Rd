@@ -26,6 +26,9 @@ identify_pipelines(
 
 \item{pipeline_datetime}{datatime of the first time the pipeline is to run}
 }
+\value{
+boolean
+}
 \description{
 Identify pipelines
 }

@@ -25,7 +25,6 @@ schedule_validity_check <- function(schedule) {
   req_col_typed_check <- list(
     script_path = "character",
     pipe_name = "character",
-    is_func = "logical",
     frequency = "character",
     interval = c("integer", "numeric"),
     start_time = c("POSIXct", "POSIXlt")
