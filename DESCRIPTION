@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: maestro
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
@@ -18,7 +18,8 @@ Imports:
     lubridate,
     purrr,
     rlang,
-    tibble
+    tibble,
+    utils
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 4.1.0),
