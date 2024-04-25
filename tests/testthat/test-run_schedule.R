@@ -13,10 +13,9 @@ test_that("run_schedule works even with nonexistent pipeline", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   schedule_with_missing <- schedule |>
-    add_row(
+    dplyr::add_row(
       script_path = "nonexistent",
       pipe_name = "im_a_problem",
-      is_func = TRUE,
       frequency = "day",
       interval = 1,
       start_time = as.POSIXct("1970-01-01 00:00:00")
@@ -76,7 +75,7 @@ test_that("run_schedule checks schedule validity in the event of orchestration e
 
   # Has required columns, but types are wrong
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-  schedule$is_func <- "a"
+  schedule$interval <- "hello"
   expect_error(
     run_schedule(schedule, run_all = TRUE),
     "Schedule column"

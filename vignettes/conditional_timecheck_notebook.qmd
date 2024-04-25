@@ -61,7 +61,7 @@ check_datetime_round == tail(pipeline_sequence, n = 1)
 ```
 
 ```{r}
-identify_pipelines <- function(orch_interval, orch_unit, check_datetime, pipeline_interval, pipeline_freq, pipeline_datetime) {
+check_pipeline_next_schedule <- function(orch_interval, orch_unit, check_datetime, pipeline_interval, pipeline_freq, pipeline_datetime) {
   check_datetime_round <- lubridate::round_date(check_datetime, unit = paste(orch_interval, orch_unit, sep = " "))
   pipeline_datetime_round <- lubridate::round_date(pipeline_datetime, unit = paste(orch_interval, orch_unit, sep = " "))
   pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = paste(pipeline_interval, pipeline_freq, sep = " "))
@@ -71,7 +71,7 @@ identify_pipelines <- function(orch_interval, orch_unit, check_datetime, pipelin
 ```
 
 ```{r}
-identify_pipelines(orch_interval = 15,
+check_pipeline_next_schedule(orch_interval = 15,
                    orch_unit = "mins",
                    check_datetime = Sys.time(),
                    pipeline_interval = 1,
@@ -95,17 +95,17 @@ df_schedule <- data.frame(
 ```
 
 ```{r}
-select_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = Sys.time(), pipeline_interval, pipeline_freq, pipeline_datetime) {
+check_pipelines <- function(.data, orch_interval, orch_unit, check_datetime = Sys.time(), pipeline_interval, pipeline_freq, pipeline_datetime) {
   .data |>
   dplyr::rowwise() |>
   dplyr::mutate(
-    run_pipeline = identify_pipelines(orch_interval, orch_unit, check_datetime, pipeline_interval, pipeline_freq, pipeline_datetime)) |>
+    run_pipeline = check_pipeline_next_schedule(orch_interval, orch_unit, check_datetime, pipeline_interval, pipeline_freq, pipeline_datetime)) |>
   dplyr::filter(run_pipeline == TRUE)
 }
 ```
 
 ```{r}
-select_pipelines(
+check_pipelines(
   df_schedule,
   orch_interval = 15,
   orch_unit = "mins",

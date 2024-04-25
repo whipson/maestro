@@ -8,9 +8,10 @@ run_schedule(
   schedule,
   orch_interval = 1,
   orch_unit = "day",
-  check_datetime = Sys.time(),
+  check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
-  run_all = FALSE
+  run_all = FALSE,
+  show_next = TRUE
 )
 }
 \arguments{
@@ -20,13 +21,18 @@ run_schedule(
 
 \item{orch_unit}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
 
-\item{check_datetime}{datetime used to check against the pipeline start datetime, default is the system time}
+\item{check_datetime}{datetime used to check against the pipeline start datetime}
 
 \item{resources}{list of shared resources made available to pipelines as needed}
+
+\item{run_all}{whether or not to run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing}
+
+\item{show_next}{}
 }
 \value{
 invisible
 }
 \description{
-Run a schedule
+Given a schedule in a `maestro` project, runs the pipelines that are scheduled to execute
+based on the current time.
 }
