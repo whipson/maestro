@@ -1,5 +1,5 @@
 # maestroFrequency ----------------------------------------------------------
-#' @export
+#' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
 
   # Cast lower and trim whitespace
@@ -26,12 +26,11 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
   x
 }
 
-#' @export
 maestroFrequency_roclet <- function() {
   roxygen2::roclet("maestroFrequency")
 }
 
-#' @export
+#' @exportS3Method
 roclet_process.roclet_maestroFrequency <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroFrequency")
   list(
@@ -40,7 +39,7 @@ roclet_process.roclet_maestroFrequency <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @export
+#' @exportS3Method
 roclet_output.roclet_maestroFrequency <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
@@ -48,7 +47,7 @@ roclet_output.roclet_maestroFrequency <- function(x, results, base_path, ...) {
 
 
 # maestroInterval -----------------------------------------------------------
-#' @export
+#' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroInterval <- function(x) {
 
   x$raw <- x$raw |>
@@ -77,12 +76,11 @@ roxy_tag_parse.roxy_tag_maestroInterval <- function(x) {
   x
 }
 
-#' @export
 maestroInterval_roclet <- function() {
   roxygen2::roclet("maestroInterval")
 }
 
-#' @export
+#' @exportS3Method
 roclet_process.roclet_maestroInterval <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInterval")
   list(
@@ -91,7 +89,7 @@ roclet_process.roclet_maestroInterval <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @export
+#' @exportS3Method
 roclet_output.roclet_maestroInterval <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
@@ -100,7 +98,7 @@ roclet_output.roclet_maestroInterval <- function(x, results, base_path, ...) {
 
 # maestroStartTime ----------------------------------------------------------
 
-#' @export
+#' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
 
   x$raw <- x$raw |>
@@ -128,12 +126,11 @@ roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
   x
 }
 
-#' @export
 maestroStartTime_roclet <- function() {
   roxygen2::roclet("maestroStartTime")
 }
 
-#' @export
+#' @exportS3Method
 roclet_process.roclet_maestroStartTime <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroStartTime")
   list(
@@ -142,7 +139,7 @@ roclet_process.roclet_maestroStartTime <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @export
+#' @exportS3Method
 roclet_output.roclet_maestroStartTime <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
@@ -151,7 +148,7 @@ roclet_output.roclet_maestroStartTime <- function(x, results, base_path, ...) {
 
 # maestroTz -----------------------------------------------------------------
 
-#' @export
+#' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroTz <- function(x) {
 
   x$raw <- x$raw |>
@@ -175,12 +172,11 @@ roxy_tag_parse.roxy_tag_maestroTz <- function(x) {
   x
 }
 
-#' @export
 maestroTz_roclet <- function() {
   roxygen2::roclet("maestroTz")
 }
 
-#' @export
+#' @exportS3Method
 roclet_process.roclet_maestroTz <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroTz")
   list(
@@ -189,7 +185,7 @@ roclet_process.roclet_maestroTz <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @export
+#' @exportS3Method
 roclet_output.roclet_maestroTz <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
@@ -198,7 +194,7 @@ roclet_output.roclet_maestroTz <- function(x, results, base_path, ...) {
 
 # maestroSkip ---------------------------------------------------------------
 
-#' @export
+#' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroSkip <- function(x) {
 
   x$raw <- x$raw |>
@@ -215,12 +211,11 @@ roxy_tag_parse.roxy_tag_maestroSkip <- function(x) {
   x
 }
 
-#' @export
 maestroSkip_roclet <- function() {
   roxygen2::roclet("maestroSkip")
 }
 
-#' @export
+#' @exportS3Method
 roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroSkip")
   list(
@@ -229,7 +224,7 @@ roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @export
+#' @exportS3Method
 roclet_output.roclet_maestroSkip <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
