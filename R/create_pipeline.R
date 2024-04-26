@@ -1,0 +1,44 @@
+#' Create a new pipeline in a pipelines directory
+#'
+#' @param pipe_name name of the pipeline and function
+#' @param frequency how often the pipeline should run (e.g., hourly, daily, etc.). Fills in maestroFrequency tag
+#' @param interval units of frequency between runs (e.g., 1, 2, 7). Fills in maestroFrequency tag
+#' @param start_time start time of the pipeline schedule. Fills in maestroStartTime tag
+#' @param tz timezone that pipeline will be scheduled in. Fills in maestroTz tag
+#' @param open whether or not to open the script upon creation
+#'
+#' @return new R file
+#' @export
+new_pipeline <- function(
+    pipe_name,
+    pipeline_dir = "pipelines",
+    frequency = NULL,
+    interval = NULL,
+    start_time = NULL,
+    tz = NULL,
+    open = interactive()
+  ) {
+
+  script <- readLines("inst/pipeline_template") |>
+    paste(collapse = "\n") |>
+    glue::glue(
+      .open = "{{",
+      .close = "}}",
+      .null = NULL
+    )
+
+  path <- file.path(pipeline_dir, paste0(pipe_name, ".R"))
+
+  if (!dir.exists(pipeline_dir)) {
+    dir.create(pipeline_dir)
+  }
+
+  writeLines(
+    script,
+    path
+  )
+
+  if (open) {
+    rstudioapi::documentOpen(path)
+  }
+}

@@ -39,8 +39,6 @@ run_schedule <- function(
     pipes_not_to_run_idx <- purrr::map_lgl(schedule_checks, ~!.x$is_scheduled_now)
     pipes_not_run <- schedule[pipes_not_to_run_idx,]
     pipes_not_run$next_run <- purrr::map_vec(schedule_checks[pipes_not_to_run_idx], ~.x$next_run)
-    pipes_not_run |>
-      dplyr::arrange(next_run)
   } else {
     pipes_to_run <- schedule
   }
@@ -104,6 +102,11 @@ run_schedule <- function(
 
   # Output for showing next pipelines schedule
   if (!run_all && n_show_not_run > 0 && nrow(pipes_not_run) > 0) {
+
+    pipes_not_run <- pipes_not_run |>
+      dplyr::arrange(next_run) |>
+      dplyr::head(n = n_show_not_run)
+
     cli::cli_h3("Next scheduled pipelines {cli::col_cyan(cli::symbol$pointer)}")
     next_run_strs <- glue::glue("{pipes_not_run$pipe_name} | {pipes_not_run$next_run}")
     cli::cli_text("Pipe name | Next scheduled run")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_pipelines.R
 \name{check_pipelines}
 \alias{check_pipelines}
-\title{Select pipelines}
+\title{Check which pipelines are scheduled to run and when next pipelines will run}
 \usage{
 check_pipelines(.data, orch_interval, orch_unit, check_datetime)
 }
@@ -19,5 +19,5 @@ check_pipelines(.data, orch_interval, orch_unit, check_datetime)
 list
 }
 \description{
-Select pipelines
+Check which pipelines are scheduled to run and when next pipelines will run
 }
