@@ -19,7 +19,7 @@ new_pipeline <- function(
     open = interactive()
   ) {
 
-  script <- readLines("inst/pipeline_template") |>
+  script <- readLines(system.file("pipeline_template", package = "maestro")) |>
     paste(collapse = "\n") |>
     glue::glue(
       .open = "{{",
@@ -33,6 +33,11 @@ new_pipeline <- function(
     dir.create(pipeline_dir)
   }
 
+  if (file.exists(path)) {
+    overwrite <- readline(glue::glue("File {path} already exists. Overwrite? [Y/n]: \n"))
+    if (tolower(overwrite) != "y") return(invisible())
+  }
+
   writeLines(
     script,
     path
@@ -41,4 +46,6 @@ new_pipeline <- function(
   if (open) {
     rstudioapi::documentOpen(path)
   }
+
+  message(glue::glue("Created pipeline at {path}"))
 }
