@@ -24,5 +24,8 @@ Depends:
     R (>= 4.1.0),
     roxygen2
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr
