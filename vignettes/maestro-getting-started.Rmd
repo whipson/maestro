@@ -1,0 +1,70 @@
+---
+title: "Getting started with maestro"
+output: rmarkdown::html_vignette
+description: >
+  gdfhjkhgfjkhl
+vignette: >
+  %\VignetteIndexEntry{my_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(DiagrammeR)
+```
+
+
+# What is maestro
+
+
+  - what its for
+  - who its for
+  - when to use it
+  - limitations
+
+
+
+# What is an Orchestrator
+
+```{r diagram, fig.width = 10, fig.height = 8, echo = FALSE}
+DiagrammeR::mermaid("
+        graph TD
+          A[orchestrator]-->B[hourly]
+          A[orchestrator]-->C[daily]
+          A[orchestrator]-->D[weekly]
+          A[orchestrator]-->E[monthly]
+          B[hourly]-->B1[pipe1<br>every hour<br>at 06:05]
+          B[hourly]-->B2[pipe2<br>every hour<br>at 11:15]
+          B[hourly]-->B3[pipe3<br>every 6 hours<br>at 02:00]
+          C[daily]-->C1[pipe4<br>every day<br>at 15:35]
+          C[daily]-->C2[pipe5<br>every day<br>at 06:05]
+          D[weekly]-->D1[pipe6<br>every week<br>on Monday<br>at 22:50]
+          D[weekly]-->D2[pipe7<br>every week<br>on Thursday<br>at 02:30]
+          D[weekly]-->D3[pipe8<br>every 2 weeks<br>on Monday<br>at 18:45]
+          E[monthly]-->E1[pipe9<br>every month<br>on the 1st day<br>at 12:15]
+          E[monthly]-->E2[pipe10<br>every 6 months<br>on the 15th day<br>at 23:55]
+        ")
+```
+
+
+
+# General Workflow
+
+Steps
+
+  - create R project
+  - create orchestrator script
+  - create new pipeline script(s)
+  - deploy orchestrator and pipelines
+
+
+
+
+
