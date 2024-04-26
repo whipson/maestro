@@ -105,7 +105,7 @@ run_schedule <- function(
 
     pipes_not_run <- pipes_not_run |>
       dplyr::arrange(next_run) |>
-      dplyr::head(n = n_show_not_run)
+      head(n = n_show_not_run)
 
     cli::cli_h3("Next scheduled pipelines {cli::col_cyan(cli::symbol$pointer)}")
     next_run_strs <- glue::glue("{pipes_not_run$pipe_name} | {pipes_not_run$next_run}")
