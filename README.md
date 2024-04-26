@@ -105,8 +105,8 @@ A simple orchestrator looks like this:
 # Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
-# Checks which pipelines are due to run and then executes them (optionally in parallel)
-run_schedule(schedule_table, cores = 4)
+# Checks which pipelines are due to run and then executes them
+run_schedule(schedule_table)
 
 # Optionally get the logs from all the pipelines
 logs <- latest_run_logs()
