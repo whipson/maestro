@@ -18,7 +18,10 @@ build_schedule_entry <- function(script_path) {
   # if it's functions but can be problematic if it includes other code that
   # evaluates immediately
   tag_list <- tryCatch({
-    roxygen2::parse_file(script_path)
+    parse_env <- new.env()
+    parse <- function() roxygen2::parse_file(script_path)
+    environment(parse) <- parse_env
+    parse()
   }, error = \(e) {
     cli::cli_abort(
       c("Could not build schedule entry with error: {e$message}",

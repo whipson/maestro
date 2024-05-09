@@ -14,7 +14,7 @@ maestro_parse_cli <- function(parse_succeeds, parse_errors) {
     cli::cli_abort(
       c(
         "x" = "All pipelines failed to parse",
-        "i" = "See full error output with {.fn latest_parsing_errors}"
+        "i" = "See full error output with {.fn last_parsing_errors}"
       ),
       call = rlang::caller_env()
     )
@@ -36,7 +36,7 @@ maestro_parse_cli <- function(parse_succeeds, parse_errors) {
         c(
           "{n_fails} pipeline{?s} failed to parse:",
           fail_vec,
-          "i" = "See full error output with {.fn latest_parsing_errors}"
+          "i" = "See full error output with {.fn last_parsing_errors}"
         )
       )
     }

@@ -9,7 +9,7 @@
 #'
 #' @return new R file
 #' @export
-new_pipeline <- function(
+create_pipeline <- function(
     pipe_name,
     pipeline_dir = "pipelines",
     frequency = NULL,
