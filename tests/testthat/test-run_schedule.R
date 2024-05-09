@@ -8,6 +8,15 @@ test_that("run_schedule works", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule with quiet=TRUE prints no messages", {
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
+    suppressMessages()
+
+  expect_no_message({
+    run_schedule(schedule, run_all = TRUE, quiet = TRUE)
+  })
+})
+
 test_that("run_schedule works even with nonexistent pipeline", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
@@ -33,7 +42,7 @@ test_that("run_schedule propagates warnings", {
   expect_message({
     run_schedule(schedule, run_all = TRUE)
   })
-  expect_gt(length(latest_runtime_warnings()), 0)
+  expect_gt(length(last_runtime_warnings()), 0)
 }) |>
   suppressMessages()
 
@@ -45,7 +54,7 @@ test_that("run_schedule handles errors in a pipeline", {
     run_schedule(schedule, run_all = TRUE)
   })
 
-  errors <- latest_runtime_errors()
+  errors <- last_runtime_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
 }) |>
