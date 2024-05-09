@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: maestro
-Version: 0.0.0.9004
+Version: 0.0.1
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
@@ -27,5 +27,6 @@ Depends:
     R (>= 4.1.0),
     roxygen2
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
