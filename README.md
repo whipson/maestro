@@ -107,18 +107,12 @@ schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them
 run_schedule(schedule_table)
-
-# Optionally get the logs from all the pipelines
-logs <- latest_run_logs()
 ```
 
 The function `build_schedule()` scours through all the pipelines in the
 provided directory and builds a schedule. Then `run_schedule()` checks
 each pipeline’s scheduled time against the system time within some
-margin of rounding[^1] and calls those pipelines to run. `maestro` also
-includes several helper functions pertaining to observability and
-monitoring, such as `latest_run_logs()` to get the full set of logs
-across all pipelines that ran.
+margin of rounding[^1] and calls those pipelines to run.
 
 [^1]: Depending on the frequency and start time of pipeline and the
     frequency and start time of the orchestrator, this may be a key

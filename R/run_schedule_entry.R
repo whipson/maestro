@@ -24,6 +24,7 @@ run_schedule_entry <- function(script_path, pipe_name, resources = list()) {
   }
 
   warnings_vec <- NULL
+  messages_vec <- NULL
 
   # Define a handler for warnings
   warning_handler <- function(w) {
@@ -33,13 +34,17 @@ run_schedule_entry <- function(script_path, pipe_name, resources = list()) {
     invokeRestart("muffleWarning")
   }
 
+  message_handler <- function(m) {
+    messages_vec <<- c(messages_vec, conditionMessage(m))
+    invokeRestart("muffleMessage")
+  }
+
   run_env <- new.env()
 
   # Source the script
   tryCatch({
     source(script_path, local = run_env)
   }, error = \(e) {
-
     cli::cli_abort("Runtime error in {.code {pipe_name}}")
   }, warning = \(w) {
     NULL
@@ -49,8 +54,12 @@ run_schedule_entry <- function(script_path, pipe_name, resources = list()) {
 
   withCallingHandlers(
     do.call(pipe_name, args = resources[names(args)], envir = run_env),
-    warning = warning_handler
+    warning = warning_handler,
+    message = message_handler
   )
 
-  warnings_vec
+  list(
+    warnings = warnings_vec,
+    messages = messages_vec
+  )
 }

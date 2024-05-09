@@ -1,3 +1,8 @@
+df_schedule <- build_schedule(
+  pipeline_dir = test_path("test_pipelines_parse_all_good")
+) |>
+  suppressMessages()
+
 test_that(
   "Check check_pipelines works on sample data.frame",
   {

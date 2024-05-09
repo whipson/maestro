@@ -11,7 +11,8 @@ run_schedule(
   check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
   run_all = FALSE,
-  n_show_not_run = 5
+  n_show_not_run = 5,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ run_schedule(
 \item{run_all}{run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing}
 
 \item{n_show_not_run}{show number of pipelines that did not run and when they will run next.}
+
+\item{quiet}{print metrics to the console (default = `TRUE`)}
 }
 \value{
 invisible

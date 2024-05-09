@@ -32,7 +32,7 @@ test_that("build_schedule errors on a directory of all bad pipelines", {
     res <- build_schedule(test_path("test_pipelines_parse_all_bad"))
   }, regexp = "All pipelines failed to parse")
 
-  errors <- latest_parsing_errors()
+  errors <- last_parsing_errors()
   expect_type(errors, "list")
   expect_gt(length(errors), 0)
 }) |>

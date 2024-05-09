@@ -1,4 +1,5 @@
 # maestroFrequency ----------------------------------------------------------
+#' @importFrom roxygen2 roclet_output roclet_process roxy_tag_parse
 #' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
 
