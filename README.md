@@ -40,12 +40,14 @@ A `maestro` project needs at least two components:
 2.  A single orchestrator script that kicks off the scripts when they’re
     scheduled to run
 
-### Step-by-Step
+The project file structure will look like this:
 
-1.  Create a new R project
-2.  Create a Quarto or R script for the orchestrator
-3.  Create a directory of pipelines called ‘pipelines’
-4.  Inside of ‘pipelines’ add .R scripts with maestro tags
+    sample_project
+    ├── orchestrator.R
+    └── pipelines
+        ├── my_etl.R
+        ├── pipe1.R
+        └── pipe2.R
 
 Let’s look at each of these in more detail.
 
@@ -102,17 +104,46 @@ with respect to deployment on Posit Connect.
 A simple orchestrator looks like this:
 
 ``` r
+library(maestro)
+
 # Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
+#> ℹ 3 pipelines successfully parsed
 
 # Checks which pipelines are due to run and then executes them
-run_schedule(schedule_table)
+run_schedule(schedule_table, orch_frequency = "day")
+#> 
+#> ── Running pipelines ▶ 
+#> ℹ pipelines/my_etl.R my_etl✔ pipelines/my_etl.R my_etl [294ms]
+#> ℹ pipelines/pipe1.R get_mtcars✔ pipelines/pipe1.R get_mtcars [213ms]
+#> ℹ pipelines/pipe2.R multi_rng✔ pipelines/pipe2.R multi_rng [96ms]
+#> 
+#> ── Pipeline execution completed ■ | 0.671 sec elapsed 
+#> ✔ 3 successes | → 0 skipped | ! 0 warnings | ✖ 0 errors | ◼ 3 total
+#> ────────────────────────────────────────────────────────────────────────────────
 ```
 
 The function `build_schedule()` scours through all the pipelines in the
 provided directory and builds a schedule. Then `run_schedule()` checks
 each pipeline’s scheduled time against the system time within some
-margin of rounding[^1] and calls those pipelines to run.
+margin of rounding and calls those pipelines to run.
+
+### How Scheduling Works
+
+Both the pipelines and the orchestrator itself need to be explicitly
+scheduled. The pipelines are scheduled using tags, but the orchestrator
+is scheduled using arguments passed to `run_schedule()`. When
+`run_schedule()` executes, it compares the next expected run time of
+each pipeline and compares it with the current time. Depending on the
+frequency of the orchestrator, it will round within some degree of time
+difference.
+
+For example, let’s say we have a pipeline scheduled to run hourly at
+10:02am and our orchestrator runs every hour on the 00 minute. When the
+orchestrator runs, it’ll be slightly before the pipeline scheduled time,
+but it’ll run it anyway because it’s within a difference of an hour. If
+instead our orchestrator ran every 15 minutes, it’d only execute the
+pipeline once in the hour, as expected.
 
 ### Multicore
 
@@ -129,10 +160,3 @@ run_schedule(
   cores = 4
 )
 ```
-
-[^1]: Depending on the frequency and start time of pipeline and the
-    frequency and start time of the orchestrator, this may be a key
-    consideration. \`maestro\` does not look for an exact match of the
-    scheduled time with the current time because then it would almost
-    never run. Rather, it rounds the times to within a unit compatible
-    with the particular pipeline frequency.

@@ -6,7 +6,7 @@
 \usage{
 check_pipeline_next_schedule(
   orch_interval,
-  orch_unit,
+  orch_frequency,
   check_datetime,
   pipeline_interval,
   pipeline_freq,
@@ -16,7 +16,7 @@ check_pipeline_next_schedule(
 \arguments{
 \item{orch_interval}{a numeric value representing how often the orchestration runs}
 
-\item{orch_unit}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
 
 \item{check_datetime}{datetime to be used to check if the pipeline should run}
 

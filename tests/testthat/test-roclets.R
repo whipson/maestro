@@ -1,5 +1,5 @@
 test_that("parse maestroFrequency tag works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
@@ -9,7 +9,7 @@ test_that("parse maestroFrequency tag works", {
 })
 
 test_that("maestroFrequency default value is expected", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
@@ -19,7 +19,7 @@ test_that("maestroFrequency default value is expected", {
 })
 
 test_that("bad usage of maestroFrequency warns and gives no val", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_bad.R"))
   ) |>
@@ -29,7 +29,7 @@ test_that("bad usage of maestroFrequency warns and gives no val", {
 })
 
 test_that("parse maestroInterval tag works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
@@ -39,7 +39,7 @@ test_that("parse maestroInterval tag works", {
 })
 
 test_that("maestroInterval default value is returned", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
@@ -49,7 +49,7 @@ test_that("maestroInterval default value is returned", {
 })
 
 test_that("bad usage of maestroInterval warns and gives no val", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_interval_bad.R"))
   ) |>
@@ -59,7 +59,7 @@ test_that("bad usage of maestroInterval warns and gives no val", {
 })
 
 test_that("parse maestroStartTime tag works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
@@ -70,7 +70,7 @@ test_that("parse maestroStartTime tag works", {
 })
 
 test_that("maestroStartTime default value is returned", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
@@ -81,7 +81,7 @@ test_that("maestroStartTime default value is returned", {
 })
 
 test_that("integer maestroStartTime fails", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroInterval_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_int.R"))
   ) |>
@@ -91,7 +91,7 @@ test_that("integer maestroStartTime fails", {
 })
 
 test_that("partial maestroStartTime works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_date.R"))
   ) |>
@@ -102,7 +102,7 @@ test_that("partial maestroStartTime works", {
 })
 
 test_that("parse maestroTz tag works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroTz_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
@@ -112,7 +112,7 @@ test_that("parse maestroTz tag works", {
 })
 
 test_that("maestroTz default returns value", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
   ) |>
@@ -122,7 +122,7 @@ test_that("maestroTz default returns value", {
 })
 
 test_that("bad usage of maestroTz warns and returns null val", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroTz_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_tz_bad.R"))
   ) |>
@@ -132,7 +132,7 @@ test_that("bad usage of maestroTz warns and returns null val", {
 })
 
 test_that("parse maestroSkip works", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroSkip_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_skip.R"))
   )
@@ -140,7 +140,7 @@ test_that("parse maestroSkip works", {
 })
 
 test_that("Nonexistent maestroSkip is NULL", {
-  res <- roc_proc_text(
+  res <- roxygen2::roc_proc_text(
     maestroSkip_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   )
@@ -150,7 +150,7 @@ test_that("Nonexistent maestroSkip is NULL", {
 test_that("Invalid usage of maestroSkip warns but still returns a value of TRUE", {
 
   expect_warning({
-    res <- roc_proc_text(
+    res <- roxygen2::roc_proc_text(
       maestroSkip_roclet(),
       readLines(test_path("test_pipelines/test_pipeline_skip_bad.R"))
     )
