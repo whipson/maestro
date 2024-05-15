@@ -10,5 +10,5 @@ last_runtime_errors()
 error message
 }
 \description{
-Retrieve latest maestro runtime errors
+Gets the latest runtime errors following use of `run_schedule()`
 }

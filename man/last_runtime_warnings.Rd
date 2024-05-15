@@ -10,5 +10,5 @@ last_runtime_warnings()
 warning messages
 }
 \description{
-Retrieve latest maestro runtime warnings
+Gets the latest runtime warnings following use of `run_schedule()`
 }

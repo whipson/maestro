@@ -10,5 +10,5 @@ last_parsing_errors()
 error and trace output
 }
 \description{
-Retrieve latest maestro parsing errors
+Gets the latest parsing errors following use of `build_schedule()`.
 }
