@@ -114,6 +114,22 @@ provided directory and builds a schedule. Then `run_schedule()` checks
 each pipeline’s scheduled time against the system time within some
 margin of rounding[^1] and calls those pipelines to run.
 
+### Multicore
+
+If you have several pipelines and/or pipelines that take awhile to run,
+it can be more efficient to split computation across multiple CPU cores.
+
+``` r
+library(furrr)
+
+plan(multisession)
+
+run_schedule(
+  schedule_table,
+  cores = 4
+)
+```
+
 [^1]: Depending on the frequency and start time of pipeline and the
     frequency and start time of the orchestrator, this may be a key
     consideration. \`maestro\` does not look for an exact match of the

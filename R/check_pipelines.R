@@ -9,19 +9,6 @@
 #'
 check_pipelines <- function(.data, orch_interval, orch_unit, check_datetime) {
 
-  # Assertion tests
-  # Check input parameters data type
-  assertthat::assert_that(is.numeric(orch_interval), msg = "`orch_interval` must be a numeric value")
-  assertthat::assert_that(orch_interval >= 1, msg = "`orch_interval` must be a positive integer")
-  assertthat::assert_that((orch_interval %% 1) == 0, msg = "`orch_interval` must be an integer. Decimal values not allowed.")
-  assertthat::assert_that(lubridate::is.POSIXct(check_datetime), msg = "`check_datetime` must be a POSIXct datetime object")
-
-  # Check input parameters values
-  assertthat::assert_that(
-    orch_unit %in% c("minute", "hour", "day", "week", "month", "quarter", "year"),
-    msg = "`orch_unit` must be one of the following units: minute, hour, day, week, month, quarter, year"
-  )
-
   schedule_checks <- purrr::pmap(
     list(.data$interval, .data$frequency, .data$start_time),
     ~{

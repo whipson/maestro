@@ -19,6 +19,9 @@ create_pipeline <- function(
     open = interactive()
   ) {
 
+  # Makes a valid name for a pipe
+  pipe_name <- gsub("\\.", "_", make.names(pipe_name))
+
   script <- readLines(system.file("pipeline_template", package = "maestro")) |>
     paste(collapse = "\n") |>
     glue::glue(
