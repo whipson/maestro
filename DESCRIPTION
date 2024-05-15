@@ -19,14 +19,14 @@ Imports:
     lubridate,
     purrr,
     rlang,
+    roxygen2,
     rstudioapi,
     tibble,
     tictoc,
     utils
 RoxygenNote: 7.3.1
 Depends: 
-    R (>= 4.1.0),
-    roxygen2
+    R (>= 4.1.0)
 Suggests: 
     testthat (>= 3.0.0),
     withr
