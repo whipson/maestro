@@ -40,7 +40,7 @@
 run_schedule <- function(
     schedule,
     orch_interval = 1,
-    orch_unit = "day",
+    orch_frequency = "day",
     check_datetime = lubridate::now(tzone = "UTC"),
     resources = list(),
     run_all = FALSE,
@@ -95,7 +95,7 @@ run_schedule <- function(
       schedule_checks <- check_pipelines(
         schedule,
         orch_interval,
-        orch_unit,
+        orch_frequency,
         check_datetime
       )
 
