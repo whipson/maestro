@@ -91,3 +91,52 @@ test_that("run_schedule checks schedule validity in the event of orchestration e
   )
 }) |>
   suppressMessages()
+
+test_that("run_schedule correctly passes arguments", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_args_good"))
+
+  # Runtime error if a pipe requires an argument but it's not provided
+  run_schedule(
+    schedule,
+    run_all = TRUE
+  )
+  expect_gt(length(last_runtime_errors()), 0)
+
+  # Works
+  run_schedule(
+    schedule,
+    resources = list(
+      vals = 1:5
+    ),
+    run_all = TRUE
+  )
+  expect_length(last_runtime_errors(), 0)
+
+  # Argument provided
+  run_schedule(
+    schedule,
+    resources = list(
+      1:5
+    ),
+    run_all = TRUE
+  ) |>
+    expect_error(regexp = "All elements")
+}) |>
+  suppressMessages()
+
+test_that("run_schedule works with multiple cores", {
+
+  future::plan(future::multisession)
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  expect_no_error({
+    run_schedule(
+      schedule,
+      cores = 4,
+      run_all = TRUE
+    )
+  })
+}) |>
+  suppressMessages()
