@@ -5,25 +5,27 @@ Version: 0.0.1
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
-      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut"))
+      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb"))
     )
+Maintainer: Will Hipson <will.hipson@hiaa.ca>
 Description: Simple, lightweight orchestrator for R pipelines.
-License: What license is it under?
+License: GPL (>= 3)
+URL: https://github.com/whipson/maestro
+BugReports: https://github.com/whipson/maestro/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    assertthat,
-    cli,
-    dplyr,
+    cli (>= 3.3.0),
+    dplyr (>= 1.0.0),
     glue,
-    lubridate,
-    purrr,
-    rlang,
+    lubridate (>= 1.9.1),
+    purrr (>= 1.0.0),
+    rlang (>= 1.0.0),
     roxygen2,
     rstudioapi,
-    tibble,
     tictoc,
     utils
+Roxygen: list(markdown = TRUE, roclets = c("rd", "collate", "namespace"))
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 4.1.0)

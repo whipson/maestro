@@ -10,5 +10,5 @@ last_runtime_messages()
 messages
 }
 \description{
-Gets the latest runtime messages following use of `run_schedule()`
+Gets the latest runtime messages following use of \code{run_schedule()}
 }

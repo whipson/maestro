@@ -76,7 +76,7 @@ build_schedule_entry <- function(script_path) {
 
   # Create table entries
   table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
-    tibble::tibble(
+    dplyr::tibble(
       script_path = script_path,
       pipe_name = .x,
       !!!.y
