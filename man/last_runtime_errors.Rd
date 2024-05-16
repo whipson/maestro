@@ -10,5 +10,5 @@ last_runtime_errors()
 error message
 }
 \description{
-Gets the latest runtime errors following use of `run_schedule()`
+Gets the latest runtime errors following use of \code{run_schedule()}
 }

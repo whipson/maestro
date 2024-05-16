@@ -10,5 +10,5 @@ last_runtime_warnings()
 warning messages
 }
 \description{
-Gets the latest runtime warnings following use of `run_schedule()`
+Gets the latest runtime warnings following use of \code{run_schedule()}
 }
