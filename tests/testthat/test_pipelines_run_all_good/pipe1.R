@@ -23,3 +23,16 @@ get_mtcars <- function() {
 wait <- function() {
   Sys.sleep(0.1)
 }
+
+#' @maestroFrequency week
+#' @maestroInterval 1
+#'
+#' @export
+weekly <- function() {
+  1 + 1
+}
+
+#' @maestroStartTime 5000-12-12 10:10:10
+way_in_the_future <- function() {
+  invisible()
+}

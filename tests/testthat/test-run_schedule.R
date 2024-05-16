@@ -8,6 +8,29 @@ test_that("run_schedule works", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule works when not running all (verification of checking)", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  expect_message({
+    run_schedule(schedule)
+  })
+}) |>
+  suppressMessages()
+
+test_that("run_schedule works with a future check_datetime", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  expect_message({
+    run_schedule(
+      schedule,
+      check_datetime = as.POSIXct("5000-10-10 12:00:00")
+    )
+  })
+}) |>
+  suppressMessages()
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()

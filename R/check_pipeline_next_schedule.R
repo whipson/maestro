@@ -27,7 +27,12 @@ check_pipeline_next_schedule <- function(
   # Validation to see if pipeline should be run
   check_datetime_round <- lubridate::round_date(check_datetime, unit = paste(orch_interval, orch_frequency))
   pipeline_datetime_round <- lubridate::round_date(pipeline_datetime, unit = paste(orch_interval, orch_frequency))
-  pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = paste(pipeline_interval, pipeline_freq))
+
+  if (pipeline_datetime_round > check_datetime_round) {
+    pipeline_sequence <- pipeline_datetime_round
+  } else {
+    pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = paste(pipeline_interval, pipeline_freq))
+  }
 
   cur_run <- utils::tail(pipeline_sequence, n = 1)
   is_scheduled_now <- check_datetime_round == cur_run
