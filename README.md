@@ -1,8 +1,7 @@
+maestro
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# maestro
-
 <!-- badges: start -->
 <!-- badges: end -->
 
@@ -108,20 +107,15 @@ library(maestro)
 
 # Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
-#> ℹ 3 pipelines successfully parsed
 
 # Checks which pipelines are due to run and then executes them
 run_schedule(schedule_table, orch_frequency = "day")
-#> 
-#> ── Running pipelines ▶ 
-#> ℹ pipelines/my_etl.R my_etl✔ pipelines/my_etl.R my_etl [294ms]
-#> ℹ pipelines/pipe1.R get_mtcars✔ pipelines/pipe1.R get_mtcars [213ms]
-#> ℹ pipelines/pipe2.R multi_rng✔ pipelines/pipe2.R multi_rng [96ms]
-#> 
-#> ── Pipeline execution completed ■ | 0.671 sec elapsed 
-#> ✔ 3 successes | → 0 skipped | ! 0 warnings | ✖ 0 errors | ◼ 3 total
-#> ────────────────────────────────────────────────────────────────────────────────
 ```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/README-/unnamed-chunk-3-dark.svg">
+<img src="man/figures/README-/unnamed-chunk-3.svg" width="100%" />
+</picture>
 
 The function `build_schedule()` scours through all the pipelines in the
 provided directory and builds a schedule. Then `run_schedule()` checks
