@@ -1,20 +1,31 @@
 ---
-output: github_document
+title: maestro
+output: 
+  github_document
+always_allow_html: yes
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r, include = FALSE, cache = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  cache = TRUE,
+  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
 )
-knitr::opts_knit$set(root.dir = 'sample_project')
+# knitr::opts_knit$set(root.dir = 'sample_project')
+Sys.setenv(CLI_TICK_TIME = "100")
+asciicast::init_knitr_engine(
+  startup = quote({
+    library(maestro)
+    set.seed(1) }),
+  echo = TRUE,
+  echo_input = FALSE
+)
 ```
-
-# maestro
 
 <!-- badges: start -->
 
@@ -90,7 +101,7 @@ You have the option of using Quarto, RMarkdown, or a straight-up R script for th
 
 A simple orchestrator looks like this:
 
-```{r}
+```{asciicast}
 library(maestro)
 
 # Look through the pipelines directory for maestro pipelines to create a schedule
