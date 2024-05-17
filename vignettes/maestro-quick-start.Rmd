@@ -1,0 +1,230 @@
+---
+title: "Quick Start"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{maestro-quick-start}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(DiagrammeR)
+```
+
+
+```{r overview, fig.width = 10, fig.height = 1, echo = FALSE}
+DiagrammeR::mermaid("
+                    graph LR
+                      A[Create Project]-->B[Create Pipeline]
+                      B[Create Pipeline]-->C[Create Orchestrator Script]
+                      C[Create Orchestrator Script]-->D[Schedule Orchestrator Script]
+                    ")
+```
+
+
+## Create Project
+A `maestro` project requires, at a minimum, a root project folder, an orchestrator script, a pipelines folder, and pipeline script(s) in the pipelines folder.
+
+```{r basic-setup, fig.width = 10, fig.height = 3, echo = FALSE}
+DiagrammeR::mermaid("
+                    graph TD
+                      A[Project folder]-->B[Orchestrator script]
+                      A[Project folder]-->C[Pipelines folder]
+                      C[Pipelines folder]-->D[Pipeline script 1]
+                      C[Pipelines folder]-->E[Pipeline script 2]
+                    ")
+```
+
+
+
+### Sample Project
+In this section we will create a sample project to be the home for our orchestration script and pipelines. Our sample project will have the following elements using these names:
+
+- Project folder `maestro_project`
+- Orchestrator script `orchestrator.R`
+- Pipelines folder `pipelines`
+  - Pipeline script 1 `pipe_mtcars_hourly.R`
+  - Pipeline script 2 `pipe_iris_daily.R`
+
+<br>
+
+There are a few approaches for creating a new R project. This example is using RStudio IDE:
+
+- Manually approach
+  - From the file tab
+  - Using the R project dropdown (upper right)
+- Code approach
+  - With the `usethis` package
+
+<br>
+
+
+#### Manual Approach
+From the `File` table (typically the upper left)
+
+- Choose `New Project...`
+- In the *New Project Wizard* window `New Directory`
+- Then `New Project`
+- In the *Create New Project* window enter the elements that work for your project
+  - *Directory name* (i.e. `maestro_proejct`)
+  - *Create project as subdirectory of* (i.e. `~/maestro_project` on Mac or Linux, or `C:\maestro_project` on Windows)
+  - *Create a git repository* (optional)
+  - *Use renv with this project* (optional)
+  - *Open in new session* (optional)
+- Then click the *Create Project* button
+
+<br>
+
+
+#### Code Approach
+For a code based approach, the following can be used to create a new R project
+
+```{r create-project-code, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+# Code approach for creating a R project with a pipelines folder
+# Create new R project using the usethis R package
+library(usethis)
+create_project("~/maestro_project")
+
+# Set working director to new R project
+setwd("~/maestro_project")
+
+# Add pipelines folder in new R project
+dir.create("pipelines")
+```
+
+<br>
+
+
+## Create Pipelines
+Creating a pipeline
+
+- Using the `create_pipeline` function
+  - pipe_name (required)
+  - pipeline_dir (optional - default to `pipelines`)
+  - frequency (required)
+  - interval (required)
+  - start_time (required)
+  - tz (required)
+
+<br>
+
+| **Parameter** | **Description** | **Example** |
+| :---: | :---------- | :----- |
+| pipe_name | The name to be used for the pipeline script | `pipeline1` |
+| pipeline_dir | Folder where to save the pipeline script | `pipelines` |
+| frequency | How often the pipeline should run (minute, hour, day, week, month, quarter, year) | `day` |
+| interval | Unit of frequency between run of pipeline | `1` |
+| start_time | Start time of the pipeline schedule based on a datetime format (yyyy-mm-dd hh:mm:ss) | `2024-05-17 15:00:00` |
+| tz | Timezone that pipeline will be scheduled in, based on timezones from the `OlsonNames` R function | `America/Halifax` |
+
+<br>
+
+The following uses the examples from the above table within the `create_pipeline` function
+
+```{r example-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+create_pipeline(
+  pipe_name = "pipeline1",
+  pipeline_dir = "pipelines",
+  frequency = "day",
+  interval = 1,
+  start_time = "2024-05-17 15:00:00",
+  tz = "America/Halifax"
+)
+```
+
+<br>
+
+Which creates a R pipeline script with the following:
+
+```{r example-output, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+#' pipeline1 maestro pipeline
+#'
+#' @maestroFrequency day
+#' @maestroInterval 1
+#' @maestroStartTime 2024-05-17 15:00:00
+#' @maestroTz America/Halifax
+
+pipeline1 <- function() {
+
+  # Pipeline code
+}
+```
+
+<br>
+
+The output from `create_pipeline` is the structure of a `maestro` pipeline with a section to write the code that is to be executed. A `maestro` pipeline is essentially considered a named function without any parameters. The code to be executed is written within the curly braces `{}` of the function.
+
+The next two sections will illustrate repeatable examples of `maestro` pipelines using the `mtcars` and `iris` datasets.
+
+<br>
+
+
+### Hourly Pipeline
+For this pipeline suppose we wanted to calculate descriptive statistics for a sample of rows in the `mtcars` dataset and save a RDS file an output folder. To achieve this we would first create a pipeline file using the `create_pipeline` function from `maestro` and then add the pipeline logic to the pipeline script within the named function curly braces.
+
+<br>
+
+```{r hourly-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+create_pipeline(
+  pipe_name = "pipe_mtcars_hourly",
+  pipeline_dir = "pipelines",
+  frequency = "hour",
+  interval = 3,
+  start_time = "2024-05-17 15:00:00",
+  tz = "America/Halifax"
+)
+```
+
+<br>
+
+```{r mtcars-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+#' pipe_mtcars_hourly maestro pipeline
+#'
+#' @maestroFrequency hour
+#' @maestroInterval 3
+#' @maestroStartTime 2024-05-17 15:00:00
+#' @maestroTz America/Halifax
+
+pipe_mtcars_hourly <- function() {
+
+  library(dplyr)
+  
+  output_path <- "output/"
+  base_name <- "mtcars_stats_"
+  timestamp <- as.integer(Sys.time())
+
+  mtcars |>
+    slice_sample(n = 10) |>
+    summarize(min_disp = min(disp, na.rm = TRUE),
+              mean_dis = mean(disp, na.rm = TRUE),
+              max_disp = max(disp, na.rm = TRUE),
+              sd_disp = sd(disp, na.rm = TRUE)) |>
+    saveRDS(paste0(output_path, base_name, timestamp, ".RDS"))
+
+}
+```
+
+
+<br>
+
+
+### Daily Pipeline
+
+
+
+## Create Orchestrator Script
+
+In this example we are choosing R script as the format for the orchestrator script. Quatro documents can also be used for Orchestrator scripts, which is recommended when using products like Posit Connect for scheduling.
+
+
+## Schedule Orchestrator Script
+
+
+Best practice
+ - Orchestrator frequency is less than equal to smallest pipeline frequency+interval
+
