@@ -216,7 +216,7 @@ run_schedule <- function(
         head(n = n_show_next)
 
       cli::cli_h3("Next scheduled pipelines {cli::col_cyan(cli::symbol$pointer)}")
-      next_run_strs <- glue::glue("{next_runs$pipe_name} | {next_runs$next_run}")
+      next_run_strs <- glue::glue("{next_runs_cli$pipe_name} | {next_runs_cli$next_run}")
       cli::cli_text("Pipe name | Next scheduled run")
       cli::cli_ul(next_run_strs)
     }
