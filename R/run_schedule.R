@@ -140,7 +140,8 @@ run_schedule <- function(
             }
           }, quiet = TRUE
         )
-      )
+      ) |>
+        purrr::set_names(pipes_to_run$pipe_name)
 
       elapsed <- tictoc::toc(quiet = TRUE)
 
