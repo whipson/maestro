@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: maestro
-Version: 0.0.1
+Version: 0.0.1.0009
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
