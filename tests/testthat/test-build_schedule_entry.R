@@ -71,3 +71,10 @@ test_that("Informative error on parsing schedule entry with an error", {
     )
   }, regexp = "Could not build")
 })
+
+test_that("Script with untagged function isn't treated as a scheduled pipeline", {
+  schedule <- build_schedule_entry(
+    test_path("test_pipelines_parse_all_good/pipe_with_custom_fun.R")
+  )
+  expect_equal(nrow(schedule), 1)
+})
