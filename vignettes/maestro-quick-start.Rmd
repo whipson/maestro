@@ -17,6 +17,19 @@ library(DiagrammeR)
 ```
 
 
+`maestro` is a framework that helps orchestrate and schedule data pipelines. The framework consists of four elements:
+
+1) creating a project
+2) create pipeline script(s)
+3) create orchestration script
+4) schedule the orchestration script
+
+<br>
+
+The following sections outline examples of each of the four elements. 
+
+<br>
+
 ```{r overview, fig.width = 10, fig.height = 1, echo = FALSE}
 DiagrammeR::mermaid("
                     graph LR
@@ -165,7 +178,7 @@ The next two sections will illustrate repeatable examples of `maestro` pipelines
 
 
 ### Hourly Pipeline
-For this pipeline suppose we wanted to calculate descriptive statistics for a sample of rows in the `mtcars` dataset and save a RDS file an output folder. To achieve this we would first create a pipeline file using the `create_pipeline` function from `maestro` and then add the pipeline logic to the pipeline script within the named function curly braces.
+For this pipeline suppose we wanted to calculate descriptive statistics for a sample of rows in the `mtcars` dataset and save a RDS file to an output folder. To achieve this we would first create a pipeline file using the `create_pipeline` function from `maestro` and then add the pipeline logic to the pipeline script within the named function curly braces.
 
 <br>
 
@@ -182,6 +195,8 @@ create_pipeline(
 
 <br>
 
+Which creates a R pipeline script with the following:
+
 ```{r mtcars-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 #' pipe_mtcars_hourly maestro pipeline
 #'
@@ -194,6 +209,8 @@ pipe_mtcars_hourly <- function() {
 
   library(dplyr)
   
+  
+  
   output_path <- "output/"
   base_name <- "mtcars_stats_"
   timestamp <- as.integer(Sys.time())
@@ -205,7 +222,6 @@ pipe_mtcars_hourly <- function() {
               max_disp = max(disp, na.rm = TRUE),
               sd_disp = sd(disp, na.rm = TRUE)) |>
     saveRDS(paste0(output_path, base_name, timestamp, ".RDS"))
-
 }
 ```
 
@@ -214,17 +230,117 @@ pipe_mtcars_hourly <- function() {
 
 
 ### Daily Pipeline
+For this pipeline suppose we wanted to create a scatter plot for a sample of rows in the `iris` dataset and save a png file to an output folder. To achieve this we would first create a pipeline file using the `create_pipeline` function from `maestro` and then add the pipeline logic to the pipeline script within the named function curly braces.
+
+<br>
+
+```{r daily-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+create_pipeline(
+  pipe_name = "pipe_iris_daily",
+  pipeline_dir = "pipelines",
+  frequency = "day",
+  interval = 1,
+  start_time = "2024-05-17 08:10:00",
+  tz = "America/Halifax"
+)
+```
+
+<br>
+
+Which creates a R pipeline script with the following:
+
+```{r iris-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+#' pipe_iris_daily maestro pipeline
+#'
+#' @maestroFrequency day
+#' @maestroInterval 1
+#' @maestroStartTime 2024-05-17 08:10:00
+#' @maestroTz America/Halifax
+
+pipe_iris_daily <- function() {
+  
+  library(dplyr)
+  library(ggplot2)
+  
+  base_name <- "iris_plot_"
+  timestamp <- as.integer(Sys.time())
+  
+  iris |>
+    slice_sample(prop = 0.3) |>
+    ggplot() +
+    aes(x = Sepal.Length, y = Sepal.Width, colour = Species) +
+    geom_point(shape = "circle", size = 1.5) +
+    scale_color_hue(direction = 1) +
+    labs(x = "Sepal Length", y = "Sepal Width") +
+    theme_minimal()
+  
+  ggsave(
+    filename = paste0(base_name, timestamp, ".png"),
+    device = "png",
+    path = "~/plots/"
+    )
+}
+```
 
 
 
 ## Create Orchestrator Script
+In this example we selected R script as the format for the orchestrator script. Quatro documents can also be used for orchestrator scripts, which is recommended when using products like Posit Connect for scheduling.
 
-In this example we are choosing R script as the format for the orchestrator script. Quatro documents can also be used for Orchestrator scripts, which is recommended when using products like Posit Connect for scheduling.
+Creating an orchestration script consists of two function calls within the script, `build_schedule` and `run_schedule`. The `build_schedule` function generates a data frame of pipelines to run. The data frame is used with the `run_schedule` function, which consists of the following parameters:
+
+  - schedule (required)
+  - orch_interval (required - has default)
+  - orch_frequency (required - has default)
+  - check_datetime (required - has default)
+  - resources (required - has default)
+  - run_all (required - has default)
+  - n_show_not_run (required - has default)
+  - cores (required - has default)
+  - quite (required - has default)
+
+<br>
+
+| **Parameter** | **Description** | **Default** | **Example** |
+| :---: | :---------- | :----- | :----- |
+| schedule | A table of scheduled pipelines | N/A | `schedule_table` |
+| orch_interval | A numeric value representing how often the orchestration runs | `1` | `1` |
+| orch_frequency | How often the orchestration should run (minute, hour, day, week, month, quarter, year) | `day` | `hour` |
+| check_datetime | datetime used to check against the pipeline start datetime | `lubridate::now(tzone = "UTC")` | `lubridate::now(tzone = "UTC")` |
+| resources | Named list of shared resources made available to pipelines as needed | `list()` | `list()` |
+| run_all | Run all pipelines regardless of the schedule | `FALSE` | `FALSE` |
+| n_show_not_run | show number of pipelines that did not run and when they will run next | `5` | `5` |
+| cores | Number of cpu cores to run if running in parallel | `1` | `1` |
+| quite | Print metrics to the console | `FALSE` | `FALSE` |
+
+<br>
+
+In this example we set the orchestration script to operate more often than our smallest time period of our pipelines. 
+
+<br>
+
+```{r orch, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+library(maestro)
+
+schedule_table <- build_schedule(pipeline_dir = "pipelines")
+
+run_schedule(
+  schedule_table,
+  orch_interval = 1,
+  orch_frequency = "hour"
+  )
+```
+
+<br>
 
 
 ## Schedule Orchestrator Script
+Scheduling the orchestration script occurs out of `maestro`. There are different options for scheduling the orchestration script, depending on where the orchestration script is executed (i.e. local or cloud). 
+
+A best practice for scheduling the orchestration script is to set it to run less than equal to pipeline with the smallest timeframe (frequency and interval). With the examples provided above, the `pipe_mtcars_hourly` pipeline has the smallest timeframe with `maestroFrequency` of an hour and a `maestroInterval` of 3. The orchestration script has a hour `orch_frequency` and an `orch_interval` equal to 1. With this it would be advised to schedule the orchestration script to run every hour.
+
+There are different options for scheduling the script, such as the `cronr` and `taskscheduleR` packages, within Posit Connect, or the various cloud services.
 
 
-Best practice
- - Orchestrator frequency is less than equal to smallest pipeline frequency+interval
+
 
