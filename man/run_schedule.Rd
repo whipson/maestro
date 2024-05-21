@@ -11,7 +11,7 @@ run_schedule(
   check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
   run_all = FALSE,
-  n_show_not_run = 5,
+  n_show_next = 5,
   cores = 1,
   quiet = FALSE
 )
@@ -30,7 +30,7 @@ run_schedule(
 \item{run_all}{run all pipelines regardless of the schedule (default is \code{FALSE}) - useful for testing.
 Does not apply to pipes with a \code{maestroSkip} tag.}
 
-\item{n_show_not_run}{show number of pipelines that did not run and when they will run next.}
+\item{n_show_next}{show the next n scheduled pipes}
 
 \item{cores}{number of cpu cores to run if running in parallel. If > 1, \code{furrr} is used and
 a multisession plan must be executed in the orchestrator (see details)}

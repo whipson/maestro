@@ -30,7 +30,7 @@
 #' @param resources named list of shared resources made available to pipelines as needed
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
 #' Does not apply to pipes with a `maestroSkip` tag.
-#' @param n_show_not_run show number of pipelines that did not run and when they will run next.
+#' @param n_show_next show the next n scheduled pipes
 #' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and
 #' a multisession plan must be executed in the orchestrator (see details)
 #' @param quiet print metrics to the console (default = `TRUE`)
@@ -44,7 +44,7 @@ run_schedule <- function(
     check_datetime = lubridate::now(tzone = "UTC"),
     resources = list(),
     run_all = FALSE,
-    n_show_not_run = 5,
+    n_show_next = 5,
     cores = 1,
     quiet = FALSE
   ) {
@@ -102,6 +102,13 @@ run_schedule <- function(
       pipes_to_run_idx <- purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now)
 
       pipes_to_run <- schedule[pipes_to_run_idx,]
+      next_runs <- purrr::map2(schedule$pipe_name, schedule_checks, ~{
+        data.frame(
+          pipe_name = .x,
+          next_run = .y$next_run
+        )
+      }) |>
+        purrr::list_rbind()
 
       pipes_not_to_run_idx <- purrr::map_lgl(schedule_checks, ~!.x$is_scheduled_now)
       pipes_not_run <- schedule[pipes_not_to_run_idx,]
@@ -202,14 +209,14 @@ run_schedule <- function(
 
 
     # Output for showing next pipelines schedule
-    if (!run_all && n_show_not_run > 0 && nrow(pipes_not_run) > 0) {
+    if (!run_all && n_show_next > 0 && nrow(next_runs) > 0) {
 
-      pipes_not_run <- pipes_not_run |>
+      next_runs_cli <- next_runs |>
         dplyr::arrange(next_run) |>
-        head(n = n_show_not_run)
+        head(n = n_show_next)
 
       cli::cli_h3("Next scheduled pipelines {cli::col_cyan(cli::symbol$pointer)}")
-      next_run_strs <- glue::glue("{pipes_not_run$pipe_name} | {pipes_not_run$next_run}")
+      next_run_strs <- glue::glue("{next_runs$pipe_name} | {next_runs$next_run}")
       cli::cli_text("Pipe name | Next scheduled run")
       cli::cli_ul(next_run_strs)
     }
