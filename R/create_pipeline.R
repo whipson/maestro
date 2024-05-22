@@ -7,7 +7,7 @@
 #' @param tz timezone that pipeline will be scheduled in. Fills in maestroTz tag
 #' @param open whether or not to open the script upon creation
 #'
-#' @return new R file
+#' @return invisible
 #' @export
 create_pipeline <- function(
     pipe_name,

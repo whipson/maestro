@@ -1,0 +1,7 @@
+Binding: new_maestro_project
+Title: Maestro Project
+
+Parameter: extension
+Widget: SelectInput
+Label: Orchestrator Type
+Fields: R, Quarto, RMarkdown

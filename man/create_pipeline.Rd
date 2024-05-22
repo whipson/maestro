@@ -28,7 +28,7 @@ create_pipeline(
 \item{open}{whether or not to open the script upon creation}
 }
 \value{
-new R file
+invisible
 }
 \description{
 Create a new pipeline in a pipelines directory
