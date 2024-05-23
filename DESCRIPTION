@@ -21,6 +21,7 @@ Imports:
     logger,
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
+    R.utils,
     rlang (>= 1.0.0),
     roxygen2,
     rstudioapi,
