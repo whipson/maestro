@@ -215,17 +215,20 @@ run_schedule <- function(
       maestro_pkgenv$last_runtime_messages <- run_messages
 
       # Create status table
-      status_table <- purrr::map2(schedule$script_path, schedule$pipe_name, ~{
-        dplyr::tibble(
-          pipe_name = .y,
-          script_path = .x,
-          errors = length(run_errors[[.x]]),
-          warnings = length(run_warnings[[.x]]),
-          skips = length(run_skips[[.x]]),
-          messages = length(run_messages[[.x]]),
-          success = length(run_errors[[.x]]) == 0
-        )
-      }) |>
+      status_table <- purrr::pmap(
+        list(schedule$script_path, schedule$pipe_name, schedule$is_scheduled_now),
+        ~{
+          dplyr::tibble(
+            pipe_name = ..2,
+            script_path = ..1,
+            invoked = ..3,
+            errors = length(run_errors[[..1]]),
+            warnings = length(run_warnings[[..1]]),
+            skips = length(run_skips[[..1]]),
+            messages = length(run_messages[[..1]]),
+            success = length(run_errors[[..1]]) == 0
+          )
+        }) |>
         purrr::list_rbind()
 
       # Get the number of statuses
