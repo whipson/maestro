@@ -4,7 +4,13 @@
 \alias{run_schedule_entry}
 \title{Runs a single pipeline}
 \usage{
-run_schedule_entry(script_path, pipe_name, resources = list())
+run_schedule_entry(
+  script_path,
+  pipe_name,
+  resources = list(),
+  log_file = tempfile(),
+  log_level = "INFO"
+)
 }
 \arguments{
 \item{script_path}{path to the script containing the pipeline}
@@ -12,6 +18,10 @@ run_schedule_entry(script_path, pipe_name, resources = list())
 \item{pipe_name}{name of the pipeline}
 
 \item{resources}{list of resources for the pipeline}
+
+\item{log_file}{path to log file}
+
+\item{log_level}{log level}
 }
 \value{
 invisible

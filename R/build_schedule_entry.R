@@ -11,7 +11,8 @@ build_schedule_entry <- function(script_path) {
     interval = "maestroInterval",
     start_time = "maestroStartTime",
     tz = "maestroTz",
-    skip = "maestroSkip"
+    skip = "maestroSkip",
+    log_level = "maestroLogLevel"
   )
 
   # Get all the roxygen tags - this actually executes the script, which is fine

@@ -33,6 +33,8 @@
 #' @param n_show_next show the next n scheduled pipes
 #' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and
 #' a multisession plan must be executed in the orchestrator (see details)
+#' @param logging whether or not to write the logs to a file (default = `FALSE`)
+#' @param log_file path to the log file (ignored if `logging == FALSE`)
 #' @param quiet print metrics to the console (default = `TRUE`)
 #'
 #' @return invisible
@@ -46,6 +48,8 @@ run_schedule <- function(
     run_all = FALSE,
     n_show_next = 5,
     cores = 1,
+    logging = FALSE,
+    log_file = "./maestro.log",
     quiet = FALSE
   ) {
 
@@ -117,6 +121,15 @@ run_schedule <- function(
       pipes_to_run <- schedule
     }
 
+    if (logging) {
+      if (!rlang::is_scalar_character(log_file)) cli::cli_abort(
+        "When {.code logging == TRUE}, {.code log_file} must be a single character."
+      )
+      if (!file.exists(log_file)) file.create(log_file)
+    } else {
+      log_file <- tempfile()
+    }
+
     if (nrow(pipes_to_run) > 0) {
 
       cli::cli_h3("Running pipelines {cli::col_green(cli::symbol$play)}")
@@ -128,7 +141,8 @@ run_schedule <- function(
         list(
           pipes_to_run$script_path,
           pipes_to_run$pipe_name,
-          pipes_to_run$skip
+          pipes_to_run$skip,
+          pipes_to_run$log_level
         ),
         purrr::safely(
           ~{
@@ -143,7 +157,13 @@ run_schedule <- function(
               )
             } else {
               cli::cli_progress_step("{cli::col_silver(..1)} {.pkg { ..2}}")
-              run_schedule_entry(..1, ..2, resources = resources)
+              run_schedule_entry(
+                ..1,
+                ..2,
+                resources = resources,
+                log_file = log_file,
+                log_level = ..4
+              )
             }
           }, quiet = TRUE
         )
