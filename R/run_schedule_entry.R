@@ -5,6 +5,7 @@
 #' @param resources list of resources for the pipeline
 #' @param log_file path to log file
 #' @param log_level log level
+#' @inheritParams run_schedule
 #'
 #' @return invisible
 run_schedule_entry <- function(
@@ -12,7 +13,8 @@ run_schedule_entry <- function(
     pipe_name,
     resources = list(),
     log_file = tempfile(),
-    log_level = "INFO"
+    log_level = "INFO",
+    log_file_max_bytes
   ) {
 
   # Check that it's an R script
@@ -33,7 +35,10 @@ run_schedule_entry <- function(
 
   # Set the logger to null - we just want the text in a variable
   logger::log_threshold(level = log_level, namespace = pipe_name)
-  logger::log_appender(appender = logger::appender_file(log_file), namespace = pipe_name)
+  logger::log_appender(
+    appender = logger::appender_file(log_file, max_bytes = log_file_max_bytes),
+    namespace = pipe_name
+  )
   logger::log_layout(maestro_logger, namespace = pipe_name)
 
   warnings_vec <- NULL
@@ -58,7 +63,6 @@ run_schedule_entry <- function(
   run_env <- new.env()
 
   # Source the script
-  logger::log_info("Sourcing script {script_path}", namespace = pipe_name)
   tryCatch({
     source(script_path, local = run_env)
   }, error = \(e) {
@@ -71,16 +75,12 @@ run_schedule_entry <- function(
 
   args <- formals(pipe_name, envir = run_env)
 
-  logger::log_info("Started", namespace = pipe_name)
-
   withCallingHandlers(
     do.call(pipe_name, args = resources[names(args)], envir = run_env),
     error = error_handler,
     warning = warning_handler,
     message = message_handler
   )
-
-  logger::log_info("Ended", namespace = pipe_name)
 
   list(
     warnings = warnings_vec,

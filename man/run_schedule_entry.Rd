@@ -9,7 +9,8 @@ run_schedule_entry(
   pipe_name,
   resources = list(),
   log_file = tempfile(),
-  log_level = "INFO"
+  log_level = "INFO",
+  log_file_max_bytes
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ run_schedule_entry(
 \item{log_file}{path to log file}
 
 \item{log_level}{log level}
+
+\item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 }
 \value{
 invisible
