@@ -3,9 +3,11 @@ test_that("run_schedule works", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   expect_message({
-    run_schedule(schedule, run_all = TRUE)
+    status <- run_schedule(schedule, run_all = TRUE)
   })
 
+  expect_s3_class(status, "data.frame")
+  expect_gt(nrow(status), 0)
   expect_length(last_runtime_errors(), 0)
   expect_length(last_runtime_warnings(), 0)
 }) |>
@@ -173,6 +175,26 @@ test_that("run_schedule correctly thresholds logging at warn", {
   file.remove(temp)
   expect_true(!all(grepl("INFO", logs)))
   expect_true(any(grepl("WARN", logs)))
+}) |>
+  suppressMessages()
+
+test_that("run_schedule correctly trims log file", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  temp <- tempfile()
+
+  run_schedule(
+    schedule,
+    run_all = TRUE,
+    logging = TRUE,
+    log_file = temp,
+    log_file_max_bytes = 1000,
+    quiet = TRUE
+  )
+
+  expect_lte(file.size(temp), 1000 + 100) # margin of error
+  file.remove(temp)
 }) |>
   suppressMessages()
 

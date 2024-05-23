@@ -15,6 +15,7 @@ run_schedule(
   cores = 1,
   logging = FALSE,
   log_file = "./maestro.log",
+  log_file_max_bytes = 1e+06,
   quiet = FALSE
 )
 }
@@ -41,10 +42,12 @@ a multisession plan must be executed in the orchestrator (see details)}
 
 \item{log_file}{path to the log file (ignored if \code{logging == FALSE})}
 
+\item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
+
 \item{quiet}{print metrics to the console (default = \code{TRUE})}
 }
 \value{
-invisible
+data.frame of pipeline statuses
 }
 \description{
 Given a schedule in a \code{maestro} project, runs the pipelines that are scheduled to execute
