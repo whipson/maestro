@@ -158,3 +158,22 @@ test_that("Invalid usage of maestroSkip warns but still returns a value of TRUE"
 
   expect_true(res$val)
 })
+
+test_that("parse maestroLogLevel works", {
+  res <- roxygen2::roc_proc_text(
+    maestroLogLevel_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_loglevel_good.R"))
+  )
+
+  expect_type(res$val, "character")
+})
+
+test_that("invalid maestroLogLevel warns", {
+  res <- roxygen2::roc_proc_text(
+    maestroLogLevel_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_loglevel_bad.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
