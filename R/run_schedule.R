@@ -33,9 +33,12 @@
 #' @param n_show_next show the next n scheduled pipes
 #' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and
 #' a multisession plan must be executed in the orchestrator (see details)
+#' @param logging whether or not to write the logs to a file (default = `FALSE`)
+#' @param log_file path to the log file (ignored if `logging == FALSE`)
+#' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
 #' @param quiet print metrics to the console (default = `TRUE`)
 #'
-#' @return invisible
+#' @return data.frame of pipeline statuses
 #' @export
 run_schedule <- function(
     schedule,
@@ -46,6 +49,9 @@ run_schedule <- function(
     run_all = FALSE,
     n_show_next = 5,
     cores = 1,
+    logging = FALSE,
+    log_file = "./maestro.log",
+    log_file_max_bytes = 1e6,
     quiet = FALSE
   ) {
 
@@ -99,22 +105,37 @@ run_schedule <- function(
         check_datetime
       )
 
-      pipes_to_run_idx <- purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now)
-
-      pipes_to_run <- schedule[pipes_to_run_idx,]
-      next_runs <- purrr::map2(schedule$pipe_name, schedule_checks, ~{
-        data.frame(
-          pipe_name = .x,
-          next_run = .y$next_run
+      schedule <- schedule |>
+        dplyr::mutate(
+          is_scheduled_now = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now),
+          next_run = purrr::map_vec(schedule_checks, ~.x$next_run)
         )
-      }) |>
-        purrr::list_rbind()
 
-      pipes_not_to_run_idx <- purrr::map_lgl(schedule_checks, ~!.x$is_scheduled_now)
-      pipes_not_run <- schedule[pipes_not_to_run_idx,]
-      pipes_not_run$next_run <- purrr::map_vec(schedule_checks[pipes_not_to_run_idx], ~.x$next_run)
+      pipes_to_run <- schedule |>
+        dplyr::filter(is_scheduled_now)
+
+      pipes_not_run <- schedule |>
+        dplyr::filter(!is_scheduled_now)
     } else {
+
+      schedule <- schedule |>
+        dplyr::mutate(
+          is_scheduled_now = TRUE,
+          next_run = NA
+        )
+
       pipes_to_run <- schedule
+      pipes_not_run <- schedule |>
+        dplyr::filter(FALSE)
+    }
+
+    if (logging) {
+      if (!rlang::is_scalar_character(log_file)) cli::cli_abort(
+        "When {.code logging == TRUE}, {.code log_file} must be a single character."
+      )
+      if (!file.exists(log_file)) file.create(log_file)
+    } else {
+      log_file <- tempfile()
     }
 
     if (nrow(pipes_to_run) > 0) {
@@ -123,12 +144,13 @@ run_schedule <- function(
 
       tictoc::tic(quiet = quiet)
 
-      # Execute the schedule
+      # Execute the schedule (possibly in parallel)
       runs <- mapper_fun(
         list(
           pipes_to_run$script_path,
           pipes_to_run$pipe_name,
-          pipes_to_run$skip
+          pipes_to_run$skip,
+          pipes_to_run$log_level
         ),
         purrr::safely(
           ~{
@@ -143,12 +165,19 @@ run_schedule <- function(
               )
             } else {
               cli::cli_progress_step("{cli::col_silver(..1)} {.pkg { ..2}}")
-              run_schedule_entry(..1, ..2, resources = resources)
+              run_schedule_entry(
+                ..1,
+                ..2,
+                resources = resources,
+                log_file = log_file,
+                log_level = ..4,
+                log_file_max_bytes = log_file_max_bytes
+              )
             }
           }, quiet = TRUE
         )
       ) |>
-        purrr::set_names(pipes_to_run$pipe_name)
+        purrr::set_names(pipes_to_run$script_path)
 
       elapsed <- tictoc::toc(quiet = TRUE)
 
@@ -180,10 +209,26 @@ run_schedule <- function(
       ) |>
         purrr::discard(is.null)
 
+      # For access via last_runtime_*
       maestro_pkgenv$last_runtime_errors <- run_errors
       maestro_pkgenv$last_runtime_warnings <- run_warnings
       maestro_pkgenv$last_runtime_messages <- run_messages
 
+      # Create status table
+      status_table <- purrr::map2(schedule$script_path, schedule$pipe_name, ~{
+        dplyr::tibble(
+          pipe_name = .y,
+          script_path = .x,
+          errors = length(run_errors[[.x]]),
+          warnings = length(run_warnings[[.x]]),
+          skips = length(run_skips[[.x]]),
+          messages = length(run_messages[[.x]]),
+          success = length(run_errors[[.x]]) == 0
+        )
+      }) |>
+        purrr::list_rbind()
+
+      # Get the number of statuses
       total <- length(runs)
       error_count <- length(run_errors)
       skip_count <- length(run_skips)
@@ -205,13 +250,14 @@ run_schedule <- function(
       cli::cli_rule()
     } else {
       cli::cli_h3("No pipelines scheduled to run this time")
+      status_table <- dplyr::tibble()
     }
 
 
     # Output for showing next pipelines schedule
-    if (!run_all && n_show_next > 0 && nrow(next_runs) > 0) {
+    if (!run_all && n_show_next > 0 && nrow(schedule) > 0) {
 
-      next_runs_cli <- next_runs |>
+      next_runs_cli <- schedule |>
         dplyr::arrange(next_run) |>
         head(n = n_show_next)
 
@@ -221,12 +267,16 @@ run_schedule <- function(
       cli::cli_ul(next_run_strs)
     }
 
-    invisible()
+    return(status_table)
   }
 
   if (quiet) {
     run_schedule_fun <- purrr::quietly(run_schedule_fun)
+    status_table <- run_schedule_fun() |>
+      purrr::pluck("result")
+  } else {
+    status_table <- run_schedule_fun()
   }
 
-  run_schedule_fun()
+  return(status_table)
 }

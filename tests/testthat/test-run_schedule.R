@@ -3,8 +3,13 @@ test_that("run_schedule works", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   expect_message({
-    run_schedule(schedule, run_all = TRUE)
+    status <- run_schedule(schedule, run_all = TRUE)
   })
+
+  expect_s3_class(status, "data.frame")
+  expect_gt(nrow(status), 0)
+  expect_length(last_runtime_errors(), 0)
+  expect_length(last_runtime_warnings(), 0)
 }) |>
   suppressMessages()
 
@@ -73,9 +78,14 @@ test_that("run_schedule handles errors in a pipeline", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_some_errors"))
 
+  temp <- tempfile()
+
   expect_message({
-    run_schedule(schedule, run_all = TRUE)
+    run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = temp)
   })
+
+  expect_gt(length(readLines(temp)), 0)
+  file.remove(temp)
 
   errors <- last_runtime_errors()
   expect_type(errors, "list")
@@ -148,18 +158,66 @@ test_that("run_schedule correctly passes arguments", {
 }) |>
   suppressMessages()
 
-test_that("run_schedule works with multiple cores", {
+test_that("run_schedule correctly thresholds logging at warn", {
 
-  future::plan(future::multisession)
+  schedule <- build_schedule(test_path("test_pipelines_run_logs_warn"))
+
+  temp <- tempfile()
+
+  run_schedule(
+    schedule,
+    run_all = TRUE,
+    logging = TRUE,
+    log_file = temp
+  )
+
+  logs <- readLines(temp)
+  file.remove(temp)
+  expect_true(!all(grepl("INFO", logs)))
+  expect_true(any(grepl("WARN", logs)))
+}) |>
+  suppressMessages()
+
+test_that("run_schedule correctly trims log file", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  temp <- tempfile()
+
+  run_schedule(
+    schedule,
+    run_all = TRUE,
+    logging = TRUE,
+    log_file = temp,
+    log_file_max_bytes = 1000,
+    quiet = TRUE
+  )
+
+  expect_lte(file.size(temp), 1000 + 100) # margin of error
+  file.remove(temp)
+}) |>
+  suppressMessages()
+
+test_that("run_schedule works with multiple cores", {
+
+  future::plan(future::multisession(workers = 2))
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  temp <- tempfile()
 
   expect_no_error({
     run_schedule(
       schedule,
-      cores = 4,
-      run_all = TRUE
+      cores = 2,
+      run_all = TRUE,
+      logging = TRUE,
+      log_file = temp
     )
   })
+
+  expect_gt(length(readLines(temp)), 0)
+  file.remove(temp)
+  expect_length(last_runtime_errors(), 0)
 }) |>
   suppressMessages()

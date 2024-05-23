@@ -65,15 +65,18 @@ pipeline in `maestro`:
 my_etl <- function() {
   
   # Extract data from random user generator
+  message("API request")
   raw_data <- httr2::request("https://randomuser.me/api/") |> 
     httr2::req_perform() |> 
     httr2::resp_body_json(simplifyVector = TRUE)
   
   # Transform - get results and clean the names
+  message("Transforming")
   transformed <- raw_data$results |> 
     janitor::clean_names()
   
   # Load - write to a location
+  message("Writing")
   write.csv(transformed, file = paste0("random_user_", Sys.Date(), ".csv"))
 }
 ```
@@ -109,7 +112,13 @@ library(maestro)
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them
-run_schedule(schedule_table, orch_frequency = "day")
+run_status <- run_schedule(
+  schedule_table, 
+  orch_frequency = "day",
+  orch_interval = 1
+)
+
+run_status
 ```
 
 <picture>
@@ -120,7 +129,25 @@ run_schedule(schedule_table, orch_frequency = "day")
 The function `build_schedule()` scours through all the pipelines in the
 provided directory and builds a schedule. Then `run_schedule()` checks
 each pipeline’s scheduled time against the system time within some
-margin of rounding and calls those pipelines to run.
+margin of rounding and calls those pipelines to run. The output of
+`run_schedule()` itself is a table of pipeline statuses.
+
+### Logging
+
+`maestro` can keep an accumulating log of all messages, warnings, and
+errors reported from the pipelines. This log file is created in the
+project directory (by default `./maestro.log`) and accumulates until the
+`log_file_max_bytes` argument is exceeded.
+
+``` r
+readLines("maestro.log") |> 
+  tail(10) |> 
+  cat(sep = "\n")
+#> [my_etl] [INFO] [2024-05-23 14:26:46.533403]: API request
+#> [my_etl] [INFO] [2024-05-23 14:26:46.805017]: Transforming
+#> [my_etl] [INFO] [2024-05-23 14:26:46.846578]: Writing
+#> [get_mtcars] [WARN] [2024-05-23 14:26:46.894069]: Uh oh
+```
 
 ### How Scheduling Works
 

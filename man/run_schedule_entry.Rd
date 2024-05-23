@@ -4,7 +4,14 @@
 \alias{run_schedule_entry}
 \title{Runs a single pipeline}
 \usage{
-run_schedule_entry(script_path, pipe_name, resources = list())
+run_schedule_entry(
+  script_path,
+  pipe_name,
+  resources = list(),
+  log_file = tempfile(),
+  log_level = "INFO",
+  log_file_max_bytes
+)
 }
 \arguments{
 \item{script_path}{path to the script containing the pipeline}
@@ -12,6 +19,12 @@ run_schedule_entry(script_path, pipe_name, resources = list())
 \item{pipe_name}{name of the pipeline}
 
 \item{resources}{list of resources for the pipeline}
+
+\item{log_file}{path to log file}
+
+\item{log_level}{log level}
+
+\item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 }
 \value{
 invisible

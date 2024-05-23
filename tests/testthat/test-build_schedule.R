@@ -30,7 +30,7 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
 test_that("build_schedule errors on a directory of all bad pipelines", {
   expect_error({
     res <- build_schedule(test_path("test_pipelines_parse_all_bad"))
-  }, regexp = "All pipelines failed to parse")
+  }, regexp = "All scripts failed to parse")
 
   errors <- last_parsing_errors()
   expect_type(errors, "list")

@@ -104,7 +104,8 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
       interval = dplyr::coalesce(interval, 1L),
       start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
       tz = dplyr::coalesce(tz, "UTC"),
-      skip = dplyr::coalesce(skip, FALSE)
+      skip = dplyr::coalesce(skip, FALSE),
+      log_level = dplyr::coalesce(log_level, "INFO")
     ) |>
     dplyr::rowwise() |>
     # Format timestamp with timezone

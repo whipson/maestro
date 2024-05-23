@@ -10,6 +10,7 @@
 #'
 #' @export
 get_mtcars <- function() {
-  Sys.sleep(0.2)
+  Sys.sleep(0.02)
+  warning("Uh oh")
   mtcars
 }

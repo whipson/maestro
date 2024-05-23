@@ -11,6 +11,10 @@ round_time <- function(check_datetime, unit_value) {
   )
 }
 
+maestro_logger <- logger::layout_glue_generator(
+  format = "[{namespace}] [{level}] [{time}]: {msg}"
+)
+
 #' Checks the validity of a schedule
 #'
 #' @param schedule_table a schedule table returned from `build_schedule`
@@ -27,7 +31,8 @@ schedule_validity_check <- function(schedule) {
     pipe_name = "character",
     frequency = "character",
     interval = c("integer", "numeric"),
-    start_time = c("POSIXct", "POSIXlt")
+    start_time = c("POSIXct", "POSIXlt"),
+    log_level = "character"
   )
 
   # Check that schedule is a data.frame
