@@ -11,5 +11,6 @@
 #' @export
 get_mtcars <- function() {
   Sys.sleep(0.02)
+  warning("Uh oh")
   mtcars
 }
