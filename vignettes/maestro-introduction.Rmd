@@ -18,30 +18,38 @@ knitr::opts_chunk$set(
 library(DiagrammeR)
 ```
 
-# Glossary of terms
 
-- frequency
-- interval
-- pipeline
-- schedule
-- orchestrator
+R is a functional programming language with capabilities far beyond statistical computing. The language has been well adopted for numerous data related applications (data science, data visualization, statistical modelling, machine learning, etc.). However when those activities move from experimental and testing into production, there are limited resources available for orchestrating multiple *jobs* using the R language natively. Typically data practitioners have needed to leverage additional tools/services (i.e. Airflow, Dagster, Nifi, etc.) which introduces a potential range of challenges (i.e. software installation, licensing, cloud deployment, new programming language, etc.). 
+
+`maestro` is a lightweight and easy-to-use framework for creating and orchestrating data pipelines in R. No additional orchestration tools are needed. In `maestro` there are pipelines (functions) that can be scheduled and configured using `roxygen2` tags - these are special comment above each function. There is also an orchestrator script responsible for executing the scheduled pipelines (optionally in parallel). This framework allows for R users to orchestrate and schedule pipeline jobs from a single source, rather than scheduling pipelines individually.
 
 
+<br><br>
 
 # General Workflow
+A `maestro` project requires, at a minimum, a root project folder, an orchestrator script, a pipelines folder, and pipeline script(s) in the pipelines folder.
 
-Steps
+```{r overview, fig.width = 10, fig.height = 1, echo = FALSE}
+DiagrammeR::mermaid("
+                    graph LR
+                      A[Create Project]-->B[Create Pipeline]
+                      B[Create Pipeline]-->C[Create Orchestrator Script]
+                      C[Create Orchestrator Script]-->D[Schedule Orchestrator Script]
+                    ")
+```
 
-  - create R project
-  - create orchestrator script
-  - create new pipeline script(s)
-  - deploy orchestrator and pipelines
-  
-  
 
-# What is an Orchestrator
+`maestro` aims to provide a robust and flexible solution for orchestrating data pipelines. Designed to integrate seamlessly with the R programming environment, this package empowers users to manage their data workflows with ease. However, it is essential to recognize that the initial design is intended for batch processing tasks and may not be suitable for applications requiring real-time streaming.
 
-```{r diagram, fig.width = 10, fig.height = 8, echo = FALSE}
+<br><br>
+
+
+# Orchestration
+The orchestrator is a script that checks the schedules of all the functions in a `maestro` project and executes them if they’re due to go. The orchestrator also handles global execution tasks such as collecting logs and managing shared resources like database connections, global objects, and custom functions.
+
+You have the option of using Quarto, RMarkdown, or a straight-up R script for the orchestrator, but the former two have some advantages with respect to deployment on Posit Connect.
+
+```{r diagram, fig.width = 10, fig.height = 3, echo = FALSE}
 DiagrammeR::mermaid("
         graph TD
           A[orchestrator]-->B[hourly]
@@ -61,9 +69,9 @@ DiagrammeR::mermaid("
         ")
 ```
 
+<br><br>
 
-
-# Overview
+# Pipelines
 A data pipeline is a crucial concept for anyone working with data, from analysts to seasoned data scientists. At its core, a data pipeline is a series of steps designed to efficiently and systematically handle and transform data from its raw form into usable information. Think of a data pipeline as a factory assembly line where data is the raw material. As this data travels along the pipeline, it undergoes various transformations—such as cleaning, aggregation, and analysis—making it increasingly refined and valuable.
 
 An essential aspect of data pipelines is scheduling. Automated schedules ensure data processes are reliable and executed in a timely manner, without requiring manual intervention. This is key for scalability, as it allows systems to handle increasing amounts of data efficiently. Scheduling also supports consistent automation, minimizing errors and maximizing the productivity.
@@ -110,13 +118,10 @@ The `@maestroSkip` tag provides the option for a pipeline to be ignored in the c
 
 An example of using this tag is `@maestroSkip`
 
-<br>
+<br><br>
 
 
+# Scheduling
+Both the pipelines and the orchestrator itself need to be explicitly scheduled. The pipelines are scheduled using tags, but the orchestrator is scheduled using arguments passed to function called `run_schedule`. When `run_schedule` executes, it compares the next expected run time of each pipeline and compares it with the current time. Depending on the frequency of the orchestrator, it will round within some degree of time difference.
 
-
-
-
-
-
-
+For example, let’s say we have a pipeline scheduled to run hourly at 10:02am and our orchestrator runs every hour on the 00 minute. When the orchestrator runs, it’ll be slightly before the pipeline scheduled time, but it’ll run it anyway because it’s within a difference of an hour. If instead our orchestrator ran every 15 minutes, it’d only execute the pipeline once in the hour, as expected.
