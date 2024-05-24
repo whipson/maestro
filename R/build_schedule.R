@@ -1,10 +1,43 @@
-#' Build schedule table
+#' Build a schedule table
+#'
+#' Builds a schedule data.frame for scheduling pipelines in `run_schedule()`. This
+#' function parses the decorators of functions located in `pipeline_dir` which is
+#' conventionally called pipelines.
+#'
+#' @md
+#' @details
+#'
+#' An orchestrator requires a schedule table to determine which pipelines are to
+#' run and when. Each row in a schedule table is a pipeline name and its
+#' scheduling parameters such as its frequency.
+#'
+#' ## Basic workflow
+#'
+#' In a basic `maestro` workflow, you would run `run_schedule()` in the orchestrator
+#' every time to ensure that the orchestrator is running off the latest schedule.
+#'
+#' ## Advanced workflow
+#'
+#' If shaving off a few milliseconds of compute time is important, you can create
+#' the schedule once, cache it somewhere in your project directory, and read it
+#' in before executing `run_schedule(schedule)`.
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
 #'
 #' @return data.frame
 #' @export
+#' @examples
+#'
+#' # Creating a temporary directory for demo purposes! In practice, just
+#' # create a 'pipelines' directory at the project level.
+#' dir.create("pipelines")
+#' build_schedule()
+#'
 build_schedule <- function(pipeline_dir = "./pipelines") {
+
+  if (!dir.exists(pipeline_dir)) {
+    cli::cli_abort("No directory called {.emph {pipeline_dir}}")
+  }
 
   # Parse all the .R files in the `pipeline_dir` directory
   pipelines <- list.files(
@@ -15,10 +48,10 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
 
   # Error if the directory has no .R scripts
   if(length(pipelines) == 0) {
-    cli::cli_abort(
-      "No directory called {.emph {pipeline_dir}} containing any R scripts exists.
-      `pipeline_dir` must reference a directory with at least one R script."
+    cli::cli_inform(
+      "No R scripts in {pipeline_dir}."
     )
+    return(invisible())
   }
 
   # Try to generate a schedule entry for each script
@@ -58,7 +91,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     purrr::discard(is.null)
 
   # Assign the errors to the pkgenv
-  maestro_pkgenv$latest_parsing_errors <- sch_errors
+  maestro_pkgenv$last_parsing_errors <- sch_errors
 
   maestro_parse_cli(sch_results, sch_errors)
 
@@ -71,7 +104,8 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
       interval = dplyr::coalesce(interval, 1L),
       start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
       tz = dplyr::coalesce(tz, "UTC"),
-      skip = dplyr::coalesce(skip, FALSE)
+      skip = dplyr::coalesce(skip, FALSE),
+      log_level = dplyr::coalesce(log_level, "INFO")
     ) |>
     dplyr::rowwise() |>
     # Format timestamp with timezone

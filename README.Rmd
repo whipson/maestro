@@ -1,27 +1,39 @@
 ---
-output: github_document
+title: maestro
+output: 
+  github_document
+always_allow_html: yes
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r, include = FALSE, cache = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  cache = TRUE,
+  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
+)
+# knitr::opts_knit$set(root.dir = 'sample_project')
+Sys.setenv(CLI_TICK_TIME = "100")
+asciicast::init_knitr_engine(
+  startup = quote({
+    library(maestro)
+    set.seed(1) }),
+  echo = TRUE,
+  echo_input = FALSE
 )
 ```
-
-# maestro
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-`maestro` is a lightweight and easy-to-use framework for creating and orchestrating data pipelines in R. No additional orchestration tools are needed.
+`maestro` is a lightweight framework for creating and orchestrating data pipelines in R. If you have several scheduled jobs or pipelines you want to run in R and want to manage them in one project, then `maestro` is for you!
 
-In `maestro` there are pipelines (functions) that can be scheduled and configured using `roxygen2` tags - these are special comment above each function. There is also an orchestrator script responsible for executing the scheduled pipelines (optionally in parallel).
+In `maestro` you create **pipelines** (functions) and schedule them using `roxygen2` tags - these are special comments (decorators) above each function. Then you create an **orchestrator** containing `maestro` functions for scheduling and invoking the pipelines.
 
 ## Pre-release Disclaimer
 
@@ -42,12 +54,16 @@ A `maestro` project needs at least two components:
 1.  A collection of R pipelines (functions) that you want to schedule
 2.  A single orchestrator script that kicks off the scripts when they're scheduled to run
 
-### Step-by-Step
+The project file structure will look like this:
 
-1.  Create a new R project
-2.  Create a Quarto or R script for the orchestrator
-3.  Create a directory of pipelines called 'pipelines'
-4.  Inside of 'pipelines' add .R scripts with maestro tags
+```         
+sample_project
+├── orchestrator.R
+└── pipelines
+    ├── my_etl.R
+    ├── pipe1.R
+    └── pipe2.R
+```
 
 Let's look at each of these in more detail.
 
@@ -56,46 +72,109 @@ Let's look at each of these in more detail.
 A pipeline is task we want to run. This task may involve retrieving data from a source, performing cleaning and computation on the data, then sending it to a destination. `maestro` is not concerned with what your pipeline does, but rather *when* you want to run it. Here's a simple pipeline in `maestro`:
 
 ```{r}
+#' Example ETL pipeline
 #' @maestroFrequency day
 #' @maestroInterval 1
 #' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
   
-  # Extract data from random user generator
-  raw_data <- httr2::request("https://randomuser.me/api/") |> 
-    httr2::req_perform() |> 
-    httr2::resp_body_json(simplifyVector = TRUE)
+  # Pretend we're getting data from a source
+  message("Get data")
+  extracted <- mtcars
   
-  # Transform - get results and clean the names
-  transformed <- raw_data$results |> 
-    janitor::clean_names()
+  # Transform
+  message("Transforming")
+  transformed <- extracted |> 
+    dplyr::mutate(hp_deviation = hp - mean(hp))
   
   # Load - write to a location
-  write.csv(transformed, file = paste0("random_user_", Sys.Date(), ".csv"))
+  message("Writing")
+  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }
 ```
 
-What makes this a `maestro` pipeline is the use of special *roxygen*-style comments above the function definition. `#' @maestroFrequency day` indicates that this function should execute at a daily frequency, `#' @maestroInterval 1` tells us it should be every day, and `#' @maestroStartTime 2024-03-25 12:30:00` denotes the first time it should run. In other words, we'd expect it to run every day at 12:30 starting the 25th of March 2024. But this pipeline won't run at all unless there is another process *telling* it to run. That is the job of the orchestrator.
+What makes this a `maestro` pipeline is the use of special *roxygen*-style comments above the function definition:
+
+-   `#' @maestroFrequency day` indicates that this function should execute at a daily frequency.
+
+-   `#' @maestroInterval 1` tells us it should be every day.
+
+-   `#' @maestroStartTime 2024-03-25 12:30:00` denotes the first time it should run.
+
+In other words, we'd expect it to run every day at 12:30 starting the 25th of March 2024. There are more `maestro` tags than these ones and all follow the camelCase convention established by `roxygen2`.
 
 ### Orchestrator
 
-The orchestrator is a script that checks the schedules of all the functions in a `maestro` project and executes them if they're due to go. The orchestrator also handles global execution tasks such as collecting logs and managing shared resources like database connections, global objects, and custom functions.
+The orchestrator is a script that checks the schedules of all the pipelines in a `maestro` project and executes them. The orchestrator also handles global execution tasks such as collecting logs and managing shared resources like global objects and custom functions.
 
 You have the option of using Quarto, RMarkdown, or a straight-up R script for the orchestrator, but the former two have some advantages with respect to deployment on Posit Connect.
 
 A simple orchestrator looks like this:
 
-```{r, eval=FALSE}
+```{asciicast}
+library(maestro)
+
 # Look through the pipelines directory for maestro pipelines to create a schedule
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
-# Checks which pipelines are due to run and then executes them (optionally in parallel)
-run_schedule(schedule_table, cores = 4)
+# Checks which pipelines are due to run and then executes them
+run_status <- run_schedule(
+  schedule_table, 
+  orch_frequency = "day",
+  orch_interval = 1
+)
 
-# Optionally get the logs from all the pipelines
-logs <- latest_run_logs()
+run_status
 ```
 
-The function `build_schedule()` scours through all the pipelines in the provided directory and builds a schedule. Then `run_schedule()` checks each pipeline's scheduled time against the system time within some margin of rounding[^1] and calls those pipelines to run. `maestro` also includes several helper functions pertaining to observability and monitoring, such as `latest_run_logs()` to get the full set of logs across all pipelines that ran.
+The function `build_schedule()` scours through all the pipelines in the project and builds a schedule. Then `run_schedule()` checks each pipeline's scheduled time against the system time within some margin of rounding and calls those pipelines to run. The output of `run_schedule()` itself is a table of pipeline statuses.
 
-[^1]: Depending on the frequency and start time of pipeline and the frequency and start time of the orchestrator, this may be a key consideration. \`maestro\` does not look for an exact match of the scheduled time with the current time because then it would almost never run. Rather, it rounds the times to within a unit compatible with the particular pipeline frequency.
+### Logging
+
+`maestro` can keep an accumulating log of all messages, warnings, and errors reported from the pipelines. This log file is created in the project directory (by default `./maestro.log`) and accumulates until the `log_file_max_bytes` argument is exceeded.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(maestro)
+
+# Look through the pipelines directory for maestro pipelines to create a schedule
+schedule_table <- build_schedule(pipeline_dir = "pipelines")
+
+# Checks which pipelines are due to run and then executes them
+run_status <- run_schedule(
+  schedule_table, 
+  orch_frequency = "day",
+  orch_interval = 1,
+  logging = TRUE
+)
+```
+
+```{r}
+readLines("maestro.log") |> 
+  tail(10) |> 
+  cat(sep = "\n")
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+invisible(file.remove("./maestro.log"))
+```
+
+### How Scheduling Works
+
+Both the pipelines and the orchestrator itself need to be explicitly scheduled. The pipelines are scheduled using tags, but the orchestrator is scheduled using arguments passed to `run_schedule()`. When `run_schedule()` executes, it compares the next expected run time of each pipeline and compares it with the current time. Depending on the frequency of the orchestrator, it will round within some degree of time difference.
+
+For example, let's say we have a pipeline scheduled to run hourly at 10:02am and our orchestrator runs every hour on the 00 minute. When the orchestrator runs, it'll be slightly before the pipeline scheduled time, but it'll run it anyway because it's within a difference of an hour. If instead our orchestrator ran every 15 minutes, it'd only execute the pipeline once in the hour, as expected.
+
+### Multicore
+
+If you have several pipelines and/or pipelines that take awhile to run, it can be more efficient to split computation across multiple CPU cores.
+
+```{r, eval=FALSE}
+library(furrr)
+
+plan(multisession)
+
+run_schedule(
+  schedule_table,
+  cores = 4
+)
+```

@@ -1,0 +1,43 @@
+- name: maestroFrequency
+  description: >
+    The base unit for scheduling a pipeline. Pipeline will run at the
+    frequency defined here. Default is day.
+
+    Accepted values are minute, hour, day, week, month, quarter, year.
+  template: ' ${1:maestroFrequency}'
+  recommend: true
+
+- name: maestroInterval
+  description: >
+    Recurring interval for the pipeline. A positive integer. Default is 1.
+
+    For example, an interval of 1 means pipeline will run once per frequency
+    unit; an interval of 3 means pipeline will run once every 3 units of frequency.
+  template: ' ${1:maestroInterval}'
+  recommend: true
+
+- name: maestroStartTime
+  description: >
+    Initial time of the pipeline run. This also defines on what time pipeline will recur.
+    Must be in yyyy-MM-dd HH:MM:SS format. Default is 1970-01-01 00:00:00.
+
+    For example, if pipeline has a frequency of 'day' and an interval of 1 and the
+    start time is 2024-01-01 12:00:00, then it will run daily on the 12:00 hour.
+  template: ' ${1:maestroStartTime}'
+  recommend: true
+
+- name: maestroTz
+  description: >
+    Timezone of the start time. Supported time zones are found using `r OlsonNames()`.
+    Default is UTC.
+  template: ' ${1:maestroTz}'
+  recommend: true
+
+- name: maestroSkip
+  description: >
+    Skip a pipeline during orchestration if tag is present.
+
+    Useful during development. Skipped pipelines are indicated in console output of
+    `r maestro::run_schedule()`
+  template: ' ${1:maestroSkip}'
+  recommend: true

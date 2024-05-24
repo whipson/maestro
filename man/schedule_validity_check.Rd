@@ -7,7 +7,7 @@
 schedule_validity_check(schedule)
 }
 \arguments{
-\item{schedule_table}{a schedule table returned from `build_schedule`}
+\item{schedule_table}{a schedule table returned from \code{build_schedule}}
 }
 \value{
 invisible or error

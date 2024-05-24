@@ -9,7 +9,7 @@
 #' @maestroTz UTC
 #'
 #' @export
-get_mtcars <- function() {
+lm_mtcars <- function() {
   lm("data")
 }
 
@@ -20,5 +20,5 @@ get_mtcars <- function() {
 #'
 #' @export
 wait <- function() {
-  Sys.sleep(0.1)
+  Sys.sleep(0.01)
 }
