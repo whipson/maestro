@@ -4,12 +4,12 @@ Title: maestro
 Version: 0.0.1.12
 Authors@R: 
     c(
-      person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
+      person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut"), comment = c(ORCID = "0000-0002-3931-2189")),
       person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb"))
     )
 Maintainer: Will Hipson <will.hipson@hiaa.ca>
 Description: Simple, lightweight orchestrator for R pipelines.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 URL: https://github.com/whipson/maestro
 BugReports: https://github.com/whipson/maestro/issues
 Encoding: UTF-8
