@@ -8,7 +8,7 @@ test_that("end to end workflow test", {
     run_schedule(
       schedule,
       orch_interval = 1,
-      orch_unit = "hour",
+      orch_frequency = "hour",
       check_datetime = as.POSIXct("2024-04-25 9:00:00", tz = "UTC")
     )
   })

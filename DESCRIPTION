@@ -1,29 +1,37 @@
 Package: maestro
 Type: Package
 Title: maestro
-Version: 0.0.0.9002
+Version: 0.0.1.12
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut")),
-      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut"))
+      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb"))
     )
+Maintainer: Will Hipson <will.hipson@hiaa.ca>
 Description: Simple, lightweight orchestrator for R pipelines.
-License: What license is it under?
+License: GPL (>= 3)
+URL: https://github.com/whipson/maestro
+BugReports: https://github.com/whipson/maestro/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    cli,
-    dplyr,
+    cli (>= 3.3.0),
+    dplyr (>= 1.0.0),
     glue,
-    lubridate,
-    purrr,
-    rlang,
-    tibble,
+    logger,
+    lubridate (>= 1.9.1),
+    purrr (>= 1.0.0),
+    R.utils,
+    rlang (>= 1.0.0),
+    roxygen2,
+    rstudioapi,
+    tictoc,
     utils
+Roxygen: list(markdown = TRUE, roclets = c("rd", "collate", "namespace"))
 RoxygenNote: 7.3.1
 Depends: 
-    R (>= 4.1.0),
-    roxygen2
+    R (>= 4.1.0)
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3

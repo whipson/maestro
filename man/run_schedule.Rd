@@ -7,32 +7,73 @@
 run_schedule(
   schedule,
   orch_interval = 1,
-  orch_unit = "day",
+  orch_frequency = "day",
   check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
   run_all = FALSE,
-  show_next = TRUE
+  n_show_next = 5,
+  cores = 1,
+  logging = FALSE,
+  log_file = "./maestro.log",
+  log_file_max_bytes = 1e+06,
+  quiet = FALSE
 )
 }
 \arguments{
-\item{schedule}{a table of scheduled pipelines generated from `build_schedule()`}
+\item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
 \item{orch_interval}{a numeric value representing how often the orchestration runs}
 
-\item{orch_unit}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 
-\item{resources}{list of shared resources made available to pipelines as needed}
+\item{resources}{named list of shared resources made available to pipelines as needed}
 
-\item{run_all}{whether or not to run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing}
+\item{run_all}{run all pipelines regardless of the schedule (default is \code{FALSE}) - useful for testing.
+Does not apply to pipes with a \code{maestroSkip} tag.}
 
-\item{show_next}{}
+\item{n_show_next}{show the next n scheduled pipes}
+
+\item{cores}{number of cpu cores to run if running in parallel. If > 1, \code{furrr} is used and
+a multisession plan must be executed in the orchestrator (see details)}
+
+\item{logging}{whether or not to write the logs to a file (default = \code{FALSE})}
+
+\item{log_file}{path to the log file (ignored if \code{logging == FALSE})}
+
+\item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
+
+\item{quiet}{print metrics to the console (default = \code{TRUE})}
 }
 \value{
-invisible
+data.frame of pipeline statuses
 }
 \description{
-Given a schedule in a `maestro` project, runs the pipelines that are scheduled to execute
+Given a schedule in a \code{maestro} project, runs the pipelines that are scheduled to execute
 based on the current time.
+}
+\details{
+\subsection{Pipeline schedule logic}{
+
+The function \code{run_schedule()} examines each pipeline in the schedule table and determines
+whether it is scheduled to run at the current time using some simple time arithmetic. We assume
+\code{run_schedule(schedule, check_datetime = Sys.time())}, but this need not be the case.
+}
+
+\subsection{Pipelines with arguments (resources)}{
+
+If a pipeline takes an argument that doesn't include a default value, these can be supplied
+in the orchestrator via \code{run_schedule(resources = list(arg1 = val))}. The name of the argument
+used by the pipeline must match the name of the argument in the list. Currently, each named
+resource must refer to a single object. In other words, you can't have two pipes using
+the same argument but requiring different values.
+}
+
+\subsection{Running in parallel}{
+
+Pipelines can be run in parallel using the \code{cores} argument. First, you must run \code{future::plan(future::multisession)}
+in the orchestrator. Then, supply the desired number of cores to the \code{cores} argument. Note that
+console output appears different in multicore mode.
+}
 }

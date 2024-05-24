@@ -1,0 +1,11 @@
+#' {{pipe_name}} maestro pipeline
+#'
+#' @maestroFrequency {{frequency}}
+#' @maestroInterval {{interval}}
+#' @maestroStartTime {{start_time}}
+#' @maestroTz {{tz}}
+
+{{pipe_name}} <- function() {
+
+  # Pipeline code
+}

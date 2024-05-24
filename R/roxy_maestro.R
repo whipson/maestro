@@ -1,4 +1,5 @@
 # maestroFrequency ----------------------------------------------------------
+#' @importFrom roxygen2 roclet_output roclet_process roxy_tag_parse
 #' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
 
@@ -226,6 +227,54 @@ roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
 
 #' @exportS3Method
 roclet_output.roclet_maestroSkip <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroLogLevel <- function(x) {
+
+  log_levels <- c(
+    "INFO", "WARN", "ERROR", "OFF", "FATAL", "SUCCESS", "DEBUG", "TRACE"
+  )
+
+  x$raw <- x$raw |>
+    toupper() |>
+    trimws()
+
+  if (x$raw == "") {
+    x$val <- "INFO"
+  } else if (x$raw %in% log_levels) {
+    x$val <- x$raw
+  } else {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Invalid maestroLogLevel `{x$raw}`.
+        Must be one of {paste(log_levels, collapse = ', ')}"
+      )
+    )
+    return()
+  }
+
+  x
+}
+
+maestroLogLevel_roclet <- function() {
+  roxygen2::roclet("maestroLogLevel")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroLogLevel <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroLogLevel")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @exportS3Method
+roclet_output.roclet_maestroLogLevel <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }

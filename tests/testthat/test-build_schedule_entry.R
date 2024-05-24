@@ -6,7 +6,7 @@ test_that("can create a schedule entry from a single well-documented fun", {
   expect_equal(nrow(res), 1)
   expect_in(
     c("script_path", "pipe_name", "frequency", "interval",
-      "start_time", "tz", "skip"),
+      "start_time", "tz", "skip", "log_level"),
     names(res)
   )
   expect_snapshot(res)
@@ -70,4 +70,11 @@ test_that("Informative error on parsing schedule entry with an error", {
       test_path("test_pipelines_parse_all_bad/test_pipeline_script_with_error.R")
     )
   }, regexp = "Could not build")
+})
+
+test_that("Script with untagged function isn't treated as a scheduled pipeline", {
+  schedule <- build_schedule_entry(
+    test_path("test_pipelines_parse_all_good/pipe_with_custom_fun.R")
+  )
+  expect_equal(nrow(schedule), 1)
 })
