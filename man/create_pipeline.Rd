@@ -12,6 +12,7 @@ create_pipeline(
   start_time = NULL,
   tz = NULL,
   log_level = NULL,
+  quiet = FALSE,
   open = interactive()
 )
 }
@@ -27,6 +28,8 @@ create_pipeline(
 \item{tz}{timezone that pipeline will be scheduled in. Fills in maestroTz tag}
 
 \item{log_level}{log level for the pipeline (e.g., INFO, WARN, ERROR). Fills in maestroLogLevel tag}
+
+\item{quiet}{whether to silence messages in the console (default = \code{FALSE})}
 
 \item{open}{whether or not to open the script upon creation}
 }

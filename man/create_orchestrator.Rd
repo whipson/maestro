@@ -7,7 +7,8 @@
 create_orchestrator(
   path = "./orchestrator",
   extension = c("R", "Quarto", "RMarkdown"),
-  open = interactive()
+  open = interactive(),
+  quiet = FALSE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ create_orchestrator(
 \item{extension}{file extension for the orchestrator (supports R, Quarto, and RMarkdown)}
 
 \item{open}{whether or not to open the script upon creation}
+
+\item{quiet}{whether to silence messages in the console (default = \code{FALSE})}
 }
 \value{
 invisible
