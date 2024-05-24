@@ -1,3 +1,3 @@
 # maestro (development version)
 
-* Initial CRAN submission.
+* Initial alpha release

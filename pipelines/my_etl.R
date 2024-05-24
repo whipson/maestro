@@ -1,20 +1,19 @@
+#' Example ETL pipeline
 #' @maestroFrequency day
 #' @maestroInterval 1
 #' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
 
-  # Extract data from random user generator
-  message("API request")
-  raw_data <- httr2::request("https://randomuser.me/api/") |>
-    httr2::req_perform() |>
-    httr2::resp_body_json(simplifyVector = TRUE)
+  # Pretend we're getting data from a source
+  message("Get data")
+  extracted <- mtcars
 
-  # Transform - get results and clean the names
+  # Transform
   message("Transforming")
-  transformed <- raw_data$results |>
-    janitor::clean_names()
+  transformed <- extracted |>
+    dplyr::mutate(hp_deviation = hp - mean(hp))
 
   # Load - write to a location
   message("Writing")
-  #write.csv(transformed, file = paste0("random_user_", Sys.Date(), ".csv"))
+  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }
