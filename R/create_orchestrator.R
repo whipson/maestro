@@ -3,16 +3,16 @@
 #' @param open whether or not to open the script upon creation
 #' @param path file path for the orchestrator script
 #' @param extension file extension for the orchestrator (supports R, Quarto, and RMarkdown)
+#' @param quiet whether to silence messages in the console (default = `FALSE`)
 #'
 #' @return invisible
 #' @export
 create_orchestrator <- function(
     path = "./orchestrator",
     extension = c("R", "Quarto", "RMarkdown"),
-    open = interactive()
+    open = interactive(),
+    quiet = FALSE
 ) {
-
-  extension <- tolower(match.arg(extension))
 
   template <- ifelse(extension == "R", "orchestrator_template", "orchestrator_template_qmd")
 
@@ -40,5 +40,7 @@ create_orchestrator <- function(
     rstudioapi::documentOpen(path)
   }
 
-  message(glue::glue("Created orchestrator at {path}"))
+  if(!quiet) {
+    cli::cli_alert_success("Created orchestrator at {.file {path}}")
+  }
 }

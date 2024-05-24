@@ -7,6 +7,7 @@
 #' @param tz timezone that pipeline will be scheduled in. Fills in maestroTz tag
 #' @param log_level log level for the pipeline (e.g., INFO, WARN, ERROR). Fills in maestroLogLevel tag
 #' @param open whether or not to open the script upon creation
+#' @param quiet whether to silence messages in the console (default = `FALSE`)
 #'
 #' @return invisible
 #' @export
@@ -18,6 +19,7 @@ create_pipeline <- function(
     start_time = NULL,
     tz = NULL,
     log_level = NULL,
+    quiet = FALSE,
     open = interactive()
   ) {
 
@@ -52,5 +54,7 @@ create_pipeline <- function(
     rstudioapi::documentOpen(path)
   }
 
-  message(glue::glue("Created pipeline at {path}"))
+  if(!quiet) {
+    cli::cli_alert_success("Created pipeline at {.file {path}}")
+  }
 }
