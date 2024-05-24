@@ -138,6 +138,8 @@ Creating pipelines is based on the following `maestro` decorators:
 | interval | Unit of frequency between run of pipeline | `1` |
 | start_time | Start time of the pipeline schedule based on a datetime format (yyyy-mm-dd hh:mm:ss) | `2024-05-17 15:00:00` |
 | tz | Timezone that pipeline will be scheduled in, based on timezones from the `OlsonNames` R function | `America/Halifax` |
+| log_level | The logging level for the pipeline to be used if logging is is identified in the orchestrator script (e.g., INFO, WARN, ERROR) | `ERROR` |
+| open | whether or not to open the script upon creation | `TRUE` |
 
 <br>
 
@@ -150,7 +152,9 @@ create_pipeline(
   frequency = "day",
   interval = 1,
   start_time = "2024-05-17 15:00:00",
-  tz = "America/Halifax"
+  tz = "America/Halifax",
+  log_level = "ERROR",
+  open = TRUE
 )
 ```
 
@@ -193,7 +197,9 @@ create_pipeline(
   frequency = "hour",
   interval = 3,
   start_time = "2024-05-17 15:00:00",
-  tz = "America/Halifax"
+  tz = "America/Halifax",
+  log_level = "ERROR",
+  open = TRUE
 )
 ```
 
@@ -245,7 +251,9 @@ create_pipeline(
   frequency = "day",
   interval = 1,
   start_time = "2024-05-17 08:10:00",
-  tz = "America/Halifax"
+  tz = "America/Halifax",
+  log_level = c("ERROR", "WARN"),
+  open = TRUE
 )
 ```
 
