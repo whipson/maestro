@@ -78,18 +78,30 @@ There are a few approaches for creating a new R project. This example is using R
 
 
 #### Manual Approach
-From the `File` table (typically the upper left)
+From either the *Project* drop down (typically the upper right) or the *File* tab (typically the upper left)
 
-- Choose `New Project...`
-- In the *New Project Wizard* window `New Directory`
-- Then `New Project`
-- In the *Create New Project* window enter the elements that work for your project
-  - *Directory name* (i.e. `maestro_proejct`)
-  - *Create project as subdirectory of* (i.e. `~/maestro_project` on Mac or Linux, or `C:\maestro_project` on Windows)
-  - *Create a git repository* (optional)
-  - *Use renv with this project* (optional)
-  - *Open in new session* (optional)
-- Then click the *Create Project* button
+**Project drop down**
+
+- In the *New Project Wizard* window select *New Directory*
+- Scroll down and select *Maestro Project*
+- In the *Directory name* input box provide a project name (i.e. `maestro_project`)
+- Browse to the location to where the project will be created
+- In the *Orchestrator  Type* drop down select the format (i.e `R`, `Quatro` or `RMarkdown`)
+- Click *Create Project*
+
+<br>
+
+
+**File tab**
+
+- Click *File*
+- Choose *New Project...*
+- In the *New Project Wizard* window select *New Directory*
+- Scroll down and select *Maestro Project*
+- In the *Directory name* input box provide a project name (i.e. `maestro_project`)
+- Browse to the location to where the project will be created
+- In the *Orchestrator  Type* drop down select the format (i.e `R`, `Quatro` or `RMarkdown`)
+- Click *Create Project*
 
 <br>
 
@@ -114,15 +126,7 @@ dir.create("pipelines")
 
 
 ## Create Pipelines
-Creating a pipeline
-
-- Using the `create_pipeline` function
-  - pipe_name (required)
-  - pipeline_dir (optional - default to `pipelines`)
-  - frequency (required)
-  - interval (required)
-  - start_time (required)
-  - tz (required)
+Creating pipelines is based on the following `maestro` decorators:
 
 <br>
 
@@ -289,16 +293,6 @@ In this example we selected R script as the format for the orchestrator script. 
 
 Creating an orchestration script consists of two function calls within the script, `build_schedule` and `run_schedule`. The `build_schedule` function generates a data frame of pipelines to run. The data frame is used with the `run_schedule` function, which consists of the following parameters:
 
-  - schedule (required)
-  - orch_interval (required - has default)
-  - orch_frequency (required - has default)
-  - check_datetime (required - has default)
-  - resources (required - has default)
-  - run_all (required - has default)
-  - n_show_not_run (required - has default)
-  - cores (required - has default)
-  - quite (required - has default)
-
 <br>
 
 | **Parameter** | **Description** | **Default** | **Example** |
@@ -309,8 +303,11 @@ Creating an orchestration script consists of two function calls within the scrip
 | check_datetime | datetime used to check against the pipeline start datetime | `lubridate::now(tzone = "UTC")` | `lubridate::now(tzone = "UTC")` |
 | resources | Named list of shared resources made available to pipelines as needed | `list()` | `list()` |
 | run_all | Run all pipelines regardless of the schedule | `FALSE` | `FALSE` |
-| n_show_not_run | show number of pipelines that did not run and when they will run next | `5` | `5` |
+| n_show_next| show the next n number of scheduled pipes | `5` | `5` |
 | cores | Number of cpu cores to run if running in parallel | `1` | `1` |
+| logging | whether or not to write the logs to a file | `FALSE` | `TRUE` |
+| log_file | path to the log file | `./maestro.log` |  `./maestro_pipeline.log` |
+| log_file_max_bytes | numeric specifying the maximum number of bytes allowed in the log file before purging the log | `1e+06` | `10485760` |
 | quite | Print metrics to the console | `FALSE` | `FALSE` |
 
 <br>
