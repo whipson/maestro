@@ -1,4 +1,4 @@
-Binding: new_maestro_project
+Binding: create_maestro
 Title: Maestro Project
 
 Parameter: extension

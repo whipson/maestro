@@ -5,14 +5,15 @@ maestro
 <!-- badges: start -->
 <!-- badges: end -->
 
-`maestro` is a lightweight and easy-to-use framework for creating and
-orchestrating data pipelines in R. No additional orchestration tools are
-needed.
+`maestro` is a lightweight framework for creating and orchestrating data
+pipelines in R. If you have several scheduled jobs or pipelines you want
+to run in R and want to manage them in one project, then `maestro` is
+for you!
 
-In `maestro` there are pipelines (functions) that can be scheduled and
-configured using `roxygen2` tags - these are special comment above each
-function. There is also an orchestrator script responsible for executing
-the scheduled pipelines (optionally in parallel).
+In `maestro` you create **pipelines** (functions) and schedule them
+using `roxygen2` tags - these are special comments (decorators) above
+each function. Then you create an **orchestrator** containing `maestro`
+functions for scheduling and invoking the pipelines.
 
 ## Pre-release Disclaimer
 
@@ -59,45 +60,48 @@ pipeline does, but rather *when* you want to run it. Here’s a simple
 pipeline in `maestro`:
 
 ``` r
+#' Example ETL pipeline
 #' @maestroFrequency day
 #' @maestroInterval 1
 #' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
   
-  # Extract data from random user generator
-  message("API request")
-  raw_data <- httr2::request("https://randomuser.me/api/") |> 
-    httr2::req_perform() |> 
-    httr2::resp_body_json(simplifyVector = TRUE)
+  # Pretend we're getting data from a source
+  message("Get data")
+  extracted <- mtcars
   
-  # Transform - get results and clean the names
+  # Transform
   message("Transforming")
-  transformed <- raw_data$results |> 
-    janitor::clean_names()
+  transformed <- extracted |> 
+    dplyr::mutate(hp_deviation = hp - mean(hp))
   
   # Load - write to a location
   message("Writing")
-  write.csv(transformed, file = paste0("random_user_", Sys.Date(), ".csv"))
+  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }
 ```
 
 What makes this a `maestro` pipeline is the use of special
-*roxygen*-style comments above the function definition.
-`#' @maestroFrequency day` indicates that this function should execute
-at a daily frequency, `#' @maestroInterval 1` tells us it should be
-every day, and `#' @maestroStartTime 2024-03-25 12:30:00` denotes the
-first time it should run. In other words, we’d expect it to run every
-day at 12:30 starting the 25th of March 2024. But this pipeline won’t
-run at all unless there is another process *telling* it to run. That is
-the job of the orchestrator.
+*roxygen*-style comments above the function definition:
+
+- `#' @maestroFrequency day` indicates that this function should execute
+  at a daily frequency.
+
+- `#' @maestroInterval 1` tells us it should be every day.
+
+- `#' @maestroStartTime 2024-03-25 12:30:00` denotes the first time it
+  should run.
+
+In other words, we’d expect it to run every day at 12:30 starting the
+25th of March 2024. There are more `maestro` tags than these ones and
+all follow the camelCase convention established by `roxygen2`.
 
 ### Orchestrator
 
 The orchestrator is a script that checks the schedules of all the
-functions in a `maestro` project and executes them if they’re due to go.
-The orchestrator also handles global execution tasks such as collecting
-logs and managing shared resources like database connections, global
-objects, and custom functions.
+pipelines in a `maestro` project and executes them. The orchestrator
+also handles global execution tasks such as collecting logs and managing
+shared resources like global objects and custom functions.
 
 You have the option of using Quarto, RMarkdown, or a straight-up R
 script for the orchestrator, but the former two have some advantages
@@ -127,9 +131,9 @@ run_status
 </picture>
 
 The function `build_schedule()` scours through all the pipelines in the
-provided directory and builds a schedule. Then `run_schedule()` checks
-each pipeline’s scheduled time against the system time within some
-margin of rounding and calls those pipelines to run. The output of
+project and builds a schedule. Then `run_schedule()` checks each
+pipeline’s scheduled time against the system time within some margin of
+rounding and calls those pipelines to run. The output of
 `run_schedule()` itself is a table of pipeline statuses.
 
 ### Logging

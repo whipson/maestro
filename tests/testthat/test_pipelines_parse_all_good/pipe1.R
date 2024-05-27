@@ -25,3 +25,25 @@ get_mtcars <- function() {
 wait <- function() {
   Sys.sleep(0.01)
 }
+
+#' Add
+#'
+#' @maestroFrequency month
+#' @maestroInterval 3
+#' @maestroStartTime 1970-01-01
+#'
+#' @export
+add <- function() {
+  invisible()
+}
+
+#' Something
+#'
+#' @maestroFrequency month
+#' @maestroInterval 3
+#' @maestroStartTime 1970-01-01 00:00:00 ADT
+#'
+#' @export
+something <- function() {
+  invisible()
+}
