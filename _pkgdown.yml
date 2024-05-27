@@ -1,4 +1,5 @@
-url: ~
+url: https://whipson.github.io/maestro/
 template:
   bootstrap: 5
-
+  bslib:
+    primary: "#9012C7"

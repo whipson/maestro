@@ -10,7 +10,7 @@ Authors@R:
 Maintainer: Will Hipson <will.hipson@hiaa.ca>
 Description: Simple, lightweight orchestrator for R pipelines.
 License: MIT + file LICENSE
-URL: https://github.com/whipson/maestro
+URL: https://github.com/whipson/maestro, https://whipson.github.io/maestro/
 BugReports: https://github.com/whipson/maestro/issues
 Encoding: UTF-8
 LazyData: true
