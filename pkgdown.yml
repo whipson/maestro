@@ -1,0 +1,12 @@
+pandoc: 3.1.11
+pkgdown: 2.0.9
+pkgdown_sha: ~
+articles:
+  1-maestro-quick-start: 1-maestro-quick-start.html
+  2-maestro-motivation-concepts: 2-maestro-motivation-concepts.html
+  3-maestro-use-cases: 3-maestro-use-cases.html
+last_built: 2024-05-27T14:15Z
+urls:
+  reference: https://whipson.github.io/maestro/reference
+  article: https://whipson.github.io/maestro/articles
+
