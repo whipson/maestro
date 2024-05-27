@@ -14,6 +14,8 @@ create_orchestrator <- function(
     quiet = FALSE
 ) {
 
+  extension <- match.arg(extension)
+
   template <- ifelse(extension == "R", "orchestrator_template", "orchestrator_template_qmd")
 
   script <- readLines(system.file(template, package = "maestro")) |>
