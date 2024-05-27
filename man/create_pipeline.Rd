@@ -7,11 +7,11 @@
 create_pipeline(
   pipe_name,
   pipeline_dir = "pipelines",
-  frequency = NULL,
-  interval = NULL,
-  start_time = NULL,
-  tz = NULL,
-  log_level = NULL,
+  frequency = "day",
+  interval = 1,
+  start_time = Sys.Date(),
+  tz = "UTC",
+  log_level = "INFO",
   quiet = FALSE,
   open = interactive()
 )

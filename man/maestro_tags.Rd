@@ -9,14 +9,15 @@ of pipelines.
 }
 \details{
 maestro tags follow the format \verb{#' @maestroTagName}
-\subsection{Tag List}{
-\itemize{
-\item maestroFrequency: Time unit for scheduling (e.g., day, week, month, etc.)
-\item maestroInterval: Number of time units between executions (e.g., 1, 2, 3)
-\item maestroLogLevel: Threshold for logging when logging is requested by orchestrator (e.g., INFO, WARN, ERROR, etc.)
-\item maestroSkip: Skips the pipeline when running orchestrator (presence of tag indicates skip)
-\item maestroStartTime: yyyy-MM-dd HH:MM:SS for the start time of the pipeline
-\item maestroTz: Timezone of the start time (e.g., UTC); see \code{OlsonNames()} for all timezones
+\subsection{Tag List}{\tabular{lllll}{
+   tagName \tab description \tab value \tab examples (comma sep.) \tab default \cr
+   maestroFrequency \tab Time unit for scheduling \tab string \tab hour, day, week \tab day \cr
+   maestroInterval \tab Number of time units between executions \tab positive integer \tab 1, 2, 7 \tab 1 \cr
+   maestroLogLevel \tab Threshold for logging when logging is requested \tab string \tab INFO, WARN, ERROR \tab INFO \cr
+   maestroSkip \tab Skips the pipeline when running (presence of tag indicates to skip) \tab n/a \tab  \tab  \cr
+   maestroStartTime \tab Start time of the pipeline; sets the point in time for recurrence \tab date or timestamp \tab 1970-01-01 00:00:00, 2024-03-28 \tab 1970-01-01 00:00:00 \cr
+   maestroTz \tab Timezone of the start time \tab string \tab UTC, America/Halifax \tab UTC \cr
 }
+
 }
 }

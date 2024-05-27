@@ -10,12 +10,14 @@
 #'
 #' ### Tag List
 #'
-#' * maestroFrequency: Time unit for scheduling (e.g., day, week, month, etc.)
-#' * maestroInterval: Number of time units between executions (e.g., 1, 2, 3)
-#' * maestroLogLevel: Threshold for logging when logging is requested by orchestrator (e.g., INFO, WARN, ERROR, etc.)
-#' * maestroSkip: Skips the pipeline when running orchestrator (presence of tag indicates skip)
-#' * maestroStartTime: yyyy-MM-dd HH:MM:SS for the start time of the pipeline
-#' * maestroTz: Timezone of the start time (e.g., UTC); see `OlsonNames()` for all timezones
+#'  | tagName          | description                                                         | value             | examples (comma sep.)           | default             |
+#'  |------------------|---------------------------------------------------------------------|-------------------|---------------------------------|---------------------|
+#'  | maestroFrequency | Time unit for scheduling                                            | string            | hour, day, week                 | day                 |
+#'  | maestroInterval  | Number of time units between executions                             | positive integer  | 1, 2, 7                         | 1                   |
+#'  | maestroLogLevel  | Threshold for logging when logging is requested                     | string            | INFO, WARN, ERROR               | INFO                |
+#'  | maestroSkip      | Skips the pipeline when running (presence of tag indicates to skip) | n/a               |                                 |                     |
+#'  | maestroStartTime | Start time of the pipeline; sets the point in time for recurrence   | date or timestamp | 1970-01-01 00:00:00, 2024-03-28 | 1970-01-01 00:00:00 |
+#'  | maestroTz        | Timezone of the start time                                          | string            | UTC, America/Halifax            | UTC                 |
 #'
 #' @name maestro_tags
 NULL
