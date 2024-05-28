@@ -153,23 +153,6 @@ readLines("maestro.log") |>
 #> [get_mtcars] [WARN] [2024-05-23 14:26:46.894069]: Uh oh
 ```
 
-### How Scheduling Works
-
-Both the pipelines and the orchestrator itself need to be explicitly
-scheduled. The pipelines are scheduled using tags, but the orchestrator
-is scheduled using arguments passed to `run_schedule()`. When
-`run_schedule()` executes, it compares the next expected run time of
-each pipeline and compares it with the current time. Depending on the
-frequency of the orchestrator, it will round within some degree of time
-difference.
-
-For example, let’s say we have a pipeline scheduled to run hourly at
-10:02am and our orchestrator runs every hour on the 00 minute. When the
-orchestrator runs, it’ll be slightly before the pipeline scheduled time,
-but it’ll run it anyway because it’s within a difference of an hour. If
-instead our orchestrator ran every 15 minutes, it’d only execute the
-pipeline once in the hour, as expected.
-
 ### Multicore
 
 If you have several pipelines and/or pipelines that take awhile to run,
