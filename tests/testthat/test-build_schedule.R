@@ -3,8 +3,7 @@ test_that("build_schedule works on a directory of all good pipelines", {
   expect_s3_class(res, "tbl_df")
   expect_gte(nrow(res), 1)
   expect_in(
-    c("script_path", "pipe_name", "frequency", "interval",
-      "start_time"),
+    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level"),
     names(res)
   )
   expect_snapshot(res)
@@ -20,8 +19,7 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
   expect_s3_class(res, "tbl_df")
   expect_gte(nrow(res), 1)
   expect_in(
-    c("script_path", "pipe_name", "frequency", "interval",
-      "start_time"),
+    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level"),
     names(res)
   )
 }) |>

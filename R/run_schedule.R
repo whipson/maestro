@@ -27,6 +27,7 @@
 #'
 #' @param schedule a table of scheduled pipelines generated from `build_schedule()`
 #' @inheritParams check_pipelines
+#' @param orch_frequency of the orchestrator, a single string formatted like [number] [units] (e.g., "1 day")
 #' @param resources named list of shared resources made available to pipelines as needed
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
 #' Does not apply to pipes with a `maestroSkip` tag.
@@ -42,8 +43,7 @@
 #' @export
 run_schedule <- function(
     schedule,
-    orch_interval = 1,
-    orch_frequency = "day",
+    orch_frequency = "1 day",
     check_datetime = lubridate::now(tzone = "UTC"),
     resources = list(),
     run_all = FALSE,
@@ -54,6 +54,17 @@ run_schedule <- function(
     log_file_max_bytes = 1e6,
     quiet = FALSE
   ) {
+
+  orch_frequency <- tryCatch({
+    convert_to_seconds(orch_frequency)
+  }, error = \(e) {
+    cli::cli_abort(
+      c(
+        "Invalid `orch_frequency`. Must be formatted as [number] [units]",
+        "i" = "E.g., 1 day, 4 hours, 2 weeks, etc."
+      )
+    )
+  })
 
   # Check validity of the schedule
   schedule_validity_check(schedule)
@@ -100,7 +111,6 @@ run_schedule <- function(
     if (!run_all) {
       schedule_checks <- check_pipelines(
         schedule,
-        orch_interval,
         orch_frequency,
         check_datetime
       )

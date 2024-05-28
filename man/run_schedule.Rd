@@ -6,8 +6,7 @@
 \usage{
 run_schedule(
   schedule,
-  orch_interval = 1,
-  orch_frequency = "day",
+  orch_frequency = "1 day",
   check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
   run_all = FALSE,
@@ -22,9 +21,7 @@ run_schedule(
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
-\item{orch_interval}{a numeric value representing how often the orchestration runs}
-
-\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{frequency of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 

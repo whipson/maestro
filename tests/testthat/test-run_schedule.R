@@ -36,6 +36,25 @@ test_that("run_schedule works with a future check_datetime", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule works on different kinds of frequencies", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
+                  "1 quarter", "14 months", "4 years", "24 hours",
+                  "31 days", "400 days")
+
+  purrr::walk(test_freqs, ~{
+    expect_no_error({
+      run_schedule(
+        schedule,
+        orch_frequency = .x
+      )
+    })
+  })
+}) |>
+  suppressMessages()
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()
@@ -53,8 +72,7 @@ test_that("run_schedule works even with nonexistent pipeline", {
     dplyr::add_row(
       script_path = "nonexistent",
       pipe_name = "im_a_problem",
-      frequency = "day",
-      interval = 1,
+      frequency = 10,
       start_time = as.POSIXct("1970-01-01 00:00:00")
     )
 
@@ -117,7 +135,7 @@ test_that("run_schedule checks schedule validity in the event of orchestration e
 
   # Has required columns, but types are wrong
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-  schedule$interval <- "hello"
+  schedule$frequency <- "hello"
   expect_error(
     run_schedule(schedule, run_all = TRUE),
     "Schedule column"

@@ -1,16 +1,3 @@
-#' Round time formatted
-#'
-#' @param check_datetime POSIXct object
-#' @param unit_value unit to round to
-#'
-#' @return character
-round_time <- function(check_datetime, unit_value) {
-  format(
-    as.POSIXct(lubridate::round_date(check_datetime, unit = unit_value), format = "%H:%M"),
-    "%H:%M:%S"
-  )
-}
-
 maestro_logger <- logger::layout_glue_generator(
   format = "[{namespace}] [{level}] [{time}]: {msg}"
 )
@@ -29,8 +16,7 @@ schedule_validity_check <- function(schedule) {
   req_col_typed_check <- list(
     script_path = "character",
     pipe_name = "character",
-    frequency = "character",
-    interval = c("integer", "numeric"),
+    frequency = c("integer", "numeric"),
     start_time = c("POSIXct", "POSIXlt"),
     log_level = "character"
   )
@@ -101,4 +87,53 @@ schedule_validity_check <- function(schedule) {
 
   # All is good
   invisible()
+}
+
+
+#' Convert a duration string to number of seconds
+#'
+#' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
+#'
+#' @return number of seconds
+convert_to_seconds <- function(time_string) {
+
+  stopifnot("Must be a single string" = length(time_string) == 1)
+
+  # Extract the number and the unit from the time string
+  matches <- regmatches(time_string, regexec("([0-9]+)\\s*(\\w+)", time_string))
+  number <- as.numeric(matches[[1]][2])
+  unit <- matches[[1]][3]
+
+  # Define the conversion factors to seconds for each unit
+  conversion_factors <- list(
+    "sec" = 1,
+    "secs" = 1,
+    "second" = 1,
+    "seconds" = 1,
+    "min" = 60,
+    "mins" = 60,
+    "minute" = 60,
+    "minutes" = 60,
+    "hour" = 3600,
+    "hours" = 3600,
+    "day" = 86400,
+    "days" = 86400,
+    "week" = 604800,
+    "weeks" = 604800,
+    "month" = 2629800,
+    "months" = 2629800,
+    "quarter" = 7884000,
+    "quarters" = 7884000,
+    "year" = 31557600,
+    "years" = 31557600
+  )
+
+  # Convert the time to seconds
+  if (!is.null(conversion_factors[[unit]])) {
+    seconds <- number * conversion_factors[[unit]]
+  } else {
+    stop("Unknown time unit")
+  }
+
+  seconds
 }

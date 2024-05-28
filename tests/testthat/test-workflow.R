@@ -7,8 +7,7 @@ test_that("end to end workflow test", {
   expect_message({
     run_schedule(
       schedule,
-      orch_interval = 1,
-      orch_frequency = "hour",
+      orch_frequency = "1 hour",
       check_datetime = as.POSIXct("2024-04-25 9:00:00", tz = "UTC")
     )
   })

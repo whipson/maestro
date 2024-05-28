@@ -2,7 +2,6 @@
 #'
 #' @param pipe_name name of the pipeline and function
 #' @param frequency how often the pipeline should run (e.g., hourly, daily, etc.). Fills in maestroFrequency tag
-#' @param interval units of frequency between runs (e.g., 1, 2, 7). Fills in maestroFrequency tag
 #' @param start_time start time of the pipeline schedule. Fills in maestroStartTime tag
 #' @param tz timezone that pipeline will be scheduled in. Fills in maestroTz tag
 #' @param log_level log level for the pipeline (e.g., INFO, WARN, ERROR). Fills in maestroLogLevel tag
@@ -15,7 +14,6 @@ create_pipeline <- function(
     pipe_name,
     pipeline_dir = "pipelines",
     frequency = "day",
-    interval = 1,
     start_time = Sys.Date(),
     tz = "UTC",
     log_level = "INFO",

@@ -4,8 +4,7 @@ test_that("parse maestroFrequency tag works", {
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
-  expect_in(res$val, c("minute", "hour", "day", "week", "month",
-                       "quarter", "year"))
+  expect_type(res$val, "double")
 })
 
 test_that("maestroFrequency default value is expected", {
@@ -15,7 +14,7 @@ test_that("maestroFrequency default value is expected", {
   ) |>
     expect_no_message()
 
-  expect_equal(res$val, "day")
+  expect_type(res$val, "double")
 })
 
 test_that("bad usage of maestroFrequency warns and gives no val", {
@@ -23,37 +22,7 @@ test_that("bad usage of maestroFrequency warns and gives no val", {
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_bad.R"))
   ) |>
-    expect_warning(regexp = "Must be one of")
-
-  expect_null(res$val)
-})
-
-test_that("parse maestroInterval tag works", {
-  res <- roxygen2::roc_proc_text(
-    maestroInterval_roclet(),
-    readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
-  ) |>
-    expect_no_message()
-
-  expect_type(res$val, "integer")
-})
-
-test_that("maestroInterval default value is returned", {
-  res <- roxygen2::roc_proc_text(
-    maestroInterval_roclet(),
-    readLines(test_path("test_pipelines/test_pipeline_daily_default.R"))
-  ) |>
-    expect_no_message()
-
-  expect_type(res$val, "integer")
-})
-
-test_that("bad usage of maestroInterval warns and gives no val", {
-  res <- roxygen2::roc_proc_text(
-    maestroInterval_roclet(),
-    readLines(test_path("test_pipelines/test_pipeline_interval_bad.R"))
-  ) |>
-    expect_warning(regexp = "Must be a positive")
+    expect_warning(regexp = "Must have a format")
 
   expect_null(res$val)
 })
@@ -82,7 +51,7 @@ test_that("maestroStartTime default value is returned", {
 
 test_that("integer maestroStartTime fails", {
   res <- roxygen2::roc_proc_text(
-    maestroInterval_roclet(),
+    maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_int.R"))
   ) |>
     expect_warning(regexp = "Must be a timestamp")
