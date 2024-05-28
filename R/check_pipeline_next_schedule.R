@@ -28,7 +28,7 @@ check_pipeline_next_schedule <- function(
 
   cur_run <- utils::tail(pipeline_sequence, n = 1)
   is_scheduled_now <- check_datetime_round == cur_run
-  next_run <- utils::tail(seq(from = cur_run, length.out = 2, by = pipeline_seconds / 60 / 60), n = 1)
+  next_run <- utils::tail(seq(from = cur_run, length.out = 2, by = pipeline_seconds), n = 1)
 
   list(
     next_run = next_run,
