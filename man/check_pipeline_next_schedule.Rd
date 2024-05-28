@@ -12,7 +12,7 @@ check_pipeline_next_schedule(
 )
 }
 \arguments{
-\item{orch_frequency}{frequency of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
+\item{orch_frequency}{number of seconds representing the frequency of orchestrator}
 
 \item{check_datetime}{datetime to be used to check if the pipeline should run}
 

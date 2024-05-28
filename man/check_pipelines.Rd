@@ -9,7 +9,7 @@ check_pipelines(.data, orch_frequency, check_datetime)
 \arguments{
 \item{.data}{data.frame with pipeline name, frequency, and start datetime}
 
-\item{orch_frequency}{frequency of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
+\item{orch_frequency}{number of seconds representing the frequency of orchestrator}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 }

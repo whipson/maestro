@@ -21,7 +21,7 @@ run_schedule(
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
-\item{orch_frequency}{frequency of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
+\item{orch_frequency}{of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 
