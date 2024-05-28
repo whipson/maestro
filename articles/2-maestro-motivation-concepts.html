@@ -190,6 +190,51 @@ this:</p>
 saying that we intend to run the orchestrator every 1 hour.</p>
 </div>
 <div class="section level2">
+<h2 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>
+</h2>
+<div class="section level3">
+<h3 id="r-targets">{R} targets<a class="anchor" aria-label="anchor" href="#r-targets"></a>
+</h3>
+<p><a href="https://docs.ropensci.org/targets/index.html" class="external-link">targets</a> is
+a “pipeline tool for statistics and data science in R”. If you have
+multiple connected components of a pipeline, <code>targets</code> skips
+computation of tasks that are up-to-date. <code>targets</code> seems to
+be primarily used for projects with a single output (e.g., model,
+document) where there are multiple steps that cumulatively take a long
+time to complete. In contrast, <code>maestro</code> is focused on
+projects with multiple <em>independent</em> pipelines. Moreover,
+<code>maestro</code> pipelines are primarily used when the
+<em>up-to-dateness</em> of the source data is unknown (e.g., coming from
+an API or database), unlike in <code>targets</code> where it determines
+the <em>up-to-dateness</em> based on the contents of a file.</p>
+<p>That said, <code>targets</code> and <code>maestro</code> may be
+complimentary in a single project. One possible case would be to use
+<code>maestro</code> to orchestrate <code>targets</code> pipelines for
+tasks such as ETL (e.g., <code>maestro</code> kicks off the pipeline but
+then downstream computations are avoided if there’s no new data from
+source). This is a possible exciting integration that we hope to
+investigate further!</p>
+</div>
+<div class="section level3">
+<h3 id="python-dagster">{Python} dagster<a class="anchor" aria-label="anchor" href="#python-dagster"></a>
+</h3>
+<p><a href="https://dagster.io/" class="external-link">Dagster</a> is an “open source
+orchestration platform for the development, production, and observation
+of data assets”. Like <code>maestro</code>, dagster uses decorators
+(special comments) to configure <em>data assets</em> (functions). Unlike
+<code>maestro</code>, dagster is primarily for chaining together
+dependent components of a multi-step pipeline - a DAG. It also supports
+a developer UI and is more fully developed than <code>maestro</code> at
+the current time.</p>
+<p>DAG support is something we’ve considered for <code>maestro</code>.
+It seems feasible but would be a dramatic step up in the complexity of
+the package. Conceivably, you could tag <code>maestro</code> pipelines
+to form a dependency graph and then <code>maestro</code> would validate
+the graph and coordinate the chaining and passing of data from one
+component to the next.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="when-to-not-use-maestro">When to not use maestro?<a class="anchor" aria-label="anchor" href="#when-to-not-use-maestro"></a>
 </h2>
 <p>While <code>maestro</code> can be used for almost any data
