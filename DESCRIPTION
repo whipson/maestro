@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: maestro
-Version: 0.0.2
+Version: 0.0.2.009
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut"), comment = c(ORCID = "0000-0002-3931-2189")),
