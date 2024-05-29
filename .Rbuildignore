@@ -13,3 +13,4 @@
 ^maestro.log
 ^orchestrator.R
 ^pipelines$
+^cran-comments\.md$
