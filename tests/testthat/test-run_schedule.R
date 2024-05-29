@@ -8,8 +8,8 @@ test_that("run_schedule works", {
 
   expect_s3_class(status, "data.frame")
   expect_gt(nrow(status), 0)
-  expect_length(last_runtime_errors(), 0)
-  expect_length(last_runtime_warnings(), 0)
+  expect_length(last_run_errors(), 0)
+  expect_length(last_run_warnings(), 0)
 }) |>
   suppressMessages()
 
@@ -88,7 +88,7 @@ test_that("run_schedule propagates warnings", {
   expect_message({
     run_schedule(schedule, run_all = TRUE)
   })
-  expect_gt(length(last_runtime_warnings()), 0)
+  expect_gt(length(last_run_warnings()), 0)
 }) |>
   suppressMessages()
 
@@ -105,7 +105,7 @@ test_that("run_schedule handles errors in a pipeline", {
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
 
-  errors <- last_runtime_errors()
+  errors <- last_run_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
 }) |>
@@ -152,7 +152,7 @@ test_that("run_schedule correctly passes arguments", {
     schedule,
     run_all = TRUE
   )
-  expect_gt(length(last_runtime_errors()), 0)
+  expect_gt(length(last_run_errors()), 0)
 
   # Works
   run_schedule(
@@ -162,7 +162,7 @@ test_that("run_schedule correctly passes arguments", {
     ),
     run_all = TRUE
   )
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 
   # Argument provided
   run_schedule(
@@ -236,6 +236,6 @@ test_that("run_schedule works with multiple cores", {
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 }) |>
   suppressMessages()
