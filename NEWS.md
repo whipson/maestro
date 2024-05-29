@@ -13,3 +13,7 @@
 -   maestroInterval tag removed
 
 -   `orch_interval` argument to `run_schedule()` removed.
+
+-   `create_maestro()` and `create_orchestrator()` now use the argument `type` instead of `extension` for defining what script type to use for the orchestrator.
+
+-   Changed `last_parsing_errors()` to `last_build_errors()`; changed functions of the form `last_runtime_*()` to `last_run_*()`.
