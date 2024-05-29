@@ -1,26 +1,14 @@
 #' Build a schedule table
 #'
-#' Builds a schedule data.frame for scheduling pipelines in `run_schedule()`. This
-#' function parses the decorators of functions located in `pipeline_dir` which is
-#' conventionally called pipelines.
+#' Builds a schedule data.frame for scheduling pipelines in `run_schedule()`.
 #'
-#' @md
-#' @details
+#' This function parses the maestro tags of functions located in `pipeline_dir` which is
+#' conventionally called 'pipelines'. An orchestrator requires a schedule table
+#' to determine which pipelines are to run and when. Each row in a schedule table
+#' is a pipeline name and its scheduling parameters such as its frequency.
 #'
-#' An orchestrator requires a schedule table to determine which pipelines are to
-#' run and when. Each row in a schedule table is a pipeline name and its
-#' scheduling parameters such as its frequency.
-#'
-#' ## Basic workflow
-#'
-#' In a basic `maestro` workflow, you would run `run_schedule()` in the orchestrator
-#' every time to ensure that the orchestrator is running off the latest schedule.
-#'
-#' ## Advanced workflow
-#'
-#' If shaving off a few milliseconds of compute time is important, you can create
-#' the schedule once, cache it somewhere in your project directory, and read it
-#' in before executing `run_schedule(schedule)`.
+#' The schedule table is mostly intended to be used by `run_schedule()` immediately.
+#' In other words, it is not recommended to make changes to it.
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
 #'
@@ -30,9 +18,9 @@
 #'
 #' # Creating a temporary directory for demo purposes! In practice, just
 #' # create a 'pipelines' directory at the project level.
-#' dir.create("pipelines")
-#' build_schedule()
-#'
+#' pipeline_dir <- tempdir()
+#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+#' build_schedule(pipeline_dir = pipeline_dir)
 build_schedule <- function(pipeline_dir = "./pipelines") {
 
   if (!dir.exists(pipeline_dir)) {
@@ -59,7 +47,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
   attempted_sch_parses <- purrr::map(
     pipelines, purrr::safely(build_schedule_entry)
   ) |>
-    setNames(basename(pipelines))
+    stats::setNames(basename(pipelines))
 
   # Check uniqueness of the function names
   pipe_names <- purrr::map(attempted_sch_parses, ~{
@@ -91,7 +79,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     purrr::discard(is.null)
 
   # Assign the errors to the pkgenv
-  maestro_pkgenv$last_parsing_errors <- sch_errors
+  maestro_pkgenv$last_build_errors <- sch_errors
 
   maestro_parse_cli(sch_results, sch_errors)
 
@@ -100,8 +88,7 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
     purrr::list_rbind() |>
     # Supply default values for missing
     dplyr::mutate(
-      frequency = dplyr::coalesce(frequency, "day"),
-      interval = dplyr::coalesce(interval, 1L),
+      frequency = dplyr::coalesce(frequency, 86400),
       start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
       tz = dplyr::coalesce(tz, "UTC"),
       skip = dplyr::coalesce(skip, FALSE),

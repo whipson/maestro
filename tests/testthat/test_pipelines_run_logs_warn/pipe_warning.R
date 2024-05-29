@@ -1,4 +1,4 @@
-#' @maestroFrequency day
+#' @maestroFrequency 1 day
 #' @maestroLogLevel WARN
 pipe3 <- function() {
   message("Hide me")
@@ -7,7 +7,6 @@ pipe3 <- function() {
   iris
 }
 
-#' @maestroInterval 10
 #' @maestroLogLevel WARN
 pipe4 <- function() {
   message("Hide me too")

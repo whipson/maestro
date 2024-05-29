@@ -38,8 +38,7 @@ In `maestro` a pipeline is an R function with `roxygen2` comments for scheduling
 ```{r, eval=FALSE}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-05-24
 
 my_pipe <- function() {
@@ -70,12 +69,11 @@ schedule_table <- build_schedule()
 
 run_schedule(
   schedule_table,
-  orch_frequency = "hour",
-  orch_interval = 1
+  orch_frequency = "1 hour"
 )
 ```
 
-By passing the `orch_frequency = "hour"` and `orch_interval = 1` to `run_schedule()`, we're saying that we intend to run the orchestrator every 1 hour.
+By passing the `orch_frequency = "1 hour"` to `run_schedule()`, we're saying that we intend to run the orchestrator every 1 hour.
 
 ## Comparison with other packages
 

@@ -7,8 +7,7 @@
 create_pipeline(
   pipe_name,
   pipeline_dir = "pipelines",
-  frequency = "day",
-  interval = 1,
+  frequency = "1 day",
   start_time = Sys.Date(),
   tz = "UTC",
   log_level = "INFO",
@@ -19,9 +18,9 @@ create_pipeline(
 \arguments{
 \item{pipe_name}{name of the pipeline and function}
 
-\item{frequency}{how often the pipeline should run (e.g., hourly, daily, etc.). Fills in maestroFrequency tag}
+\item{pipeline_dir}{directory containing the pipeline scripts}
 
-\item{interval}{units of frequency between runs (e.g., 1, 2, 7). Fills in maestroFrequency tag}
+\item{frequency}{how often the pipeline should run (e.g., 1 day, 3 hours, 4 months). Fills in maestroFrequency tag}
 
 \item{start_time}{start time of the pipeline schedule. Fills in maestroStartTime tag}
 

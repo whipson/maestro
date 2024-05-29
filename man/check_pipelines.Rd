@@ -4,14 +4,12 @@
 \alias{check_pipelines}
 \title{Check which pipelines are scheduled to run and when next pipelines will run}
 \usage{
-check_pipelines(.data, orch_interval, orch_frequency, check_datetime)
+check_pipelines(.data, orch_frequency, check_datetime)
 }
 \arguments{
-\item{.data}{data.frame with pipeline name, interval, frequency, and start datetime}
+\item{.data}{data.frame with pipeline name, frequency, and start datetime}
 
-\item{orch_interval}{a numeric value representing how often the orchestration runs}
-
-\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{number of seconds representing the frequency of orchestrator}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 }

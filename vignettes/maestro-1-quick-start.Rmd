@@ -2,7 +2,7 @@
 title: "Quick Start"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{maestro-quick-start}
+  %\VignetteIndexEntry{Quick Start}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -52,8 +52,7 @@ A pipeline is simply an R function with decorators called maestro tags. Maestro 
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
@@ -66,7 +65,7 @@ my_pipe <- function() {
 
 `my_pipe` is a function with an empty body - so right now it won't do anything. The comments above are interpreted by `maestro` as "this function is scheduled to run every 1 day starting at 2024-05-24 (00:00:00) UTC time".
 
-Note that you don't need to provide all these tags. A single maestro tag is enough to distinguish it as a pipeline. Pipelines missing tags will use consistent defaults (e.g., if `maestroInterval` is missing the default is 1).
+Note that you don't need to provide all these tags. A single maestro tag is enough to distinguish it as a pipeline. Pipelines missing tags will use consistent defaults (e.g., if `maestroFrequency` is missing the default is 1 day).
 
 In most use cases, the actual code inside of `my_pipe` would be to run an ETL job (extract data from a source, transform it, and load it into a file system or database). In technical terms, it's the *side effect* of the code and not its return value that is important.
 
@@ -75,8 +74,7 @@ Here's a more realistic, albeit impractical, example:
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
@@ -99,8 +97,7 @@ A project with a single pipeline is ok, but in `maestro` is more useful when you
 ```{r example-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 create_pipeline(
   pipe_name = "another_pipeline",
-  frequency = "hour",
-  interval = 1,
+  frequency = "1 hour",
   start_time = "2024-05-17 15:00:00",
   tz = "America/Halifax",
   log_level = "ERROR"
@@ -122,12 +119,11 @@ schedule_table <- build_schedule()
 
 run_schedule(
   schedule_table,
-  orch_frequency = "hour",
-  orch_interval = 1
+  orch_frequency = "1 hour"
 )
 ```
 
-Building the schedule gets `maestro` to look through the pipelines in the pipelines folder and creates a data.frame with schedule information. Then, you pass that data.frame to `run_schedule()` along with how often the orchestrator is supposed to run. It is important to tell `maestro` how often it'll be checking the pipelines using the `orch_frequency` and `orch_interval` parameters. Here, we're informing it that the orchestrator is running every 1 hour.
+Building the schedule gets `maestro` to look through the pipelines in the pipelines folder and creates a data.frame with schedule information. Then, you pass that data.frame to `run_schedule()` along with how often the orchestrator is supposed to run. It is important to tell `maestro` how often it'll be checking the pipelines using the `orch_frequency` parameter. Here, we're informing it that the orchestrator is running every 1 hour.
 
 Importantly, it isn't `maestro`'s job to actually run it this often - it's *your* job to make sure it runs at that frequency (e.g., deploying it via cron or some cloud environment where code can be scheduled).[^1]
 

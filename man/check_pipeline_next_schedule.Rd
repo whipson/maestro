@@ -5,24 +5,18 @@
 \title{Check pipeline next schedule}
 \usage{
 check_pipeline_next_schedule(
-  orch_interval,
   orch_frequency,
   check_datetime,
-  pipeline_interval,
-  pipeline_freq,
+  pipeline_seconds,
   pipeline_datetime
 )
 }
 \arguments{
-\item{orch_interval}{a numeric value representing how often the orchestration runs}
-
-\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{number of seconds representing the frequency of orchestrator}
 
 \item{check_datetime}{datetime to be used to check if the pipeline should run}
 
-\item{pipeline_interval}{a numeric value representing how often the pipeline runs}
-
-\item{pipeline_freq}{unit of how often the pipeline runs (i.e. min, hour, day, month, etc.)}
+\item{pipeline_seconds}{unit of how often the pipeline runs (i.e. min, hour, day, month, etc.)}
 
 \item{pipeline_datetime}{datetime of the first time the pipeline is to run}
 }

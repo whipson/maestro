@@ -8,8 +8,8 @@ test_that("run_schedule works", {
 
   expect_s3_class(status, "data.frame")
   expect_gt(nrow(status), 0)
-  expect_length(last_runtime_errors(), 0)
-  expect_length(last_runtime_warnings(), 0)
+  expect_length(last_run_errors(), 0)
+  expect_length(last_run_warnings(), 0)
 }) |>
   suppressMessages()
 
@@ -36,6 +36,25 @@ test_that("run_schedule works with a future check_datetime", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule works on different kinds of frequencies", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
+                  "1 quarter", "14 months", "4 years", "24 hours",
+                  "31 days", "400 days")
+
+  purrr::walk(test_freqs, ~{
+    expect_no_error({
+      run_schedule(
+        schedule,
+        orch_frequency = .x
+      )
+    })
+  })
+}) |>
+  suppressMessages()
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()
@@ -53,8 +72,7 @@ test_that("run_schedule works even with nonexistent pipeline", {
     dplyr::add_row(
       script_path = "nonexistent",
       pipe_name = "im_a_problem",
-      frequency = "day",
-      interval = 1,
+      frequency = 10,
       start_time = as.POSIXct("1970-01-01 00:00:00")
     )
 
@@ -70,7 +88,7 @@ test_that("run_schedule propagates warnings", {
   expect_message({
     run_schedule(schedule, run_all = TRUE)
   })
-  expect_gt(length(last_runtime_warnings()), 0)
+  expect_gt(length(last_run_warnings()), 0)
 }) |>
   suppressMessages()
 
@@ -87,7 +105,7 @@ test_that("run_schedule handles errors in a pipeline", {
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
 
-  errors <- last_runtime_errors()
+  errors <- last_run_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
 }) |>
@@ -117,7 +135,7 @@ test_that("run_schedule checks schedule validity in the event of orchestration e
 
   # Has required columns, but types are wrong
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-  schedule$interval <- "hello"
+  schedule$frequency <- "hello"
   expect_error(
     run_schedule(schedule, run_all = TRUE),
     "Schedule column"
@@ -134,7 +152,7 @@ test_that("run_schedule correctly passes arguments", {
     schedule,
     run_all = TRUE
   )
-  expect_gt(length(last_runtime_errors()), 0)
+  expect_gt(length(last_run_errors()), 0)
 
   # Works
   run_schedule(
@@ -144,7 +162,7 @@ test_that("run_schedule correctly passes arguments", {
     ),
     run_all = TRUE
   )
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 
   # Argument provided
   run_schedule(
@@ -218,6 +236,6 @@ test_that("run_schedule works with multiple cores", {
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 }) |>
   suppressMessages()

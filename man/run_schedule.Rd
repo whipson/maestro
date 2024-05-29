@@ -6,8 +6,7 @@
 \usage{
 run_schedule(
   schedule,
-  orch_interval = 1,
-  orch_frequency = "day",
+  orch_frequency = "1 day",
   check_datetime = lubridate::now(tzone = "UTC"),
   resources = list(),
   run_all = FALSE,
@@ -22,9 +21,7 @@ run_schedule(
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
-\item{orch_interval}{a numeric value representing how often the orchestration runs}
-
-\item{orch_frequency}{unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)}
+\item{orch_frequency}{of the orchestrator, a single string formatted like "1 day" or "2 weeks"}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 
@@ -76,4 +73,22 @@ Pipelines can be run in parallel using the \code{cores} argument. First, you mus
 in the orchestrator. Then, supply the desired number of cores to the \code{cores} argument. Note that
 console output appears different in multicore mode.
 }
+}
+\examples{
+pipeline_dir <- tempdir()
+create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+schedule <- build_schedule(pipeline_dir = pipeline_dir)
+# Runs the schedule every 1 day
+run_schedule(
+  schedule,
+  orch_frequency = "1 day",
+  quiet = TRUE
+)
+
+# Runs the schedule every 15 minutes
+run_schedule(
+  schedule,
+  orch_frequency = "15 minutes",
+  quiet = TRUE
+)
 }

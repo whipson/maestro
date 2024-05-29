@@ -3,6 +3,8 @@ maestro
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data
@@ -61,8 +63,7 @@ pipeline in `maestro`:
 
 ``` r
 #' Example ETL pipeline
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
   
@@ -84,10 +85,8 @@ my_etl <- function() {
 What makes this a `maestro` pipeline is the use of special
 *roxygen*-style comments above the function definition:
 
-- `#' @maestroFrequency day` indicates that this function should execute
-  at a daily frequency.
-
-- `#' @maestroInterval 1` tells us it should be every day.
+- `#' @maestroFrequency 1 day` indicates that this function should
+  execute at a daily frequency.
 
 - `#' @maestroStartTime 2024-03-25 12:30:00` denotes the first time it
   should run.
@@ -118,8 +117,7 @@ schedule_table <- build_schedule(pipeline_dir = "pipelines")
 # Checks which pipelines are due to run and then executes them
 run_status <- run_schedule(
   schedule_table, 
-  orch_frequency = "day",
-  orch_interval = 1
+  orch_frequency = "1 day"
 )
 
 run_status
