@@ -27,7 +27,7 @@
 #'
 #' @param schedule a table of scheduled pipelines generated from `build_schedule()`
 #' @inheritParams check_pipelines
-#' @param orch_frequency of the orchestrator, a single string formatted like [number] [units] (e.g., "1 day")
+#' @param orch_frequency of the orchestrator, a single string formatted like "1 day" or "2 weeks"
 #' @param resources named list of shared resources made available to pipelines as needed
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
 #' Does not apply to pipes with a `maestroSkip` tag.
@@ -41,6 +41,23 @@
 #'
 #' @return data.frame of pipeline statuses
 #' @export
+#' @examples
+#' pipeline_dir <- tempdir()
+#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
+#' # Runs the schedule every 1 day
+#' run_schedule(
+#'   schedule,
+#'   orch_frequency = "1 day",
+#'   quiet = TRUE
+#' )
+#'
+#' # Runs the schedule every 15 minutes
+#' run_schedule(
+#'   schedule,
+#'   orch_frequency = "15 minutes",
+#'   quiet = TRUE
+#' )
 run_schedule <- function(
     schedule,
     orch_frequency = "1 day",
@@ -219,10 +236,10 @@ run_schedule <- function(
       ) |>
         purrr::discard(is.null)
 
-      # For access via last_runtime_*
-      maestro_pkgenv$last_runtime_errors <- run_errors
-      maestro_pkgenv$last_runtime_warnings <- run_warnings
-      maestro_pkgenv$last_runtime_messages <- run_messages
+      # For access via last_run_*
+      maestro_pkgenv$last_run_errors <- run_errors
+      maestro_pkgenv$last_run_warnings <- run_warnings
+      maestro_pkgenv$last_run_messages <- run_messages
 
       # Create status table
       status_table <- purrr::pmap(
@@ -272,7 +289,7 @@ run_schedule <- function(
 
       next_runs_cli <- schedule |>
         dplyr::arrange(next_run) |>
-        head(n = n_show_next)
+        utils::head(n = n_show_next)
 
       cli::cli_h3("Next scheduled pipelines {cli::col_cyan(cli::symbol$pointer)}")
       next_run_strs <- glue::glue("{next_runs_cli$pipe_name} | {next_runs_cli$next_run}")

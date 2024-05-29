@@ -5,7 +5,6 @@
 #' @param check_datetime datetime used to check against the pipeline start datetime
 #'
 #' @return list
-#'
 check_pipelines <- function(.data, orch_frequency, check_datetime) {
 
   schedule_checks <- purrr::pmap(
