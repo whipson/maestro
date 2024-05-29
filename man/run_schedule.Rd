@@ -21,7 +21,7 @@ run_schedule(
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
-\item{orch_frequency}{of the orchestrator, a single string formatted like \link{number} \link{units} (e.g., "1 day")}
+\item{orch_frequency}{of the orchestrator, a single string formatted like "1 day" or "2 weeks"}
 
 \item{check_datetime}{datetime used to check against the pipeline start datetime}
 
@@ -73,4 +73,22 @@ Pipelines can be run in parallel using the \code{cores} argument. First, you mus
 in the orchestrator. Then, supply the desired number of cores to the \code{cores} argument. Note that
 console output appears different in multicore mode.
 }
+}
+\examples{
+pipeline_dir <- tempdir()
+create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+schedule <- build_schedule(pipeline_dir = pipeline_dir)
+# Runs the schedule every 1 day
+run_schedule(
+  schedule,
+  orch_frequency = "1 day",
+  quiet = TRUE
+)
+
+# Runs the schedule every 15 minutes
+run_schedule(
+  schedule,
+  orch_frequency = "15 minutes",
+  quiet = TRUE
+)
 }
