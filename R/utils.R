@@ -4,7 +4,7 @@ maestro_logger <- logger::layout_glue_generator(
 
 #' Checks the validity of a schedule
 #'
-#' @param schedule_table a schedule table returned from `build_schedule`
+#' @param schedule a schedule table returned from `build_schedule`
 #'
 #' @return invisible or error
 schedule_validity_check <- function(schedule) {
