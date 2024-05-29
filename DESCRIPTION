@@ -4,7 +4,8 @@ Title: maestro
 Version: 0.0.2.009
 Authors@R: 
     c(
-      person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut"), comment = c(ORCID = "0000-0002-3931-2189")),
+      person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut", "cph"), 
+      comment = c(ORCID = "0000-0002-3931-2189")),
       person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb"))
     )
 Maintainer: Will Hipson <will.hipson@hiaa.ca>
@@ -21,7 +22,6 @@ Imports:
     logger,
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
-    R.utils,
     rlang (>= 1.0.0),
     roxygen2,
     rstudioapi,
@@ -33,7 +33,10 @@ RoxygenNote: 7.3.1
 Depends: 
     R (>= 4.1.0)
 Suggests: 
+    furrr,
+    future,
     knitr,
+    R.utils,
     rmarkdown,
     testthat (>= 3.0.0),
     withr
