@@ -9,3 +9,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^README_cache
+^maestro.log
+^orchestrator.R
+^pipelines$
