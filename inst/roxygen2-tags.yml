@@ -1,19 +1,10 @@
 - name: maestroFrequency
   description: >
     The base unit for scheduling a pipeline. Pipeline will run at the
-    frequency defined here. Default is day.
+    frequency defined here. Default is 1 day.
 
-    Accepted values are minute, hour, day, week, month, quarter, year.
+    Other examples are 3 weeks, 12 hours, 1 quarter, 2 months, 1 year.
   template: ' ${1:maestroFrequency}'
-  recommend: true
-
-- name: maestroInterval
-  description: >
-    Recurring interval for the pipeline. A positive integer. Default is 1.
-
-    For example, an interval of 1 means pipeline will run once per frequency
-    unit; an interval of 3 means pipeline will run once every 3 units of frequency.
-  template: ' ${1:maestroInterval}'
   recommend: true
 
 - name: maestroStartTime
@@ -40,4 +31,12 @@
     Useful during development. Skipped pipelines are indicated in console output of
     `r maestro::run_schedule()`
   template: ' ${1:maestroSkip}'
+  recommend: true
+
+- name: maestroLogLevel
+  description: >
+    Level of logging threshold if using logging.
+
+    Available values include INFO, WARN, and ERROR.
+  template: ' ${1:maestroLogLevel}'
   recommend: true
