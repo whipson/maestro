@@ -3,6 +3,8 @@ maestro
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data

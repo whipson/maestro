@@ -29,6 +29,7 @@ asciicast::init_knitr_engine(
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data pipelines in R. If you have several scheduled jobs or pipelines you want to run in R and want to manage them in one project, then `maestro` is for you!
