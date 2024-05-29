@@ -5,6 +5,8 @@ maestro
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/whipson/maestro?branch=main)
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data

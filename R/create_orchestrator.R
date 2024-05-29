@@ -25,7 +25,13 @@ create_orchestrator <- function(
       .null = NULL
     )
 
-  path <- paste0(path, ".", type)
+  extension <- switch (type,
+    R = "R",
+    Quarto = "qmd",
+    RMarkdown = "Rmd"
+  )
+
+  path <- paste0(path, ".", extension)
 
   if (file.exists(path)) {
     overwrite <- readline(glue::glue("File {path} already exists. Overwrite? [Y/n]: \n"))

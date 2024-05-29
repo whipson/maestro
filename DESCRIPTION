@@ -6,7 +6,7 @@ Authors@R:
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut", "cph"), 
       comment = c(ORCID = "0000-0002-3931-2189")),
-      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb"))
+      person("Ryan", "Garnett", , "ryan.garnett@hiaa.ca", role = c("aut", "ctb", "cph"))
     )
 Maintainer: Will Hipson <will.hipson@hiaa.ca>
 Description: Framework for creating and orchestrating data pipelines in R. Organize, 

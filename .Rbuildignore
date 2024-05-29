@@ -14,3 +14,4 @@
 ^orchestrator.R
 ^pipelines$
 ^cran-comments\.md$
+^codecov\.yml$
