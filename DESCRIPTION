@@ -19,7 +19,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     cli (>= 3.3.0),
-    dplyr (>= 1.0.0),
+    dplyr (>= 1.1.0),
     glue,
     logger,
     lubridate (>= 1.9.1),
