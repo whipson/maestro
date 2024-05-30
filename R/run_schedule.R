@@ -81,9 +81,25 @@ run_schedule <- function(
   }, error = \(e) {
     cli::cli_abort(
       c(
-        "Invalid `orch_frequency`.",
-        "i" = "Must be of the format like 1 day, 2 weeks, etc."
-      )
+        "Invalid `orch_frequency` {orch_frequency}.",
+        "i" = "Must be of the format like '1 day', '2 weeks', etc."
+      ),
+      call = NULL
+    )
+  })
+
+  # Additional parse using timechange to verify it isn't something like 500 days,
+  # which isn't understood by timechange
+  tryCatch({
+    timechange::time_round(Sys.time(), orch_frequency)
+  }, error = \(e) {
+    timechange_error_fmt <- gsub('\\..*', '', e$message)
+    cli::cli_abort(
+      c(
+        "Invalid `orch_frequency` {orch_frequency}.
+        {timechange_error_fmt}."
+      ),
+      call = NULL
     )
   })
 
