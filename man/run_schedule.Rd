@@ -23,7 +23,7 @@ run_schedule(
 
 \item{orch_frequency}{of the orchestrator, a single string formatted like "1 day" or "2 weeks"}
 
-\item{check_datetime}{datetime used to check against the pipeline start datetime}
+\item{check_datetime}{datetime to be used to check if the pipeline should run}
 
 \item{resources}{named list of shared resources made available to pipelines as needed}
 
@@ -41,7 +41,7 @@ a multisession plan must be executed in the orchestrator (see details)}
 
 \item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 
-\item{quiet}{print metrics to the console (default = \code{TRUE})}
+\item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
 data.frame of pipeline statuses

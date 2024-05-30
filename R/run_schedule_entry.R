@@ -62,6 +62,8 @@ run_schedule_entry <- function(
 
   run_env <- new.env()
 
+  start_time <- lubridate::now(tz = "UTC")
+
   # Source the script
   tryCatch({
     source(script_path, local = run_env)
@@ -84,6 +86,8 @@ run_schedule_entry <- function(
 
   list(
     warnings = warnings_vec,
-    messages = messages_vec
+    messages = messages_vec,
+    start_time = start_time,
+    end_time = lubridate::now(tz = "UTC")
   )
 }
