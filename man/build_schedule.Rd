@@ -4,10 +4,12 @@
 \alias{build_schedule}
 \title{Build a schedule table}
 \usage{
-build_schedule(pipeline_dir = "./pipelines")
+build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
 }
 \arguments{
 \item{pipeline_dir}{path to directory containing the pipeline scripts}
+
+\item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
 data.frame
