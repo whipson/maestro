@@ -9,10 +9,12 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
     trimws()
 
   if (x$raw == "") {
-    x$val <- 86400
+    x$val <- "1 day"
   } else {
+
     tryCatch({
-      x$val <- convert_to_seconds(x$raw)
+      parse_rounding_unit(x$raw)
+      x$val <- x$raw
     }, error = \(e) {
       roxygen2::roxy_tag_warning(
         x,
@@ -24,6 +26,7 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
       return()
     })
   }
+
   x
 }
 
