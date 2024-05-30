@@ -4,41 +4,33 @@
 \alias{build_schedule}
 \title{Build a schedule table}
 \usage{
-build_schedule(pipeline_dir = "./pipelines")
+build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
 }
 \arguments{
 \item{pipeline_dir}{path to directory containing the pipeline scripts}
+
+\item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
 data.frame
 }
 \description{
-Builds a schedule data.frame for scheduling pipelines in \code{run_schedule()}. This
-function parses the decorators of functions located in \code{pipeline_dir} which is
-conventionally called pipelines.
+Builds a schedule data.frame for scheduling pipelines in \code{run_schedule()}.
 }
 \details{
-An orchestrator requires a schedule table to determine which pipelines are to
-run and when. Each row in a schedule table is a pipeline name and its
-scheduling parameters such as its frequency.
-\subsection{Basic workflow}{
+This function parses the maestro tags of functions located in \code{pipeline_dir} which is
+conventionally called 'pipelines'. An orchestrator requires a schedule table
+to determine which pipelines are to run and when. Each row in a schedule table
+is a pipeline name and its scheduling parameters such as its frequency.
 
-In a basic \code{maestro} workflow, you would run \code{run_schedule()} in the orchestrator
-every time to ensure that the orchestrator is running off the latest schedule.
-}
-
-\subsection{Advanced workflow}{
-
-If shaving off a few milliseconds of compute time is important, you can create
-the schedule once, cache it somewhere in your project directory, and read it
-in before executing \code{run_schedule(schedule)}.
-}
+The schedule table is mostly intended to be used by \code{run_schedule()} immediately.
+In other words, it is not recommended to make changes to it.
 }
 \examples{
 
 # Creating a temporary directory for demo purposes! In practice, just
 # create a 'pipelines' directory at the project level.
-dir.create("pipelines")
-build_schedule()
-
+pipeline_dir <- tempdir()
+create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+build_schedule(pipeline_dir = pipeline_dir)
 }

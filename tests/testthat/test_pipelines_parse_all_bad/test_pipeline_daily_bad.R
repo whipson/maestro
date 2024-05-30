@@ -1,7 +1,6 @@
 #' Simple mtcars print function
 #'
 #' @maestroFrequency 17
-#' @maestroInterval
 #' @maestroStartTime
 #'
 #' @export

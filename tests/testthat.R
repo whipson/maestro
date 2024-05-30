@@ -9,5 +9,6 @@
 library(testthat)
 library(dplyr)
 library(maestro)
+library(future)
 
 test_check("maestro")

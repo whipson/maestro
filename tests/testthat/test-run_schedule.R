@@ -7,9 +7,16 @@ test_that("run_schedule works", {
   })
 
   expect_s3_class(status, "data.frame")
+  expect_in(
+    c("pipe_name", "script_path", "invoked", "success", "pipeline_started",
+      "pipeline_ended", "errors", "warnings", "messages", "next_run"
+    ),
+    names(status)
+  )
+  expect_s3_class(status$pipeline_started, "POSIXct")
   expect_gt(nrow(status), 0)
-  expect_length(last_runtime_errors(), 0)
-  expect_length(last_runtime_warnings(), 0)
+  expect_length(last_run_errors(), 0)
+  expect_length(last_run_warnings(), 0)
 }) |>
   suppressMessages()
 
@@ -36,6 +43,25 @@ test_that("run_schedule works with a future check_datetime", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule works on different kinds of frequencies", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+
+  test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
+                  "1 quarter", "12 months", "4 years", "24 hours",
+                  "31 days", "1 secs", "50 seconds")
+
+  purrr::walk(test_freqs, ~{
+    expect_no_error({
+      run_schedule(
+        schedule,
+        orch_frequency = .x
+      )
+    })
+  })
+}) |>
+  suppressMessages()
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()
@@ -45,7 +71,7 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
   })
 })
 
-test_that("run_schedule works even with nonexistent pipeline", {
+test_that("run_schedule fails on a pipeline that doesn't exist", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
@@ -53,15 +79,63 @@ test_that("run_schedule works even with nonexistent pipeline", {
     dplyr::add_row(
       script_path = "nonexistent",
       pipe_name = "im_a_problem",
-      frequency = "day",
-      interval = 1,
+      frequency = "10 days",
       start_time = as.POSIXct("1970-01-01 00:00:00")
     )
 
-  run_schedule(schedule_with_missing, run_all = TRUE) |>
-    expect_message()
+  expect_error(
+    run_schedule(schedule_with_missing, run_all = TRUE),
+    regexp = "Schedule has column"
+  )
 }) |>
   suppressMessages()
+
+test_that("run_schedule timeliness checks - pipelines run when they're supposed to", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
+  status <- run_schedule(
+    schedule,
+    orch_frequency = "15 minutes",
+    check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
+    quiet = TRUE
+  )
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
+
+  status <- run_schedule(
+    schedule,
+    orch_frequency = "1 month",
+    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+    quiet = TRUE
+  )
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
+
+  status <- run_schedule(
+    schedule,
+    orch_frequency = "4 days",
+    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+    quiet = TRUE
+  )
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
+})
 
 test_that("run_schedule propagates warnings", {
 
@@ -70,7 +144,7 @@ test_that("run_schedule propagates warnings", {
   expect_message({
     run_schedule(schedule, run_all = TRUE)
   })
-  expect_gt(length(last_runtime_warnings()), 0)
+  expect_gt(length(last_run_warnings()), 0)
 }) |>
   suppressMessages()
 
@@ -87,7 +161,7 @@ test_that("run_schedule handles errors in a pipeline", {
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
 
-  errors <- last_runtime_errors()
+  errors <- last_run_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
 }) |>
@@ -114,14 +188,6 @@ test_that("run_schedule checks schedule validity in the event of orchestration e
     run_schedule(iris, run_all = TRUE),
     regexp = "Schedule is missing required columns"
   )
-
-  # Has required columns, but types are wrong
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-  schedule$interval <- "hello"
-  expect_error(
-    run_schedule(schedule, run_all = TRUE),
-    "Schedule column"
-  )
 }) |>
   suppressMessages()
 
@@ -134,7 +200,7 @@ test_that("run_schedule correctly passes arguments", {
     schedule,
     run_all = TRUE
   )
-  expect_gt(length(last_runtime_errors()), 0)
+  expect_gt(length(last_run_errors()), 0)
 
   # Works
   run_schedule(
@@ -144,7 +210,7 @@ test_that("run_schedule correctly passes arguments", {
     ),
     run_all = TRUE
   )
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 
   # Argument provided
   run_schedule(
@@ -218,6 +284,6 @@ test_that("run_schedule works with multiple cores", {
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
-  expect_length(last_runtime_errors(), 0)
+  expect_length(last_run_errors(), 0)
 }) |>
   suppressMessages()

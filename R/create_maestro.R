@@ -1,17 +1,27 @@
 #' Creates a new maestro project
 #'
 #' @inheritParams create_orchestrator
+#' @param ... unused
 #'
 #' @export
 #' @return invisible
-create_maestro <- function(path = ".", extension, ...) {
+#' @examples
+#'
+#' # Creates a new maestro project with an R orchestrator
+#' new_proj_dir <- tempdir()
+#' create_maestro(new_proj_dir, type = "R")
+#'
+#' create_maestro(new_proj_dir, type = "Quarto")
+create_maestro <- function(path = ".", type = "R", ...) {
+
+  type <- match.arg(type, choices = c("R", "Quarto", "RMarkdown"))
 
   # ensure path exists
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   create_orchestrator(
     path = file.path(path, "orchestrator"),
-    extension = extension,
+    type = type,
     open = FALSE,
     quiet = TRUE
   )

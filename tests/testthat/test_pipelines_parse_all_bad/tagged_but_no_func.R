@@ -1,4 +1,4 @@
-#' @maestroFrequency day
+#' @maestroFrequency 1 day
 library(dplyr)
 
 data <- iris |>

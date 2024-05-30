@@ -6,7 +6,7 @@
 \usage{
 create_orchestrator(
   path = "./orchestrator",
-  extension = c("R", "Quarto", "RMarkdown"),
+  type = c("R", "Quarto", "RMarkdown"),
   open = interactive(),
   quiet = FALSE
 )
@@ -14,7 +14,7 @@ create_orchestrator(
 \arguments{
 \item{path}{file path for the orchestrator script}
 
-\item{extension}{file extension for the orchestrator (supports R, Quarto, and RMarkdown)}
+\item{type}{file type for the orchestrator (supports R, Quarto, and RMarkdown)}
 
 \item{open}{whether or not to open the script upon creation}
 

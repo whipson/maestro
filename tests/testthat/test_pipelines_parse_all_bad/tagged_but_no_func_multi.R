@@ -1,13 +1,13 @@
-#' @maestroFrequency day
+#' @maestroFrequency
 data <- iris |>
   dplyr::filter() |>
   dplyr::summarise()
 
-#' @maestroInterval 1
+#' @maestroFrequency
 data |>
   head(n = 6)
 
-#' @maestroInterval 1
+#' @maestroFrequency
 this_one_is_good <- function() {
   # But the fact that there are bad ones above makes it bad
   iris

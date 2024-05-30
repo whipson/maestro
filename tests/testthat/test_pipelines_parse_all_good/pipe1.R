@@ -3,8 +3,7 @@
 #' This is a function that runs every hour starting at
 #' 2024-03-01 09:00:00
 #'
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-01 09:00:00
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
@@ -17,8 +16,7 @@ get_mtcars <- function() {
 
 #' Multiply
 #'
-#' @maestroFrequency month
-#' @maestroInterval 3
+#' @maestroFrequency 3 month
 #' @maestroLogLevel warn
 #'
 #' @export
@@ -28,8 +26,7 @@ wait <- function() {
 
 #' Add
 #'
-#' @maestroFrequency month
-#' @maestroInterval 3
+#' @maestroFrequency 3 month
 #' @maestroStartTime 1970-01-01
 #'
 #' @export
@@ -39,8 +36,7 @@ add <- function() {
 
 #' Something
 #'
-#' @maestroFrequency month
-#' @maestroInterval 3
+#' @maestroFrequency 3 month
 #' @maestroStartTime 1970-01-01 00:00:00 ADT
 #'
 #' @export

@@ -12,8 +12,7 @@
 #'
 #'  | tagName          | description                                                         | value             | examples (comma sep.)           | default             |
 #'  |------------------|---------------------------------------------------------------------|-------------------|---------------------------------|---------------------|
-#'  | maestroFrequency | Time unit for scheduling                                            | string            | hour, day, week                 | day                 |
-#'  | maestroInterval  | Number of time units between executions                             | positive integer  | 1, 2, 7                         | 1                   |
+#'  | maestroFrequency | Time unit for scheduling                                            | string            | 1 hour, 3 days, 5 weeks         | 1 day               |
 #'  | maestroLogLevel  | Threshold for logging when logging is requested                     | string            | INFO, WARN, ERROR               | INFO                |
 #'  | maestroSkip      | Skips the pipeline when running (presence of tag indicates to skip) | n/a               |                                 |                     |
 #'  | maestroStartTime | Start time of the pipeline; sets the point in time for recurrence   | date or timestamp | 1970-01-01 00:00:00, 2024-03-28 | 1970-01-01 00:00:00 |

@@ -2,21 +2,20 @@
 #'
 #' @param open whether or not to open the script upon creation
 #' @param path file path for the orchestrator script
-#' @param extension file extension for the orchestrator (supports R, Quarto, and RMarkdown)
+#' @param type file type for the orchestrator (supports R, Quarto, and RMarkdown)
 #' @param quiet whether to silence messages in the console (default = `FALSE`)
 #'
 #' @return invisible
-#' @export
 create_orchestrator <- function(
     path = "./orchestrator",
-    extension = c("R", "Quarto", "RMarkdown"),
+    type = c("R", "Quarto", "RMarkdown"),
     open = interactive(),
     quiet = FALSE
 ) {
 
-  extension <- match.arg(extension)
+  type <- match.arg(type, choices = c("R", "Quarto", "RMarkdown"))
 
-  template <- ifelse(extension == "R", "orchestrator_template", "orchestrator_template_qmd")
+  template <- ifelse(type == "R", "orchestrator_template", "orchestrator_template_qmd")
 
   script <- readLines(system.file(template, package = "maestro")) |>
     paste(collapse = "\n") |>
@@ -25,6 +24,12 @@ create_orchestrator <- function(
       .close = "}}",
       .null = NULL
     )
+
+  extension <- switch (type,
+    R = "R",
+    Quarto = "qmd",
+    RMarkdown = "Rmd"
+  )
 
   path <- paste0(path, ".", extension)
 

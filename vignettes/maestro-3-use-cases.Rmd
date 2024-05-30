@@ -20,8 +20,7 @@ This example is setup as a simple set of tasks creating objects that are used in
 ```{r eval = FALSE, message = FALSE, warning = FALSE}
 #' pipeline_wildfire_hourly maestro pipeline
 #'
-#' @maestroFrequency hour
-#' @maestroInterval 3
+#' @maestroFrequency 3 hour
 #' @maestroStartTime 2024-04-25 05:45:00
 #' @maestroTz America/Halifax
 
@@ -68,8 +67,7 @@ This example has a custom function that is used to access and extract the data f
 ```{r eval = FALSE, message = FALSE, warning = FALSE}
 #' pipeline_climate_daily maestro pipeline
 #'
-#' @maestroFrequency day
-#' @maestroInterval 1
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-04-25 06:30:00
 #' @maestroTz America/Halifax
 

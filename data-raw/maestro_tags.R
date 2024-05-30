@@ -1,6 +1,5 @@
 maestro_tags <- c(
   "maestroFrequency",
-  "maestroInterval",
   "maestroStartTime",
   "maestroTz",
   "maestroSkip",

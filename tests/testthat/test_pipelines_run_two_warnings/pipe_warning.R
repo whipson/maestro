@@ -1,10 +1,10 @@
-#' @maestroFrequency day
+#' @maestroFrequency 1 day
 pipe3 <- function() {
   warning("Oops")
   iris
 }
 
-#' @maestroInterval 10
+#' @maestroFrequency
 pipe4 <- function() {
   warning("Another oops")
   rnorm(10)

@@ -8,7 +8,6 @@ build_schedule_entry <- function(script_path) {
   # Current list of maestro tags and their equivalent table names
   maestro_tag_names <- list(
     frequency = "maestroFrequency",
-    interval = "maestroInterval",
     start_time = "maestroStartTime",
     tz = "maestroTz",
     skip = "maestroSkip",
@@ -52,7 +51,7 @@ build_schedule_entry <- function(script_path) {
     cli::cli_abort(
       c("No {.pkg maestro} tags present in {basename(script_path)}.",
         "i" = "A valid pipeline must have at least one function with one or
-        more {.pkg maestro} tags: e.g., `#' @maestroFrequency day`."),
+        more {.pkg maestro} tags: e.g., `#' @maestroFrequency 1 day`."),
       call = NULL
     )
   }
@@ -84,6 +83,17 @@ build_schedule_entry <- function(script_path) {
     )
   }) |>
     purrr::list_rbind()
+
+  # Create units and n
+  nunits <- purrr::map(table_entities$frequency, purrr::possibly(~{
+    parse_rounding_unit(.x)
+  }, otherwise = list(n = NA, unit = NA)))
+
+  table_entities <- table_entities |>
+    dplyr::mutate(
+      frequency_n = purrr::map_int(nunits, ~.x$n),
+      frequency_unit = purrr::map_chr(nunits, ~.x$unit)
+    )
 
   table_entities
 }

@@ -9,21 +9,29 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
     trimws()
 
   if (x$raw == "") {
-    x$val <- "day"
-  } else if (x$raw %in% c("minute", "hour", "day", "week",
-                          "month", "quarter", "year")) {
-    x$val <- x$raw
+    x$val <- "1 day"
   } else {
-    roxygen2::roxy_tag_warning(
-      x,
-      glue::glue(
-        "Invalid maestroFrequency `{x$raw}`.
-        Must be one of 'minute', 'hour', 'day', 'week',
-        'month', 'quarter', 'year'"
+
+    tryCatch({
+      # Try to parse it using our function
+      parse_rounding_unit(x$raw)
+
+      # Try to parse using timechange
+      timechange::time_round(Sys.time(), unit = x$raw)
+
+      x$val <- x$raw
+    }, error = \(e) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroFrequency `{x$raw}`.
+          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)"
+        )
       )
-    )
-    return()
+      return()
+    })
   }
+
   x
 }
 
@@ -45,57 +53,6 @@ roclet_output.roclet_maestroFrequency <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
-
-
-# maestroInterval -----------------------------------------------------------
-#' @exportS3Method
-roxy_tag_parse.roxy_tag_maestroInterval <- function(x) {
-
-  x$raw <- x$raw |>
-    trimws()
-
-  if (x$raw == "") {
-    x$raw <- "1"
-  } else {
-    # If coercion to integer fails, trigger warning and empty return
-    tryCatch({
-      x_int <- as.integer(x$raw)
-      if (x_int <= 0) warning()
-      x$val <- x_int
-    }, warning = \(w) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Invalid maestroInterval `{x$raw}`.
-          Must be a positive, non-zero integer value"
-        )
-      )
-      return()
-    })
-  }
-
-  x
-}
-
-maestroInterval_roclet <- function() {
-  roxygen2::roclet("maestroInterval")
-}
-
-#' @exportS3Method
-roclet_process.roclet_maestroInterval <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInterval")
-  list(
-    val = as.integer(tags$val),
-    node = blocks[[1]]$object$topic
-  )
-}
-
-#' @exportS3Method
-roclet_output.roclet_maestroInterval <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
 
 # maestroStartTime ----------------------------------------------------------
 
@@ -225,11 +182,14 @@ roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
   )
 }
 
+
 #' @exportS3Method
 roclet_output.roclet_maestroSkip <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
+
+# maestroLogLevel ----------------------------------------------------------------
 
 #' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroLogLevel <- function(x) {
@@ -278,3 +238,4 @@ roclet_output.roclet_maestroLogLevel <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
+
