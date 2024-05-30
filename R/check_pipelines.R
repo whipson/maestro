@@ -1,20 +1,56 @@
 #' Check which pipelines are scheduled to run and when next pipelines will run
 #'
-#' @param .data data.frame with pipeline name, frequency, and start datetime
-#' @param orch_frequency number of seconds representing the frequency of orchestrator
-#' @param check_datetime datetime used to check against the pipeline start datetime
+#' @param check_datetime datetime to be used to check if the pipeline should run
+#' @param pipeline_n number of units for the pipeline frequency
+#' @param pipeline_unit unit for the pipeline frequency
+#' @param pipeline_datetime datetime of the first time the pipeline is to run
+#' @param orch_n number of units for the orchestrator frequency
+#' @param orch_unit unit for the orchestrator frequency
 #'
 #' @return list
-check_pipelines <- function(.data, orch_frequency, check_datetime) {
+check_pipelines <- function(
+    orch_unit,
+    orch_n,
+    pipeline_unit,
+    pipeline_n,
+    check_datetime,
+    pipeline_datetime
+  ) {
+
+  orch_unit <- ifelse(orch_unit %in% c("minutes", "minute"), "mins", orch_unit)
+  orch_frequency_seconds <- convert_to_seconds(paste(orch_n, orch_unit))
+  check_datetime_round <- timechange::time_round(check_datetime, unit = paste(orch_n, orch_unit))
 
   schedule_checks <- purrr::pmap(
-    list(.data$frequency, .data$start_time),
+    list(pipeline_n, pipeline_unit, pipeline_datetime),
     ~{
-      check_pipeline_next_schedule(
-        orch_frequency = orch_frequency,
-        check_datetime = check_datetime,
-        pipeline_seconds = ..1,
-        pipeline_datetime = ..2
+      pipeline_frequency_seconds <- convert_to_seconds(paste(..1, ..2))
+
+      # Code within the function
+      # Validation to see if pipeline should be run
+      pipeline_datetime_round <- timechange::time_round(..3, unit = paste(orch_n, orch_unit))
+
+      pipeline_unit <- ifelse(..2 %in% c("minutes", "minute"), "mins", ..2)
+
+      if (pipeline_datetime_round > check_datetime_round) {
+        pipeline_sequence <- ..3
+      } else {
+        pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = paste(..1, pipeline_unit))
+      }
+
+      cur_run <- utils::tail(pipeline_sequence, n = 1)
+      is_scheduled_now <- check_datetime_round == cur_run
+      next_run <- timechange::time_round(
+        timechange::time_add(
+          cur_run,
+          second = max(orch_frequency_seconds, pipeline_frequency_seconds)
+        ),
+        unit = paste(orch_n, orch_unit)
+      )
+
+      list(
+        next_run = next_run,
+        is_scheduled_now = is_scheduled_now
       )
     }
   )

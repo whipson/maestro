@@ -25,7 +25,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Ryan Garnett \email{ryan.garnett@hiaa.ca} [contributor]
+  \item Ryan Garnett \email{ryan.garnett@hiaa.ca} [contributor, copyright holder]
 }
 
 }

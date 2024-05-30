@@ -147,10 +147,10 @@ project directory (by default `./maestro.log`) and accumulates until the
 readLines("maestro.log") |> 
   tail(10) |> 
   cat(sep = "\n")
-#> [my_etl] [INFO] [2024-05-23 14:26:46.533403]: API request
-#> [my_etl] [INFO] [2024-05-23 14:26:46.805017]: Transforming
-#> [my_etl] [INFO] [2024-05-23 14:26:46.846578]: Writing
-#> [get_mtcars] [WARN] [2024-05-23 14:26:46.894069]: Uh oh
+#> [my_etl] [INFO] [2024-05-30 09:33:20.929212]: Get data
+#> [my_etl] [INFO] [2024-05-30 09:33:21.020992]: Transforming
+#> [my_etl] [INFO] [2024-05-30 09:33:21.031667]: Writing
+#> [get_mtcars] [WARN] [2024-05-30 09:33:21.082264]: Uh oh
 ```
 
 ### Multicore

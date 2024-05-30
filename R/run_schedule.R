@@ -37,7 +37,7 @@
 #' @param logging whether or not to write the logs to a file (default = `FALSE`)
 #' @param log_file path to the log file (ignored if `logging == FALSE`)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
-#' @param quiet print metrics to the console (default = `TRUE`)
+#' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return data.frame of pipeline statuses
 #' @export
@@ -72,19 +72,20 @@ run_schedule <- function(
     quiet = FALSE
   ) {
 
-  orch_frequency <- tryCatch({
-    convert_to_seconds(orch_frequency)
+  # Check validity of the schedule
+  schedule_validity_check(schedule)
+
+  # Get the orchestrator nunits
+  orch_nunits <- tryCatch({
+    parse_rounding_unit(orch_frequency)
   }, error = \(e) {
     cli::cli_abort(
       c(
-        "Invalid `orch_frequency`. Must be formatted as [number] [units]",
-        "i" = "E.g., 1 day, 4 hours, 2 weeks, etc."
+        "Invalid `orch_frequency`.",
+        "i" = "Must be of the format like 1 day, 2 weeks, etc."
       )
     )
   })
-
-  # Check validity of the schedule
-  schedule_validity_check(schedule)
 
   # Ensure that elements in resources are named
   if (length(resources) > 0) {
@@ -124,36 +125,33 @@ run_schedule <- function(
 
   run_schedule_fun <- function() {
 
+    # Add a pipeline id
+    schedule <- schedule |>
+      dplyr::mutate(pipe_id = 1:dplyr::n())
+
     # Select the pipelines based on the orchestrator
     if (!run_all) {
       schedule_checks <- check_pipelines(
-        schedule,
-        orch_frequency,
-        check_datetime
+        orch_unit = orch_nunits$unit,
+        orch_n = orch_nunits$n,
+        pipeline_unit = schedule$frequency_unit,
+        pipeline_n = schedule$frequency_n,
+        pipeline_datetime = schedule$start_time,
+        check_datetime = check_datetime
       )
 
       schedule <- schedule |>
         dplyr::mutate(
-          is_scheduled_now = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now),
+          invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now),
           next_run = purrr::map_vec(schedule_checks, ~.x$next_run)
         )
-
-      pipes_to_run <- schedule |>
-        dplyr::filter(is_scheduled_now)
-
-      pipes_not_run <- schedule |>
-        dplyr::filter(!is_scheduled_now)
     } else {
 
       schedule <- schedule |>
         dplyr::mutate(
-          is_scheduled_now = TRUE,
+          invoked = TRUE,
           next_run = NA
         )
-
-      pipes_to_run <- schedule
-      pipes_not_run <- schedule |>
-        dplyr::filter(FALSE)
     }
 
     if (logging) {
@@ -165,129 +163,149 @@ run_schedule <- function(
       log_file <- tempfile()
     }
 
-    if (nrow(pipes_to_run) > 0) {
+    cli::cli_h3("Running pipelines {cli::col_green(cli::symbol$play)}")
 
-      cli::cli_h3("Running pipelines {cli::col_green(cli::symbol$play)}")
+    tictoc::tic(quiet = quiet)
 
-      tictoc::tic(quiet = quiet)
-
-      # Execute the schedule (possibly in parallel)
-      runs <- mapper_fun(
-        list(
-          pipes_to_run$script_path,
-          pipes_to_run$pipe_name,
-          pipes_to_run$skip,
-          pipes_to_run$log_level
+    # Execute the schedule (possibly in parallel)
+    runs <- mapper_fun(
+      list(
+        schedule$script_path,
+        schedule$pipe_name,
+        schedule$skip,
+        schedule$log_level,
+        schedule$invoked
+      ),
+      purrr::safely(
+        ~{
+          if (..3 || !..5) {
+            cli::cli_alert("{cli::col_silver(..1)} { ..2}")
+            return(
+              list(
+                warnings = NULL,
+                messages = NULL,
+                skip = TRUE,
+                start_time = NA,
+                end_time = NA
+              )
+            )
+          } else {
+            cli::cli_progress_step("{cli::col_silver(..1)} {.pkg { ..2}}")
+            run_schedule_entry(
+              ..1,
+              ..2,
+              resources = resources,
+              log_file = log_file,
+              log_level = ..4,
+              log_file_max_bytes = log_file_max_bytes
+            )
+          }
+        },
+        otherwise = list(
+          start_time = NA,
+          end_time = NA
         ),
-        purrr::safely(
-          ~{
-            if (..3) {
-              cli::cli_alert("{cli::col_silver(..1)} { ..2}")
-              return(
-                list(
-                  warnings = NULL,
-                  messages = NULL,
-                  skip = TRUE
-                )
-              )
-            } else {
-              cli::cli_progress_step("{cli::col_silver(..1)} {.pkg { ..2}}")
-              run_schedule_entry(
-                ..1,
-                ..2,
-                resources = resources,
-                log_file = log_file,
-                log_level = ..4,
-                log_file_max_bytes = log_file_max_bytes
-              )
-            }
-          }, quiet = TRUE
-        )
-      ) |>
-        purrr::set_names(pipes_to_run$script_path)
+        quiet = TRUE
+      )
+    ) |>
+      purrr::set_names(
+        schedule$pipe_id
+      )
 
-      elapsed <- tictoc::toc(quiet = TRUE)
+    elapsed <- tictoc::toc(quiet = TRUE)
 
-      # Get the errors
-      run_errors <- purrr::map(
-        runs,
+    # Get the results as a tibble
+    results <- purrr::imap(
+      runs,
+      ~dplyr::tibble(
+        pipe_id = as.integer(.y),
+        errors = length(.x$error),
+        warnings = length(.x$result$warnings),
+        messages = length(.x$result$messages),
+        pipeline_started = .x$result$start_time,
+        pipeline_ended = .x$result$end_time
+      )
+    ) |>
+      purrr::list_rbind()
+
+    # Get the errors
+    run_errors <- runs |>
+      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
+      purrr::map(
         ~.x$error
       ) |>
-        purrr::discard(is.null)
+      purrr::discard(is.null)
 
-      # Get the warnings
-      run_warnings <- purrr::map(
-        runs,
+    # Get the warnings
+    run_warnings <- runs |>
+      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
+      purrr::map(
         ~.x$result$warnings
       ) |>
-        purrr::discard(is.null)
+      purrr::discard(is.null)
 
-      # Get the skips
-      run_skips <- purrr::map(
-        runs,
-        ~.x$result$skip
-      ) |>
-        purrr::discard(is.null)
-
-      # Get the messages
-      run_messages <- purrr::map(
-        runs,
+    # Get the messages
+    run_messages <- runs |>
+      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
+      purrr::map(
         ~.x$result$messages
       ) |>
-        purrr::discard(is.null)
+      purrr::discard(is.null)
 
-      # For access via last_run_*
-      maestro_pkgenv$last_run_errors <- run_errors
-      maestro_pkgenv$last_run_warnings <- run_warnings
-      maestro_pkgenv$last_run_messages <- run_messages
+    # For access via last_run_*
+    maestro_pkgenv$last_run_errors <- run_errors
+    maestro_pkgenv$last_run_warnings <- run_warnings
+    maestro_pkgenv$last_run_messages <- run_messages
 
-      # Create status table
-      status_table <- purrr::pmap(
-        list(schedule$script_path, schedule$pipe_name, schedule$is_scheduled_now),
-        ~{
-          dplyr::tibble(
-            pipe_name = ..2,
-            script_path = ..1,
-            invoked = ..3,
-            errors = length(run_errors[[..1]]),
-            warnings = length(run_warnings[[..1]]),
-            skips = length(run_skips[[..1]]),
-            messages = length(run_messages[[..1]]),
-            success = length(run_errors[[..1]]) == 0
-          )
-        }) |>
-        purrr::list_rbind()
+    # Create status table
+    status_table <- schedule |>
+      dplyr::left_join(results, by = "pipe_id") |>
+      dplyr::mutate(
+        success = ifelse(invoked, errors == 0, NA),
+        dplyr::across(
+          dplyr::where(lubridate::is.POSIXct),
+          ~lubridate::with_tz(.x, tzone = lubridate::tz(check_datetime))
+        )
+      ) |>
+      dplyr::select(
+        pipe_name,
+        script_path,
+        invoked,
+        success,
+        pipeline_started,
+        pipeline_ended,
+        errors,
+        warnings,
+        messages,
+        next_run
+      )
 
-      # Get the number of statuses
-      total <- length(runs)
-      error_count <- length(run_errors)
-      skip_count <- length(run_skips)
-      success_count <- total - error_count - skip_count
-      warning_count <- length(run_warnings)
+    # Get the number of statuses
+    total <- sum(status_table$invoked)
+    error_count <- length(run_errors)
+    skip_count <- sum(!status_table$invoked)
+    success_count <- total - error_count
+    warning_count <- length(run_warnings)
 
-      cli::cli_h3("Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}")
+    cli::cli_h3("Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}")
 
-      cli::cli_text(
-        "
+    cli::cli_text(
+      "
       {cli::col_green(cli::symbol$tick)} {success_count} {ifelse(success_count == 1, 'success', 'successes')} |
       {cli::col_black(cli::symbol$arrow_right)} {skip_count} skipped |
       {cli::col_magenta('!')} {warning_count} {ifelse(warning_count == 1, 'warning', 'warnings')} |
       {cli::col_red(cli::symbol$cross)} {error_count} {ifelse(error_count == 1, 'error', 'errors')} |
       {cli::col_cyan(cli::symbol$square_small_filled)} {total} total
       "
-      )
+    )
 
-      cli::cli_rule()
-    } else {
-      cli::cli_h3("No pipelines scheduled to run this time")
-      status_table <- dplyr::tibble()
-    }
+    cli::cli_rule()
 
 
     # Output for showing next pipelines schedule
     if (!run_all && n_show_next > 0 && nrow(schedule) > 0) {
 
-      next_runs_cli <- schedule |>
+      next_runs_cli <- status_table |>
         dplyr::arrange(next_run) |>
         utils::head(n = n_show_next)
 

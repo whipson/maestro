@@ -84,5 +84,16 @@ build_schedule_entry <- function(script_path) {
   }) |>
     purrr::list_rbind()
 
+  # Create units and n
+  nunits <- purrr::map(table_entities$frequency, purrr::possibly(~{
+    parse_rounding_unit(.x)
+  }, otherwise = list(n = NA, unit = NA)))
+
+  table_entities <- table_entities |>
+    dplyr::mutate(
+      frequency_n = purrr::map_int(nunits, ~.x$n),
+      frequency_unit = purrr::map_chr(nunits, ~.x$unit)
+    )
+
   table_entities
 }

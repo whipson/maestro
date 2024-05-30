@@ -11,6 +11,7 @@
 #' In other words, it is not recommended to make changes to it.
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
+#' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return data.frame
 #' @export
@@ -21,7 +22,7 @@
 #' pipeline_dir <- tempdir()
 #' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #' build_schedule(pipeline_dir = pipeline_dir)
-build_schedule <- function(pipeline_dir = "./pipelines") {
+build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
 
   if (!dir.exists(pipeline_dir)) {
     cli::cli_abort("No directory called {.emph {pipeline_dir}}")
@@ -81,18 +82,22 @@ build_schedule <- function(pipeline_dir = "./pipelines") {
   # Assign the errors to the pkgenv
   maestro_pkgenv$last_build_errors <- sch_errors
 
-  maestro_parse_cli(sch_results, sch_errors)
+  if (!quiet) {
+    maestro_parse_cli(sch_results, sch_errors)
+  }
 
   # Return the results
   sch <- sch_results |>
     purrr::list_rbind() |>
     # Supply default values for missing
     dplyr::mutate(
-      frequency = dplyr::coalesce(frequency, 86400),
+      frequency = dplyr::coalesce(frequency, "1 day"),
       start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
       tz = dplyr::coalesce(tz, "UTC"),
       skip = dplyr::coalesce(skip, FALSE),
-      log_level = dplyr::coalesce(log_level, "INFO")
+      log_level = dplyr::coalesce(log_level, "INFO"),
+      frequency_n = dplyr::coalesce(frequency_n, 1L),
+      frequency_unit = dplyr::coalesce(frequency_unit, "day")
     ) |>
     dplyr::rowwise() |>
     # Format timestamp with timezone

@@ -4,7 +4,7 @@ test_that("parse maestroFrequency tag works", {
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
   ) |>
     expect_no_message()
-  expect_type(res$val, "double")
+  expect_type(res$val, "character")
 })
 
 test_that("maestroFrequency default value is expected", {
@@ -14,7 +14,8 @@ test_that("maestroFrequency default value is expected", {
   ) |>
     expect_no_message()
 
-  expect_type(res$val, "double")
+  expect_type(res$val, "character")
+  expect_equal(res$val, "1 day")
 })
 
 test_that("bad usage of maestroFrequency warns and gives no val", {
