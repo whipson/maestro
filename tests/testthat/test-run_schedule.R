@@ -49,7 +49,7 @@ test_that("run_schedule works on different kinds of frequencies", {
 
   test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
                   "1 quarter", "12 months", "4 years", "24 hours",
-                  "31 days")
+                  "31 days", "1 secs", "50 seconds")
 
   purrr::walk(test_freqs, ~{
     expect_no_error({
