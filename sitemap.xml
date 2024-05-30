@@ -10,16 +10,16 @@
     <loc>https://whipson.github.io/maestro/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/articles/1-maestro-quick-start.html</loc>
-  </url>
-  <url>
-    <loc>https://whipson.github.io/maestro/articles/2-maestro-motivation-concepts.html</loc>
-  </url>
-  <url>
-    <loc>https://whipson.github.io/maestro/articles/3-maestro-use-cases.html</loc>
-  </url>
-  <url>
     <loc>https://whipson.github.io/maestro/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://whipson.github.io/maestro/articles/maestro-1-quick-start.html</loc>
+  </url>
+  <url>
+    <loc>https://whipson.github.io/maestro/articles/maestro-2-motivation-concepts.html</loc>
+  </url>
+  <url>
+    <loc>https://whipson.github.io/maestro/articles/maestro-3-use-cases.html</loc>
   </url>
   <url>
     <loc>https://whipson.github.io/maestro/authors.html</loc>
@@ -37,10 +37,10 @@
     <loc>https://whipson.github.io/maestro/reference/build_schedule_entry.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/check_pipeline_next_schedule.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/check_pipelines.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/check_pipelines.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/convert_to_seconds.html</loc>
   </url>
   <url>
     <loc>https://whipson.github.io/maestro/reference/create_maestro.html</loc>
@@ -52,19 +52,25 @@
     <loc>https://whipson.github.io/maestro/reference/create_pipeline.html</loc>
   </url>
   <url>
+    <loc>https://whipson.github.io/maestro/reference/example_schedule.html</loc>
+  </url>
+  <url>
     <loc>https://whipson.github.io/maestro/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/last_parsing_errors.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/last_build_errors.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/last_runtime_errors.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/last_run_errors.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/last_runtime_messages.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/last_run_messages.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/last_runtime_warnings.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/last_run_warnings.html</loc>
+  </url>
+  <url>
+    <loc>https://whipson.github.io/maestro/reference/maestro.html</loc>
   </url>
   <url>
     <loc>https://whipson.github.io/maestro/reference/maestro_parse_cli.html</loc>
@@ -73,7 +79,7 @@
     <loc>https://whipson.github.io/maestro/reference/maestro_tags.html</loc>
   </url>
   <url>
-    <loc>https://whipson.github.io/maestro/reference/round_time.html</loc>
+    <loc>https://whipson.github.io/maestro/reference/parse_rounding_unit.html</loc>
   </url>
   <url>
     <loc>https://whipson.github.io/maestro/reference/run_schedule.html</loc>

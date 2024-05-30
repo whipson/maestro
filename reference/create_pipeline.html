@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.009</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-maestro-quick-start.html">Quick Start</a>
-    <a class="dropdown-item" href="../articles/2-maestro-motivation-concepts.html">Motivation and Concepts</a>
-    <a class="dropdown-item" href="../articles/3-maestro-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="../articles/maestro-1-quick-start.html">Quick Start</a>
+    <a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
+    <a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a>
   </div>
 </li>
 <li class="nav-item">
@@ -62,8 +62,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_pipeline</span><span class="op">(</span></span>
 <span>  <span class="va">pipe_name</span>,</span>
 <span>  pipeline_dir <span class="op">=</span> <span class="st">"pipelines"</span>,</span>
-<span>  frequency <span class="op">=</span> <span class="st">"day"</span>,</span>
-<span>  interval <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  frequency <span class="op">=</span> <span class="st">"1 day"</span>,</span>
 <span>  start_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"UTC"</span>,</span>
 <span>  log_level <span class="op">=</span> <span class="st">"INFO"</span>,</span>
@@ -78,12 +77,12 @@
 <dd><p>name of the pipeline and function</p></dd>
 
 
+<dt>pipeline_dir</dt>
+<dd><p>directory containing the pipeline scripts</p></dd>
+
+
 <dt>frequency</dt>
-<dd><p>how often the pipeline should run (e.g., hourly, daily, etc.). Fills in maestroFrequency tag</p></dd>
-
-
-<dt>interval</dt>
-<dd><p>units of frequency between runs (e.g., 1, 2, 7). Fills in maestroFrequency tag</p></dd>
+<dd><p>how often the pipeline should run (e.g., 1 day, 3 hours, 4 months). Fills in maestroFrequency tag</p></dd>
 
 
 <dt>start_time</dt>

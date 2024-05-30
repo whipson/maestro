@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.009</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-maestro-quick-start.html">Quick Start</a>
-    <a class="dropdown-item" href="../articles/2-maestro-motivation-concepts.html">Motivation and Concepts</a>
-    <a class="dropdown-item" href="../articles/3-maestro-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="../articles/maestro-1-quick-start.html">Quick Start</a>
+    <a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
+    <a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a>
   </div>
 </li>
 <li class="nav-item">
@@ -59,25 +59,40 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_pipelines</span><span class="op">(</span><span class="va">.data</span>, <span class="va">orch_interval</span>, <span class="va">orch_frequency</span>, <span class="va">check_datetime</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_pipelines</span><span class="op">(</span></span>
+<span>  <span class="va">orch_unit</span>,</span>
+<span>  <span class="va">orch_n</span>,</span>
+<span>  <span class="va">pipeline_unit</span>,</span>
+<span>  <span class="va">pipeline_n</span>,</span>
+<span>  <span class="va">check_datetime</span>,</span>
+<span>  <span class="va">pipeline_datetime</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>.data</dt>
-<dd><p>data.frame with pipeline name, interval, frequency, and start datetime</p></dd>
+    <dl><dt>orch_unit</dt>
+<dd><p>unit for the orchestrator frequency</p></dd>
 
 
-<dt>orch_interval</dt>
-<dd><p>a numeric value representing how often the orchestration runs</p></dd>
+<dt>orch_n</dt>
+<dd><p>number of units for the orchestrator frequency</p></dd>
 
 
-<dt>orch_frequency</dt>
-<dd><p>unit of how often the orchestration runs (i.e. min, hour, day, month, etc.)</p></dd>
+<dt>pipeline_unit</dt>
+<dd><p>unit for the pipeline frequency</p></dd>
+
+
+<dt>pipeline_n</dt>
+<dd><p>number of units for the pipeline frequency</p></dd>
 
 
 <dt>check_datetime</dt>
-<dd><p>datetime used to check against the pipeline start datetime</p></dd>
+<dd><p>datetime to be used to check if the pipeline should run</p></dd>
+
+
+<dt>pipeline_datetime</dt>
+<dd><p>datetime of the first time the pipeline is to run</p></dd>
 
 </dl></div>
     <div class="section level2">

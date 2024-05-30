@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1.12</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.009</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,9 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/1-maestro-quick-start.html">Quick Start</a>
-    <a class="dropdown-item" href="../articles/2-maestro-motivation-concepts.html">Motivation and Concepts</a>
-    <a class="dropdown-item" href="../articles/3-maestro-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="../articles/maestro-1-quick-start.html">Quick Start</a>
+    <a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
+    <a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a>
   </div>
 </li>
 <li class="nav-item">
@@ -74,14 +74,14 @@
         <dd>Create schedule table entry from a script</dd>
       </dl><dl><dt>
           
-          <code><a href="check_pipeline_next_schedule.html">check_pipeline_next_schedule()</a></code> 
-        </dt>
-        <dd>Check pipeline next schedule</dd>
-      </dl><dl><dt>
-          
           <code><a href="check_pipelines.html">check_pipelines()</a></code> 
         </dt>
         <dd>Check which pipelines are scheduled to run and when next pipelines will run</dd>
+      </dl><dl><dt>
+          
+          <code><a href="convert_to_seconds.html">convert_to_seconds()</a></code> 
+        </dt>
+        <dd>Convert a duration string to number of seconds</dd>
       </dl><dl><dt>
           
           <code><a href="create_maestro.html">create_maestro()</a></code> 
@@ -99,24 +99,34 @@
         <dd>Create a new pipeline in a pipelines directory</dd>
       </dl><dl><dt>
           
-          <code><a href="last_parsing_errors.html">last_parsing_errors()</a></code> 
+          <code><a href="example_schedule.html">example_schedule</a></code> 
         </dt>
-        <dd>Retrieve latest maestro parsing errors</dd>
+        <dd>Example schedule</dd>
       </dl><dl><dt>
           
-          <code><a href="last_runtime_errors.html">last_runtime_errors()</a></code> 
+          <code><a href="last_build_errors.html">last_build_errors()</a></code> 
         </dt>
-        <dd>Retrieve latest maestro runtime errors</dd>
+        <dd>Retrieve latest maestro build errors</dd>
       </dl><dl><dt>
           
-          <code><a href="last_runtime_messages.html">last_runtime_messages()</a></code> 
+          <code><a href="last_run_errors.html">last_run_errors()</a></code> 
         </dt>
-        <dd>Retrieve latest maestro runtime messages</dd>
+        <dd>Retrieve latest maestro pipeline errors</dd>
       </dl><dl><dt>
           
-          <code><a href="last_runtime_warnings.html">last_runtime_warnings()</a></code> 
+          <code><a href="last_run_messages.html">last_run_messages()</a></code> 
         </dt>
-        <dd>Retrieve latest maestro runtime warnings</dd>
+        <dd>Retrieve latest maestro pipeline messages</dd>
+      </dl><dl><dt>
+          
+          <code><a href="last_run_warnings.html">last_run_warnings()</a></code> 
+        </dt>
+        <dd>Retrieve latest maestro pipeline warnings</dd>
+      </dl><dl><dt>
+          
+          <code><a href="maestro.html">maestro-package</a></code> <code><a href="maestro.html">maestro</a></code> 
+        </dt>
+        <dd><code>maestro</code> package</dd>
       </dl><dl><dt>
           
           <code><a href="maestro_parse_cli.html">maestro_parse_cli()</a></code> 
@@ -129,9 +139,9 @@
         <dd>Maestro Tags</dd>
       </dl><dl><dt>
           
-          <code><a href="round_time.html">round_time()</a></code> 
+          <code><a href="parse_rounding_unit.html">parse_rounding_unit()</a></code> 
         </dt>
-        <dd>Round time formatted</dd>
+        <dd>Parse a time string</dd>
       </dl><dl><dt>
           
           <code><a href="run_schedule.html">run_schedule()</a></code> 
