@@ -17,7 +17,6 @@ check_pipelines <- function(
     pipeline_datetime
   ) {
 
-  orch_unit <- ifelse(orch_unit %in% c("minutes", "minute"), "mins", orch_unit)
   orch_frequency_seconds <- convert_to_seconds(paste(orch_n, orch_unit))
   check_datetime_round <- timechange::time_round(check_datetime, unit = paste(orch_n, orch_unit))
 
@@ -30,7 +29,12 @@ check_pipelines <- function(
       # Validation to see if pipeline should be run
       pipeline_datetime_round <- timechange::time_round(..3, unit = paste(orch_n, orch_unit))
 
-      pipeline_unit <- ifelse(..2 %in% c("minutes", "minute"), "mins", ..2)
+      pipeline_unit <- dplyr::case_match(
+        ..2,
+        c("minutes", "minute") ~ "min",
+        c("seconds", "second") ~ "sec",
+        .default = ..2
+      )
 
       if (pipeline_datetime_round > check_datetime_round) {
         pipeline_sequence <- ..3
