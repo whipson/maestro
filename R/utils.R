@@ -16,9 +16,11 @@ schedule_validity_check <- function(schedule) {
   req_col_typed_check <- list(
     script_path = "character",
     pipe_name = "character",
-    frequency = c("integer", "numeric"),
+    frequency = "character",
     start_time = c("POSIXct", "POSIXlt"),
-    log_level = "character"
+    log_level = "character",
+    frequency_n = c("integer", "double"),
+    frequency_unit = "character"
   )
 
   # Check that schedule is a data.frame
@@ -46,6 +48,21 @@ schedule_validity_check <- function(schedule) {
       c("Schedule is missing required column{?s}: {missing_col_names}.",
         "i" = "Use {.fn build_schedule} to create a valid schedule."
       ),
+      call = rlang::caller_env()
+    )
+  }
+
+  # Check presence of NAs
+  cols_with_missing <- purrr::map(names(req_col_typed_check), ~{
+    any(is.na(schedule[.x]))
+  }) |>
+    purrr::list_c()
+
+  if (any(cols_with_missing)) {
+    cols_with_missing_names <- names(schedule)[cols_with_missing]
+    cli::cli_abort(
+      c("Schedule has column{?s} with NAs that cannot be NA: {cols_with_missing_names}",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."),
       call = rlang::caller_env()
     )
   }
@@ -136,4 +153,39 @@ convert_to_seconds <- function(time_string) {
   }
 
   seconds
+}
+
+#' Parse a time string
+#'
+#' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
+#'
+#' @return nunit list
+parse_rounding_unit <- function(time_string) {
+
+  stopifnot("Must be a single string" = length(time_string) == 1)
+
+  # Extract the number and the unit from the time string
+  matches <- regmatches(time_string, regexec("([0-9]+)\\s*(\\w+)", time_string))
+  number <- as.numeric(matches[[1]][2])
+  unit <- matches[[1]][3]
+
+  unit_fmt <- unit |>
+    trimws() |>
+    gsub("s$", "", x = _)
+
+  valid_units <- c(
+    "sec", "second", "min", "minute", "hour",
+    "day", "week", "month", "quarter", "year"
+  )
+
+  if (!unit_fmt %in% valid_units) {
+    stop(glue::glue("Invalid rounding unit `{time_string}`."))
+  }
+
+  return(
+    list(
+      n = number,
+      unit = unit_fmt
+    )
+  )
 }
