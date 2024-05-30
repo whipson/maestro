@@ -155,6 +155,11 @@ convert_to_seconds <- function(time_string) {
   seconds
 }
 
+valid_units <- c(
+  "sec", "second", "min", "minute", "hour",
+  "day", "week", "month", "quarter", "year"
+)
+
 #' Parse a time string
 #'
 #' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
@@ -172,11 +177,6 @@ parse_rounding_unit <- function(time_string) {
   unit_fmt <- unit |>
     trimws() |>
     gsub("s$", "", x = _)
-
-  valid_units <- c(
-    "sec", "second", "min", "minute", "hour",
-    "day", "week", "month", "quarter", "year"
-  )
 
   if (!unit_fmt %in% valid_units) {
     stop(glue::glue("Invalid rounding unit `{time_string}`."))
