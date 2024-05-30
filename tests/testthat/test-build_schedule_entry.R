@@ -6,7 +6,8 @@ test_that("can create a schedule entry from a single well-documented fun", {
   expect_equal(nrow(res), 1)
   expect_in(
     c("script_path", "pipe_name", "frequency",
-      "start_time", "tz", "skip", "log_level"),
+      "start_time", "tz", "skip", "log_level",
+      "frequency_n", "frequency_unit"),
     names(res)
   )
   expect_snapshot(res)
