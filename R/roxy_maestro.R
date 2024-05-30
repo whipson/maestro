@@ -13,7 +13,12 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
   } else {
 
     tryCatch({
+      # Try to parse it using our function
       parse_rounding_unit(x$raw)
+
+      # Try to parse using timechange
+      timechange::time_round(Sys.time(), unit = x$raw)
+
       x$val <- x$raw
     }, error = \(e) {
       roxygen2::roxy_tag_warning(
