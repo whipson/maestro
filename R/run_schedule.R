@@ -40,6 +40,7 @@
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return data.frame of pipeline statuses
+#' @importFrom R.utils countLines
 #' @export
 #' @examples
 #' pipeline_dir <- tempdir()

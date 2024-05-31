@@ -24,6 +24,7 @@ Imports:
     logger,
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
+    R.utils,
     rlang (>= 1.0.0),
     roxygen2,
     rstudioapi,
@@ -38,7 +39,6 @@ Suggests:
     furrr,
     future,
     knitr,
-    R.utils,
     rmarkdown,
     testthat (>= 3.0.0),
     withr
