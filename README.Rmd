@@ -1,5 +1,4 @@
 ---
-title: maestro
 output: 
   github_document
 always_allow_html: yes
@@ -26,6 +25,8 @@ asciicast::init_knitr_engine(
   echo_input = FALSE
 )
 ```
+
+# maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" align="right" height="138" alt="maestro website" /></a>
 
 <!-- badges: start -->
 
