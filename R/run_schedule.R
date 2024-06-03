@@ -308,13 +308,25 @@ run_schedule <- function(
 
     cli::cli_text(
       "
-      {cli::col_green(cli::symbol$tick)} {success_count} {ifelse(success_count == 1, 'success', 'successes')} |
+      {cli::col_green(cli::symbol$tick)} {success_count} success{?es} |
       {cli::col_black(cli::symbol$arrow_right)} {skip_count} skipped |
-      {cli::col_magenta('!')} {warning_count} {ifelse(warning_count == 1, 'warning', 'warnings')} |
-      {cli::col_red(cli::symbol$cross)} {error_count} {ifelse(error_count == 1, 'error', 'errors')} |
+      {cli::col_magenta('!')} {warning_count} warning{?s} |
+      {cli::col_red(cli::symbol$cross)} {error_count} error{?s} |
       {cli::col_cyan(cli::symbol$square_small_filled)} {total} total
       "
     )
+
+    if (error_count > 0) {
+      cli::cli_alert_danger(
+        "Use {.fn last_run_errors} to show pipeline errors."
+      )
+    }
+
+    if (warning_count > 0) {
+      cli::cli_alert_warning(
+        "Use {.fn last_run_warnings} to show pipeline warnings."
+      )
+    }
 
     cli::cli_rule()
 
