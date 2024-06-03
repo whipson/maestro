@@ -1,22 +1,18 @@
-# maestro (development version)
-
--   Initial alpha release
-
 # maestro 0.0.2
 
 ## Breaking changes
 
--   maestroFrequency tag now adheres to a more human-readable format like "1 day", "2 hours", "4 weeks", etc.
+- maestroFrequency tag now adheres to a more human-readable format like "1 day", "2 hours", "4 weeks", etc.
 
--   `orch_frequency` argument in `run_schedule()` also takes more human-readable format identical to maestroFrequency tag.
+- `orch_frequency` argument in `run_schedule()` also takes more human-readable format identical to maestroFrequency tag.
 
--   maestroInterval tag removed
+- maestroInterval tag removed
 
--   `orch_interval` argument to `run_schedule()` removed.
+- `orch_interval` argument to `run_schedule()` removed.
 
--   `create_maestro()` and `create_orchestrator()` now use the argument `type` instead of `extension` for defining what script type to use for the orchestrator.
+- `create_maestro()` and `create_orchestrator()` now use the argument `type` instead of `extension` for defining what script type to use for the orchestrator.
 
--   Changed `last_parsing_errors()` to `last_build_errors()`; changed functions of the form `last_runtime_*()` to `last_run_*()`.
+- Changed `last_parsing_errors()` to `last_build_errors()`; changed functions of the form `last_runtime_*()` to `last_run_*()`.
 
 ## Major changes
 
@@ -24,8 +20,16 @@
 
 - Pipelines now show as skipped if they are not scheduled.
 
+- Added hex logo
+
 ## Minor changes
 
 - Backend improvements to schedule checking
 
 - Timestamps are formatted to specified time zone.
+
+- `run_schedule()` cli output suggests to use `last_run_errors()` or `last_run_warnings()` if any errors or warnings were found.
+
+# maestro (development version)
+
+- Initial alpha release
