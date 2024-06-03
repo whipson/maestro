@@ -4,7 +4,7 @@
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://analytics.hiaa.ca:8443/cran/latest"
+        "URL": "https://cloud.r-project.org"
       }
     ]
   },
