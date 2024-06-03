@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,10 +53,6 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="maestro-development-version">maestro (development version)<a class="anchor" aria-label="anchor" href="#maestro-development-version"></a></h2>
-<ul><li>Initial alpha release</li>
-</ul></div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.2" id="maestro-002">maestro 0.0.2<a class="anchor" aria-label="anchor" href="#maestro-002"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-0-0-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-2"></a></h3>
@@ -71,13 +67,19 @@
 <h3 id="major-changes-0-0-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-0-2"></a></h3>
 <ul><li><p>Additional columns added to the output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>: <code>pipeline_started</code> and <code>pipeline_ended</code> to indicate the start and end times of a pipeline execution; <code>next_run</code> to indicate when the next run should be based on the frequency of the pipeline and orchestrator.</p></li>
 <li><p>Pipelines now show as skipped if they are not scheduled.</p></li>
+<li><p>Added hex logo</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-0-0-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-0-2"></a></h3>
 <ul><li><p>Backend improvements to schedule checking</p></li>
 <li><p>Timestamps are formatted to specified time zone.</p></li>
+<li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> cli output suggests to use <code><a href="../reference/last_run_errors.html">last_run_errors()</a></code> or <code><a href="../reference/last_run_warnings.html">last_run_warnings()</a></code> if any errors or warnings were found.</p></li>
 </ul></div>
 </div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="maestro-development-version">maestro (development version)<a class="anchor" aria-label="anchor" href="#maestro-development-version"></a></h2>
+<ul><li>Initial alpha release</li>
+</ul></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
