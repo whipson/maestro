@@ -63,8 +63,6 @@ run_schedule_entry <- function(
   # Create a context (environment) for running the pipeline
   maestro_context <- new.env()
 
-  start_time <- lubridate::now(tz = "UTC")
-
   # Source the script
   tryCatch({
     source(script_path, local = maestro_context)
@@ -88,8 +86,6 @@ run_schedule_entry <- function(
   list(
     artifacts = results,
     warnings = warnings_vec,
-    messages = messages_vec,
-    start_time = start_time,
-    end_time = lubridate::now(tz = "UTC")
+    messages = messages_vec
   )
 }
