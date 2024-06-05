@@ -60,13 +60,14 @@ run_schedule_entry <- function(
     invokeRestart("muffleMessage")
   }
 
-  run_env <- new.env()
+  # Create a context (environment) for running the pipeline
+  maestro_context <- new.env()
 
   start_time <- lubridate::now(tz = "UTC")
 
   # Source the script
   tryCatch({
-    source(script_path, local = run_env)
+    source(script_path, local = maestro_context)
   }, error = \(e) {
     logger::log_error(conditionMessage(e), namespace = pipe_name)
     cli::cli_abort("Error sourcing {.code {pipe_name}}")
@@ -75,16 +76,17 @@ run_schedule_entry <- function(
     NULL
   })
 
-  args <- formals(pipe_name, envir = run_env)
+  args <- formals(pipe_name, envir = maestro_context)
 
-  withCallingHandlers(
-    do.call(pipe_name, args = resources[names(args)], envir = run_env),
+  results <- withCallingHandlers(
+    do.call(pipe_name, args = resources[names(args)], envir = maestro_context),
     error = error_handler,
     warning = warning_handler,
     message = message_handler
   )
 
   list(
+    artifacts = results,
     warnings = warnings_vec,
     messages = messages_vec,
     start_time = start_time,
