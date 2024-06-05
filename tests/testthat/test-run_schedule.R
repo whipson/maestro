@@ -155,7 +155,7 @@ test_that("run_schedule handles errors in a pipeline", {
   temp <- tempfile()
 
   expect_message({
-    run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = temp)
+    status <- run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = temp)
   })
 
   expect_gt(length(readLines(temp)), 0)
@@ -164,6 +164,7 @@ test_that("run_schedule handles errors in a pipeline", {
   errors <- last_run_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
+  expect_true(all(!is.na(status$pipeline_started)))
 }) |>
   suppressMessages()
 
@@ -273,7 +274,7 @@ test_that("run_schedule works with multiple cores", {
   temp <- tempfile()
 
   expect_no_error({
-    run_schedule(
+    status <- run_schedule(
       schedule,
       cores = 2,
       run_all = TRUE,
@@ -281,6 +282,8 @@ test_that("run_schedule works with multiple cores", {
       log_file = temp
     )
   })
+
+  expect_true(all(status$success))
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
