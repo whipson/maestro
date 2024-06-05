@@ -330,9 +330,10 @@ run_schedule <- function(
 
     # Get the number of statuses
     total <- nrow(status_table)
+    invoked <- sum(status_table$invoked)
     error_count <- length(run_errors)
     skip_count <- sum(!status_table$invoked)
-    success_count <- total - error_count
+    success_count <- invoked - error_count
     warning_count <- length(run_warnings)
 
     cli::cli_h3("Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}")
