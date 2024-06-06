@@ -1,5 +1,9 @@
 # maestro 0.0.3.009
 
+## Breaking changes
+
+- `run_schedule()` now returns a list with status and artifacts instead of just a data.frame of the status. Artifacts are any values returned from pipelines. Pipelines that return nothing will have no artifacts.
+
 ## Minor changes
 
 - Start and end times are now reported from functions that result in an error in single core only (#82).

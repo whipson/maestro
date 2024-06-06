@@ -12,6 +12,12 @@
 #' whether it is scheduled to run at the current time using some simple time arithmetic. We assume
 #' `run_schedule(schedule, check_datetime = Sys.time())`, but this need not be the case.
 #'
+#' ## Output
+#'
+#' `run_schedule()` returns a list with two elements: `status` and `artifacts`. Status is a data.frame where
+#' each row is a pipeline and the columns are information about the pipeline status, execution time, etc. Artifacts
+#' are any values returned from pipelines.
+#'
 #' ## Pipelines with arguments (resources)
 #'
 #' If a pipeline takes an argument that doesn't include a default value, these can be supplied
@@ -21,6 +27,7 @@
 #' the same argument but requiring different values.
 #'
 #' ## Running in parallel
+#'
 #' Pipelines can be run in parallel using the `cores` argument. First, you must run `future::plan(future::multisession)`
 #' in the orchestrator. Then, supply the desired number of cores to the `cores` argument. Note that
 #' console output appears different in multicore mode.
@@ -39,7 +46,7 @@
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
-#' @return data.frame of pipeline statuses
+#' @return list with named elements `status` and `artifacts`
 #' @importFrom R.utils countLines
 #' @export
 #' @examples
@@ -260,8 +267,8 @@ run_schedule <- function(
     start_times <- if (length(start_times) == 0) NA else start_times
     end_times <- if (length(end_times) == 0) NA else end_times
 
-    # Get the results as a tibble
-    results <- purrr::imap(
+    # Get the status as a tibble
+    status <- purrr::imap(
       runs,
       ~dplyr::tibble(
         pipe_id = as.integer(.y),
@@ -276,9 +283,12 @@ run_schedule <- function(
         pipeline_ended = end_times
       )
 
+    # Modify the names
+    runs <- runs |>
+      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}"))
+
     # Get the errors
     run_errors <- runs |>
-      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
       purrr::map(
         ~.x$error
       ) |>
@@ -286,7 +296,6 @@ run_schedule <- function(
 
     # Get the warnings
     run_warnings <- runs |>
-      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
       purrr::map(
         ~.x$result$warnings
       ) |>
@@ -294,7 +303,6 @@ run_schedule <- function(
 
     # Get the messages
     run_messages <- runs |>
-      purrr::set_names(glue::glue("{schedule$pipe_name} {schedule$script_path}")) |>
       purrr::map(
         ~.x$result$messages
       ) |>
@@ -307,7 +315,7 @@ run_schedule <- function(
 
     # Create status table
     status_table <- schedule |>
-      dplyr::left_join(results, by = "pipe_id") |>
+      dplyr::left_join(status, by = "pipe_id") |>
       dplyr::mutate(
         success = ifelse(invoked, errors == 0, NA),
         dplyr::across(
@@ -327,6 +335,13 @@ run_schedule <- function(
         messages,
         next_run
       )
+
+    # Get the artifacts as a named list
+    artifacts <- runs |>
+      purrr::map(
+        ~.x$result$artifacts
+      ) |>
+      purrr::discard(is.null)
 
     # Get the number of statuses
     total <- nrow(status_table)
@@ -376,16 +391,21 @@ run_schedule <- function(
       cli::cli_ul(next_run_strs)
     }
 
-    return(status_table)
+    output <- list(
+      status = status_table,
+      artifacts = artifacts
+    )
+
+    return(output)
   }
 
   if (quiet) {
     run_schedule_fun <- purrr::quietly(run_schedule_fun)
-    status_table <- run_schedule_fun() |>
+    output <- run_schedule_fun() |>
       purrr::pluck("result")
   } else {
-    status_table <- run_schedule_fun()
+    output <- run_schedule_fun()
   }
 
-  return(status_table)
+  return(output)
 }

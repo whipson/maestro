@@ -97,14 +97,9 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
       skip = dplyr::coalesce(skip, FALSE),
       log_level = dplyr::coalesce(log_level, "INFO"),
       frequency_n = dplyr::coalesce(frequency_n, 1L),
-      frequency_unit = dplyr::coalesce(frequency_unit, "day")
+      frequency_unit = dplyr::coalesce(frequency_unit, "day"),
+      start_time = purrr::map2_vec(start_time, tz, ~lubridate::as_datetime(.x, tz = .y))
     ) |>
-    dplyr::rowwise() |>
-    # Format timestamp with timezone
-    dplyr::mutate(
-      start_time = lubridate::as_datetime(start_time, tz = tz)
-    ) |>
-    dplyr::ungroup() |>
     dplyr::select(-tz)
 
   return(sch)
