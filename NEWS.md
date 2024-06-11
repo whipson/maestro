@@ -1,8 +1,12 @@
-# maestro 0.0.3.009
+# maestro 0.0.3.900
 
 ## Breaking changes
 
 - `run_schedule()` now returns a list with status and artifacts instead of just a data.frame of the status. Artifacts are any values returned from pipelines. Pipelines that return nothing will have no artifacts.
+
+## Major changes
+
+- New helper function `suggest_orch_frequency()` to provide a suggestion of what frequency to use for the orchestrator.
 
 ## Minor changes
 
