@@ -4,10 +4,13 @@
 \alias{suggest_orch_frequency}
 \title{Suggest an orchestrator frequency based on a schedule}
 \usage{
-suggest_orch_frequency(schedule)
+suggest_orch_frequency(schedule = NULL, env = rlang::caller_env())
 }
 \arguments{
-\item{schedule}{schedule data.frame created by \code{build_schedule()}}
+\item{schedule}{schedule data.frame created by \code{build_schedule()}. If \code{NULL} it looks to the
+environment called from \code{run_schedule()}}
+
+\item{env}{an environment}
 }
 \value{
 frequency string
@@ -31,6 +34,6 @@ suggest_orch_frequency(schedule)
 # Use with `run_schedule()`
 run_schedule(
   schedule,
-  orch_frequency = suggest_orch_frequency(schedule)
+  orch_frequency = suggest_orch_frequency()
 )
 }
