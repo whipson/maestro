@@ -68,7 +68,7 @@ suggest_orch_frequency <- function(schedule = NULL, env = rlang::caller_env()) {
     )
   }
 
-  if (class(schedule$frequency) != "character") {
+  if (typeof(schedule$frequency) != "character") {
     cli::cli_abort(
       c("Schedule columns {.code frequency} must have type 'character'.",
         "i" = "Use {.fn build_schedule} to create a valid schedule."),
