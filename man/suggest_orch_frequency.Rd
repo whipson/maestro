@@ -4,13 +4,11 @@
 \alias{suggest_orch_frequency}
 \title{Suggest an orchestrator frequency based on a schedule}
 \usage{
-suggest_orch_frequency(schedule = NULL, env = rlang::caller_env())
+suggest_orch_frequency(schedule)
 }
 \arguments{
 \item{schedule}{schedule data.frame created by \code{build_schedule()}. If \code{NULL} it looks to the
 environment called from \code{run_schedule()}}
-
-\item{env}{an environment}
 }
 \value{
 frequency string
@@ -30,10 +28,4 @@ pipeline_dir <- tempdir()
 create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 schedule <- build_schedule(pipeline_dir = pipeline_dir)
 suggest_orch_frequency(schedule)
-
-# Use with `run_schedule()`
-run_schedule(
-  schedule,
-  orch_frequency = suggest_orch_frequency()
-)
 }

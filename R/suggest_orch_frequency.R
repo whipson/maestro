@@ -10,7 +10,6 @@
 #'
 #' @param schedule schedule data.frame created by `build_schedule()`. If `NULL` it looks to the
 #' environment called from `run_schedule()`
-#' @param env an environment
 #'
 #' @return frequency string
 #' @export
@@ -20,26 +19,7 @@
 #' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #' schedule <- build_schedule(pipeline_dir = pipeline_dir)
 #' suggest_orch_frequency(schedule)
-#'
-#' # Use with `run_schedule()`
-#' run_schedule(
-#'   schedule,
-#'   orch_frequency = suggest_orch_frequency()
-#' )
-suggest_orch_frequency <- function(schedule = NULL, env = rlang::caller_env()) {
-
-  # Check if NULL, if it is, look in the parent environment
-  if (is.null(schedule)) {
-    schedule <- get("schedule", envir = env)
-    if (is.null(schedule)) {
-      cli::cli_abort(
-        c(
-          "No object named `schedule` located in the environment.",
-          "i" = "Use {.fn build_schedule} to create a valid schedule."
-        )
-      )
-    }
-  }
+suggest_orch_frequency <- function(schedule) {
 
   # Check that schedule is a data.frame
   if (!"data.frame" %in% class(schedule)) {
