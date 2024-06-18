@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3.900</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,33 +156,18 @@
 <span><span class="va">schedule_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_schedule.html">build_schedule</a></span><span class="op">(</span>pipeline_dir <span class="op">=</span> <span class="st">"pipelines"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Checks which pipelines are due to run and then executes them</span></span>
-<span><span class="va">run_status</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
+<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule_table</span>, </span>
 <span>  orch_frequency <span class="op">=</span> <span class="st">"1 day"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">run_status</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p><picture><source media="(prefers-color-scheme: dark)" srcset="man/figures/README-/unnamed-chunk-3-dark.svg"><img src="reference/figures/README-/unnamed-chunk-3.svg" width="100%"></source></picture></p>
-<p>The function <code><a href="reference/build_schedule.html">build_schedule()</a></code> scours through all the pipelines in the project and builds a schedule. Then <code><a href="reference/run_schedule.html">run_schedule()</a></code> checks each pipeline’s scheduled time against the system time within some margin of rounding and calls those pipelines to run. The output of <code><a href="reference/run_schedule.html">run_schedule()</a></code> itself is a table of pipeline statuses.</p>
-</div>
-<div class="section level3">
-<h3 id="logging">Logging<a class="anchor" aria-label="anchor" href="#logging"></a>
-</h3>
-<p><code>maestro</code> can keep an accumulating log of all messages, warnings, and errors reported from the pipelines. This log file is created in the project directory (by default <code>./maestro.log</code>) and accumulates until the <code>log_file_max_bytes</code> argument is exceeded.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"maestro.log"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span>sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [my_etl] [INFO] [2024-06-03 08:32:50.272556]: Get data</span></span>
-<span><span class="co">#&gt; [my_etl] [INFO] [2024-06-03 08:32:50.32352]: Transforming</span></span>
-<span><span class="co">#&gt; [my_etl] [INFO] [2024-06-03 08:32:50.33202]: Writing</span></span>
-<span><span class="co">#&gt; [get_mtcars] [WARN] [2024-06-03 08:32:50.382918]: Uh oh</span></span></code></pre></div>
+<p>The function <code><a href="reference/build_schedule.html">build_schedule()</a></code> scours through all the pipelines in the project and builds a schedule. Then <code><a href="reference/run_schedule.html">run_schedule()</a></code> checks each pipeline’s scheduled time against the system time within some margin of rounding and calls those pipelines to run.</p>
 </div>
 <div class="section level3">
 <h3 id="multicore">Multicore<a class="anchor" aria-label="anchor" href="#multicore"></a>
 </h3>
 <p>If you have several pipelines and/or pipelines that take awhile to run, it can be more efficient to split computation across multiple CPU cores.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/DavisVaughan/furrr" class="external-link">furrr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span>
