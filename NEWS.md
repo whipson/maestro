@@ -1,4 +1,4 @@
-# maestro 0.0.3.900
+# maestro 0.0.3
 
 ## Breaking changes
 
