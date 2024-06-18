@@ -44,7 +44,7 @@ a multisession plan must be executed in the orchestrator (see details)}
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
-data.frame of pipeline statuses
+list with named elements \code{status} and \code{artifacts}
 }
 \description{
 Given a schedule in a \code{maestro} project, runs the pipelines that are scheduled to execute
@@ -56,6 +56,13 @@ based on the current time.
 The function \code{run_schedule()} examines each pipeline in the schedule table and determines
 whether it is scheduled to run at the current time using some simple time arithmetic. We assume
 \code{run_schedule(schedule, check_datetime = Sys.time())}, but this need not be the case.
+}
+
+\subsection{Output}{
+
+\code{run_schedule()} returns a list with two elements: \code{status} and \code{artifacts}. Status is a data.frame where
+each row is a pipeline and the columns are information about the pipeline status, execution time, etc. Artifacts
+are any values returned from pipelines.
 }
 
 \subsection{Pipelines with arguments (resources)}{

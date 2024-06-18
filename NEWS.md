@@ -1,3 +1,21 @@
+# maestro 0.0.3.900
+
+## Breaking changes
+
+- `run_schedule()` now returns a list with status and artifacts instead of just a data.frame of the status. Artifacts are any values returned from pipelines. Pipelines that return nothing will have no artifacts.
+
+## Major changes
+
+- New helper function `suggest_orch_frequency()` to provide a suggestion of what frequency to use for the orchestrator.
+
+## Minor changes
+
+- Start and end times are now reported from functions that result in an error in single core only (#82).
+
+## Bug fixes
+
+- CLI output from `run_schedule()` now correctly outputs the total number of pipelines (#81) and correctly outputs number of errors.
+
 # maestro 0.0.2
 
 ## Breaking changes
@@ -29,7 +47,3 @@
 - Timestamps are formatted to specified time zone.
 
 - `run_schedule()` cli output suggests to use `last_run_errors()` or `last_run_warnings()` if any errors or warnings were found.
-
-# maestro (development version)
-
-- Initial alpha release

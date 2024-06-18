@@ -3,8 +3,9 @@ test_that("run_schedule works", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   expect_message({
-    status <- run_schedule(schedule, run_all = TRUE)
+    output <- run_schedule(schedule, run_all = TRUE)
   })
+  status <- output$status
 
   expect_s3_class(status, "data.frame")
   expect_in(
@@ -13,10 +14,29 @@ test_that("run_schedule works", {
     ),
     names(status)
   )
+
+  expect_type(
+    output$artifacts, "list"
+  )
+  expect_gt(length(output$artifacts), 0)
+
   expect_s3_class(status$pipeline_started, "POSIXct")
   expect_gt(nrow(status), 0)
   expect_length(last_run_errors(), 0)
   expect_length(last_run_warnings(), 0)
+}) |>
+  suppressMessages()
+
+test_that("run_schedule correctly returns artifacts (i.e., pipeline returns)", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_artifacts"))
+
+  output <- run_schedule(schedule, run_all = TRUE)
+
+  artifacts <- output$artifacts
+
+  expect_length(artifacts, 1)
+  expect_equal(artifacts[[1]], "I'm an artifact")
 }) |>
   suppressMessages()
 
@@ -94,13 +114,15 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
 
-  status <- run_schedule(
+  output <- run_schedule(
     schedule,
     orch_frequency = "15 minutes",
     check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
     quiet = TRUE
   )
 
+  status <- output$status
+
   expect_snapshot(
     status$invoked
   )
@@ -108,12 +130,13 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     status$next_run
   )
 
-  status <- run_schedule(
+  output <- run_schedule(
     schedule,
     orch_frequency = "1 month",
     check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
     quiet = TRUE
   )
+  status <- output$status
 
   expect_snapshot(
     status$invoked
@@ -122,12 +145,13 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     status$next_run
   )
 
-  status <- run_schedule(
+  output <- run_schedule(
     schedule,
     orch_frequency = "4 days",
     check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
     quiet = TRUE
   )
+  status <- output$status
 
   expect_snapshot(
     status$invoked
@@ -155,8 +179,9 @@ test_that("run_schedule handles errors in a pipeline", {
   temp <- tempfile()
 
   expect_message({
-    run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = temp)
+    output <- run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = temp)
   })
+  status <- output$status
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)
@@ -164,6 +189,7 @@ test_that("run_schedule handles errors in a pipeline", {
   errors <- last_run_errors()
   expect_type(errors, "list")
   expect_length(errors, 1)
+  expect_true(all(!is.na(status$pipeline_started)))
 }) |>
   suppressMessages()
 
@@ -273,7 +299,7 @@ test_that("run_schedule works with multiple cores", {
   temp <- tempfile()
 
   expect_no_error({
-    run_schedule(
+    output <- run_schedule(
       schedule,
       cores = 2,
       run_all = TRUE,
@@ -281,6 +307,10 @@ test_that("run_schedule works with multiple cores", {
       log_file = temp
     )
   })
+
+  status <- output$status
+
+  expect_true(all(status$success))
 
   expect_gt(length(readLines(temp)), 0)
   file.remove(temp)

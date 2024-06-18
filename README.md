@@ -118,12 +118,10 @@ library(maestro)
 schedule_table <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them
-run_status <- run_schedule(
+output <- run_schedule(
   schedule_table, 
   orch_frequency = "1 day"
 )
-
-run_status
 ```
 
 <picture>
@@ -134,25 +132,7 @@ run_status
 The function `build_schedule()` scours through all the pipelines in the
 project and builds a schedule. Then `run_schedule()` checks each
 pipeline’s scheduled time against the system time within some margin of
-rounding and calls those pipelines to run. The output of
-`run_schedule()` itself is a table of pipeline statuses.
-
-### Logging
-
-`maestro` can keep an accumulating log of all messages, warnings, and
-errors reported from the pipelines. This log file is created in the
-project directory (by default `./maestro.log`) and accumulates until the
-`log_file_max_bytes` argument is exceeded.
-
-``` r
-readLines("maestro.log") |> 
-  tail(10) |> 
-  cat(sep = "\n")
-#> [my_etl] [INFO] [2024-06-03 08:32:50.272556]: Get data
-#> [my_etl] [INFO] [2024-06-03 08:32:50.32352]: Transforming
-#> [my_etl] [INFO] [2024-06-03 08:32:50.33202]: Writing
-#> [get_mtcars] [WARN] [2024-06-03 08:32:50.382918]: Uh oh
-```
+rounding and calls those pipelines to run.
 
 ### Multicore
 
