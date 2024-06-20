@@ -2,7 +2,7 @@
 title: "Advanced Scheduling"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{maestro-4-advanced-scheduling}
+  %\VignetteIndexEntry{Advanced Scheduling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -27,6 +27,24 @@ The timeliness of a pipeline is measured in how close the scheduled execution ti
 Let's look at some examples:
 
 First, we'll consider one pipeline that is scheduled to run daily at 09:20:00 and we'll configure the orchestrator to run daily.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+dir.create("pipelines")
+writeLines(
+  "
+  # ./pipelines/daily_example.R
+  #' daily_example maestro pipeline
+  #'
+  #' @maestroFrequency 1 day
+  #' @maestroStartTime 2024-06-20 09:20:00
+  daily_example <- function() {
+  
+    # Pipeline code
+  }
+  ",
+  con = "pipelines/daily_example.R"
+)
+```
 
 ```{r, eval=FALSE}
 # ./pipelines/daily_example.R
