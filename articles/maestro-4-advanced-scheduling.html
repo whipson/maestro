@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4.900</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -160,16 +160,16 @@ system time using either <code><a href="https://rdrr.io/r/base/Sys.time.html" cl
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[54ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[53ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.08 sec elapsed </span></span>
+<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.079 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span> </span></span>
 <span><span class="co">## Pipe name | Next scheduled run</span></span>
-<span><span class="co">## • daily_example | 2024-06-21</span></span></code></pre>
+<span><span class="co">## • daily_example | 2024-06-20</span></span></code></pre>
 <p>We can see that the pipeline executed even though the current time
 was not 09:20:00. This is because we set the orchestrator to run daily
 and so it considers it close enough to within a day.</p>
@@ -186,13 +186,13 @@ orchestrator:</p>
 <pre><code><span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span></span></span></code></pre>
 <pre><code><span><span class="co">## → <span style="color: #555555;">./pipelines/daily_example.R</span> daily_example</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.004 sec elapsed</span></span></code></pre>
+<pre><code><span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.005 sec elapsed</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 successes | <span style="color: #000000;">→</span> 1 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span></code></pre>
 <pre><code><span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span></span></span></code></pre>
 <pre><code><span><span class="co">## Pipe name | Next scheduled run</span></span></code></pre>
-<pre><code><span><span class="co">## • daily_example | 2024-06-21 09:15:00</span></span></code></pre>
+<pre><code><span><span class="co">## • daily_example | 2024-06-20 09:15:00</span></span></code></pre>
 <p>It was skipped because it wasn’t within a 15 minute degree of
 difference but the output tells us that will next run at
 <code>2024-06-20 09:15:00</code>.<br><br>
