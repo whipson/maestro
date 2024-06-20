@@ -26,15 +26,18 @@ asciicast::init_knitr_engine(
 )
 ```
 
-# maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" align="right" height="138" alt="maestro website" /></a>
+# maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" alt="maestro website" align="right" height="138"/></a>
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/whipson/maestro?branch=main)
+[![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/whipson/maestro?branch=main)
+
 <!-- badges: end -->
 
-`maestro` is a lightweight framework for creating and orchestrating data pipelines in R. If you have several scheduled jobs or pipelines you want to run in R and want to manage them in one project, then `maestro` is for you!
+`maestro` is a lightweight framework for creating and orchestrating data pipelines in R. At its core, maestro is an R script scheduler that is unique in two ways:
+
+1.  Stateless: It does not need to be continuously running - it can be run in a serverless architecture
+2.  Use of *rounded scheduling*: The timeliness of pipeline executions depends on how often you run your orchestrator
 
 In `maestro` you create **pipelines** (functions) and schedule them using `roxygen2` tags - these are special comments (decorators) above each function. Then you create an **orchestrator** containing `maestro` functions for scheduling and invoking the pipelines.
 
