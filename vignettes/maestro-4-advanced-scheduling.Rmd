@@ -7,26 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%",
-  cache = TRUE,
-  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
-)
-# knitr::opts_knit$set(root.dir = 'sample_project')
-Sys.setenv(CLI_TICK_TIME = "100")
-asciicast::init_knitr_engine(
-  startup = quote({
-    library(maestro)
-    set.seed(1) }),
-  echo = TRUE,
-  echo_input = FALSE
-)
-```
-
 This vignette covers more advanced concepts and examples related to scheduling. At it's core, maestro adheres to two keys principles:
 
 1.  Stateless: It does not need to be continuously running - it can be run in a serverless architecture
@@ -62,7 +42,7 @@ daily_example <- function() {
 
 For demostration purposes, I'll manually set the check time to be 08:00:00 UTC (this is the time maestro will use to compare against the scheduled time). In practice, you almost always want this to be the system time using either `Sys.time()` or `lubridate::now()`.
 
-```{asciicast}
+```{r}
 # ./orchestrator.R
 
 library(maestro)
@@ -80,7 +60,7 @@ We can see that the pipeline executed even though the current time was not 09:20
 
 Let's see what happens if we up the frequency of the orchestrator:
 
-```{asciicast}
+```{r}
 # ./orchestrator.R
 status <- run_schedule(
   schedule,
