@@ -51,6 +51,7 @@
     <a class="dropdown-item" href="articles/maestro-1-quick-start.html">Quick Start</a>
     <a class="dropdown-item" href="articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
     <a class="dropdown-item" href="articles/maestro-3-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a>
   </div>
 </li>
 <li class="nav-item">
@@ -83,7 +84,12 @@
 </div>
 <!-- badges: start -->
 
-<p><code>maestro</code> is a lightweight framework for creating and orchestrating data pipelines in R. If you have several scheduled jobs or pipelines you want to run in R and want to manage them in one project, then <code>maestro</code> is for you!</p>
+<!-- badges: end -->
+<p><code>maestro</code> is a lightweight framework for creating and orchestrating data pipelines in R. At its core, maestro is an R script scheduler that is unique in two ways:</p>
+<ol style="list-style-type: decimal">
+<li>Stateless: It does not need to be continuously running - it can be run in a serverless architecture</li>
+<li>Use of <em>rounded scheduling</em>: The timeliness of pipeline executions depends on how often you run your orchestrator</li>
+</ol>
 <p>In <code>maestro</code> you create <strong>pipelines</strong> (functions) and schedule them using <code>roxygen2</code> tags - these are special comments (decorators) above each function. Then you create an <strong>orchestrator</strong> containing <code>maestro</code> functions for scheduling and invoking the pipelines.</p>
 <div class="section level2">
 <h2 id="pre-release-disclaimer">Pre-release Disclaimer<a class="anchor" aria-label="anchor" href="#pre-release-disclaimer"></a>

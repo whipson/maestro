@@ -51,6 +51,7 @@
     <a class="dropdown-item" href="../articles/maestro-1-quick-start.html">Quick Start</a>
     <a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
     <a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a>
   </div>
 </li>
 <li class="nav-item">
@@ -163,22 +164,25 @@ it as the factory manager who turns on various assembly lines as needed.
 It also monitors all the pipelines to ensure smooth operation. Just like
 the factory manager, the orchestrator operates in “shifts” and so needs
 to be scheduled to perform it’s job too.</p>
+<div class="section level3">
+<h3 id="rounded-scheduling">Rounded Scheduling<a class="anchor" aria-label="anchor" href="#rounded-scheduling"></a>
+</h3>
 <p>Importantly, <code>maestro</code> needs to know how often you’re
 going to run the orchestrator. Unlike most orchestration tools out
 there, <code>maestro</code> isn’t intended to be continuously running,
 which saves you on compute resources. But this means that pipelines
-won’t necessarily run <em>exactly</em> when they’re scheduled to. For
-example, let’s say we have a pipeline scheduled to run hourly on the 02
-minute mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every
-hour on the 00 minute. When the orchestrator runs, it’ll be slightly
-before the pipeline scheduled time, but it’ll trigger the pipeline
-anyway because it’s close enough within the frequency of the
-orchestrator. If instead our orchestrator ran every 15 minutes, it’d
-still only execute the pipeline once in the hour. But if we
-underprovisioned the orchestrator and ran it only every day, then the
-pipeline would only execute once a day. So an important guideline is
-that the orchestrator needs to run at least as frequency as your highest
-frequency pipeline.</p>
+won’t necessarily run <em>exactly</em> when they’re scheduled to. This
+is a concept we call <em>rounded scheduling.</em></p>
+<p>Let’s say we have a pipeline scheduled to run hourly on the 02 minute
+mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every hour on
+the 00 minute. When the orchestrator runs, it’ll be slightly before the
+pipeline scheduled time, but it’ll trigger the pipeline anyway because
+it’s close enough within the frequency of the orchestrator. If instead
+our orchestrator ran every 15 minutes, it’d still only execute the
+pipeline once in the hour. But if we underprovisioned the orchestrator
+and ran it only every day, then the pipeline would only execute once a
+day. So an important guideline is that the orchestrator needs to run at
+least as frequency as your highest frequency pipeline.</p>
 <p>In <code>maestro</code> an orchestrator is an R script or Quarto like
 this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -193,6 +197,7 @@ this:</p>
 <p>By passing the <code>orch_frequency = "1 hour"</code> to
 <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, we’re saying that we intend to run the
 orchestrator every 1 hour.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>

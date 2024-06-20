@@ -29,6 +29,7 @@ there are no messages or run_schedule() has not been run it will be NULL."><meta
     <a class="dropdown-item" href="../articles/maestro-1-quick-start.html">Quick Start</a>
     <a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a>
     <a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a>
+    <a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a>
   </div>
 </li>
 <li class="nav-item">
@@ -81,7 +82,7 @@ ignore messages.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pipeline_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="create_pipeline.html">create_pipeline</a></span><span class="op">(</span><span class="st">"my_new_pipeline"</span>, <span class="va">pipeline_dir</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> File /tmp/RtmpaYrYNf/my_new_pipeline.R already exists. Overwrite? [Y/n]: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> File /tmp/RtmpWdHoD6/my_new_pipeline.R already exists. Overwrite? [Y/n]: </span>
 <span class="r-in"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="build_schedule.html">build_schedule</a></span><span class="op">(</span>pipeline_dir <span class="op">=</span> <span class="va">pipeline_dir</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 1 script successfully parsed</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>1 script failed to parse:</span>
@@ -90,22 +91,22 @@ ignore messages.</p>
 <span class="r-in"><span><span class="fu"><a href="run_schedule.html">run_schedule</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Running pipelines <span style="color: #00BB00;">▶</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">/tmp/RtmpaYrYNf/my_new_pipeline.R</span> <span style="color: #0000BB;">my_new_pipeline</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #555555;">/tmp/RtmpaYrYNf/my_new_pipeline.R</span> <span style="color: #0000BB;">my_new_pipeline</span> <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">/tmp/RtmpWdHoD6/my_new_pipeline.R</span> <span style="color: #0000BB;">my_new_pipeline</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #555555;">/tmp/RtmpWdHoD6/my_new_pipeline.R</span> <span style="color: #0000BB;">my_new_pipeline</span> <span style="color: #B2B2B2;">[10ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.027 sec elapsed </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.026 sec elapsed </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Pipe name | Next scheduled run</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> • my_new_pipeline | 2024-06-20</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • my_new_pipeline | 2024-06-22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   pipe_name  script_path invoked success pipeline_started    pipeline_ended     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> my_new_pi… /tmp/Rtmpa… TRUE    TRUE    2024-06-18 <span style="color: #949494;">13:36:54</span> 2024-06-18 <span style="color: #949494;">13:36:54</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> my_new_pi… /tmp/RtmpW… TRUE    TRUE    2024-06-20 <span style="color: #949494;">15:45:03</span> 2024-06-20 <span style="color: #949494;">15:45:03</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: errors &lt;int&gt;, warnings &lt;int&gt;, messages &lt;int&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   next_run &lt;dttm&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
