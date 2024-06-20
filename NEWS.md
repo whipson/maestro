@@ -1,3 +1,9 @@
+# maestro 0.0.4
+
+## Bug fixes
+
+- Fixed the output of the next run for pipelines (#90)
+
 # maestro 0.0.3
 
 ## Breaking changes
