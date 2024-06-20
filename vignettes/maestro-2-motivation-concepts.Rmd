@@ -58,7 +58,11 @@ Pipeline configuration is covered in more detail here [linking vignette].
 
 An orchestrator is a process that triggers pipelines to run. Think of it as the factory manager who turns on various assembly lines as needed. It also monitors all the pipelines to ensure smooth operation. Just like the factory manager, the orchestrator operates in "shifts" and so needs to be scheduled to perform it's job too.
 
-Importantly, `maestro` needs to know how often you're going to run the orchestrator. Unlike most orchestration tools out there, `maestro` isn't intended to be continuously running, which saves you on compute resources. But this means that pipelines won't necessarily run *exactly* when they're scheduled to. For example, let’s say we have a pipeline scheduled to run hourly on the 02 minute mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every hour on the 00 minute. When the orchestrator runs, it’ll be slightly before the pipeline scheduled time, but it’ll trigger the pipeline anyway because it’s close enough within the frequency of the orchestrator. If instead our orchestrator ran every 15 minutes, it’d still only execute the pipeline once in the hour. But if we underprovisioned the orchestrator and ran it only every day, then the pipeline would only execute once a day. So an important guideline is that the orchestrator needs to run at least as frequency as your highest frequency pipeline.
+### Rounded Scheduling
+
+Importantly, `maestro` needs to know how often you're going to run the orchestrator. Unlike most orchestration tools out there, `maestro` isn't intended to be continuously running, which saves you on compute resources. But this means that pipelines won't necessarily run *exactly* when they're scheduled to. This is a concept we call *rounded scheduling.*
+
+Let’s say we have a pipeline scheduled to run hourly on the 02 minute mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every hour on the 00 minute. When the orchestrator runs, it’ll be slightly before the pipeline scheduled time, but it’ll trigger the pipeline anyway because it’s close enough within the frequency of the orchestrator. If instead our orchestrator ran every 15 minutes, it’d still only execute the pipeline once in the hour. But if we underprovisioned the orchestrator and ran it only every day, then the pipeline would only execute once a day. So an important guideline is that the orchestrator needs to run at least as frequency as your highest frequency pipeline.
 
 In `maestro` an orchestrator is an R script or Quarto like this:
 
