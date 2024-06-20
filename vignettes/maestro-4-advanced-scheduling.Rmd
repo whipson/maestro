@@ -2,30 +2,10 @@
 title: "Advanced Scheduling"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{maestro-4-advanced-scheduling}
+  %\VignetteIndexEntry{Advanced Scheduling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%",
-  cache = TRUE,
-  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
-)
-# knitr::opts_knit$set(root.dir = 'sample_project')
-Sys.setenv(CLI_TICK_TIME = "100")
-asciicast::init_knitr_engine(
-  startup = quote({
-    library(maestro)
-    set.seed(1) }),
-  echo = TRUE,
-  echo_input = FALSE
-)
-```
 
 This vignette covers more advanced concepts and examples related to scheduling. At it's core, maestro adheres to two keys principles:
 
@@ -48,6 +28,24 @@ Let's look at some examples:
 
 First, we'll consider one pipeline that is scheduled to run daily at 09:20:00 and we'll configure the orchestrator to run daily.
 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+dir.create("pipelines")
+writeLines(
+  "
+  # ./pipelines/daily_example.R
+  #' daily_example maestro pipeline
+  #'
+  #' @maestroFrequency 1 day
+  #' @maestroStartTime 2024-06-20 09:20:00
+  daily_example <- function() {
+  
+    # Pipeline code
+  }
+  ",
+  con = "pipelines/daily_example.R"
+)
+```
+
 ```{r, eval=FALSE}
 # ./pipelines/daily_example.R
 #' daily_example maestro pipeline
@@ -62,7 +60,7 @@ daily_example <- function() {
 
 For demostration purposes, I'll manually set the check time to be 08:00:00 UTC (this is the time maestro will use to compare against the scheduled time). In practice, you almost always want this to be the system time using either `Sys.time()` or `lubridate::now()`.
 
-```{asciicast}
+```{r}
 # ./orchestrator.R
 
 library(maestro)
@@ -80,7 +78,7 @@ We can see that the pipeline executed even though the current time was not 09:20
 
 Let's see what happens if we up the frequency of the orchestrator:
 
-```{asciicast}
+```{r}
 # ./orchestrator.R
 status <- run_schedule(
   schedule,
