@@ -2,7 +2,7 @@
 title: "Advanced Scheduling"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{maestro-4-advanced-scheduling}
+  %\VignetteIndexEntry{Advanced Scheduling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

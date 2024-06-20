@@ -2,7 +2,7 @@
 title: "Motivation and Concepts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{maestro-motivation-concepts}
+  %\VignetteIndexEntry{Motivation and Concepts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
