@@ -44,13 +44,16 @@ check_pipelines <- function(
 
       cur_run <- utils::tail(pipeline_sequence, n = 1)
       is_scheduled_now <- check_datetime_round == cur_run
-      next_run <- timechange::time_round(
-        timechange::time_add(
-          cur_run,
-          second = max(orch_frequency_seconds, pipeline_frequency_seconds)
-        ),
-        unit = paste(orch_n, orch_unit)
-      )
+      next_run <- pipeline_datetime_round
+      if (next_run < check_datetime_round) {
+        next_run <- timechange::time_round(
+          timechange::time_add(
+            cur_run,
+            second = max(orch_frequency_seconds, pipeline_frequency_seconds)
+          ),
+          unit = paste(orch_n, orch_unit)
+        )
+      }
 
       list(
         next_run = next_run,
