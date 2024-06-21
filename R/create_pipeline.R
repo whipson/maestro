@@ -1,5 +1,7 @@
 #' Create a new pipeline in a pipelines directory
 #'
+#' Allows the creation of new pipelines (R scripts) and fills in the maestro tags as specified.
+#'
 #' @param pipe_name name of the pipeline and function
 #' @param pipeline_dir directory containing the pipeline scripts
 #' @param frequency how often the pipeline should run (e.g., 1 day, 3 hours, 4 months). Fills in maestroFrequency tag
@@ -11,6 +13,25 @@
 #'
 #' @return invisible
 #' @export
+#' @examples
+#' create_pipeline(
+#'   "extract_data",
+#'   frequency = "1 hour",
+#'   open = FALSE,
+#'   quiet = TRUE
+#' )
+#'
+#' create_pipeline(
+#'   "new_job",
+#'   frequency = "20 minutes",
+#'   start_time = as.POSIXct("2024-06-21 12:20:00"),
+#'   log_level = "ERROR",
+#'   open = FALSE,
+#'   quiet = TRUE
+#' )
+#'
+#' # Clean up
+#' if (!interactive()) unlink("pipelines", recursive = TRUE)
 create_pipeline <- function(
     pipe_name,
     pipeline_dir = "pipelines",
