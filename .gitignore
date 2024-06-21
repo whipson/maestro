@@ -6,3 +6,4 @@ docs
 maestro.log
 pipelines
 orchestrator.R
+inst/doc
