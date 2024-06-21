@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: Orchestration of Data Pipelines
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.hipson@hiaa.ca", role = c("cre", "aut", "cph"), 
@@ -27,7 +27,6 @@ Imports:
     R.utils,
     rlang (>= 1.0.0),
     roxygen2,
-    rstudioapi,
     tictoc,
     timechange,
     utils
@@ -40,6 +39,7 @@ Suggests:
     future,
     knitr,
     rmarkdown,
+    rstudioapi,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
