@@ -36,3 +36,35 @@ test_that("suggest_orch_frequency gives valid suggestions", {
     "5 minute"
   )
 })
+
+test_that("suggest_orch_frequency gives expected errors", {
+  expect_error({
+    suggest_orch_frequency(1)
+  }, regexp = "Schedule must be a data.frame")
+
+  expect_error({
+    suggest_orch_frequency(data.frame())
+  }, regexp = "Empty schedule")
+
+  expect_error(
+    suggest_orch_frequency(iris),
+    regexp = "Schedule is missing required column"
+  )
+
+  expect_error(
+    suggest_orch_frequency(data.frame(frequency = 14)),
+    regexp = "Schedule columns `frequency` must have type"
+  )
+
+  expect_error(
+    suggest_orch_frequency(data.frame(frequency = "1 potato")),
+    regexp = "All time units were invalid"
+  )
+
+  expect_warning(
+    res <- suggest_orch_frequency(data.frame(frequency = c("1 year", "1 potato"))),
+    regexp = "Some time units were invalid"
+  )
+
+  expect_equal(res, "6 months")
+})
