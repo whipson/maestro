@@ -1,3 +1,7 @@
+# maestro 0.1.0
+
+- Initial CRAN submission
+
 # maestro 0.0.4
 
 ## Bug fixes
