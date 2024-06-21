@@ -137,7 +137,7 @@ run_schedule <- function(
     if (cores < 1 || (cores %% 1) != 0) cli::cli_abort("`cores` must be a positive integer")
     if (cores > 1) {
       tryCatch({
-        requireNamespace("furrr")
+        rlang::check_installed("furrr")
         mapper_fun <- function(...) {
           furrr::future_pmap(..., .options = furrr::furrr_options(stdout = FALSE))
         }
