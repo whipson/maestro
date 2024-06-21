@@ -44,6 +44,7 @@ create_orchestrator <- function(
   )
 
   if (open) {
+    rlang::check_installed("rstudioapi")
     rstudioapi::documentOpen(path)
   }
 

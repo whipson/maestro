@@ -132,3 +132,7 @@ Maestro has a function for providing a reasonable estimate for the ideal orchest
 ## Final Remarks
 
 When it comes time to deploy your project make sure that whatever you use to actually run your project (e.g., cron, TaskScheduler, Google Cloud Scheduler, etc.) is indeed running it at the same frequency as you have in the orchestrator. It's best to stick to using whole units of time rather than fractional units - if my orchestrator runs every 15 minutes I like to have it run on the 00:00, 15:00, 30:00, and 45:00 minutes. It makes reasoning about the scheduling simpler.
+
+```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
+unlink("pipelines", recursive = TRUE)
+```

@@ -52,8 +52,6 @@ my_pipe <- function() {
 }
 ```
 
-Pipeline configuration is covered in more detail here [linking vignette].
-
 ## Orchestrator
 
 An orchestrator is a process that triggers pipelines to run. Think of it as the factory manager who turns on various assembly lines as needed. It also monitors all the pipelines to ensure smooth operation. Just like the factory manager, the orchestrator operates in "shifts" and so needs to be scheduled to perform it's job too.

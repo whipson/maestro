@@ -7,8 +7,7 @@
 suggest_orch_frequency(schedule)
 }
 \arguments{
-\item{schedule}{schedule data.frame created by \code{build_schedule()}. If \code{NULL} it looks to the
-environment called from \code{run_schedule()}}
+\item{schedule}{schedule data.frame created by \code{build_schedule()}}
 }
 \value{
 frequency string

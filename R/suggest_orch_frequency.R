@@ -8,8 +8,7 @@
 #' frequency is less than or equal 15 minutes, in which case it is just the highest
 #' frequency.
 #'
-#' @param schedule schedule data.frame created by `build_schedule()`. If `NULL` it looks to the
-#' environment called from `run_schedule()`
+#' @param schedule schedule data.frame created by `build_schedule()`
 #'
 #' @return frequency string
 #' @export
@@ -56,10 +55,28 @@ suggest_orch_frequency <- function(schedule) {
     )
   }
 
-  sch_secs <- purrr::map_int(schedule$frequency, convert_to_seconds)
+  sch_secs <- purrr::map_int(
+    schedule$frequency,
+    purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
+  )
+
+  if (all(is.na(sch_secs))) {
+    cli::cli_abort(
+      c("All time units were invalid.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule.")
+    )
+  }
+
+  if (any(is.na(sch_secs))) {
+    cli::cli_warn(
+      c("Some time units were invalid.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule.")
+    )
+  }
+
   min_freq <- schedule$frequency[which.min(sch_secs)][[1]]
 
-  if (min(sch_secs) <= 60 * 15) {
+  if (min(sch_secs, na.rm = TRUE) <= 60 * 15) {
     return(min_freq)
   }
 
