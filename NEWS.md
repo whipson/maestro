@@ -1,6 +1,4 @@
-# maestro 0.1.0
-
-- Initial CRAN submission
+# maestro 0.1.1
 
 ## Breaking changes
 
@@ -12,6 +10,10 @@ created. Users must explicitly define these paths.
 ## Minor changes
 
 - Creater functions `create_*` now take a boolean `overwrite` argument to make the overwriting of existing pipelines, projects, and orchestrators more explicit.
+
+# maestro 0.1.0
+
+- Initial CRAN submission
 
 # maestro 0.0.4
 
