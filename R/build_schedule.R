@@ -91,13 +91,13 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
     purrr::list_rbind() |>
     # Supply default values for missing
     dplyr::mutate(
-      frequency = dplyr::coalesce(frequency, "1 day"),
-      start_time = dplyr::coalesce(start_time, "1970-01-01 00:00:00"),
-      tz = dplyr::coalesce(tz, "UTC"),
-      skip = dplyr::coalesce(skip, FALSE),
-      log_level = dplyr::coalesce(log_level, "INFO"),
-      frequency_n = dplyr::coalesce(frequency_n, 1L),
-      frequency_unit = dplyr::coalesce(frequency_unit, "day"),
+      frequency = dplyr::if_else(is.na(frequency), "1 day", frequency),
+      start_time = dplyr::if_else(is.na(start_time), "1970-01-01 00:00:00", start_time),
+      tz = dplyr::if_else(is.na(tz), "UTC", tz),
+      skip = dplyr::if_else(is.na(skip), FALSE, TRUE),
+      log_level = dplyr::if_else(is.na(log_level), "INFO", log_level),
+      frequency_n = dplyr::if_else(is.na(frequency_n), 1L, frequency_n),
+      frequency_unit = dplyr::if_else(is.na(frequency_unit), "day", frequency_unit),
       start_time = purrr::map2_vec(start_time, tz, ~lubridate::as_datetime(.x, tz = .y))
     ) |>
     dplyr::select(-tz)
