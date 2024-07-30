@@ -166,7 +166,7 @@ run_schedule <- function(
 
       schedule <- schedule |>
         dplyr::mutate(
-          invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now),
+          invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now) & !skip,
           next_run = purrr::map_vec(schedule_checks, ~.x$next_run)
         )
     } else {
