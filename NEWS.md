@@ -1,3 +1,10 @@
+# maestro 0.1.2
+
+## Minor changes
+
+- Fixed cli output to correctly handle counting of successful runs when pipelines are skipped.
+- Performance improvements to `build_schedule()` (#101).
+
 # maestro 0.1.1
 
 ## Breaking changes
