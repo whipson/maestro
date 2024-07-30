@@ -10,4 +10,5 @@ test_that("create_maestro creates a new maestro project", {
     expect_true(file.exists("orchestrator.qmd"))
     expect_true(dir.exists("pipelines"))
   })
-})
+}) |>
+  suppressMessages()
