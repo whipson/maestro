@@ -51,7 +51,7 @@
 #' @export
 #' @examples
 #' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
 #' schedule <- build_schedule(pipeline_dir = pipeline_dir)
 #' # Runs the schedule every 1 day
 #' run_schedule(
@@ -75,7 +75,7 @@ run_schedule <- function(
     n_show_next = 5,
     cores = 1,
     logging = FALSE,
-    log_file = "./maestro.log",
+    log_file = NULL,
     log_file_max_bytes = 1e6,
     quiet = FALSE
   ) {
@@ -166,7 +166,7 @@ run_schedule <- function(
 
       schedule <- schedule |>
         dplyr::mutate(
-          invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now),
+          invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now) & !skip,
           next_run = purrr::map_vec(schedule_checks, ~.x$next_run)
         )
     } else {
