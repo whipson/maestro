@@ -16,7 +16,9 @@ get_mtcars <- function() {
 #' Multiply
 #'
 #' @maestroFrequency 3 month
+#' @maestroStartTime 1970-01-01
 #' @maestroSkip
+#' @maestroTz UTC
 #'
 #' @export
 wait <- function() {
