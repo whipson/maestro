@@ -1,13 +1,12 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   maestro-1-quick-start: maestro-1-quick-start.html
   maestro-2-motivation-concepts: maestro-2-motivation-concepts.html
   maestro-3-use-cases: maestro-3-use-cases.html
   maestro-4-advanced-scheduling: maestro-4-advanced-scheduling.html
-last_built: 2024-06-21T12:56Z
+last_built: 2024-08-01T11:17Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles
-
