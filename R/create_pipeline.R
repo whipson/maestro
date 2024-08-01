@@ -70,7 +70,7 @@ create_pipeline <- function(
   if (file.exists(path)) {
     if (!overwrite) {
       cli::cli_abort(
-        c("File {.file path} already exists.",
+        c("File {.file {path}} already exists.",
           "Set {.code create_pipeline(overwrite = TRUE)} to overwrite anyway."),
         call = NULL
       )
