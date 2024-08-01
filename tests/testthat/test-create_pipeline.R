@@ -46,3 +46,21 @@ test_that("create_pipeline with POSIXct works and can be run", {
     expect_message()
 }) |>
   suppressMessages()
+
+test_that("create_pipeline aborts if pipeline already exists", {
+
+  withr::with_tempdir({
+    expect_error({
+      dir <- tempdir()
+      create_pipeline("new-pipe", pipeline_dir = dir, open = FALSE)
+      create_pipeline("new-pipe", pipeline_dir = dir, open = FALSE)
+    }, regexp = "already exists")
+
+    # Works if overwrite = TRUE
+    expect_message(
+      create_pipeline("new-pipe", pipeline_dir = dir, open = FALSE, overwrite = TRUE),
+      regexp = "Overwriting existing"
+    )
+  })
+}) |>
+  suppressMessages()

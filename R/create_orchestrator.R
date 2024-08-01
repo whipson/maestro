@@ -38,8 +38,8 @@ create_orchestrator <- function(
   if (file.exists(path)) {
     if (!overwrite) {
       cli::cli_abort(
-        c("File {.file path} already exists.",
-          "Set {.code maestro:::create_orchestrator(overwrite = TRUE)} to overwrite anyway."),
+        c("File {.file {path}} already exists.",
+          "Set {.code maestro::create_orchestrator(overwrite = TRUE)} to overwrite anyway."),
         call = NULL
       )
     } else {

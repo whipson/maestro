@@ -270,6 +270,25 @@ test_that("run_schedule correctly thresholds logging at warn", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule correctly skips pipelines as indicated", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_skip"))
+
+  res <- run_schedule(
+    schedule,
+    quiet = TRUE,
+    orch_frequency = "1 month",
+    check_datetime = as.POSIXct("1970-01-01", "UTC") + months(3) # skipped pipeline scheduled to run here
+  )
+
+  status <- res$status
+
+  expect_true(
+    !status$invoked[status$pipe_name == "wait"]
+  )
+}) |>
+  suppressMessages()
+
 test_that("run_schedule correctly trims log file", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))

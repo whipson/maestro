@@ -167,7 +167,8 @@ run_schedule <- function(
       schedule <- schedule |>
         dplyr::mutate(
           invoked = purrr::map_lgl(schedule_checks, ~.x$is_scheduled_now) & !skip,
-          next_run = purrr::map_vec(schedule_checks, ~.x$next_run)
+          next_run = purrr::map_vec(schedule_checks, ~.x$next_run),
+          next_run = dplyr::if_else(skip, NA, next_run)
         )
     } else {
 
@@ -382,6 +383,7 @@ run_schedule <- function(
     if (!run_all && n_show_next > 0 && nrow(schedule) > 0) {
 
       next_runs_cli <- status_table |>
+        dplyr::filter(!is.na(next_run)) |>
         dplyr::arrange(next_run) |>
         utils::head(n = n_show_next)
 

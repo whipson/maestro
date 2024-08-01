@@ -1,0 +1,10 @@
+url: https://whipson.github.io/maestro/
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#9012C7"
+
+news:
+  releases:
+  - text: "Hello maestro"
+    href: https://whipson.github.io/data-in-flight/posts/hello-maestro/hello-maestro.html
