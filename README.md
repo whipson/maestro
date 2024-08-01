@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/whipson/maestro/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/whipson/maestro?branch=main)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/maestro)](https://cran.r-project.org/package=maestro)
+[![Downloads](https://cranlogs.r-pkg.org/badges/maestro)](https://cran.r-project.org/package=maestro)
 
 <!-- badges: end -->
 
