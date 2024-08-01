@@ -1,16 +1,24 @@
+# maestro 0.2.0.9000
+
+## Minor changes
+
+- Error messages on unintentional overwrites from `create_*()` functions correctly reference name of path or directory that was to be overwritten.
+
+- Fixed cli output of `run_schedule()` to not show skipped pipelines in the next run portion.
+
 # maestro 0.1.2
 
 ## Minor changes
 
 - Fixed cli output to correctly handle counting of successful runs when pipelines are skipped.
+
 - Performance improvements to `build_schedule()` (#101).
 
 # maestro 0.1.1
 
 ## Breaking changes
 
-- Creater functions `create_pipeline()` and `create_maestro` no longer have default arguments for the path to where the scripts are 
-created. Users must explicitly define these paths.
+- Creater functions `create_pipeline()` and `create_maestro` no longer have default arguments for the path to where the scripts are created. Users must explicitly define these paths.
 
 - Argument `log_file` in `run_schedule()` no longer defaults to `./maestro.log` but instead defaults to `NULL`.
 
