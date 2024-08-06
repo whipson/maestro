@@ -1,39 +1,44 @@
 test_that("suggest_orch_frequency gives valid suggestions", {
 
+  expect_equal(
+    suggest_orch_frequency(example_schedule),
+    "30 mins"
+  )
+
   test_schedule <- data.frame(
-    frequency = c("1 hour", "2 days", "3 hours", "4 weeks")
+    frequency = "1 day",
+    frequency_n = 1,
+    frequency_unit = "day",
+    start_time = as.POSIXct("2024-01-01") + lubridate::hours(0:1)
   )
 
   expect_equal(
     suggest_orch_frequency(test_schedule),
-    "30 minutes"
+    "1 hours"
   )
 
   test_schedule <- data.frame(
-    frequency = c("15 minutes", "4 years", "10 days")
+    frequency = c("5 months", "1 quarter"),
+    frequency_n = c(5, 1),
+    frequency_unit = c("months", "quarter"),
+    start_time = as.POSIXct("2024-05-20")
   )
 
   expect_equal(
     suggest_orch_frequency(test_schedule),
-    "15 minutes"
+    "31 days"
   )
 
   test_schedule <- data.frame(
-    frequency = c("5 months", "1 quarter")
+    frequency = c("1 days", "3 days"),
+    frequency_n = c(1, 3),
+    frequency_unit = c("day"),
+    start_time = as.POSIXct("2024-06-04")
   )
 
   expect_equal(
     suggest_orch_frequency(test_schedule),
-    "2 months"
-  )
-
-  test_schedule <- data.frame(
-    frequency = c("5 minute", "10 minute")
-  )
-
-  expect_equal(
-    suggest_orch_frequency(test_schedule),
-    "5 minute"
+    "1 days"
   )
 })
 
@@ -52,19 +57,17 @@ test_that("suggest_orch_frequency gives expected errors", {
   )
 
   expect_error(
-    suggest_orch_frequency(data.frame(frequency = 14)),
+    suggest_orch_frequency(data.frame(frequency = 14, start_time = Sys.time())),
     regexp = "Schedule columns `frequency` must have type"
   )
 
   expect_error(
-    suggest_orch_frequency(data.frame(frequency = "1 potato")),
-    regexp = "All time units were invalid"
+    suggest_orch_frequency(data.frame(frequency = "1 potato", start_time = Sys.time())),
+    regexp = "invalid time units"
   )
 
-  expect_warning(
-    res <- suggest_orch_frequency(data.frame(frequency = c("1 year", "1 potato"))),
-    regexp = "Some time units were invalid"
+  expect_error(
+    suggest_orch_frequency(data.frame(frequency = c("1 potato", "1 month"), start_time = Sys.time() + 0:1)),
+    regexp = "invalid time units"
   )
-
-  expect_equal(res, "6 months")
 })
