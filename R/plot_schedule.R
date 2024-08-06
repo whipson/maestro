@@ -129,7 +129,7 @@ plot_schedule <- function(
       y = NULL,
       title = "Maestro Schedule"
     ) +
-    ggplot2::facet_wrap(~pipe_name, ncol = 1) +
+    ggplot2::facet_wrap(~pipe_name) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.y = ggplot2::element_blank(),
