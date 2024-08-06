@@ -1,14 +1,16 @@
-#' Suggest an orchestrator frequency based on a schedule
+#' Suggest orchestrator frequency based on a schedule
 #'
 #' Suggests a frequency to run the orchestrator based on the frequencies of the
 #' pipelines in a schedule.
 #'
-#' This function uses a simple heuristic to suggest an orchestrator frequency. It
-#' halves the frequency of the most frequent pipeline in the schedule, unless that
-#' frequency is less than or equal 15 minutes, in which case it is just the highest
-#' frequency.
+#' This function attempts to find the smallest interval of time between all pipelines.
+#' If the smallest interval is less than 15 minutes, it just uses the smallest interval.
+#'
+#' Note this function is intended to be used interactively when deciding how often to
+#' schedule the orchestrator. Programmatic use is not recommended.
 #'
 #' @param schedule schedule data.frame created by `build_schedule()`
+#' @inheritParams check_pipelines
 #'
 #' @return frequency string
 #' @export
@@ -18,7 +20,7 @@
 #' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
 #' schedule <- build_schedule(pipeline_dir = pipeline_dir)
 #' suggest_orch_frequency(schedule)
-suggest_orch_frequency <- function(schedule) {
+suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzone = "UTC")) {
 
   # Check that schedule is a data.frame
   if (!"data.frame" %in% class(schedule)) {
@@ -60,42 +62,57 @@ suggest_orch_frequency <- function(schedule) {
     purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
   )
 
-  if (all(is.na(sch_secs))) {
-    cli::cli_abort(
-      c("All time units were invalid.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule.")
-    )
-  }
-
   if (any(is.na(sch_secs))) {
-    cli::cli_warn(
-      c("Some time units were invalid.",
+    cli::cli_abort(
+      c("There are invalid time units.",
         "i" = "Use {.fn build_schedule} to create a valid schedule.")
     )
   }
 
-  min_freq <- schedule$frequency[which.min(sch_secs)][[1]]
-
-  if (min(sch_secs, na.rm = TRUE) <= 60 * 15) {
-    return(min_freq)
+  # If the minimum schedule seconds is lte 15 minutes, return the corresponding frequency
+  if (min(sch_secs, na.rm = TRUE) <= (60 * 15)) {
+    return(schedule$frequency[[which.min(sch_secs)]])
   }
 
-  nunits <- parse_rounding_unit(min_freq)
-
-  if (nunits$n == 1) {
-
-    frequency <- dplyr::case_when(
-      nunits$unit == "year" ~ "6 months",
-      nunits$unit == "quarter" ~ "2 months",
-      nunits$unit == "month" ~ "2 weeks",
-      nunits$unit == "week" ~ "4 days",
-      nunits$unit == "day" ~ "12 hours",
-      nunits$unit == "hour" ~ "30 minutes"
+  if (!"start_time" %in% names(schedule)) {
+    cli::cli_abort(
+      c("Schedule is missing required column 'start_time'.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."
+      ),
+      call = rlang::caller_env()
     )
-  } else {
-    new_n <- ceiling(nunits$n / 2)
-    frequency <- paste(new_n, nunits$unit)
   }
 
-  return(frequency)
+  if (!"POSIXct" %in% class(schedule$start_time)) {
+    cli::cli_abort(
+      c("Schedule columns {.code start_time} must have type 'POSIXct'.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."),
+      call = rlang::caller_env()
+    )
+  }
+
+  max_freq <- schedule$frequency[[which.max(sch_secs)]]
+
+  pipeline_sequences <- purrr::pmap(
+    list(schedule$frequency_n, schedule$frequency_unit, schedule$start_time),
+    ~{
+      pipeline_sequence <- get_pipeline_run_sequence(
+        ..1, ..2, ..3,
+        check_datetime = check_datetime + convert_to_seconds(max_freq)
+      )
+
+      pipeline_sequence[pipeline_sequence >= check_datetime]
+    }
+  ) |>
+    purrr::list_c() |>
+    unique() |>
+    sort()
+
+  pipeline_diffs <- diff(pipeline_sequences)
+
+  min_diff_secs <- min(pipeline_diffs)
+
+  min_diff_atts <- attributes(min_diff_secs)
+
+  paste(round(as.numeric(min_diff_secs)), min_diff_atts$units)
 }

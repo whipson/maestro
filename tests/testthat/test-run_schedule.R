@@ -89,6 +89,9 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
   expect_no_message({
     run_schedule(schedule, run_all = TRUE, quiet = TRUE)
   })
+
+  expect_type(last_run_messages(), "list")
+  expect_gt(length(last_run_messages()), 0)
 })
 
 test_that("run_schedule fails on a pipeline that doesn't exist", {

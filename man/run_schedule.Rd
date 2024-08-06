@@ -23,7 +23,7 @@ run_schedule(
 
 \item{orch_frequency}{of the orchestrator, a single string formatted like "1 day" or "2 weeks"}
 
-\item{check_datetime}{datetime to be used to check if the pipeline should run}
+\item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
 
 \item{resources}{named list of shared resources made available to pipelines as needed}
 

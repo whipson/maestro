@@ -14,15 +14,11 @@ check_pipelines(
 )
 }
 \arguments{
-\item{orch_unit}{unit for the orchestrator frequency}
-
-\item{orch_n}{number of units for the orchestrator frequency}
-
 \item{pipeline_unit}{unit for the pipeline frequency}
 
 \item{pipeline_n}{number of units for the pipeline frequency}
 
-\item{check_datetime}{datetime to be used to check if the pipeline should run}
+\item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
 
 \item{pipeline_datetime}{datetime of the first time the pipeline is to run}
 }
