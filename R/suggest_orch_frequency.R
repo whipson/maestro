@@ -98,7 +98,7 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     ~{
       pipeline_sequence <- get_pipeline_run_sequence(
         ..1, ..2, ..3,
-        check_datetime = check_datetime + convert_to_seconds(max_freq)
+        check_datetime = check_datetime + lubridate::seconds(convert_to_seconds(max_freq))
       )
 
       pipeline_sequence[pipeline_sequence >= check_datetime]
