@@ -200,6 +200,18 @@ parse_rounding_unit <- function(time_string) {
 #' @return vector of timestamps or dates
 get_pipeline_run_sequence <- function(pipeline_n, pipeline_unit, pipeline_datetime, check_datetime) {
 
+  check_datetime <- tryCatch({
+    lubridate::as_datetime(check_datetime)
+  }, error = function(e) {
+    cli::cli_abort(
+      "{.code check_datetime} must be a POSIXt object."
+    )
+  }, warning = function(w) {
+    cli::cli_abort(
+      "{.code check_datetime} must be a POSIXt object."
+    )
+  })
+
   pipeline_unit <- dplyr::case_match(
     pipeline_unit,
     c("minutes", "minute") ~ "min",
