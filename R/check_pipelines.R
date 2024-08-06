@@ -1,6 +1,8 @@
 #' Check which pipelines are scheduled to run and when next pipelines will run
 #'
 #' @inheritParams get_pipeline_run_sequence
+#' @param orch_unit unit of time for the orchestrator
+#' @param orch_n number of units for the orchestrator
 #'
 #' @return list
 check_pipelines <- function(

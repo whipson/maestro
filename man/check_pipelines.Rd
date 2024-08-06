@@ -14,6 +14,10 @@ check_pipelines(
 )
 }
 \arguments{
+\item{orch_unit}{unit of time for the orchestrator}
+
+\item{orch_n}{number of units for the orchestrator}
+
 \item{pipeline_unit}{unit for the pipeline frequency}
 
 \item{pipeline_n}{number of units for the pipeline frequency}
