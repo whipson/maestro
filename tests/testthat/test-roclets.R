@@ -1,7 +1,16 @@
-test_that("parse maestroFrequency tag works", {
+test_that("parse maestroFrequency tag works with '1 day'", {
   res <- roxygen2::roc_proc_text(
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
+  ) |>
+    expect_no_message()
+  expect_type(res$val, "character")
+})
+
+test_that("parse maestroFrequency tag works with 'daily'", {
+  res <- roxygen2::roc_proc_text(
+    maestroFrequency_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_daily_single_good.R"))
   ) |>
     expect_no_message()
   expect_type(res$val, "character")
@@ -22,6 +31,16 @@ test_that("bad usage of maestroFrequency warns and gives no val", {
   res <- roxygen2::roc_proc_text(
     maestroFrequency_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_daily_bad.R"))
+  ) |>
+    expect_warning(regexp = "Must have a format")
+
+  expect_null(res$val)
+})
+
+test_that("bad usage of maestroFrequency warns and gives no val", {
+  res <- roxygen2::roc_proc_text(
+    maestroFrequency_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_daily_single_bad.R"))
   ) |>
     expect_warning(regexp = "Must have a format")
 

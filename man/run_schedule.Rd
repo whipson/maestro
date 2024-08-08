@@ -21,7 +21,7 @@ run_schedule(
 \arguments{
 \item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
 
-\item{orch_frequency}{of the orchestrator, a single string formatted like "1 day" or "2 weeks"}
+\item{orch_frequency}{of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.}
 
 \item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
 
