@@ -35,9 +35,7 @@ Depends:
 Suggests: 
     furrr,
     future,
-    ggplot2,
     knitr,
-    plotly,
     rmarkdown,
     rstudioapi,
     testthat (>= 3.0.0),
