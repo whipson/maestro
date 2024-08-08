@@ -189,3 +189,41 @@ parse_rounding_unit <- function(time_string) {
     )
   )
 }
+
+#' Generate a sequence of run times for a pipeline
+#'
+#' @param check_datetime datetime against which to check the running of pipelines (default is current system time in UTC)
+#' @param pipeline_n number of units for the pipeline frequency
+#' @param pipeline_unit unit for the pipeline frequency
+#' @param pipeline_datetime datetime of the first time the pipeline is to run
+#'
+#' @return vector of timestamps or dates
+get_pipeline_run_sequence <- function(pipeline_n, pipeline_unit, pipeline_datetime, check_datetime) {
+
+  check_datetime <- tryCatch({
+    lubridate::as_datetime(check_datetime)
+  }, error = function(e) {
+    cli::cli_abort(
+      "{.code check_datetime} must be a POSIXt object."
+    )
+  }, warning = function(w) {
+    cli::cli_abort(
+      "{.code check_datetime} must be a POSIXt object."
+    )
+  })
+
+  pipeline_unit <- dplyr::case_match(
+    pipeline_unit,
+    c("minutes", "minute") ~ "min",
+    c("seconds", "second") ~ "sec",
+    .default = pipeline_unit
+  )
+
+  if (pipeline_datetime > check_datetime) {
+    pipeline_sequence <- pipeline_datetime
+  } else {
+    pipeline_sequence <- seq(pipeline_datetime, check_datetime, by = paste(pipeline_n, pipeline_unit))
+  }
+
+  pipeline_sequence
+}

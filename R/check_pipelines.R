@@ -1,11 +1,8 @@
 #' Check which pipelines are scheduled to run and when next pipelines will run
 #'
-#' @param check_datetime datetime to be used to check if the pipeline should run
-#' @param pipeline_n number of units for the pipeline frequency
-#' @param pipeline_unit unit for the pipeline frequency
-#' @param pipeline_datetime datetime of the first time the pipeline is to run
-#' @param orch_n number of units for the orchestrator frequency
-#' @param orch_unit unit for the orchestrator frequency
+#' @inheritParams get_pipeline_run_sequence
+#' @param orch_unit unit of time for the orchestrator
+#' @param orch_n number of units for the orchestrator
 #'
 #' @return list
 check_pipelines <- function(
@@ -23,29 +20,18 @@ check_pipelines <- function(
   schedule_checks <- purrr::pmap(
     list(pipeline_n, pipeline_unit, pipeline_datetime),
     ~{
-      pipeline_frequency_seconds <- convert_to_seconds(paste(..1, ..2))
-
-      # Code within the function
-      # Validation to see if pipeline should be run
       pipeline_datetime_round <- timechange::time_round(..3, unit = paste(orch_n, orch_unit))
 
-      pipeline_unit <- dplyr::case_match(
-        ..2,
-        c("minutes", "minute") ~ "min",
-        c("seconds", "second") ~ "sec",
-        .default = ..2
+      pipeline_sequence <- get_pipeline_run_sequence(
+        ..1, ..2, pipeline_datetime_round, check_datetime_round
       )
-
-      if (pipeline_datetime_round > check_datetime_round) {
-        pipeline_sequence <- ..3
-      } else {
-        pipeline_sequence <- seq(pipeline_datetime_round, check_datetime_round, by = paste(..1, pipeline_unit))
-      }
 
       cur_run <- utils::tail(pipeline_sequence, n = 1)
       is_scheduled_now <- check_datetime_round == cur_run
       next_run <- pipeline_datetime_round
       if (next_run < check_datetime_round) {
+        pipeline_frequency_seconds <- convert_to_seconds(paste(..1, ..2))
+
         next_run <- timechange::time_round(
           timechange::time_add(
             cur_run,

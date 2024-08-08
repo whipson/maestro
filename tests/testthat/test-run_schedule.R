@@ -82,6 +82,28 @@ test_that("run_schedule works on different kinds of frequencies", {
 }) |>
   suppressMessages()
 
+test_that("run_schedule errors if check_datetime is not a timestamp", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
+    suppressMessages()
+
+  expect_error(
+    run_schedule(
+      schedule,
+      check_datetime = "a"
+    )
+  )
+
+  # But Dates work
+  expect_no_error(
+    run_schedule(
+      schedule,
+      check_datetime = as.Date("2024-01-01")
+    )
+  )
+}) |>
+  suppressMessages()
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()
@@ -89,6 +111,9 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
   expect_no_message({
     run_schedule(schedule, run_all = TRUE, quiet = TRUE)
   })
+
+  expect_type(last_run_messages(), "list")
+  expect_gt(length(last_run_messages()), 0)
 })
 
 test_that("run_schedule fails on a pipeline that doesn't exist", {

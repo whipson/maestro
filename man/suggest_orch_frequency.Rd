@@ -2,12 +2,17 @@
 % Please edit documentation in R/suggest_orch_frequency.R
 \name{suggest_orch_frequency}
 \alias{suggest_orch_frequency}
-\title{Suggest an orchestrator frequency based on a schedule}
+\title{Suggest orchestrator frequency based on a schedule}
 \usage{
-suggest_orch_frequency(schedule)
+suggest_orch_frequency(
+  schedule,
+  check_datetime = lubridate::now(tzone = "UTC")
+)
 }
 \arguments{
 \item{schedule}{schedule data.frame created by \code{build_schedule()}}
+
+\item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
 }
 \value{
 frequency string
@@ -17,10 +22,11 @@ Suggests a frequency to run the orchestrator based on the frequencies of the
 pipelines in a schedule.
 }
 \details{
-This function uses a simple heuristic to suggest an orchestrator frequency. It
-halves the frequency of the most frequent pipeline in the schedule, unless that
-frequency is less than or equal 15 minutes, in which case it is just the highest
-frequency.
+This function attempts to find the smallest interval of time between all pipelines.
+If the smallest interval is less than 15 minutes, it just uses the smallest interval.
+
+Note this function is intended to be used interactively when deciding how often to
+schedule the orchestrator. Programmatic use is not recommended.
 }
 \examples{
 pipeline_dir <- tempdir()
