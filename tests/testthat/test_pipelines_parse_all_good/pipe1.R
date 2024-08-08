@@ -43,3 +43,13 @@ add <- function() {
 something <- function() {
   invisible()
 }
+
+#' Daily
+#'
+#' @maestroFrequency daily
+#' @maestroStartTime 1970-01-01 00:00:00 ADT
+#'
+#' @export
+something <- function() {
+  invisible()
+}

@@ -34,7 +34,7 @@
 #'
 #' @param schedule a table of scheduled pipelines generated from `build_schedule()`
 #' @inheritParams check_pipelines
-#' @param orch_frequency of the orchestrator, a single string formatted like "1 day" or "2 weeks"
+#' @param orch_frequency of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.
 #' @param resources named list of shared resources made available to pipelines as needed
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
 #' Does not apply to pipes with a `maestroSkip` tag.
@@ -90,7 +90,7 @@ run_schedule <- function(
     cli::cli_abort(
       c(
         "Invalid `orch_frequency` {orch_frequency}.",
-        "i" = "Must be of the format like '1 day', '2 weeks', etc."
+        "i" = "Must be of the format like '1 day', '2 weeks', 'hourly', etc."
       ),
       call = NULL
     )
@@ -99,7 +99,7 @@ run_schedule <- function(
   # Additional parse using timechange to verify it isn't something like 500 days,
   # which isn't understood by timechange
   tryCatch({
-    timechange::time_round(Sys.time(), orch_frequency)
+    timechange::time_round(Sys.time(), paste(orch_nunits$n, orch_nunits$unit))
   }, error = \(e) {
     timechange_error_fmt <- gsub('\\..*', '', e$message)
     cli::cli_abort(
