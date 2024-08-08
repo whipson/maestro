@@ -1,5 +1,9 @@
 # maestro 0.2.0.9000
 
+### Major changes
+
+- `maestroFrequency` tag now accepts the values hourly, daily, weekly, biweekly, monthly, quarterly, and yearly. Argument `orch_frequency` to `run_schedule()` also accepts these values.
+
 ### Minor changes
 
 - Changed from `example_schedule` data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.

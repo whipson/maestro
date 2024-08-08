@@ -21,7 +21,7 @@ create_pipeline(
 
 \item{pipeline_dir}{directory containing the pipeline scripts}
 
-\item{frequency}{how often the pipeline should run (e.g., 1 day, 3 hours, 4 months). Fills in maestroFrequency tag}
+\item{frequency}{how often the pipeline should run (e.g., 1 day, daily, 3 hours, 4 months). Fills in maestroFrequency tag}
 
 \item{start_time}{start time of the pipeline schedule. Fills in maestroStartTime tag}
 
