@@ -1,9 +1,5 @@
 # maestro 0.2.0.9000
 
-### New features
-
-- Added function `plot_schedule` to interactively or statically show the schedule for a given time interval (#88).
-
 ### Minor changes
 
 - Changed from `example_schedule` data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.
