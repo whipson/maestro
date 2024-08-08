@@ -78,7 +78,7 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
 
     if (typeof(schedule$skip) != "logical") {
       cli::cli_abort(
-        c("Schedule columns {.code skip} must have type 'character'.",
+        c("Schedule columns {.code skip} must have type 'logical'.",
           "i" = "Use {.fn build_schedule} to create a valid schedule."),
         call = rlang::caller_env()
       )
