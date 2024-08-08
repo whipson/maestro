@@ -57,6 +57,47 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     )
   }
 
+  if (!"start_time" %in% names(schedule)) {
+    cli::cli_abort(
+      c("Schedule is missing required column 'start_time'.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  if (!"POSIXct" %in% class(schedule$start_time)) {
+    cli::cli_abort(
+      c("Schedule columns {.code start_time} must have type 'POSIXct'.",
+        "i" = "Use {.fn build_schedule} to create a valid schedule."),
+      call = rlang::caller_env()
+    )
+  }
+
+  if ("skip" %in% names(schedule)) {
+
+    if (typeof(schedule$skip) != "logical") {
+      cli::cli_abort(
+        c("Schedule columns {.code skip} must have type 'character'.",
+          "i" = "Use {.fn build_schedule} to create a valid schedule."),
+        call = rlang::caller_env()
+      )
+    }
+
+    schedule <- schedule |>
+      dplyr::filter(!skip)
+
+    if (nrow(schedule) == 0) {
+
+      cli::cli_abort(
+        c(
+          "No pipelines in schedule after removing skipped pipelines.",
+          "i" = "Remove `maestroSkip` tags to get a suggested frequency."
+        )
+      )
+    }
+  }
+
   sch_secs <- purrr::map_int(
     schedule$frequency,
     purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
@@ -74,21 +115,8 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     return(schedule$frequency[[which.min(sch_secs)]])
   }
 
-  if (!"start_time" %in% names(schedule)) {
-    cli::cli_abort(
-      c("Schedule is missing required column 'start_time'.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."
-      ),
-      call = rlang::caller_env()
-    )
-  }
-
-  if (!"POSIXct" %in% class(schedule$start_time)) {
-    cli::cli_abort(
-      c("Schedule columns {.code start_time} must have type 'POSIXct'.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
+  if (nrow(schedule) == 1) {
+    return(schedule$frequency)
   }
 
   max_freq <- schedule$frequency[[which.max(sch_secs)]]
@@ -107,6 +135,8 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     purrr::list_c() |>
     unique() |>
     sort()
+
+  if (length(pipeline_sequences) == 1) return(max_freq)
 
   pipeline_diffs <- diff(pipeline_sequences)
 

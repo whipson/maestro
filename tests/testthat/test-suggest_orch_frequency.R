@@ -77,3 +77,47 @@ test_that("suggest_orch_frequency gives expected errors", {
     regexp = "invalid time units"
   )
 })
+
+test_that("suggest_orch_frequency does not consider skipped pipelines", {
+
+  test_schedule <- data.frame(
+    frequency = c("1 days", "3 days", "6 days"),
+    frequency_n = c(1, 3, 6),
+    frequency_unit = c("day", "day", "day"),
+    start_time = as.POSIXct("2024-06-04"),
+    skip = c(TRUE, FALSE, FALSE)
+  )
+
+  expect_equal(
+    suggest_orch_frequency(test_schedule),
+    "3 days"
+  )
+
+  test_schedule <- data.frame(
+    frequency = c("1 days", "3 days", "6 days"),
+    frequency_n = c(1, 3, 6),
+    frequency_unit = c("day", "day", "day"),
+    start_time = as.POSIXct("2024-06-04"),
+    skip = TRUE
+  )
+
+  expect_error(
+    suggest_orch_frequency(test_schedule),
+    regexp = "No pipelines in schedule after removing skipped"
+  )
+})
+
+test_that("suggest_orch_frequency works with a single pipeline", {
+
+  test_schedule <- data.frame(
+    frequency = "1 day",
+    frequency_n = 1,
+    frequency_unit = "day",
+    start_time = as.POSIXct("2024-01-01")
+  )
+
+  expect_equal(
+    suggest_orch_frequency(test_schedule),
+    "1 day"
+  )
+})
