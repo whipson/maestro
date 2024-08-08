@@ -52,7 +52,7 @@ A pipeline is simply an R function with decorators called maestro tags. Maestro 
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency 1 day
+#' @maestroFrequency daily
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
@@ -63,9 +63,11 @@ my_pipe <- function() {
 }
 ```
 
-`my_pipe` is a function with an empty body - so right now it won't do anything. The comments above are interpreted by `maestro` as "this function is scheduled to run every 1 day starting at 2024-05-24 (00:00:00) UTC time".
+`my_pipe` is a function with an empty body - so right now it won't do anything. The comments above are interpreted by `maestro` as "this function is scheduled to run every day starting at 2024-05-24 (00:00:00) UTC time".
 
-Note that you don't need to provide all these tags. A single maestro tag is enough to distinguish it as a pipeline. Pipelines missing tags will use consistent defaults (e.g., if `maestroFrequency` is missing the default is 1 day).
+maestroFrequency and maestroStartTime are the most important tags for scheduling. Frequency is how often you want the pipeline to run and can be formatted as a single string like hourly, daily, weekly, biweekly, etc. or with a number and a unit (e.g., 1 day, 3 hours, etc.).
+
+Note that you don't need to provide all these tags. A single maestro tag is enough to distinguish it as a pipeline. Pipelines missing tags will use consistent defaults (e.g., if `maestroFrequency` is missing the default is 1 day/daily).
 
 In most use cases, the actual code inside of `my_pipe` would be to run an ETL job (extract data from a source, transform it, and load it into a file system or database). In technical terms, it's the *side effect* of the code and not its return value that is important.
 
@@ -74,7 +76,7 @@ Here's a more realistic, albeit impractical, example:
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency 1 day
+#' @maestroFrequency daily
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO

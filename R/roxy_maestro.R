@@ -10,7 +10,8 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
 
   if (x$raw == "") {
     x$val <- "1 day"
-  } else {
+
+  } else if (grepl("^[0-9]", x$raw)) {
 
     tryCatch({
       # Try to parse it using our function
@@ -25,11 +26,28 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
         x,
         glue::glue(
           "Invalid maestroFrequency `{x$raw}`.
-          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)"
+          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)
+          or one of hourly, daily, weekly, etc."
         )
       )
       return()
     })
+
+  } else {
+
+    if (!x$raw %in% c("hourly", "daily", "weekly", "biweekly", "monthly", "quarterly", "yearly")) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroFrequency `{x$raw}`.
+          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)
+          or one of hourly, daily, weekly, etc."
+        )
+      )
+      return()
+    }
+
+    x$val <- x$raw
   }
 
   x

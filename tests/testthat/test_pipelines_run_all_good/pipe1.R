@@ -34,3 +34,10 @@ weekly <- function() {
 way_in_the_future <- function() {
   invisible()
 }
+
+#' @maestroFrequency weekly
+#'
+#' @export
+weekly2 <- function() {
+  1 + 1
+}

@@ -162,7 +162,7 @@ valid_units <- c(
 
 #' Parse a time string
 #'
-#' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
+#' @param time_string string like 1 day, daily, 2 weeks, 12 hours, etc.
 #'
 #' @return nunit list
 parse_rounding_unit <- function(time_string) {
@@ -170,6 +170,19 @@ parse_rounding_unit <- function(time_string) {
   stopifnot("Must be a single string" = length(time_string) == 1)
 
   # Extract the number and the unit from the time string
+  if (!grepl("^[0-9]", time_string)) {
+    time_string <- switch (time_string,
+      hourly = "1 hour",
+      daily = "1 day",
+      weekly = "1 week",
+      biweekly = "2 weeks",
+      monthly = "1 month",
+      quarterly = "3 months",
+      yearly = "1 year",
+      time_string
+    )
+  }
+
   matches <- regmatches(time_string, regexec("([0-9]+)\\s*(\\w+)", time_string))
   number <- as.numeric(matches[[1]][2])
   unit <- matches[[1]][3]
