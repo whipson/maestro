@@ -128,7 +128,7 @@ take a quick look at the sample <code>my_pipe.R</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
-<span><span class="co">#' @maestroFrequency 1 day</span></span>
+<span><span class="co">#' @maestroFrequency daily</span></span>
 <span><span class="co">#' @maestroStartTime 2024-05-24</span></span>
 <span><span class="co">#' @maestroTz UTC</span></span>
 <span><span class="co">#' @maestroLogLevel INFO</span></span>
@@ -139,12 +139,16 @@ take a quick look at the sample <code>my_pipe.R</code>:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><code>my_pipe</code> is a function with an empty body - so right now
 it won’t do anything. The comments above are interpreted by
-<code>maestro</code> as “this function is scheduled to run every 1 day
+<code>maestro</code> as “this function is scheduled to run every day
 starting at 2024-05-24 (00:00:00) UTC time”.</p>
+<p>maestroFrequency and maestroStartTime are the most important tags for
+scheduling. Frequency is how often you want the pipeline to run and can
+be formatted as a single string like hourly, daily, weekly, biweekly,
+etc. or with a number and a unit (e.g., 1 day, 3 hours, etc.).</p>
 <p>Note that you don’t need to provide all these tags. A single maestro
 tag is enough to distinguish it as a pipeline. Pipelines missing tags
 will use consistent defaults (e.g., if <code>maestroFrequency</code> is
-missing the default is 1 day).</p>
+missing the default is 1 day/daily).</p>
 <p>In most use cases, the actual code inside of <code>my_pipe</code>
 would be to run an ETL job (extract data from a source, transform it,
 and load it into a file system or database). In technical terms, it’s
@@ -154,7 +158,7 @@ important.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
-<span><span class="co">#' @maestroFrequency 1 day</span></span>
+<span><span class="co">#' @maestroFrequency daily</span></span>
 <span><span class="co">#' @maestroStartTime 2024-05-24</span></span>
 <span><span class="co">#' @maestroTz UTC</span></span>
 <span><span class="co">#' @maestroLogLevel INFO</span></span>

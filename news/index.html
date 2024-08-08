@@ -47,6 +47,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0.9000" id="maestro-0209000">maestro 0.2.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0209000"></a></h2>
 <div class="section level4">
+<h4 id="major-changes-0-2-0-9000">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-2-0-9000"></a></h4>
+<ul><li>
+<code>maestroFrequency</code> tag now accepts the values hourly, daily, weekly, biweekly, monthly, quarterly, and yearly. Argument <code>orch_frequency</code> to <code><a href="../reference/run_schedule.html">run_schedule()</a></code> also accepts these values.</li>
+</ul></div>
+<div class="section level4">
 <h4 id="minor-changes-0-2-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-2-0-9000"></a></h4>
 <ul><li><p>Changed from <code>example_schedule</code> data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.</p></li>
 <li><p><code>suggest_orch_frequency</code> now uses the smallest interval between any two pipelines (<a href="https://github.com/whipson/maestro/issues/99" class="external-link">#99</a>).</p></li>
