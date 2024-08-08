@@ -52,7 +52,7 @@ A pipeline is simply an R function with decorators called maestro tags. Maestro 
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency daily
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
@@ -76,7 +76,7 @@ Here's a more realistic, albeit impractical, example:
 ```{r}
 #' my_pipe maestro pipeline
 #'
-#' @maestroFrequency daily
+#' @maestroFrequency 1 day
 #' @maestroStartTime 2024-05-24
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
