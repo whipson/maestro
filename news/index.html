@@ -46,29 +46,34 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0.9000" id="maestro-0209000">maestro 0.2.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0209000"></a></h2>
-<div class="section level3">
-<h3 id="minor-changes-0-2-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-2-0-9000"></a></h3>
+<div class="section level4">
+<h4 id="minor-changes-0-2-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-2-0-9000"></a></h4>
+<ul><li><p>Changed from <code>example_schedule</code> data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.</p></li>
+<li><p><code>suggest_orch_frequency</code> now uses the smallest interval between any two pipelines (<a href="https://github.com/whipson/maestro/issues/99" class="external-link">#99</a>).</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-2-0-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0-9000"></a></h4>
 <ul><li><p>Error messages on unintentional overwrites from <code>create_*()</code> functions correctly reference name of path or directory that was to be overwritten.</p></li>
 <li><p>Fixed cli output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> to not show skipped pipelines in the next run portion.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="maestro-012">maestro 0.1.2<a class="anchor" aria-label="anchor" href="#maestro-012"></a></h2><p class="text-muted">CRAN release: 2024-08-01</p>
-<div class="section level3">
-<h3 id="minor-changes-0-1-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-1-2"></a></h3>
+<div class="section level4">
+<h4 id="bug-fixes-0-1-2">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-2"></a></h4>
 <ul><li><p>Fixed cli output to correctly handle counting of successful runs when pipelines are skipped.</p></li>
 <li><p>Performance improvements to <code><a href="../reference/build_schedule.html">build_schedule()</a></code> (<a href="https://github.com/whipson/maestro/issues/101" class="external-link">#101</a>).</p></li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="maestro-011">maestro 0.1.1<a class="anchor" aria-label="anchor" href="#maestro-011"></a></h2>
-<div class="section level3">
-<h3 id="breaking-changes-0-1-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-1"></a></h3>
+<div class="section level4">
+<h4 id="breaking-changes-0-1-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-1"></a></h4>
 <ul><li><p>Creater functions <code><a href="../reference/create_pipeline.html">create_pipeline()</a></code> and <code>create_maestro</code> no longer have default arguments for the path to where the scripts are created. Users must explicitly define these paths.</p></li>
 <li><p>Argument <code>log_file</code> in <code><a href="../reference/run_schedule.html">run_schedule()</a></code> no longer defaults to <code>./maestro.log</code> but instead defaults to <code>NULL</code>.</p></li>
 </ul></div>
-<div class="section level3">
-<h3 id="minor-changes-0-1-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-1-1"></a></h3>
+<div class="section level4">
+<h4 id="minor-changes-0-1-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-1-1"></a></h4>
 <ul><li>Creater functions <code>create_*</code> now take a boolean <code>overwrite</code> argument to make the overwriting of existing pipelines, projects, and orchestrators more explicit.</li>
 </ul></div>
 </div>
@@ -78,35 +83,35 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.4" id="maestro-004">maestro 0.0.4<a class="anchor" aria-label="anchor" href="#maestro-004"></a></h2>
-<div class="section level3">
-<h3 id="bug-fixes-0-0-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-4"></a></h3>
+<div class="section level4">
+<h4 id="bug-fixes-0-0-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-4"></a></h4>
 <ul><li>Fixed the output of the next run for pipelines (<a href="https://github.com/whipson/maestro/issues/90" class="external-link">#90</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.3" id="maestro-003">maestro 0.0.3<a class="anchor" aria-label="anchor" href="#maestro-003"></a></h2>
-<div class="section level3">
-<h3 id="breaking-changes-0-0-3">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-3"></a></h3>
+<div class="section level4">
+<h4 id="breaking-changes-0-0-3">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-3"></a></h4>
 <ul><li>
 <code><a href="../reference/run_schedule.html">run_schedule()</a></code> now returns a list with status and artifacts instead of just a data.frame of the status. Artifacts are any values returned from pipelines. Pipelines that return nothing will have no artifacts.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="major-changes-0-0-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-0-3"></a></h3>
+<div class="section level4">
+<h4 id="major-changes-0-0-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-0-3"></a></h4>
 <ul><li>New helper function <code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code> to provide a suggestion of what frequency to use for the orchestrator.</li>
 </ul></div>
-<div class="section level3">
-<h3 id="minor-changes-0-0-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-0-3"></a></h3>
+<div class="section level4">
+<h4 id="minor-changes-0-0-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-0-3"></a></h4>
 <ul><li>Start and end times are now reported from functions that result in an error in single core only (<a href="https://github.com/whipson/maestro/issues/82" class="external-link">#82</a>).</li>
 </ul></div>
-<div class="section level3">
-<h3 id="bug-fixes-0-0-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-3"></a></h3>
+<div class="section level4">
+<h4 id="bug-fixes-0-0-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-0-3"></a></h4>
 <ul><li>CLI output from <code><a href="../reference/run_schedule.html">run_schedule()</a></code> now correctly outputs the total number of pipelines (<a href="https://github.com/whipson/maestro/issues/81" class="external-link">#81</a>) and correctly outputs number of errors.</li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.2" id="maestro-002">maestro 0.0.2<a class="anchor" aria-label="anchor" href="#maestro-002"></a></h2>
-<div class="section level3">
-<h3 id="breaking-changes-0-0-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-2"></a></h3>
+<div class="section level4">
+<h4 id="breaking-changes-0-0-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-0-2"></a></h4>
 <ul><li><p>maestroFrequency tag now adheres to a more human-readable format like “1 day”, “2 hours”, “4 weeks”, etc.</p></li>
 <li><p><code>orch_frequency</code> argument in <code><a href="../reference/run_schedule.html">run_schedule()</a></code> also takes more human-readable format identical to maestroFrequency tag.</p></li>
 <li><p>maestroInterval tag removed</p></li>
@@ -114,14 +119,14 @@
 <li><p><code><a href="../reference/create_maestro.html">create_maestro()</a></code> and <code><a href="../reference/create_orchestrator.html">create_orchestrator()</a></code> now use the argument <code>type</code> instead of <code>extension</code> for defining what script type to use for the orchestrator.</p></li>
 <li><p>Changed <code>last_parsing_errors()</code> to <code><a href="../reference/last_build_errors.html">last_build_errors()</a></code>; changed functions of the form <code>last_runtime_*()</code> to <code>last_run_*()</code>.</p></li>
 </ul></div>
-<div class="section level3">
-<h3 id="major-changes-0-0-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-0-2"></a></h3>
+<div class="section level4">
+<h4 id="major-changes-0-0-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-0-2"></a></h4>
 <ul><li><p>Additional columns added to the output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>: <code>pipeline_started</code> and <code>pipeline_ended</code> to indicate the start and end times of a pipeline execution; <code>next_run</code> to indicate when the next run should be based on the frequency of the pipeline and orchestrator.</p></li>
 <li><p>Pipelines now show as skipped if they are not scheduled.</p></li>
 <li><p>Added hex logo</p></li>
 </ul></div>
-<div class="section level3">
-<h3 id="minor-changes-0-0-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-0-2"></a></h3>
+<div class="section level4">
+<h4 id="minor-changes-0-0-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-0-2"></a></h4>
 <ul><li><p>Backend improvements to schedule checking</p></li>
 <li><p>Timestamps are formatted to specified time zone.</p></li>
 <li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> cli output suggests to use <code><a href="../reference/last_run_errors.html">last_run_errors()</a></code> or <code><a href="../reference/last_run_warnings.html">last_run_warnings()</a></code> if any errors or warnings were found.</p></li>
