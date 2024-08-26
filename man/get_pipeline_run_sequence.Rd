@@ -8,7 +8,11 @@ get_pipeline_run_sequence(
   pipeline_n,
   pipeline_unit,
   pipeline_datetime,
-  check_datetime
+  check_datetime,
+  pipeline_hours = 0:23,
+  pipeline_days_of_week = 1:7,
+  pipeline_days_of_month = 1:31,
+  pipeline_months = 1:12
 )
 }
 \arguments{
@@ -19,6 +23,14 @@ get_pipeline_run_sequence(
 \item{pipeline_datetime}{datetime of the first time the pipeline is to run}
 
 \item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
+
+\item{pipeline_hours}{vector of integers [0-23] corresponding to hours of day for the pipeline to run}
+
+\item{pipeline_days_of_week}{vector of integers [1-7] corresponding to days of week for the pipeline to run (1 = Sunday)}
+
+\item{pipeline_days_of_month}{vector of integers [1-31] corresponding to days of month for the pipeline to run}
+
+\item{pipeline_months}{vector of integers [1-12] corresponding to months of year for the pipeline to run}
 }
 \value{
 vector of timestamps or dates

@@ -186,6 +186,30 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
   )
 })
 
+test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, months)", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
+
+  expect_snapshot(schedule)
+
+  output <- run_schedule(
+    schedule,
+    orch_frequency = "hourly",
+    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+    quiet = TRUE
+  )
+
+  status <- output$status
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
+
+})
+
 test_that("run_schedule propagates warnings", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_two_warnings"))

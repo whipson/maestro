@@ -209,9 +209,22 @@ parse_rounding_unit <- function(time_string) {
 #' @param pipeline_n number of units for the pipeline frequency
 #' @param pipeline_unit unit for the pipeline frequency
 #' @param pipeline_datetime datetime of the first time the pipeline is to run
+#' @param pipeline_hours vector of integers \[0-23] corresponding to hours of day for the pipeline to run
+#' @param pipeline_months vector of integers \[1-12] corresponding to months of year for the pipeline to run
+#' @param pipeline_days_of_week vector of integers \[1-7] corresponding to days of week for the pipeline to run (1 = Sunday)
+#' @param pipeline_days_of_month vector of integers \[1-31] corresponding to days of month for the pipeline to run
 #'
 #' @return vector of timestamps or dates
-get_pipeline_run_sequence <- function(pipeline_n, pipeline_unit, pipeline_datetime, check_datetime) {
+get_pipeline_run_sequence <- function(
+    pipeline_n,
+    pipeline_unit,
+    pipeline_datetime,
+    check_datetime,
+    pipeline_hours = 0:23,
+    pipeline_days_of_week = 1:7,
+    pipeline_days_of_month = 1:31,
+    pipeline_months = 1:12
+  ) {
 
   check_datetime <- tryCatch({
     lubridate::as_datetime(check_datetime)
@@ -236,6 +249,22 @@ get_pipeline_run_sequence <- function(pipeline_n, pipeline_unit, pipeline_dateti
     pipeline_sequence <- pipeline_datetime
   } else {
     pipeline_sequence <- seq(pipeline_datetime, check_datetime, by = paste(pipeline_n, pipeline_unit))
+  }
+
+  if (!all(0:23 %in% pipeline_hours)) {
+    pipeline_sequence <- pipeline_sequence[lubridate::hour(pipeline_sequence) %in% pipeline_hours]
+  }
+
+  if (!all(1:7 %in% pipeline_days_of_week)) {
+    pipeline_sequence <- pipeline_sequence[lubridate::wday(pipeline_sequence, week_start = 7) %in% pipeline_days_of_week]
+  }
+
+  if (!all(1:31 %in% pipeline_days_of_month)) {
+    pipeline_sequence <- pipeline_sequence[lubridate::mday(pipeline_sequence) %in% pipeline_days_of_month]
+  }
+
+  if (!all(1:12 %in% pipeline_months)) {
+    pipeline_sequence <- pipeline_sequence[lubridate::month(pipeline_sequence) %in% pipeline_months]
   }
 
   pipeline_sequence

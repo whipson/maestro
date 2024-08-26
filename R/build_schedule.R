@@ -98,9 +98,13 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
       log_level = dplyr::if_else(is.na(log_level), "INFO", log_level),
       frequency_n = dplyr::if_else(is.na(frequency_n), 1L, frequency_n),
       frequency_unit = dplyr::if_else(is.na(frequency_unit), "day", frequency_unit),
-      start_time = purrr::map2_vec(start_time, tz, ~lubridate::as_datetime(.x, tz = .y))
+      start_time = purrr::map2_vec(start_time, tz, ~lubridate::as_datetime(.x, tz = .y)),
+      hours = dplyr::if_else(is.na(hours), list(0:23), hours),
+      days_of_week = dplyr::if_else(is.na(days_of_week), list(1:7), days_of_week),
+      days_of_month = dplyr::if_else(is.na(days_of_month), list(1:31), days_of_month),
+      months = dplyr::if_else(is.na(months), list(1:12), months)
     ) |>
-    dplyr::select(-tz)
+    dplyr::select(-tz, -days)
 
   return(sch)
 }

@@ -129,6 +129,78 @@ So a good heuristic is to run it as often as the smallest interval of time diffe
 
 Maestro has a function for providing a reasonable estimate for the ideal orchestrator frequency called `suggest_orch_frequency()`. It uses the heuristic of the most frequent interval halved (e.g., if your highest frequency pipeline is 1 hour, it suggests 30 minutes) to a minimum 15 minutes or your most frequent interval if it's less. This is a bit more conservative but protects against running things too often. If timeliness and high frequency are really important to you, maestro might not be your best choice.
 
+## Irregular Schedules
+
+It is also possible to run pipelines on an irregular schedule by specifying hours, days of week, days of month, or months of the year:
+
+### Hours of the day
+
+If your pipeline runs hourly at a minimum, you can run it on specific hours. This could be useful, for example, if you have pipelines you only want to run during business hours. Use the `maestroHours` tag with integers corresponding to hours [0-23] separated by white space. Be sure to use the corresponding `maestroFrequency`.
+
+```{r, eval=FALSE}
+#' specific_hours maestro pipeline
+#'
+#' @maestroFrequency hourly
+#' @maestroHours 6 9 12 15 18
+some_hours_example <- function() {
+
+  # Pipeline code
+}
+```
+
+### Days of week/days of month
+
+If your pipeline runs at least daily, you can run it on specific days of week or days of month. If doing days of week use strings like Mon, Tue, Wed, etc. If using days of month use integers [1-31]. You cannot specify both days of week and days of month.
+
+```{r, eval=FALSE}
+#' specific_days_of_week maestro pipeline
+#'
+#' @maestroFrequency daily
+#' @maestroDays Mon Tue Wed Thu Fri
+some_dow_example <- function() {
+
+  # Pipeline code
+}
+
+#' specific_days_of_week maestro pipeline
+#'
+#' @maestroFrequency daily
+#' @maestroDays 1 14 28
+some_dom_example <- function() {
+
+  # Pipeline code
+}
+```
+
+### Months of year
+
+If your pipeline runs at least monthly, you can run it on specific months. Use integers [1-12] to specify the months.
+
+```{r, eval=FALSE}
+#' specific_months maestro pipeline
+#'
+#' @maestroFrequency months
+#' @maestroMonths 1 7 10
+some_months <- function() {
+
+  # Pipeline code
+}
+```
+
+Note that you can use combinations of these specifiers depending on the minimum frequency of the pipeline. For example, an hourly pipeline can run on specific hours and days. If you wanted a pipeline to only run on business hours including not on weekends. It could look like this:
+
+```{r, eval=FALSE}
+#' business_hours maestro pipeline
+#'
+#' @maestroFrequency hourly
+#' @maestroHours 9 10 11 12 13 14 15 16 17
+#' @maestroDays Mon Tue Wed Thu Fri
+during_work_hours_example <- function() {
+
+  # Pipeline code
+}
+```
+
 ## Final Remarks
 
 When it comes time to deploy your project make sure that whatever you use to actually run your project (e.g., cron, TaskScheduler, Google Cloud Scheduler, etc.) is indeed running it at the same frequency as you have in the orchestrator. It's best to stick to using whole units of time rather than fractional units - if my orchestrator runs every 15 minutes I like to have it run on the 00:00, 15:00, 30:00, and 45:00 minutes. It makes reasoning about the scheduling simpler.
@@ -136,3 +208,4 @@ When it comes time to deploy your project make sure that whatever you use to act
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
 unlink("pipelines", recursive = TRUE)
 ```
+
