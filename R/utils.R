@@ -256,7 +256,7 @@ get_pipeline_run_sequence <- function(
   }
 
   if (!all(1:7 %in% pipeline_days_of_week)) {
-    pipeline_sequence <- pipeline_sequence[lubridate::wday(pipeline_sequence, week_start = 7) %in% pipeline_days_of_week]
+    pipeline_sequence <- pipeline_sequence[lubridate::wday(pipeline_sequence, week_start = 1) %in% pipeline_days_of_week]
   }
 
   if (!all(1:31 %in% pipeline_days_of_month)) {

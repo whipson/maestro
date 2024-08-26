@@ -195,7 +195,7 @@ test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, month
   output <- run_schedule(
     schedule,
     orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"), # This is a Monday
     quiet = TRUE
   )
 

@@ -377,7 +377,7 @@ roxy_tag_parse.roxy_tag_maestroDays <- function(x) {
 
     } else if (all(x_sep %in% c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) {
 
-      x_sep <- factor(x_sep, levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"))
+      x_sep <- factor(x_sep, levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
 
     } else {
 
