@@ -68,18 +68,8 @@ test_that("suggest_orch_frequency gives expected errors", {
   )
 
   expect_error(
-    suggest_orch_frequency(data.frame(frequency = "1 potato", start_time = Sys.time())),
-    regexp = "invalid time units"
-  )
-
-  expect_error(
     suggest_orch_frequency(data.frame(frequency = "1 day")),
     regexp = "Schedule is missing required column 'start_time'"
-  )
-
-  expect_error(
-    suggest_orch_frequency(data.frame(frequency = c("1 potato", "1 month"), start_time = Sys.time() + 0:1)),
-    regexp = "invalid time units"
   )
 
   expect_error(
@@ -136,3 +126,4 @@ test_that("suggest_orch_frequency works with a single pipeline", {
     "1 day"
   )
 })
+

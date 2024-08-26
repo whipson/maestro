@@ -99,7 +99,7 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
   }
 
   sch_secs <- purrr::map_int(
-    schedule$frequency,
+    paste(schedule$frequency_n, schedule$frequency_unit),
     purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
   )
 
