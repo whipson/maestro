@@ -16,9 +16,15 @@ specific_months1 <- function() {
 
 }
 
-#' @maestroFrequency weekly
-#' @maestroMonths 1 5 10
-specific_months2 <- function() {
+#' @maestroFrequency hourly
+#' @maestroDays Mon Wed Fri
+specific_days2 <- function() {
+
+}
+
+#' @maestroFrequency hourly
+#' @maestroDays Sun Sat
+specific_days3 <- function() {
 
 }
 
