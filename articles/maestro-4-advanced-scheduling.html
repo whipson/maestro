@@ -151,16 +151,16 @@ system time using either <code><a href="https://rdrr.io/r/base/Sys.time.html" cl
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[53ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[54ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.07 sec elapsed </span></span>
+<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.081 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span> </span></span>
 <span><span class="co">## Pipe name | Next scheduled run</span></span>
-<span><span class="co">## • daily_example | 2024-06-20</span></span></code></pre>
+<span><span class="co">## • daily_example | 2024-06-21</span></span></code></pre>
 <p>We can see that the pipeline executed even though the current time
 was not 09:20:00. This is because we set the orchestrator to run daily
 and so it considers it close enough to within a day.</p>
@@ -183,7 +183,7 @@ orchestrator:</p>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span></span></span></code></pre>
 <pre><code><span><span class="co">## Pipe name | Next scheduled run</span></span></code></pre>
-<pre><code><span><span class="co">## • daily_example | 2024-06-20 09:15:00</span></span></code></pre>
+<pre><code><span><span class="co">## • daily_example | 2024-06-21 09:15:00</span></span></code></pre>
 <p>It was skipped because it wasn’t within a 15 minute degree of
 difference but the output tells us that will next run at
 <code>2024-06-20 09:15:00</code>.<br><br>
@@ -254,6 +254,87 @@ frequent interval if it’s less. This is a bit more conservative but
 protects against running things too often. If timeliness and high
 frequency are really important to you, maestro might not be your best
 choice.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="irregular-schedules">Irregular Schedules<a class="anchor" aria-label="anchor" href="#irregular-schedules"></a>
+</h2>
+<p>It is also possible to run pipelines on an irregular schedule by
+specifying hours, days of week, days of month, or months of the
+year:</p>
+<div class="section level3">
+<h3 id="hours-of-the-day">Hours of the day<a class="anchor" aria-label="anchor" href="#hours-of-the-day"></a>
+</h3>
+<p>If your pipeline runs hourly at a minimum, you can run it on specific
+hours. This could be useful, for example, if you have pipelines you only
+want to run during business hours. Use the <code>maestroHours</code> tag
+with integers corresponding to hours [0-23] separated by white space. Be
+sure to use the corresponding <code>maestroFrequency</code>.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' specific_hours maestro pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @maestroFrequency hourly</span></span>
+<span><span class="co">#' @maestroHours 6 9 12 15 18</span></span>
+<span><span class="va">some_hours_example</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Pipeline code</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="days-of-weekdays-of-month">Days of week/days of month<a class="anchor" aria-label="anchor" href="#days-of-weekdays-of-month"></a>
+</h3>
+<p>If your pipeline runs at least daily, you can run it on specific days
+of week or days of month. If doing days of week use strings like Mon,
+Tue, Wed, etc. If using days of month use integers [1-31]. You cannot
+specify both days of week and days of month.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' specific_days_of_week maestro pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @maestroFrequency daily</span></span>
+<span><span class="co">#' @maestroDays Mon Tue Wed Thu Fri</span></span>
+<span><span class="va">some_dow_example</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Pipeline code</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' specific_days_of_week maestro pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @maestroFrequency daily</span></span>
+<span><span class="co">#' @maestroDays 1 14 28</span></span>
+<span><span class="va">some_dom_example</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Pipeline code</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="months-of-year">Months of year<a class="anchor" aria-label="anchor" href="#months-of-year"></a>
+</h3>
+<p>If your pipeline runs at least monthly, you can run it on specific
+months. Use integers [1-12] to specify the months.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' specific_months maestro pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @maestroFrequency months</span></span>
+<span><span class="co">#' @maestroMonths 1 7 10</span></span>
+<span><span class="va">some_months</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Pipeline code</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Note that you can use combinations of these specifiers depending on
+the minimum frequency of the pipeline. For example, an hourly pipeline
+can run on specific hours and days. If you wanted a pipeline to only run
+on business hours including not on weekends. It could look like
+this:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' business_hours maestro pipeline</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @maestroFrequency hourly</span></span>
+<span><span class="co">#' @maestroHours 9 10 11 12 13 14 15 16 17</span></span>
+<span><span class="co">#' @maestroDays Mon Tue Wed Thu Fri</span></span>
+<span><span class="va">during_work_hours_example</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Pipeline code</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
