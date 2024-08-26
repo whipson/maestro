@@ -208,6 +208,21 @@ test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, month
     status$next_run
   )
 
+  output <- run_schedule(
+    schedule,
+    orch_frequency = "hourly",
+    check_datetime = as.POSIXct("2024-05-01 00:00:00", tz = "UTC"), # This is a Monday
+    quiet = TRUE
+  )
+
+  status <- output$status
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
 })
 
 test_that("run_schedule propagates warnings", {
