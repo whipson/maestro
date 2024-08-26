@@ -1,6 +1,8 @@
 # maestro 0.2.0.9000
 
-### Major changes
+### New features
+
+- New tags `maestroHours`, `maestroDays`, and `maestroMonths` allows running of pipelines on specific hours of day, days of week, days of month, or months of year (#100).
 
 - `maestroFrequency` tag now accepts the values hourly, daily, weekly, biweekly, monthly, quarterly, and yearly. Argument `orch_frequency` to `run_schedule()` also accepts these values.
 

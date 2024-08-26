@@ -16,6 +16,9 @@ maestro tags follow the format \verb{#' @maestroTagName}
    maestroSkip \tab Skips the pipeline when running (presence of tag indicates to skip) \tab n/a \tab  \tab  \cr
    maestroStartTime \tab Start time of the pipeline; sets the point in time for recurrence \tab date or timestamp \tab 1970-01-01 00:00:00, 2024-03-28 \tab 1970-01-01 00:00:00 \cr
    maestroTz \tab Timezone of the start time \tab string \tab UTC, America/Halifax \tab UTC \cr
+   maestroHours \tab Hours of day to run pipeline \tab ints \tab 0 12 23 \tab  \cr
+   maestroDays \tab Days of week or days of month to run pipeline \tab ints or strings \tab 1 14 30, Mon Wed Sat \tab  \cr
+   maestroMonths \tab Months of year to run pipeline \tab ints \tab 1 3 9 12 \tab  \cr
 }
 
 }

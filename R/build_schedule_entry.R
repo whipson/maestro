@@ -11,7 +11,10 @@ build_schedule_entry <- function(script_path) {
     start_time = "maestroStartTime",
     tz = "maestroTz",
     skip = "maestroSkip",
-    log_level = "maestroLogLevel"
+    log_level = "maestroLogLevel",
+    hours = "maestroHours",
+    days = "maestroDays",
+    months = "maestroMonths"
   )
 
   # Get all the roxygen tags - this actually executes the script, which is fine
@@ -41,7 +44,10 @@ build_schedule_entry <- function(script_path) {
       maestro_tag_names,
       ~{
         val <- roxygen2::block_get_tag_value(tag, .x)
-        ifelse(is.null(val), NA, val)
+        if (is.null(val)) {
+          val <- NA
+        }
+        val
       }
     )
     val
@@ -76,10 +82,47 @@ build_schedule_entry <- function(script_path) {
 
   # Create table entries
   table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
+
+    # Validate hours
+    if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly", "minutely")) {
+      cli::cli_abort(
+        c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of 'hourly' or 'minutely'.",
+          "i" = "Issue is with pipeline named {.x}."),
+        call = NULL
+      )
+    }
+
+    # Validate days
+    if (!all(is.na(maestro_tag_vals[[1]]$days)) && !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly", "minutely")) {
+      cli::cli_abort(
+        c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of 'daily', 'hourly', or 'minutely'.",
+          "i" = "Issue is with pipeline named {.x}."),
+        call = NULL
+      )
+    }
+
+    # Validate months
+    if (!all(is.na(maestro_tag_vals[[1]]$months)) && !maestro_tag_vals[[1]]$frequency %in%
+        c("monthly", "biweekly", "weekly", "daily", "hourly", "minutely")) {
+      cli::cli_abort(
+        c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
+          'monthly', 'biweekly', 'weekly', 'daily', 'hourly', or 'minutely'.",
+          "i" = "Issue is with pipeline named {.x}."),
+        call = NULL
+      )
+    }
+
     dplyr::tibble(
       script_path = script_path,
       pipe_name = .x,
-      !!!.y
+      frequency = .y$frequency,
+      start_time = .y$start_time,
+      tz = .y$tz,
+      skip = .y$skip,
+      log_level = .y$log_level,
+      hours = list(.y$hours),
+      days = list(.y$days),
+      months = list(.y$months)
     )
   }) |>
     purrr::list_rbind()
@@ -89,8 +132,14 @@ build_schedule_entry <- function(script_path) {
     parse_rounding_unit(.x)
   }, otherwise = list(n = NA, unit = NA)))
 
+  # Create days_of_week and days_of_month from maestroDays
+  days_of_week <- purrr::map_if(table_entities$days, is.factor, as.numeric, .else = ~NA_real_)
+  days_of_month <- purrr::map_if(table_entities$days, is.numeric, ~.x, .else = ~NA_real_)
+
   table_entities <- table_entities |>
     dplyr::mutate(
+      days_of_week = days_of_week,
+      days_of_month = days_of_month,
       frequency_n = purrr::map_int(nunits, ~.x$n),
       frequency_unit = purrr::map_chr(nunits, ~.x$unit)
     )

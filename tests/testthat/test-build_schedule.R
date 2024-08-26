@@ -3,7 +3,8 @@ test_that("build_schedule works on a directory of all good pipelines", {
   expect_s3_class(res, "tbl_df")
   expect_gte(nrow(res), 1)
   expect_in(
-    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level"),
+    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level", "hours",
+      "days_of_week", "days_of_month", "months"),
     names(res)
   )
   expect_snapshot(res)

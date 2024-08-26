@@ -161,7 +161,11 @@ run_schedule <- function(
         pipeline_unit = schedule$frequency_unit,
         pipeline_n = schedule$frequency_n,
         pipeline_datetime = schedule$start_time,
-        check_datetime = check_datetime
+        check_datetime = check_datetime,
+        pipeline_hours = schedule$hours,
+        pipeline_days_of_week = schedule$days_of_week,
+        pipeline_days_of_month = schedule$days_of_month,
+        pipeline_months = schedule$months
       )
 
       schedule <- schedule |>

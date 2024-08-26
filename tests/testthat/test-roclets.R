@@ -166,3 +166,79 @@ test_that("invalid maestroLogLevel warns", {
 
   expect_null(res$val)
 })
+
+test_that("parse maestroHours works", {
+  res <- roxygen2::roc_proc_text(
+    maestroHours_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_hours_good.R"))
+  )
+
+  expect_type(res$val, "double")
+})
+
+test_that("invalid maestroHours warns", {
+  res <- roxygen2::roc_proc_text(
+    maestroHours_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_hours_bad.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
+test_that("parse maestroDays works for days of month", {
+  res <- roxygen2::roc_proc_text(
+    maestroDays_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_days_good.R"))
+  )
+
+  expect_type(res$val, "double")
+})
+
+test_that("parse maestroDays works for days of week", {
+  res <- roxygen2::roc_proc_text(
+    maestroDays_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_days_good2.R"))
+  )
+
+  expect_type(res$val, "integer")
+})
+
+test_that("invalid maestroDays warns for invalid days of month", {
+  res <- roxygen2::roc_proc_text(
+    maestroDays_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_days_bad2.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
+test_that("invalid maestroDays warns for invalid days of week", {
+  res <- roxygen2::roc_proc_text(
+    maestroDays_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_days_bad2.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
+test_that("parse maestroMonths works", {
+  res <- roxygen2::roc_proc_text(
+    maestroMonths_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_months_good.R"))
+  )
+
+  expect_type(res$val, "double")
+})
+
+test_that("invalid maestroMonths warns", {
+  res <- roxygen2::roc_proc_text(
+    maestroMonths_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_months_bad.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})

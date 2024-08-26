@@ -257,3 +257,229 @@ roclet_output.roclet_maestroLogLevel <- function(x, results, base_path, ...) {
   invisible(NULL)
 }
 
+
+# maestroHours --------------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroHours <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw != "") {
+    x_sep <- tryCatch({
+      as.numeric(strsplit(x$raw, "\\s+")[[1]])
+    }, error = function(e) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroHours `{x$raw}`.
+        Must be one or more integers [0-23] separated by spaces (e.g., 1 4 7)"
+        )
+      )
+      return()
+    }, warning = function(w) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroHours `{x$raw}`.
+        Must be one or more integers [0-23] separated by spaces (e.g., 1 4 7)"
+        )
+      )
+      return()
+    })
+
+    # Check for values [0-23]
+    if (!all(x_sep %in% 0:23)) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroHours `{x$raw}`.
+        Must be one or more integers [0-23] separated by spaces (e.g., 1 4 7)"
+        )
+      )
+      return()
+    }
+
+    x$val <- x_sep
+  }
+
+  x
+}
+
+maestroHours_roclet <- function() {
+  roxygen2::roclet("maestroHours")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroHours <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroHours")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @exportS3Method
+roclet_output.roclet_maestroHours <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
+
+
+# maestroDays --------------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroDays <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw != "") {
+
+    x_sep <- strsplit(x$raw, "\\s+")[[1]]
+
+    if (all(grepl("[0-9]", x_sep))) {
+
+      x_sep <- tryCatch({
+        as.numeric(x_sep)
+      }, error = function(e) {
+        roxygen2::roxy_tag_warning(
+          x,
+          glue::glue(
+            "Invalid maestroDays `{x$raw}`.
+            Must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
+          )
+        )
+        return()
+      }, warning = function(w) {
+        roxygen2::roxy_tag_warning(
+          x,
+          glue::glue(
+            "Invalid maestroDays `{x$raw}`.
+            Must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
+          )
+        )
+        return()
+      })
+
+      # Check for values [1-31]
+      if (!all(x_sep %in% 1:31)) {
+        roxygen2::roxy_tag_warning(
+          x,
+          glue::glue(
+            "Invalid maestroDays `{x$raw}`.
+            All must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
+          )
+        )
+        return()
+      }
+
+    } else if (all(x_sep %in% c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))) {
+
+      x_sep <- factor(x_sep, levels = c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
+
+    } else {
+
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroDays `{x$raw}`.
+            All must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
+        )
+      )
+      return()
+    }
+  }
+
+  x$val <- x_sep
+
+  x
+}
+
+maestroDays_roclet <- function() {
+  roxygen2::roclet("maestroDays")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroDays <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroDays")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @exportS3Method
+roclet_output.roclet_maestroDays <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
+
+# maestroMonths -----------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroMonths <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw != "") {
+    x_sep <- tryCatch({
+      as.numeric(strsplit(x$raw, "\\s+")[[1]])
+    }, error = function(e) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroMonths `{x$raw}`.
+        Must be one or more integers [1-12] separated by spaces (e.g., 1 6 12)"
+        )
+      )
+      return()
+    }, warning = function(w) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroMonths `{x$raw}`.
+        Must be one or more integers [1-12] separated by spaces (e.g., 1 6 12)"
+        )
+      )
+      return()
+    })
+
+    # Check for values [1-12]
+    if (!all(x_sep %in% 1:12)) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroMonths `{x$raw}`.
+        Must be one or more integers [1-12] separated by spaces (e.g., 1 6 12)"
+        )
+      )
+      return()
+    }
+
+    x$val <- x_sep
+  }
+
+  x
+}
+
+maestroMonths_roclet <- function() {
+  roxygen2::roclet("maestroMonths")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroMonths <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroMonths")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @exportS3Method
+roclet_output.roclet_maestroMonths <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
