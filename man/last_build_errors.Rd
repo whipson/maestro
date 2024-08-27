@@ -14,8 +14,6 @@ Gets the latest schedule build errors following use of \code{build_schedule()}. 
 the build succeeded or \code{build_schedule()} has not been run it will be \code{NULL}.
 }
 \examples{
-pipeline_dir <- tempdir()
-create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-build_schedule(pipeline_dir = pipeline_dir)
+
 last_build_errors()
 }

@@ -208,4 +208,3 @@ When it comes time to deploy your project make sure that whatever you use to act
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
 unlink("pipelines", recursive = TRUE)
 ```
-

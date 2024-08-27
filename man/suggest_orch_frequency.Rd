@@ -29,8 +29,6 @@ Note this function is intended to be used interactively when deciding how often 
 schedule the orchestrator. Programmatic use is not recommended.
 }
 \examples{
-pipeline_dir <- tempdir()
-create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-schedule <- build_schedule(pipeline_dir = pipeline_dir)
-suggest_orch_frequency(schedule)
+
+suggest_orch_frequency(example_schedule)
 }

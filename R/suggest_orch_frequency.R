@@ -16,10 +16,8 @@
 #' @export
 #'
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
-#' suggest_orch_frequency(schedule)
+#'
+#' suggest_orch_frequency(example_schedule)
 suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzone = "UTC")) {
 
   # Check that schedule is a data.frame

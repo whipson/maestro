@@ -14,20 +14,17 @@ test_that("create_maestro creates a new maestro project", {
   suppressMessages()
 
 test_that("create_maestro aborts if directory already exists", {
-
   withr::with_tempdir({
-    new_dir <- tempdir()
     expect_error(
-      create_maestro(new_dir),
+      create_maestro(path = "."),
       regexp = "Project directory already exists"
     )
   })
 
   # If overwrite = TRUE it will work
   withr::with_tempdir({
-    new_dir <- tempdir()
     expect_message(
-      create_maestro(new_dir, overwrite = TRUE),
+      create_maestro(path = ".", overwrite = TRUE),
       regexp = "Overwriting existing project"
     )
   })

@@ -19,9 +19,12 @@
 #'
 #' # Creating a temporary directory for demo purposes! In practice, just
 #' # create a 'pipelines' directory at the project level.
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
-#' build_schedule(pipeline_dir = pipeline_dir)
+#'
+#' if (interactive()) {
+#'   pipeline_dir <- tempdir()
+#'   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+#'   build_schedule(pipeline_dir = pipeline_dir)
+#' }
 build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
 
   if (!dir.exists(pipeline_dir)) {

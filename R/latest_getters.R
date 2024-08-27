@@ -6,9 +6,7 @@
 #' @return error messages
 #' @export
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' build_schedule(pipeline_dir = pipeline_dir)
+#'
 #' last_build_errors()
 last_build_errors <- function() {
   maestro_pkgenv$last_build_errors
@@ -22,10 +20,7 @@ last_build_errors <- function() {
 #' @return error messages
 #' @export
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
-#' run_schedule(schedule)
+#'
 #' last_run_errors()
 last_run_errors <- function() {
   maestro_pkgenv$last_run_errors
@@ -42,10 +37,7 @@ last_run_errors <- function() {
 #' @return warning messages
 #' @export
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
-#' run_schedule(schedule)
+#'
 #' last_run_warnings()
 last_run_warnings <- function() {
   maestro_pkgenv$last_run_warnings
@@ -62,10 +54,7 @@ last_run_warnings <- function() {
 #' @return messages
 #' @export
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
-#' run_schedule(schedule)
+#'
 #' last_run_messages()
 last_run_messages <- function() {
   maestro_pkgenv$last_run_messages

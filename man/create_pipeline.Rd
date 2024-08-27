@@ -42,27 +42,26 @@ invisible
 Allows the creation of new pipelines (R scripts) and fills in the maestro tags as specified.
 }
 \examples{
-pipeline_dir <- tempdir()
-create_pipeline(
-  "extract_data",
-  pipeline_dir = pipeline_dir,
-  frequency = "1 hour",
-  open = FALSE,
-  quiet = TRUE,
-  overwrite = TRUE
-)
+if (interactive()) {
+  pipeline_dir <- tempdir()
+  create_pipeline(
+    "extract_data",
+    pipeline_dir = pipeline_dir,
+    frequency = "1 hour",
+    open = FALSE,
+    quiet = TRUE,
+    overwrite = TRUE
+  )
 
-create_pipeline(
-  "new_job",
-  pipeline_dir = pipeline_dir,
-  frequency = "20 minutes",
-  start_time = as.POSIXct("2024-06-21 12:20:00"),
-  log_level = "ERROR",
-  open = FALSE,
-  quiet = TRUE,
-  overwrite = TRUE
-)
-
-# Clean up
-if (!interactive()) unlink("pipelines", recursive = TRUE)
+  create_pipeline(
+    "new_job",
+    pipeline_dir = pipeline_dir,
+    frequency = "20 minutes",
+    start_time = as.POSIXct("2024-06-21 12:20:00"),
+    log_level = "ERROR",
+    open = FALSE,
+    quiet = TRUE,
+    overwrite = TRUE
+  )
+}
 }
