@@ -9,7 +9,7 @@ the build succeeded or build_schedule() has not been run it will be NULL."><meta
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,89 +64,9 @@ the build succeeded or <code><a href="build_schedule.html">build_schedule()</a><
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pipeline_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="create_pipeline.html">create_pipeline</a></span><span class="op">(</span><span class="st">"my_new_pipeline"</span>, <span class="va">pipeline_dir</span>, open <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Overwriting existing pipeline at <span style="color: #0000BB;">/tmp/RtmpBw9eZ3/my_new_pipeline.R</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Created pipeline at <span style="color: #0000BB;">/tmp/RtmpBw9eZ3/my_new_pipeline.R</span></span>
-<span class="r-in"><span><span class="fu"><a href="build_schedule.html">build_schedule</a></span><span class="op">(</span>pipeline_dir <span class="op">=</span> <span class="va">pipeline_dir</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> 3 scripts successfully parsed</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>1 script failed to parse:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Could not build schedule entry with error: No directory called <span style="font-style: italic;">./pipelines</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See full error output with `last_build_errors()`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 12</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   script_path      pipe_name frequency start_time          skip  log_level hours</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lis&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> /tmp/RtmpBw9eZ3… extract_… 1 hour    2024-08-26 <span style="color: #949494;">00:00:00</span> FALSE INFO      <span style="color: #949494;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> /tmp/RtmpBw9eZ3… my_new_p… 1 day     2024-08-26 <span style="color: #949494;">00:00:00</span> FALSE INFO      <span style="color: #949494;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> /tmp/RtmpBw9eZ3… new_job   20 minut… 2024-06-21 <span style="color: #949494;">12:20:00</span> FALSE ERROR     <span style="color: #949494;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5 more variables: months &lt;list&gt;, days_of_week &lt;list&gt;, days_of_month &lt;list&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   frequency_n &lt;int&gt;, frequency_unit &lt;chr&gt;</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">last_build_errors</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $orchestrator.R</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">&lt;error/rlang_error&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Could not build schedule entry with error: No directory called</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="font-style: italic;">./pipelines</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Pipeline scripts should not typically include code that's run outside of a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   function. Be sure to wrap code in a function block.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Backtrace:</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">     </span>▆</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  1. </span>└─<span style="font-weight: bold;">pkgdown</span>::build_site_github_pages(new_process = FALSE, install = FALSE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  2. </span>  └─pkgdown::build_site(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  3. </span>    └─pkgdown:::build_site_local(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  4. </span>      └─pkgdown::build_reference(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  5. </span>        ├<span style="color: #949494;">─pkgdown:::unwrap_purrr_error(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  6. </span>        │ <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  7. </span>        └─<span style="font-weight: bold;">purrr</span>::map(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  8. </span>          └─purrr:::map_("list", .x, .f, ..., .progress = .progress)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">  9. </span>            ├<span style="color: #949494;">─purrr:::with_indexed_errors(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 10. </span>            │ <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 11. </span>            ├<span style="color: #949494;">─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">:::call_with_cleanup(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 12. </span>            └─<span style="font-weight: bold;">pkgdown</span> (local) .f(.x[[i]], ...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 13. </span>              ├<span style="color: #949494;">─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 14. </span>              └─<span style="font-weight: bold;">pkgdown</span>:::data_reference_topic(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 15. </span>                └─pkgdown:::run_examples(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 16. </span>                  └─pkgdown:::highlight_examples(code, topic, env = env)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 17. </span>                    └─<span style="font-weight: bold;">downlit</span>::evaluate_and_highlight(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 18. </span>                      └─<span style="font-weight: bold;">evaluate</span>::evaluate(code, child_env(env), new_device = TRUE, output_handler = output_handler)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 19. </span>                        └─evaluate:::evaluate_call(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 20. </span>                          ├<span style="color: #949494;">─evaluate (local) timing_fn(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 21. </span>                          ├<span style="color: #949494;">─evaluate (local) handle(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 22. </span>                          │ <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::try(f, silent = TRUE)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 23. </span>                          │   <span style="color: #949494;">└─base::tryCatch(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 24. </span>                          │     <span style="color: #949494;">└─base (local) tryCatchList(expr, classes, parentenv, handlers)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 25. </span>                          │       <span style="color: #949494;">└─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 26. </span>                          │         <span style="color: #949494;">└─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 27. </span>                          ├<span style="color: #949494;">─base::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 28. </span>                          ├<span style="color: #949494;">─base::withVisible(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 29. </span>                          └─<span style="font-weight: bold;">evaluate</span>:::eval_with_user_handlers(expr, envir, enclos, user_handlers)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 30. </span>                            └─<span style="font-weight: bold;">base</span>::eval(expr, envir, enclos)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 31. </span>                              └─base::eval(expr, envir, enclos)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 32. </span>                                └─<span style="font-weight: bold;">maestro</span>::build_schedule(pipeline_dir = pipeline_dir)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 33. </span>                                  ├<span style="color: #949494;">─</span><span style="color: #949494; font-weight: bold;">stats</span><span style="color: #949494;">::setNames(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 34. </span>                                  └─<span style="font-weight: bold;">purrr</span>::map(pipelines, purrr::safely(build_schedule_entry))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 35. </span>                                    └─purrr:::map_("list", .x, .f, ..., .progress = .progress)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 36. </span>                                      ├<span style="color: #949494;">─purrr:::with_indexed_errors(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 37. </span>                                      │ <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 38. </span>                                      ├<span style="color: #949494;">─</span><span style="color: #949494; font-weight: bold;">purrr</span><span style="color: #949494;">:::call_with_cleanup(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 39. </span>                                      └─purrr (local) .f(.x[[i]], ...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 40. </span>                                        ├<span style="color: #949494;">─purrr:::capture_error(.f(...), otherwise, quiet)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 41. </span>                                        │ <span style="color: #949494;">└─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::tryCatch(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 42. </span>                                        │   <span style="color: #949494;">└─base (local) tryCatchList(expr, classes, parentenv, handlers)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 43. </span>                                        │     <span style="color: #949494;">└─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 44. </span>                                        │       <span style="color: #949494;">└─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 45. </span>                                        └─<span style="font-weight: bold;">maestro</span> (local) .f(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 46. </span>                                          ├<span style="color: #949494;">─</span><span style="color: #949494; font-weight: bold;">base</span><span style="color: #949494;">::suppressMessages(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 47. </span>                                          │ <span style="color: #949494;">└─base::withCallingHandlers(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 48. </span>                                          └─base::tryCatch(...)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 49. </span>                                            └─base (local) tryCatchList(expr, classes, parentenv, handlers)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 50. </span>                                              ├<span style="color: #949494;">─base (local) tryCatchOne(...)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 51. </span>                                              │ <span style="color: #949494;">└─base (local) doTryCatch(return(expr), name, parentenv, handler)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 52. </span>                                              └─base (local) tryCatchList(expr, names[-nh], parentenv, handlers[-nh])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 53. </span>                                                └─base (local) tryCatchOne(expr, names, parentenv, handlers[[1L]])</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;"> 54. </span>                                                  └─value[[3L]](cond)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
