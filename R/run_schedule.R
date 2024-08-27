@@ -50,19 +50,17 @@
 #' @importFrom R.utils countLines
 #' @export
 #' @examples
-#' pipeline_dir <- tempdir()
-#' create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE, overwrite = TRUE)
-#' schedule <- build_schedule(pipeline_dir = pipeline_dir)
+#'
 #' # Runs the schedule every 1 day
 #' run_schedule(
-#'   schedule,
+#'   example_schedule,
 #'   orch_frequency = "1 day",
 #'   quiet = TRUE
 #' )
 #'
 #' # Runs the schedule every 15 minutes
 #' run_schedule(
-#'   schedule,
+#'   example_schedule,
 #'   orch_frequency = "15 minutes",
 #'   quiet = TRUE
 #' )

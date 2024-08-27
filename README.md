@@ -9,7 +9,10 @@
 [![Codecov test
 coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/whipson/maestro?branch=main)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/maestro)](https://cran.r-project.org/package=maestro)
-[![Downloads](https://cranlogs.r-pkg.org/badges/maestro)](https://cran.r-project.org/package=maestro)
+[![Total
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/maestro)](https://CRAN.R-project.org/package=maestro)
+[![Monthly
+Downloads](https://cranlogs.r-pkg.org/badges/maestro)](https://cran.r-project.org/package=maestro)
 
 <!-- badges: end -->
 

@@ -8,10 +8,12 @@
 #' @examples
 #'
 #' # Creates a new maestro project with an R orchestrator
-#' new_proj_dir <- tempdir()
-#' create_maestro(new_proj_dir, type = "R", overwrite = TRUE)
+#' if (interactive()) {
+#'   new_proj_dir <- tempdir()
+#'   create_maestro(new_proj_dir, type = "R", overwrite = TRUE)
 #'
-#' create_maestro(new_proj_dir, type = "Quarto", overwrite = TRUE)
+#'   create_maestro(new_proj_dir, type = "Quarto", overwrite = TRUE)
+#' }
 create_maestro <- function(path, type = "R", overwrite = FALSE, quiet = FALSE, ...) {
 
   type <- match.arg(type, choices = c("R", "Quarto", "RMarkdown"))

@@ -30,7 +30,10 @@ In other words, it is not recommended to make changes to it.
 
 # Creating a temporary directory for demo purposes! In practice, just
 # create a 'pipelines' directory at the project level.
-pipeline_dir <- tempdir()
-create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
-build_schedule(pipeline_dir = pipeline_dir)
+
+if (interactive()) {
+  pipeline_dir <- tempdir()
+  create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+  build_schedule(pipeline_dir = pipeline_dir)
+}
 }
