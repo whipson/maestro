@@ -45,19 +45,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="maestro-0209000">maestro 0.2.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0209000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="maestro-020">maestro 0.2.0<a class="anchor" aria-label="anchor" href="#maestro-020"></a></h2><p class="text-muted">CRAN release: 2024-08-27</p>
 <div class="section level4">
-<h4 id="new-features-0-2-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0-9000"></a></h4>
+<h4 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h4>
 <ul><li><p>New tags <code>maestroHours</code>, <code>maestroDays</code>, and <code>maestroMonths</code> allows running of pipelines on specific hours of day, days of week, days of month, or months of year (<a href="https://github.com/whipson/maestro/issues/100" class="external-link">#100</a>).</p></li>
 <li><p><code>maestroFrequency</code> tag now accepts the values hourly, daily, weekly, biweekly, monthly, quarterly, and yearly. Argument <code>orch_frequency</code> to <code><a href="../reference/run_schedule.html">run_schedule()</a></code> also accepts these values.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="minor-changes-0-2-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-2-0-9000"></a></h4>
+<h4 id="minor-changes-0-2-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-2-0"></a></h4>
 <ul><li><p>Changed from <code>example_schedule</code> data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.</p></li>
 <li><p><code>suggest_orch_frequency</code> now uses the smallest interval between any two pipelines (<a href="https://github.com/whipson/maestro/issues/99" class="external-link">#99</a>).</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-2-0-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0-9000"></a></h4>
+<h4 id="bug-fixes-0-2-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h4>
 <ul><li><p>Error messages on unintentional overwrites from <code>create_*()</code> functions correctly reference name of path or directory that was to be overwritten.</p></li>
 <li><p>Fixed cli output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> to not show skipped pipelines in the next run portion.</p></li>
 </ul></div>
