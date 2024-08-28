@@ -50,6 +50,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/hello-maestro/hello-maestro.html">Hello maestro</a></li>
+    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-2-0/maestro-0-2-0.html">0.2.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -151,10 +152,10 @@ system time using either <code><a href="https://rdrr.io/r/base/Sys.time.html" cl
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[55ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[54ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.085 sec elapsed </span></span>
+<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.081 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">## </span></span>
@@ -245,15 +246,11 @@ pipelines are fast to execute.<a class="footnote-ref" tabindex="0" data-bs-toggl
 execute &lt;code&gt;&lt;a href="../reference/build_schedule.html"&gt;build_schedule()&lt;/a&gt;&lt;/code&gt; and that you account for the
 additional work done in &lt;code&gt;&lt;a href="../reference/run_schedule.html"&gt;run_schedule()&lt;/a&gt;&lt;/code&gt; not related to your
 actual pipeline logic.&lt;/p&gt;'><sup>1</sup></a></p>
-<p>Maestro has a function for providing a reasonable estimate for the
-ideal orchestrator frequency called
-<code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code>. It uses the heuristic of the most
-frequent interval halved (e.g., if your highest frequency pipeline is 1
-hour, it suggests 30 minutes) to a minimum 15 minutes or your most
-frequent interval if it’s less. This is a bit more conservative but
-protects against running things too often. If timeliness and high
-frequency are really important to you, maestro might not be your best
-choice.</p>
+<p>Maestro has a function for determining the ideal orchestrator
+frequency based on the pipeline frequencies in the project called
+<code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code>. It looks for the shortest
+interval of time between any future pipeline executions and suggests
+that for the frequency.</p>
 </div>
 </div>
 <div class="section level2">
