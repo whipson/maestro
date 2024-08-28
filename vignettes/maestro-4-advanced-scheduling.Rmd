@@ -127,7 +127,7 @@ So a good heuristic is to run it as often as the smallest interval of time diffe
 
 [^1]: Make sure you consider the amount of time it takes to execute `build_schedule()` and that you account for the additional work done in `run_schedule()` not related to your actual pipeline logic.
 
-Maestro has a function for providing a reasonable estimate for the ideal orchestrator frequency called `suggest_orch_frequency()`. It uses the heuristic of the most frequent interval halved (e.g., if your highest frequency pipeline is 1 hour, it suggests 30 minutes) to a minimum 15 minutes or your most frequent interval if it's less. This is a bit more conservative but protects against running things too often. If timeliness and high frequency are really important to you, maestro might not be your best choice.
+Maestro has a function for determining the ideal orchestrator frequency based on the pipeline frequencies in the project called `suggest_orch_frequency()`. It looks for the shortest interval of time between any future pipeline executions and suggests that for the frequency.
 
 ## Irregular Schedules
 
