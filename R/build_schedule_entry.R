@@ -14,7 +14,8 @@ build_schedule_entry <- function(script_path) {
     log_level = "maestroLogLevel",
     hours = "maestroHours",
     days = "maestroDays",
-    months = "maestroMonths"
+    months = "maestroMonths",
+    inputs = "maestroInputs"
   )
 
   # Get all the roxygen tags - this actually executes the script, which is fine
@@ -38,19 +39,24 @@ build_schedule_entry <- function(script_path) {
     suppressMessages()
 
   # Get specifically the tags used by maestro
-  maestro_tag_vals <- purrr::map(tag_list, ~{
-    tag <- .x
-    val <- purrr::map(
-      maestro_tag_names,
-      ~{
-        val <- roxygen2::block_get_tag_value(tag, .x)
-        if (is.null(val)) {
-          val <- NA
+  withCallingHandlers({
+    maestro_tag_vals <- purrr::map(tag_list, ~{
+      tag <- .x
+      val <- purrr::map(
+        maestro_tag_names,
+        ~{
+          val <- roxygen2::block_get_tag_value(tag, .x)
+          if (is.null(val)) {
+            val <- NA
+          }
+          val
         }
-        val
-      }
-    )
-    val
+      )
+      val
+    })
+  },
+  purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
   })
 
   if (length(maestro_tag_vals) == 0) {
@@ -62,75 +68,111 @@ build_schedule_entry <- function(script_path) {
     )
   }
 
+  # Verify that pipes with maestroInput use the .input parameter
+  withCallingHandlers({
+    purrr::walk2(tag_list, maestro_tag_vals, ~{
+      if (!all(is.na(.y$inputs))) {
+        params <- roxygen2::block_get_tag_value(.x, ".formals")
+        if (!".input" %in% params) {
+          cli::cli_abort(
+            c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
+              "i" = "Example: {.code pipeline <- function(.input) ...}"),
+            call = NULL
+          )
+        }
+      }
+    })
+  }, purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
+  })
+
   # Get pipe names from the function name and check
-  pipe_names <- purrr::imap(tag_list, ~{
+  withCallingHandlers({
+    pipe_names <- purrr::imap(tag_list, ~{
 
-    obj_class <- class(.x$object)
+      obj_class <- class(.x$object)
 
-    # Check that it is a function
-    if (!"function" %in% obj_class) {
-      cli::cli_abort(
-        c("{basename(script_path)} line {(.x$line)} has tags but no function. Be sure place
+      # Check that it is a function
+      if (!"function" %in% obj_class) {
+        cli::cli_abort(
+          c("{basename(script_path)} line {(.x$line)} has tags but no function. Be sure place
           tags above the function you want to schedule."),
-        call = NULL
-      )
-    }
+          call = NULL
+        )
+      }
 
-    # Return the name
-    .x$object$topic
+      # Return the name
+      .x$object$topic
+    })
+  }, purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
   })
 
   # Create table entries
-  table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
+  withCallingHandlers({
+    table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
 
-    # Validate hours
-    if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly")) {
-      cli::cli_abort(
-        c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of 'hourly'.",
-          "i" = "Issue is with pipeline named {.x}."),
-        call = NULL
-      )
-    }
+      # Validate hours
+      if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly")) {
+        cli::cli_abort(
+          c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of 'hourly'.",
+            "i" = "Issue is with pipeline named {.x}."),
+          call = NULL
+        )
+      }
 
-    # Validate days
-    if (!all(is.na(maestro_tag_vals[[1]]$days)) && !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly")) {
-      cli::cli_abort(
-        c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of 'daily' or 'hourly'.",
-          "i" = "Issue is with pipeline named {.x}."),
-        call = NULL
-      )
-    }
+      # Validate days
+      if (!all(is.na(maestro_tag_vals[[1]]$days)) && !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly")) {
+        cli::cli_abort(
+          c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of 'daily' or 'hourly'.",
+            "i" = "Issue is with pipeline named {.x}."),
+          call = NULL
+        )
+      }
 
-    # Validate months
-    if (!all(is.na(maestro_tag_vals[[1]]$months)) && !maestro_tag_vals[[1]]$frequency %in%
-        c("monthly", "biweekly", "weekly", "daily", "hourly")) {
-      cli::cli_abort(
-        c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
+      # Validate months
+      if (!all(is.na(maestro_tag_vals[[1]]$months)) && !maestro_tag_vals[[1]]$frequency %in%
+          c("monthly", "biweekly", "weekly", "daily", "hourly")) {
+        cli::cli_abort(
+          c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
           'monthly', 'biweekly', 'weekly', 'daily', or 'hourly'.",
-          "i" = "Issue is with pipeline named {.x}."),
-        call = NULL
-      )
-    }
+            "i" = "Issue is with pipeline named {.x}."),
+          call = NULL
+        )
+      }
 
-    dplyr::tibble(
-      script_path = script_path,
-      pipe_name = .x,
-      frequency = .y$frequency,
-      start_time = .y$start_time,
-      tz = .y$tz,
-      skip = .y$skip,
-      log_level = .y$log_level,
-      hours = list(.y$hours),
-      days = list(.y$days),
-      months = list(.y$months)
-    )
-  }) |>
-    purrr::list_rbind()
+      dplyr::tibble(
+        script_path = script_path,
+        pipe_name = .x,
+        frequency = .y$frequency,
+        start_time = .y$start_time,
+        tz = .y$tz,
+        skip = .y$skip,
+        log_level = .y$log_level,
+        hours = list(.y$hours),
+        days = list(.y$days),
+        months = list(.y$months),
+        inputs = list(.y$inputs)
+      )
+    }) |>
+      purrr::list_rbind()
+  },
+
+  purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
+  })
 
   # Create units and n
-  nunits <- purrr::map(table_entities$frequency, purrr::possibly(~{
-    parse_rounding_unit(.x)
-  }, otherwise = list(n = NA, unit = NA)))
+  withCallingHandlers({
+    nunits <- purrr::map(table_entities$frequency, purrr::possibly(~{
+      parse_rounding_unit(.x)
+    }, otherwise = list(n = NA, unit = NA)))
+  },
+
+  purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
+  })
+
 
   # Create days_of_week and days_of_month from maestroDays
   days_of_week <- purrr::map_if(table_entities$days, is.factor, as.numeric, .else = ~NA_real_)
