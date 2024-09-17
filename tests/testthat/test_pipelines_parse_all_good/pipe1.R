@@ -50,6 +50,6 @@ something <- function() {
 #' @maestroStartTime 1970-01-01 00:00:00 ADT
 #'
 #' @export
-something <- function() {
+something2 <- function() {
   invisible()
 }

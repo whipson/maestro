@@ -8,7 +8,7 @@ test_that("can create a schedule entry from a single well-documented fun", {
     c("script_path", "pipe_name", "frequency",
       "start_time", "tz", "skip", "log_level",
       "frequency_n", "frequency_unit", "days", "days_of_week",
-      "days_of_month"),
+      "days_of_month", "inputs"),
     names(res)
   )
   expect_snapshot(res)
@@ -94,4 +94,19 @@ test_that("Script with bad specifiers errors", {
     test_path("test_pipelines_parse_all_bad/specifiers.R")
   ) |>
     expect_error(regexp = "pipeline must have")
+})
+
+test_that("Pipeline with inputs checks for .input", {
+  schedule <- build_schedule_entry(
+    test_path("test_pipelines_parse_all_bad/dags.R")
+  ) |>
+    expect_error(regexp = "pipeline must have a parameter")
+
+  expect_no_error({
+    schedule <- build_schedule_entry(
+      test_path("test_pipelines_parse_all_good/dags.R")
+    )
+  })
+
+  expect_type(schedule$inputs[[1]], "character")
 })

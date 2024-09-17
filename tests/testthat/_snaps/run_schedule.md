@@ -54,7 +54,7 @@
     Code
       schedule
     Output
-      # A tibble: 7 x 12
+      # A tibble: 7 x 13
         script_path      pipe_name frequency start_time          skip  log_level hours
         <chr>            <chr>     <chr>     <dttm>              <lgl> <chr>     <lis>
       1 test_pipelines_~ specific~ daily     1970-01-01 00:00:00 FALSE INFO      <int>
@@ -64,8 +64,8 @@
       5 test_pipelines_~ specific~ hourly    1970-01-01 00:00:00 FALSE INFO      <int>
       6 test_pipelines_~ specific~ monthly   1970-01-01 00:00:00 FALSE INFO      <int>
       7 test_pipelines_~ specific~ hourly    1970-01-01 00:00:00 FALSE INFO      <dbl>
-      # i 5 more variables: months <list>, days_of_week <list>, days_of_month <list>,
-      #   frequency_n <int>, frequency_unit <chr>
+      # i 6 more variables: months <list>, inputs <list>, days_of_week <list>,
+      #   days_of_month <list>, frequency_n <int>, frequency_unit <chr>
 
 ---
 

@@ -17,6 +17,6 @@ lm_mtcars <- function() {
 #' @maestroFrequency 3 month
 #'
 #' @export
-wait <- function() {
+wait2 <- function() {
   Sys.sleep(0.01)
 }
