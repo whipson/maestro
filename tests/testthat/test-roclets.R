@@ -242,3 +242,13 @@ test_that("invalid maestroMonths warns", {
 
   expect_null(res$val)
 })
+
+test_that("parse maestroInputs works", {
+  res <- roxygen2::roc_proc_text(
+    maestroInputs_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_inputs.R"))
+  )
+
+  expect_type(res$val, "character")
+  expect_length(res$val, 3L)
+})

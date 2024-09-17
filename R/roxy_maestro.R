@@ -483,3 +483,36 @@ roclet_output.roclet_maestroMonths <- function(x, results, base_path, ...) {
   cli::cli(glue::glue("{results$node}: {results$val}"))
   invisible(NULL)
 }
+
+
+# maestroInputs -----------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  x$val <- strsplit(x$raw, "\\s+")[[1]]
+
+  x
+}
+
+maestroInputs_roclet <- function() {
+  roxygen2::roclet("maestroInputs")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInputs")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+#' @exportS3Method
+roclet_output.roclet_maestroInputs <- function(x, results, base_path, ...) {
+  cli::cli(glue::glue("{results$node}: {results$val}"))
+  invisible(NULL)
+}
