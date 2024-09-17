@@ -1,4 +1,18 @@
-# maestro 0.2.0.9000
+# maestro 0.3.0.9000
+
+### Breaking changes
+
+### New features
+
+- New tag `maestroInputs` supports the implementation of DAG-style multipipeline executions (#98). 
+
+- It is now required that all pipeline names are unique. The names of each maestro pipeline function must be unique across the project to support the implementation of DAGs. `build_schedule()` will abort if any non-unique names are detected.
+
+### Bug Fixes
+
+- Error messaging is clearer when running functions that wrap around purrr iterators (#115).
+
+# maestro 0.2.0
 
 ### New features
 
