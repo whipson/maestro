@@ -60,13 +60,13 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
     purrr::list_c()
 
   # Check for uniqueness of pipe names
-  # if (length(unique(pipe_names)) < length(pipe_names)) {
-  #   non_unique_names <- pipe_names[duplicated(pipe_names)]
-  #   cli::cli_abort(
-  #     c("Function names must all be unique",
-  #       "i" = "{.fn {non_unique_names}} used more than once.")
-  #   )
-  # }
+  if (length(unique(pipe_names)) < length(pipe_names)) {
+    non_unique_names <- pipe_names[duplicated(pipe_names)]
+    cli::cli_abort(
+      c("Function names must all be unique",
+        "i" = "{.code {non_unique_names}} used more than once.")
+    )
+  }
 
   # Get the results
   sch_results <- purrr::map(
