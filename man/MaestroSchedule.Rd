@@ -28,10 +28,6 @@ if (interactive()) {
 \item{\code{status}}{deprecation}
 
 \item{\code{artifacts}}{deprecation}
-
-\item{\code{status}}{deprecation}
-
-\item{\code{artifacts}}{deprecation}
 }
 \if{html}{\out{</div>}}
 }

@@ -25,8 +25,6 @@ MaestroSchedule <- R6::R6Class(
   public = list(
 
     #' @field PipelineList object of type MaestroPipelineList
-    #' @field status deprecation
-    #' @field artifacts deprecation
     PipelineList = NULL,
 
     #' @description
