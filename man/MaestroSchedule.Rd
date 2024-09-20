@@ -19,10 +19,6 @@ if (interactive()) {
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{PipelineList}}{object of type MaestroPipelineList}
-
-\item{\code{status}}{status of the schedule}
-
-\item{\code{artifacts}}{artifacts in the schedule}
 }
 \if{html}{\out{</div>}}
 }
