@@ -1,5 +1,5 @@
 #' Class for a schedule of pipelines
-#' @import R6 tictoc utils logger
+#' @import R6 tictoc utils logger lifecycle
 #' @examples
 #' if (interactive()) {
 #'   pipeline_dir <- tempdir()
@@ -10,12 +10,25 @@ MaestroSchedule <- R6::R6Class(
 
   "MaestroSchedule",
 
+  active = list(
+    #' @field status deprecation
+    #' @field artifacts deprecation
+    status = function() {
+      lifecycle::deprecate_stop("0.3.0", I("Indexing schedule$status"), details = c(i = "Use `get_status(schedule)` instead"))
+    },
+
+    artifacts = function() {
+      lifecycle::deprecate_stop("0.3.0", I("Indexing schedule$artifacts"), details = c(i = "Use `get_artifacts(schedule)` instead"))
+    }
+  ),
+
   public = list(
 
     #' @field PipelineList object of type MaestroPipelineList
     #' @field status deprecation
     #' @field artifacts deprecation
     PipelineList = NULL,
+
     #' @description
     #' Create a MaestroSchedule object
     #' @param Pipelines list of MaestroPipelines

@@ -19,6 +19,7 @@ Imports:
     cli (>= 3.3.0),
     dplyr (>= 1.1.0),
     glue,
+    lifecycle,
     logger,
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
