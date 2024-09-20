@@ -22,6 +22,19 @@ if (interactive()) {
 }
 \if{html}{\out{</div>}}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{status}}{deprecation}
+
+\item{\code{artifacts}}{deprecation}
+
+\item{\code{status}}{deprecation}
+
+\item{\code{artifacts}}{deprecation}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

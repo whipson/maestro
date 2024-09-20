@@ -53,90 +53,96 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
 
 test_that("run_schedule timeliness checks - pipelines run when they're supposed to", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+  withr::with_timezone({
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "15 minutes",
-    check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
-    quiet = TRUE
-  )
+    schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
 
-  status <- output$get_status()
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "15 minutes",
+      check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
+      quiet = TRUE
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    status <- output$get_status()
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "1 month",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-    quiet = TRUE
-  )
-  status <- output$get_status()
+    expect_snapshot(
+      status$invoked
+    )
+    expect_snapshot(
+      status$next_run
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "1 month",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- output$get_status()
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "4 days",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-    quiet = TRUE
-  )
-  status <- output$get_status()
+    expect_snapshot(
+      status$invoked
+    )
+    expect_snapshot(
+      status$next_run
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "4 days",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- output$get_status()
+
+    expect_snapshot(
+      status$invoked
+    )
+    expect_snapshot(
+      status$next_run
+    )
+  }, "UTC")
 })
 
 test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, months)", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
+  withr::with_timezone({
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"), # This is a Monday
-    quiet = TRUE
-  )
+    schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
 
-  status <- output$get_status()
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"), # This is a Monday
+      quiet = TRUE
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    status <- output$get_status()
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-05-01 00:00:00", tz = "UTC"), # This is a Monday
-    quiet = TRUE
-  )
+    expect_snapshot(
+      status$invoked
+    )
+    expect_snapshot(
+      status$next_run
+    )
 
-  status <- output$get_status()
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-05-01 00:00:00", tz = "UTC"), # This is a Monday
+      quiet = TRUE
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    status <- output$get_status()
+
+    expect_snapshot(
+      status$invoked
+    )
+    expect_snapshot(
+      status$next_run
+    )
+  }, "UTC")
 })
 
 test_that("run_schedule propagates warnings", {
