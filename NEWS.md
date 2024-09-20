@@ -1,12 +1,24 @@
 # maestro 0.3.0.9000
 
+This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.
+
 ### Breaking changes
+
+- Schedules are now represented as an R6 object of class `<MaestroSchedule>`. `build_schedule()` returns a MaestroSchedule object that can be passed to `run_schedule()` as normal. To access the schedule table run `get_schedule()`.
+
+- `run_schedule()` no longer returns a list of `$status` and `$artifacts` but now returns/modifies the MaestroSchedule object. Status can be accessed using `get_status(schedule)` and artifacts via `get_artifacts(schedule)`
+
+- `suggest_orch_frequency()` now takes a `<MaestroSchedule>` object.
+
+- Data `example_schedule` removed from the package.
+
+- Skipped pipelines are no longer shown in the CLI output of `run_schedule()`.
+
+- It is now required that all pipeline names are unique. The names of each maestro pipeline function must be unique across the project to support the implementation of DAGs. `build_schedule()` will abort if any non-unique names are detected.
 
 ### New features
 
-- New tag `maestroInputs` supports the implementation of DAG-style multipipeline executions (#98). 
-
-- It is now required that all pipeline names are unique. The names of each maestro pipeline function must be unique across the project to support the implementation of DAGs. `build_schedule()` will abort if any non-unique names are detected.
+- Added functions `get_schedule()`, `get_status()`, and `get_artifacts()` for interacting with `<MaestroSchedule>` objects.
 
 ### Bug Fixes
 
