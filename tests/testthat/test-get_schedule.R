@@ -8,3 +8,9 @@ test_that("get_schedule returns a data.frame", {
   expect_snapshot(schedule)
 }) |>
   suppressMessages()
+
+test_that("errors if schedule is not a MaestroSchedule", {
+  expect_error({
+    get_schedule(iris)
+  }, regexp = "Schedule must be an object")
+})

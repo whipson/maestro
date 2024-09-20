@@ -177,3 +177,29 @@ test_that("run_schedule checks type of schedule", {
   )
 }) |>
   suppressMessages()
+
+test_that("errors on invalid orch_frequency", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
+  expect_error({
+    run_schedule(schedule, orch_frequency = "1 potato")
+  }, regexp = "Invalid `orch_frequency`")
+
+  expect_error({
+    run_schedule(schedule, orch_frequency = "56 weeks")
+  }, regexp = "Invalid `orch_frequency`")
+})
+
+test_that("errors if resources are unnamed or non unique", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
+  expect_error({
+    run_schedule(schedule, resources = list(1))
+  }, regexp = "All elements")
+
+  expect_error({
+    run_schedule(schedule, resources = list(a = 1, a = 2))
+  }, regexp = "All elements")
+})

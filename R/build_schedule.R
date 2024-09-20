@@ -67,10 +67,6 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
   ) |>
     purrr::discard(is.null)
 
-  if (!quiet) {
-    maestro_parse_cli(pipeline_results, pipeline_errors)
-  }
-
   # Assign the errors to the pkgenv
   maestro_pkgenv$last_build_errors <- pipeline_errors
 
@@ -91,6 +87,10 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
 
   # Create the schedule
   schedule <- MaestroSchedule$new(Pipelines = pipeline_results)
+
+  if (!quiet) {
+    maestro_parse_cli(pipeline_results, pipeline_errors)
+  }
 
   schedule
 }

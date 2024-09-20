@@ -12,3 +12,9 @@ test_that("get_artifacts returns artifacts", {
   expect_gt(length(artifacts), 0)
 }) |>
   suppressMessages()
+
+test_that("errors if schedule is not a MaestroSchedule", {
+  expect_error({
+    get_artifacts(iris)
+  }, regexp = "Schedule must be an object")
+})

@@ -52,13 +52,6 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
   )
 
-  if (any(is.na(sch_secs))) {
-    cli::cli_abort(
-      c("There are invalid time units.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule.")
-    )
-  }
-
   # If the minimum schedule seconds is lte 15 minutes, return the corresponding frequency
   if (min(sch_secs, na.rm = TRUE) <= (60 * 15)) {
     return(schedule$frequency[[which.min(sch_secs)]])

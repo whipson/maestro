@@ -8,3 +8,9 @@ test_that("get_status returns a data.frame", {
   )
 }) |>
   suppressMessages()
+
+test_that("errors if schedule is not a MaestroSchedule", {
+  expect_error({
+    get_status(iris)
+  }, regexp = "Schedule must be an object")
+})
