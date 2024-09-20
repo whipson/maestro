@@ -13,12 +13,9 @@ MaestroSchedule <- R6::R6Class(
   public = list(
 
     #' @field PipelineList object of type MaestroPipelineList
-    #' @field status status of the schedule
-    #' @field artifacts artifacts in the schedule
+    #' @field status deprecation
+    #' @field artifacts deprecation
     PipelineList = NULL,
-    status = "Not Run",
-    artifacts = NULL,
-
     #' @description
     #' Create a MaestroSchedule object
     #' @param Pipelines list of MaestroPipelines
@@ -37,11 +34,11 @@ MaestroSchedule <- R6::R6Class(
     #' @return print
     print = function() {
       cli::cli_h3("Maestro Schedule with {length(self$PipelineList$MaestroPipelines)} pipeline{?s}: ")
-      switch (self$status,
-        `Not Run` = cli::cli_li(cli::col_magenta(self$status)),
-        `Success` = cli::cli_li(cli::col_green(self$status)),
-        `Warning` = cli::cli_li(cli::col_yellow(self$status)),
-        `Error` = cli::cli_li(cli::col_red(self$status)),
+      switch (private$sch_status,
+        `Not Run` = cli::cli_li(cli::col_magenta(private$sch_status)),
+        `Success` = cli::cli_li(cli::col_green(private$sch_status)),
+        `Warning` = cli::cli_li(cli::col_yellow(private$sch_status)),
+        `Error` = cli::cli_li(cli::col_red(private$sch_status)),
         cli::cli_li("Unknown")
       )
     },
@@ -146,17 +143,17 @@ MaestroSchedule <- R6::R6Class(
           }
         }
       }, error = function(e) {
-        self$status <- "Error"
+        private$sch_status <- "Error"
         cli::cli_abort(
           "Failed to execute orchestrator with error {e}"
         )
       }, warning = function(w) {
-        self$status <- "Warning"
+        private$sch_status <- "Warning"
         cli::cli_warn(
           "Orchestrator warned with {w}"
         )
       })
-      self$status <- "Success"
+      private$sch_status <- "Success"
 
       return(invisible())
     },
@@ -181,7 +178,9 @@ MaestroSchedule <- R6::R6Class(
     get_artifacts = function() {
       self$PipelineList$get_artifacts()
     }
+  ),
+
+  private = list(
+    sch_status = "Not Run"
   )
-
-
 )
