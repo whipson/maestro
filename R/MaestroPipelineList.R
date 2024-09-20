@@ -57,8 +57,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return data.frame
     get_schedule = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_schedule()) |>
-        purrr::list_rbind() |>
-        dplyr::mutate(dplyr::across(dplyr::where(lubridate::is.POSIXct), ~lubridate::with_tz(.x, "UTC")))
+        purrr::list_rbind()
     },
 
     #' @description
@@ -85,8 +84,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return data.frame
     get_status = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_status()) |>
-        purrr::list_rbind() |>
-        dplyr::mutate(dplyr::across(dplyr::where(lubridate::is.POSIXct), ~lubridate::with_tz(.x, "UTC")))
+        purrr::list_rbind()
     },
 
     #' @description

@@ -67,8 +67,7 @@ MaestroPipeline <- R6::R6Class(
         purrr::list_c()
 
       # Update the transformed private attributes
-      private$start_time_with_tz <- lubridate::as_datetime(private$start_time, tz = private$tz)
-      private$start_time_utc <- lubridate::with_tz(private$start_time_with_tz, tz = "UTC")
+      private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
       private$frequency_n <- purrr::map_int(nunits, ~.x$n)
       private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
       private$days_of_week <- days_of_week %n% 1:7
@@ -87,7 +86,7 @@ MaestroPipeline <- R6::R6Class(
         cli::cli_li("Dependent on: {private$inputs}")
       } else {
         cli::cli_li("Frequency: {private$frequency}")
-        cli::cli_li("Start Time: {private$start_time_with_tz}")
+        cli::cli_li("Start Time: {private$start_time}")
       }
 
       if (!is.null(private$hours)) {
@@ -224,7 +223,7 @@ MaestroPipeline <- R6::R6Class(
       orch_frequency_seconds <- convert_to_seconds(orch_string)
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      pipeline_datetime_round <- timechange::time_round(private$start_time, unit = orch_string)
+      pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
 
       pipeline_sequence <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
@@ -331,7 +330,6 @@ MaestroPipeline <- R6::R6Class(
     inputs = NULL,
 
     # Transformed attributes
-    start_time_with_tz = lubridate::NA_POSIXct_,
     start_time_utc = lubridate::NA_POSIXct_,
     days_of_week = NULL,
     days_of_month = NULL,

@@ -148,13 +148,15 @@ build_schedule_entry <- function(script_path) {
         )
       }
 
+      tz <- .y$tz %n% "UTC"
+
       # Create the new pipeline
       pipeline <- MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
-        start_time = as.POSIXct(.y$start_time) %n% as.POSIXct("2024-01-01 00:00:00"),
-        tz = .y$tz %n% "UTC",
+        start_time = as.POSIXct(.y$start_time, tz = tz) %n% as.POSIXct("2024-01-01 00:00:00", tz = tz),
+        tz = tz,
         skip = .y$skip %n% FALSE,
         log_level = .y$log_level %n% "INFO",
         hours = .y$hours %n% 0:23,
