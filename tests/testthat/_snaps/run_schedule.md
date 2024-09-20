@@ -20,14 +20,14 @@
     Code
       status$invoked
     Output
-      [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+      [1]  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
 
 ---
 
     Code
       status$next_run
     Output
-      [1] "2024-04-02 00:00:00 UTC" "2024-04-02 00:00:00 UTC"
+      [1] "2024-04-02 00:00:00 UTC" "2024-04-01 04:00:00 UTC"
       [3] "2024-07-01 00:00:00 UTC" "2024-04-08 00:00:00 UTC"
       [5] "5000-12-01 00:00:30 UTC" "2024-04-08 00:00:00 UTC"
       [7] "2024-04-01 01:00:00 UTC"
@@ -37,14 +37,14 @@
     Code
       status$invoked
     Output
-      [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+      [1]  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
 
 ---
 
     Code
       status$next_run
     Output
-      [1] "2024-04-02 00:00:00 UTC" "2024-04-02 00:00:00 UTC"
+      [1] "2024-04-02 00:00:00 UTC" "2024-04-01 04:00:00 UTC"
       [3] "2024-07-01 00:00:00 UTC" "2024-04-08 00:00:00 UTC"
       [5] "5000-12-13 00:00:30 UTC" "2024-04-08 00:00:00 UTC"
       [7] "2024-04-01 01:00:00 UTC"

@@ -226,7 +226,7 @@ MaestroPipeline <- R6::R6Class(
       orch_frequency_seconds <- convert_to_seconds(orch_string)
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
+      pipeline_datetime_round <- timechange::time_round(private$start_time_with_tz, unit = orch_string)
 
       pipeline_sequence <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
