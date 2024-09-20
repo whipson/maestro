@@ -23,6 +23,7 @@ Imports:
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
     R.utils,
+    R6,
     rlang (>= 1.0.0),
     roxygen2,
     tictoc,
