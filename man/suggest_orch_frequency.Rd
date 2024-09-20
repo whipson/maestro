@@ -10,7 +10,7 @@ suggest_orch_frequency(
 )
 }
 \arguments{
-\item{schedule}{schedule data.frame created by \code{build_schedule()}}
+\item{schedule}{MaestroSchedule object created by \code{build_schedule()}}
 
 \item{check_datetime}{datetime against which to check the running of pipelines (default is current system time in UTC)}
 }
@@ -30,5 +30,10 @@ schedule the orchestrator. Programmatic use is not recommended.
 }
 \examples{
 
-suggest_orch_frequency(example_schedule)
+if (interactive()) {
+  pipeline_dir <- tempdir()
+  create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+  schedule <- build_schedule(pipeline_dir = pipeline_dir)
+  suggest_orch_frequency(schedule)
+}
 }

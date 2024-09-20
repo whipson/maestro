@@ -1,13 +1,8 @@
 test_that("build_schedule works on a directory of all good pipelines", {
   res <- build_schedule(test_path("test_pipelines_parse_all_good"))
-  expect_s3_class(res, "tbl_df")
-  expect_gte(nrow(res), 1)
-  expect_in(
-    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level", "hours",
-      "days_of_week", "days_of_month", "months", "inputs"),
-    names(res)
-  )
-  expect_snapshot(res)
+  expect_s3_class(res, "MaestroSchedule")
+  schedule <- res$get_schedule()
+  expect_s3_class(schedule, "data.frame")
 }) |>
   suppressMessages()
 
@@ -17,12 +12,8 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
     res <- build_schedule(test_path("test_pipelines_parse_some_good"))
   }, regexp = "failed to parse")
 
-  expect_s3_class(res, "tbl_df")
-  expect_gte(nrow(res), 1)
-  expect_in(
-    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level"),
-    names(res)
-  )
+  expect_s3_class(res, "MaestroSchedule")
+  expect_gte(length(res$PipelineList), 1)
 }) |>
   suppressMessages()
 

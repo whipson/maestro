@@ -19,7 +19,7 @@ run_schedule(
 )
 }
 \arguments{
-\item{schedule}{a table of scheduled pipelines generated from \code{build_schedule()}}
+\item{schedule}{object of type MaestroSchedule created using \code{build_schedule()}}
 
 \item{orch_frequency}{of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.}
 
@@ -44,7 +44,7 @@ a multisession plan must be executed in the orchestrator (see details)}
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
-list with named elements \code{status} and \code{artifacts}
+MaestroSchedule object
 }
 \description{
 Given a schedule in a \code{maestro} project, runs the pipelines that are scheduled to execute
@@ -60,9 +60,9 @@ whether it is scheduled to run at the current time using some simple time arithm
 
 \subsection{Output}{
 
-\code{run_schedule()} returns a list with two elements: \code{status} and \code{artifacts}. Status is a data.frame where
-each row is a pipeline and the columns are information about the pipeline status, execution time, etc. Artifacts
-are any values returned from pipelines.
+\code{run_schedule()} returns the same MaestroSchedule object with modified attributes. Use \code{get_status()}
+to examine the status of each pipeline and use \code{get_artifacts()} to get any return values from the
+pipelines as a list.
 }
 
 \subsection{Pipelines with arguments (resources)}{
@@ -83,17 +83,23 @@ console output appears different in multicore mode.
 }
 \examples{
 
-# Runs the schedule every 1 day
-run_schedule(
-  example_schedule,
-  orch_frequency = "1 day",
-  quiet = TRUE
-)
+if (interactive()) {
+  pipeline_dir <- tempdir()
+  create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
+  schedule <- build_schedule(pipeline_dir = pipeline_dir)
 
-# Runs the schedule every 15 minutes
-run_schedule(
-  example_schedule,
-  orch_frequency = "15 minutes",
-  quiet = TRUE
-)
+  # Runs the schedule every 1 day
+  run_schedule(
+    schedule,
+    orch_frequency = "1 day",
+    quiet = TRUE
+  )
+
+  # Runs the schedule every 15 minutes
+  run_schedule(
+    schedule,
+    orch_frequency = "15 minutes",
+    quiet = TRUE
+  )
+}
 }

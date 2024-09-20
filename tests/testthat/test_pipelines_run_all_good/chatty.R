@@ -4,5 +4,5 @@
 #'
 #' @export
 chatty <- function() {
-  for(i in 1:100) message(i)
+  for(i in 1:5) message(i)
 }

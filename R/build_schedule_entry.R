@@ -1,8 +1,8 @@
-#' Create schedule table entry from a script
+#' Parse and validate tags then create and populate MaestroPipelineList
 #'
 #' @param script_path path to script
 #'
-#' @return data.frame row
+#' @return MaestroPipelineList R6 class
 build_schedule_entry <- function(script_path) {
 
   # Current list of maestro tags and their equivalent table names
@@ -17,6 +17,9 @@ build_schedule_entry <- function(script_path) {
     months = "maestroMonths",
     inputs = "maestroInputs"
   )
+
+
+  # Initial Validation ------------------------------------------------------
 
   # Get all the roxygen tags - this actually executes the script, which is fine
   # if it's functions but can be problematic if it includes other code that
@@ -108,9 +111,13 @@ build_schedule_entry <- function(script_path) {
     rlang::cnd_signal(err$parent)
   })
 
-  # Create table entries
+
+  # Create MaestroPipelineList ----------------------------------------------
+
+  maestro_pipeline_list <- MaestroPipelineList$new()
+
   withCallingHandlers({
-    table_entities <- purrr::map2(pipe_names, maestro_tag_vals, ~{
+    purrr::walk2(pipe_names, maestro_tag_vals, ~{
 
       # Validate hours
       if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly")) {
@@ -141,50 +148,27 @@ build_schedule_entry <- function(script_path) {
         )
       }
 
-      dplyr::tibble(
+      # Create the new pipeline
+      pipeline <- MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
-        frequency = .y$frequency,
-        start_time = .y$start_time,
-        tz = .y$tz,
-        skip = .y$skip,
-        log_level = .y$log_level,
-        hours = list(.y$hours),
-        days = list(.y$days),
-        months = list(.y$months),
-        inputs = list(.y$inputs)
+        frequency = .y$frequency %n% "daily",
+        start_time = as.POSIXct(.y$start_time) %n% as.POSIXct("2024-01-01 00:00:00"),
+        tz = .y$tz %n% "UTC",
+        skip = .y$skip %n% FALSE,
+        log_level = .y$log_level %n% "INFO",
+        hours = .y$hours %n% 0:23,
+        days = .y$days %n% NULL,
+        months = .y$months %n% 1:12,
+        inputs = .y$inputs %n% NULL
       )
-    }) |>
-      purrr::list_rbind()
-  },
 
-  purrr_error_indexed = function(err) {
+      # Append to the list of pipelines
+      maestro_pipeline_list$add_pipelines(pipeline)
+    })
+  }, purrr_error_indexed = function(err) {
     rlang::cnd_signal(err$parent)
   })
 
-  # Create units and n
-  withCallingHandlers({
-    nunits <- purrr::map(table_entities$frequency, purrr::possibly(~{
-      parse_rounding_unit(.x)
-    }, otherwise = list(n = NA, unit = NA)))
-  },
-
-  purrr_error_indexed = function(err) {
-    rlang::cnd_signal(err$parent)
-  })
-
-
-  # Create days_of_week and days_of_month from maestroDays
-  days_of_week <- purrr::map_if(table_entities$days, is.factor, as.numeric, .else = ~NA_real_)
-  days_of_month <- purrr::map_if(table_entities$days, is.numeric, ~.x, .else = ~NA_real_)
-
-  table_entities <- table_entities |>
-    dplyr::mutate(
-      days_of_week = days_of_week,
-      days_of_month = days_of_month,
-      frequency_n = purrr::map_int(nunits, ~.x$n),
-      frequency_unit = purrr::map_chr(nunits, ~.x$unit)
-    )
-
-  table_entities
+  maestro_pipeline_list
 }
