@@ -224,7 +224,7 @@ MaestroPipeline <- R6::R6Class(
       orch_frequency_seconds <- convert_to_seconds(orch_string)
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
+      pipeline_datetime_round <- timechange::time_round(private$start_time, unit = orch_string)
 
       pipeline_sequence <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
@@ -235,8 +235,7 @@ MaestroPipeline <- R6::R6Class(
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
         pipeline_months = private$months
-      ) |>
-        lubridate::with_tz(lubridate::tz(check_datetime))
+      )
 
       cur_run <- utils::tail(pipeline_sequence, n = 1)
       is_scheduled_now <- check_datetime_round == cur_run
@@ -250,8 +249,7 @@ MaestroPipeline <- R6::R6Class(
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
         pipeline_months = private$months
-      ) |>
-        lubridate::with_tz(lubridate::tz(check_datetime))
+      )
 
       next_run <- purrr::pluck(future_sequence, 2)
 
