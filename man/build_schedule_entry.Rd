@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_schedule_entry.R
 \name{build_schedule_entry}
 \alias{build_schedule_entry}
-\title{Create schedule table entry from a script}
+\title{Parse and validate tags then create and populate MaestroPipelineList}
 \usage{
 build_schedule_entry(script_path)
 }
@@ -10,8 +10,8 @@ build_schedule_entry(script_path)
 \item{script_path}{path to script}
 }
 \value{
-data.frame row
+MaestroPipelineList R6 class
 }
 \description{
-Create schedule table entry from a script
+Parse and validate tags then create and populate MaestroPipelineList
 }

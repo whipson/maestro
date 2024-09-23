@@ -2,111 +2,6 @@ maestro_logger <- logger::layout_glue_generator(
   format = "[{namespace}] [{level}] [{time}]: {msg}"
 )
 
-#' Checks the validity of a schedule
-#'
-#' @param schedule a schedule table returned from `build_schedule`
-#'
-#' @return invisible or error
-schedule_validity_check <- function(schedule) {
-
-  # This function should process checks in increasing order of computational complexity!
-
-  # A list of required columns, where the value is the check to perform
-  # against the column type. Note if there are more than 1, 1st is preferred
-  req_col_typed_check <- list(
-    script_path = "character",
-    pipe_name = "character",
-    frequency = "character",
-    start_time = c("POSIXct", "POSIXlt"),
-    log_level = "character",
-    frequency_n = c("integer", "double"),
-    frequency_unit = "character"
-  )
-
-  # Check that schedule is a data.frame
-  if (!"data.frame" %in% class(schedule)) {
-    cli::cli_abort(
-      c("Schedule must be a data.frame and not an object of class {class(schedule)}.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
-  }
-
-  # Check that schedule has at least one row
-  if (nrow(schedule) == 0) {
-    cli::cli_abort(
-      c("Empty schedule. Schedule must have at least one row.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
-  }
-
-  # Check the presence of required columns
-  if (!all(names(req_col_typed_check) %in% names(schedule))) {
-    missing_col_names <- names(req_col_typed_check)[which(!names(req_col_typed_check) %in% names(schedule))]
-    cli::cli_abort(
-      c("Schedule is missing required column{?s}: {missing_col_names}.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."
-      ),
-      call = rlang::caller_env()
-    )
-  }
-
-  # Check presence of NAs
-  cols_with_missing <- purrr::map(names(req_col_typed_check), ~{
-    any(is.na(schedule[.x]))
-  }) |>
-    purrr::list_c()
-
-  if (any(cols_with_missing)) {
-    cols_with_missing_names <- names(schedule)[cols_with_missing]
-    cli::cli_abort(
-      c("Schedule has column{?s} with NAs that cannot be NA: {cols_with_missing_names}",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
-  }
-
-  # Perform the type check for each column
-  offences <- purrr::imap(req_col_typed_check, ~{
-    col <- schedule[[.y]]
-    if (!any(.x %in% class(col))) {
-      off <- list(
-        class(col)
-      ) |>
-        stats::setNames(.y)
-      return(off)
-    }
-    NULL
-  }) |>
-    purrr::discard(is.null)
-
-  if (length(offences) == 1) {
-
-    req_col_types <- req_col_typed_check[names(offences)]
-
-    cli::cli_abort(
-      c("Schedule column {.code {names(offences)}} must have type {req_col_types} and not {unlist(offences)}.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
-  } else if (length(offences) > 1) {
-
-    req_col_types <- req_col_typed_check[names(offences)]
-    req_col_types_vec <- purrr::map_chr(req_col_types, ~.x[[1]])
-
-    cli::cli_abort(
-      c("Schedule columns {.code {names(offences)}} must have types {req_col_types_vec}, respectively; not {unlist(offences)}.",
-        "i" = "Use {.fn build_schedule} to create a valid schedule."),
-      call = rlang::caller_env()
-    )
-  }
-
-  # All is good
-  invisible()
-}
-
-
 #' Convert a duration string to number of seconds
 #'
 #' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
@@ -268,4 +163,9 @@ get_pipeline_run_sequence <- function(
   }
 
   pipeline_sequence
+}
+
+`%n%` <- function(rhs, lhs) {
+  if (is.null(rhs) || length(rhs) == 0 || all(is.na(rhs))) return(lhs)
+  rhs
 }

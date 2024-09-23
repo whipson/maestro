@@ -1,13 +1,8 @@
 test_that("build_schedule works on a directory of all good pipelines", {
   res <- build_schedule(test_path("test_pipelines_parse_all_good"))
-  expect_s3_class(res, "tbl_df")
-  expect_gte(nrow(res), 1)
-  expect_in(
-    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level", "hours",
-      "days_of_week", "days_of_month", "months"),
-    names(res)
-  )
-  expect_snapshot(res)
+  expect_s3_class(res, "MaestroSchedule")
+  schedule <- res$get_schedule()
+  expect_s3_class(schedule, "data.frame")
 }) |>
   suppressMessages()
 
@@ -17,12 +12,8 @@ test_that("build_schedule works on a directory of some good pipelines, warns", {
     res <- build_schedule(test_path("test_pipelines_parse_some_good"))
   }, regexp = "failed to parse")
 
-  expect_s3_class(res, "tbl_df")
-  expect_gte(nrow(res), 1)
-  expect_in(
-    c("script_path", "pipe_name", "frequency", "start_time", "skip", "log_level"),
-    names(res)
-  )
+  expect_s3_class(res, "MaestroSchedule")
+  expect_gte(length(res$PipelineList), 1)
 }) |>
   suppressMessages()
 
@@ -41,4 +32,18 @@ test_that("build_schedule errors on a nonexistent directory with no .R scripts",
   expect_error({
     build_schedule(test_path("directory_that_doesnt_exist"))
   }, regexp = "No directory called")
+})
+
+test_that("informs if referencing a folder with no R scripts", {
+  withr::with_tempdir({
+    expect_message({
+      build_schedule(tempdir())
+    }, regexp = "No R scripts in")
+  })
+})
+
+test_that("errors if there are duplicate pipeline names", {
+  expect_error({
+    build_schedule(test_path("test_pipelines_dup_names"), quiet = TRUE)
+  }, "Function names must all be unique")
 })

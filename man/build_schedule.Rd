@@ -12,7 +12,7 @@ build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
 \value{
-data.frame
+MaestroSchedule
 }
 \description{
 Builds a schedule data.frame for scheduling pipelines in \code{run_schedule()}.

@@ -13,7 +13,7 @@
 #' @param pipeline_dir path to directory containing the pipeline scripts
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
-#' @return data.frame
+#' @return MaestroSchedule
 #' @export
 #' @examples
 #'
@@ -48,66 +48,49 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
 
   # Try to generate a schedule entry for each script
   # We use safely to ensure it continues in an error condition and capture the errors
-  attempted_sch_parses <- purrr::map(
+  pipeline_attempts <- purrr::map(
     pipelines, purrr::safely(build_schedule_entry)
   ) |>
     stats::setNames(basename(pipelines))
 
-  # Check uniqueness of the function names
-  pipe_names <- purrr::map(attempted_sch_parses, ~{
-    .x$result$pipe_name
-  }) |>
-    purrr::list_c()
-
-  # Check for uniqueness of pipe names
-  # if (length(unique(pipe_names)) < length(pipe_names)) {
-  #   non_unique_names <- pipe_names[duplicated(pipe_names)]
-  #   cli::cli_abort(
-  #     c("Function names must all be unique",
-  #       "i" = "{.fn {non_unique_names}} used more than once.")
-  #   )
-  # }
-
   # Get the results
-  sch_results <- purrr::map(
-    attempted_sch_parses,
+  pipeline_results <- purrr::map(
+    pipeline_attempts,
     ~.x$result
   ) |>
     purrr::discard(is.null)
 
   # Get the errors
-  sch_errors <- purrr::map(
-    attempted_sch_parses,
+  pipeline_errors <- purrr::map(
+    pipeline_attempts,
     ~.x$error
   ) |>
     purrr::discard(is.null)
 
   # Assign the errors to the pkgenv
-  maestro_pkgenv$last_build_errors <- sch_errors
+  maestro_pkgenv$last_build_errors <- pipeline_errors
 
-  if (!quiet) {
-    maestro_parse_cli(sch_results, sch_errors)
+  # Check uniqueness of the function names
+  pipe_names <- purrr::map(pipeline_results, ~{
+    .x$get_pipe_names()
+  }) |>
+    purrr::list_c()
+
+  # Check for uniqueness of pipe names
+  if (length(unique(pipe_names)) < length(pipe_names)) {
+    non_unique_names <- pipe_names[duplicated(pipe_names)]
+    cli::cli_abort(
+      c("Function names must all be unique",
+        "i" = "{.code {non_unique_names}} used more than once.")
+    )
   }
 
-  # Return the results
-  sch <- sch_results |>
-    purrr::list_rbind() |>
-    # Supply default values for missing
-    dplyr::mutate(
-      frequency = dplyr::if_else(is.na(frequency), "1 day", frequency),
-      start_time = dplyr::if_else(is.na(start_time), "1970-01-01 00:00:00", start_time),
-      tz = dplyr::if_else(is.na(tz), "UTC", tz),
-      skip = dplyr::if_else(is.na(skip), FALSE, TRUE),
-      log_level = dplyr::if_else(is.na(log_level), "INFO", log_level),
-      frequency_n = dplyr::if_else(is.na(frequency_n), 1L, frequency_n),
-      frequency_unit = dplyr::if_else(is.na(frequency_unit), "day", frequency_unit),
-      start_time = purrr::map2_vec(start_time, tz, ~lubridate::as_datetime(.x, tz = .y)),
-      hours = dplyr::if_else(is.na(hours), list(0:23), hours),
-      days_of_week = dplyr::if_else(is.na(days_of_week), list(1:7), days_of_week),
-      days_of_month = dplyr::if_else(is.na(days_of_month), list(1:31), days_of_month),
-      months = dplyr::if_else(is.na(months), list(1:12), months)
-    ) |>
-    dplyr::select(-tz, -days)
+  # Create the schedule
+  schedule <- MaestroSchedule$new(Pipelines = pipeline_results)
 
-  return(sch)
+  if (!quiet) {
+    maestro_parse_cli(pipeline_results, pipeline_errors)
+  }
+
+  schedule
 }

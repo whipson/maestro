@@ -2,25 +2,15 @@ test_that("can create a schedule entry from a single well-documented fun", {
   res <- build_schedule_entry(
     test_path("test_pipelines/test_pipeline_daily_good.R")
   )
-  expect_s3_class(res, "tbl_df")
-  expect_equal(nrow(res), 1)
-  expect_in(
-    c("script_path", "pipe_name", "frequency",
-      "start_time", "tz", "skip", "log_level",
-      "frequency_n", "frequency_unit", "days", "days_of_week",
-      "days_of_month"),
-    names(res)
-  )
-  expect_snapshot(res)
-}) |>
-  suppressMessages()
+  expect_s3_class(res, "MaestroPipelineList")
+})
 
 test_that("can create a schedule entry from a default tagged fun", {
   res <- build_schedule_entry(
     test_path("test_pipelines/test_pipeline_daily_default.R")
   )
-  expect_s3_class(res, "tbl_df")
-  expect_equal(nrow(res), 1)
+  expect_s3_class(res, "MaestroPipelineList")
+  expect_equal(length(res$MaestroPipelines), 1)
 })
 
 test_that("invalid tags trigger error", {
@@ -35,8 +25,8 @@ test_that("can create a schedule entry from a multi-function script", {
   res <- build_schedule_entry(
     test_path("test_pipelines/test_multi_fun_pipeline.R")
   )
-  expect_s3_class(res, "tbl_df")
-  expect_equal(nrow(res), 2)
+  expect_s3_class(res, "MaestroPipelineList")
+  expect_equal(length(res$MaestroPipelines), 2)
 }) |>
   suppressMessages()
 
@@ -75,10 +65,10 @@ test_that("Informative error on parsing schedule entry with an error", {
 })
 
 test_that("Script with untagged function isn't treated as a scheduled pipeline", {
-  schedule <- build_schedule_entry(
+  res <- build_schedule_entry(
     test_path("test_pipelines_parse_all_good/pipe_with_custom_fun.R")
   )
-  expect_equal(nrow(schedule), 1)
+  expect_equal(length(res$MaestroPipelines), 1)
 })
 
 test_that("Script with good specifiers parses well", {
@@ -94,4 +84,17 @@ test_that("Script with bad specifiers errors", {
     test_path("test_pipelines_parse_all_bad/specifiers.R")
   ) |>
     expect_error(regexp = "pipeline must have")
+})
+
+test_that("Pipeline with inputs checks for .input", {
+  schedule <- build_schedule_entry(
+    test_path("test_pipelines_parse_all_bad/dags.R")
+  ) |>
+    expect_error(regexp = "pipeline must have a parameter")
+
+  expect_no_error({
+    schedule <- build_schedule_entry(
+      test_path("test_pipelines_dags_good/dags.R")
+    )
+  })
 })

@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: Orchestration of Data Pipelines
-Version: 0.2.0
+Version: 0.3.0.9000
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.e.hipson@gmail.com", role = c("cre", "aut", "cph"), 
@@ -19,10 +19,12 @@ Imports:
     cli (>= 3.3.0),
     dplyr (>= 1.1.0),
     glue,
+    lifecycle,
     logger,
     lubridate (>= 1.9.1),
     purrr (>= 1.0.0),
     R.utils,
+    R6,
     rlang (>= 1.0.0),
     roxygen2,
     tictoc,
