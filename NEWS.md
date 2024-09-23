@@ -20,6 +20,8 @@ This version refactors much of the code base to rely on R6 classes for pipelines
 
 - Added functions `get_schedule()`, `get_status()`, and `get_artifacts()` for interacting with `<MaestroSchedule>` objects.
 
+- Added function `invoke()` to instantly run a pipeline in a schedule.
+
 ### Bug Fixes
 
 - Error messaging is clearer when running functions that wrap around purrr iterators (#115).
