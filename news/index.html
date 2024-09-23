@@ -46,10 +46,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.0.9000" id="maestro-0309000">maestro 0.3.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0309000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="maestro-030">maestro 0.3.0<a class="anchor" aria-label="anchor" href="#maestro-030"></a></h2>
 <p>This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.</p>
 <div class="section level4">
-<h4 id="breaking-changes-0-3-0-9000">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0-9000"></a></h4>
+<h4 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h4>
 <ul><li><p>Schedules are now represented as an R6 object of class <code>&lt;MaestroSchedule&gt;</code>. <code><a href="../reference/build_schedule.html">build_schedule()</a></code> returns a MaestroSchedule object that can be passed to <code><a href="../reference/run_schedule.html">run_schedule()</a></code> as normal. To access the schedule table run <code><a href="../reference/get_schedule.html">get_schedule()</a></code>.</p></li>
 <li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> no longer returns a list of <code>$status</code> and <code>$artifacts</code> but now returns/modifies the MaestroSchedule object. Status can be accessed using <code>get_status(schedule)</code> and artifacts via <code>get_artifacts(schedule)</code></p></li>
 <li><p><code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code> now takes a <code>&lt;MaestroSchedule&gt;</code> object.</p></li>
@@ -58,12 +58,12 @@
 <li><p>It is now required that all pipeline names are unique. The names of each maestro pipeline function must be unique across the project to support the implementation of DAGs. <code><a href="../reference/build_schedule.html">build_schedule()</a></code> will abort if any non-unique names are detected.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="new-features-0-3-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0-9000"></a></h4>
+<h4 id="new-features-0-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h4>
 <ul><li><p>Added functions <code><a href="../reference/get_schedule.html">get_schedule()</a></code>, <code><a href="../reference/get_status.html">get_status()</a></code>, and <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> for interacting with <code>&lt;MaestroSchedule&gt;</code> objects.</p></li>
 <li><p>Added function <code><a href="../reference/invoke.html">invoke()</a></code> to instantly run a pipeline in a schedule.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-3-0-9000">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0-9000"></a></h4>
+<h4 id="bug-fixes-0-3-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h4>
 <ul><li>Error messaging is clearer when running functions that wrap around purrr iterators (<a href="https://github.com/whipson/maestro/issues/115" class="external-link">#115</a>).</li>
 </ul></div>
 </div>
