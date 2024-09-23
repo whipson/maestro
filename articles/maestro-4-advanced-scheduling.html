@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,12 +150,14 @@ system time using either <code><a href="https://rdrr.io/r/base/Sys.time.html" cl
 <span>  check_datetime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-20 08:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #555555;">./pipelines/daily_example.R</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[54ms]</span></span></span>
+<span><span class="co">## ── [2024-09-23 12:26:33]</span></span>
+<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">daily_example</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">daily_example</span> <span style="color: #B2B2B2;">[42ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.081 sec elapsed </span></span>
+<span><span class="co">## ── [2024-09-23 12:26:33]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.051 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">## </span></span>
@@ -175,11 +177,12 @@ orchestrator:</p>
 <span>  check_datetime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-20 08:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## ── Running pipelines <span style="color: #00BB00;">▶</span></span></span></code></pre>
-<pre><code><span><span class="co">## → <span style="color: #555555;">./pipelines/daily_example.R</span> daily_example</span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-09-23 12:26:33]</span></span>
+<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span></span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
-<pre><code><span><span class="co">## ── Pipeline execution completed <span style="color: #555555;">■</span> | 0.004 sec elapsed</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 0 successes | <span style="color: #000000;">→</span> 1 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-09-23 12:26:33]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.001 sec elapsed</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 1 success | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 1 total</span></span></code></pre>
 <pre><code><span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span></code></pre>
 <pre><code><span><span class="co">## ── Next scheduled pipelines <span style="color: #00BBBB;">❯</span></span></span></code></pre>
@@ -267,7 +270,7 @@ hours. This could be useful, for example, if you have pipelines you only
 want to run during business hours. Use the <code>maestroHours</code> tag
 with integers corresponding to hours [0-23] separated by white space. Be
 sure to use the corresponding <code>maestroFrequency</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_hours maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency hourly</span></span>
@@ -284,7 +287,7 @@ sure to use the corresponding <code>maestroFrequency</code>.</p>
 of week or days of month. If doing days of week use strings like Mon,
 Tue, Wed, etc. If using days of month use integers [1-31]. You cannot
 specify both days of week and days of month.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_days_of_week maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency daily</span></span>
@@ -308,7 +311,7 @@ specify both days of week and days of month.</p>
 </h3>
 <p>If your pipeline runs at least monthly, you can run it on specific
 months. Use integers [1-12] to specify the months.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_months maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency months</span></span>
@@ -322,7 +325,7 @@ the minimum frequency of the pipeline. For example, an hourly pipeline
 can run on specific hours and days. If you wanted a pipeline to only run
 on business hours including not on weekends. It could look like
 this:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' business_hours maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency hourly</span></span>
@@ -357,7 +360,7 @@ minutes. It makes reasoning about the scheduling simpler.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

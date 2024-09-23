@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,12 @@
 
       <dl><dt>
 
+          <code><a href="MaestroSchedule.html">MaestroSchedule</a></code>
+
+        </dt>
+        <dd>Class for a schedule of pipelines</dd>
+      </dl><dl><dt>
+
           <code><a href="build_schedule.html">build_schedule()</a></code>
 
         </dt>
@@ -66,13 +72,7 @@
           <code><a href="build_schedule_entry.html">build_schedule_entry()</a></code>
 
         </dt>
-        <dd>Create schedule table entry from a script</dd>
-      </dl><dl><dt>
-
-          <code><a href="check_pipelines.html">check_pipelines()</a></code>
-
-        </dt>
-        <dd>Check which pipelines are scheduled to run and when next pipelines will run</dd>
+        <dd>Parse and validate tags then create and populate MaestroPipelineList</dd>
       </dl><dl><dt>
 
           <code><a href="convert_to_seconds.html">convert_to_seconds()</a></code>
@@ -99,16 +99,34 @@
         <dd>Create a new pipeline in a pipelines directory</dd>
       </dl><dl><dt>
 
-          <code><a href="example_schedule.html">example_schedule</a></code>
+          <code><a href="get_artifacts.html">get_artifacts()</a></code>
 
         </dt>
-        <dd>Example schedule</dd>
+        <dd>Get the artifacts (return values) of the pipelines in a MaestroSchedule object.</dd>
       </dl><dl><dt>
 
           <code><a href="get_pipeline_run_sequence.html">get_pipeline_run_sequence()</a></code>
 
         </dt>
         <dd>Generate a sequence of run times for a pipeline</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_schedule.html">get_schedule()</a></code>
+
+        </dt>
+        <dd>Get the schedule from a MaestroSchedule object</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_status.html">get_status()</a></code>
+
+        </dt>
+        <dd>Get the statuses of the pipelines in a MaestroSchedule object</dd>
+      </dl><dl><dt>
+
+          <code><a href="invoke.html">invoke()</a></code>
+
+        </dt>
+        <dd>Manually run a pipeline regardless of schedule</dd>
       </dl><dl><dt>
 
           <code><a href="last_build_errors.html">last_build_errors()</a></code>
@@ -165,18 +183,6 @@
         <dd>Run a schedule</dd>
       </dl><dl><dt>
 
-          <code><a href="run_schedule_entry.html">run_schedule_entry()</a></code>
-
-        </dt>
-        <dd>Runs a single pipeline</dd>
-      </dl><dl><dt>
-
-          <code><a href="schedule_validity_check.html">schedule_validity_check()</a></code>
-
-        </dt>
-        <dd>Checks the validity of a schedule</dd>
-      </dl><dl><dt>
-
           <code><a href="suggest_orch_frequency.html">suggest_orch_frequency()</a></code>
 
         </dt>
@@ -190,7 +196,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

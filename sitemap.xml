@@ -10,16 +10,21 @@
 <url><loc>https://whipson.github.io/maestro/authors.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/news/index.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/MaestroPipeline.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/MaestroPipelineList.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/MaestroSchedule.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/build_schedule.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/build_schedule_entry.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/reference/check_pipelines.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/convert_to_seconds.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/create_maestro.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/create_orchestrator.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/create_pipeline.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/reference/example_schedule.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/get_artifacts.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_pipeline_run_sequence.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/get_schedule.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/get_status.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/index.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/invoke.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/last_build_errors.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/last_run_errors.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/last_run_messages.html</loc></url>
@@ -29,8 +34,6 @@
 <url><loc>https://whipson.github.io/maestro/reference/maestro_tags.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/parse_rounding_unit.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/run_schedule.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/reference/run_schedule_entry.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/reference/schedule_validity_check.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/suggest_orch_frequency.html</loc></url>
 </urlset>
 
