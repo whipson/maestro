@@ -122,11 +122,11 @@ A simple orchestrator looks like this:
 library(maestro)
 
 # Look through the pipelines directory for maestro pipelines to create a schedule
-schedule_table <- build_schedule(pipeline_dir = "pipelines")
+schedule <- build_schedule(pipeline_dir = "pipelines")
 
 # Checks which pipelines are due to run and then executes them
 output <- run_schedule(
-  schedule_table, 
+  schedule, 
   orch_frequency = "1 day"
 )
 ```
@@ -152,7 +152,7 @@ library(furrr)
 plan(multisession)
 
 run_schedule(
-  schedule_table,
+  schedule,
   cores = 4
 )
 ```
