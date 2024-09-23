@@ -2,6 +2,8 @@
 #'
 #' @param script_path path to script
 #'
+#' @keywords internal
+#'
 #' @return MaestroPipelineList R6 class
 build_schedule_entry <- function(script_path) {
 

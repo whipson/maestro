@@ -15,3 +15,4 @@ number of seconds
 \description{
 Convert a duration string to number of seconds
 }
+\keyword{internal}

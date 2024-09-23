@@ -3,7 +3,7 @@
 #' Lightweight pipeline orchestration in R
 #'
 #' Documentation: \href{https://github.com/whipson/maestro}{GitHub}
-#'
+#' @keywords internal
 #' @name maestro
 "_PACKAGE"
 

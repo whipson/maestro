@@ -1,4 +1,4 @@
-# maestro 0.3.0.9000
+# maestro 0.3.0
 
 This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.
 

@@ -5,7 +5,7 @@ maestro_logger <- logger::layout_glue_generator(
 #' Convert a duration string to number of seconds
 #'
 #' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
-#'
+#' @keywords internal
 #' @return number of seconds
 convert_to_seconds <- function(time_string) {
 
@@ -59,6 +59,7 @@ valid_units <- c(
 #'
 #' @param time_string string like 1 day, daily, 2 weeks, 12 hours, etc.
 #'
+#' @keywords internal
 #' @return nunit list
 parse_rounding_unit <- function(time_string) {
 
@@ -109,6 +110,7 @@ parse_rounding_unit <- function(time_string) {
 #' @param pipeline_days_of_week vector of integers \[1-7] corresponding to days of week for the pipeline to run (1 = Sunday)
 #' @param pipeline_days_of_month vector of integers \[1-31] corresponding to days of month for the pipeline to run
 #'
+#' @keywords internal
 #' @return vector of timestamps or dates
 get_pipeline_run_sequence <- function(
     pipeline_n,

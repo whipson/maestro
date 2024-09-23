@@ -17,3 +17,4 @@ cli output
 \description{
 cli output for generate schedule table
 }
+\keyword{internal}

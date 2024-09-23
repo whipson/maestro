@@ -15,3 +15,4 @@ nunit list
 \description{
 Parse a time string
 }
+\keyword{internal}
