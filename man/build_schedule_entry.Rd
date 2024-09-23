@@ -15,3 +15,4 @@ MaestroPipelineList R6 class
 \description{
 Parse and validate tags then create and populate MaestroPipelineList
 }
+\keyword{internal}

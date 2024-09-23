@@ -38,3 +38,4 @@ vector of timestamps or dates
 \description{
 Generate a sequence of run times for a pipeline
 }
+\keyword{internal}

@@ -3,6 +3,7 @@
 #' @param parse_succeeds list of parse results (i.e., succeeded)
 #' @param parse_errors list of parse errors
 #'
+#' @keywords internal
 #' @return cli output
 maestro_parse_cli <- function(parse_succeeds, parse_errors) {
 
