@@ -118,15 +118,15 @@ The orchestrator can be an R script, Quarto/RMarkdown doc, but here we'll use a 
 ```{r orch, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
 library(maestro)
 
-schedule_table <- build_schedule()
+schedule <- build_schedule()
 
 output <- run_schedule(
-  schedule_table,
+  schedule,
   orch_frequency = "1 hour"
 )
 ```
 
-Building the schedule gets `maestro` to look through the pipelines in the pipelines folder and creates a data.frame with schedule information. Then, you pass that data.frame to `run_schedule()` along with how often the orchestrator is supposed to run. It is important to tell `maestro` how often it'll be checking the pipelines using the `orch_frequency` parameter. Here, we're informing it that the orchestrator is running every 1 hour.
+Building the schedule gets `maestro` to look through the pipelines in the pipelines folder and creates a schedule object. Then, you pass that to `run_schedule()` along with how often the orchestrator is supposed to run. It is important to tell `maestro` how often it'll be checking the pipelines using the `orch_frequency` parameter. Here, we're informing it that the orchestrator is running every 1 hour.
 
 Importantly, it isn't `maestro`'s job to actually run it this often - it's *your* job to make sure it runs at that frequency (e.g., deploying it via cron or some cloud environment where code can be scheduled).[^1]
 
