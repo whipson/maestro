@@ -66,12 +66,6 @@ roclet_process.roclet_maestroFrequency <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @exportS3Method
-roclet_output.roclet_maestroFrequency <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
 # maestroStartTime ----------------------------------------------------------
 
 #' @exportS3Method
@@ -115,13 +109,6 @@ roclet_process.roclet_maestroStartTime <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @exportS3Method
-roclet_output.roclet_maestroStartTime <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
-
 # maestroTz -----------------------------------------------------------------
 
 #' @exportS3Method
@@ -161,13 +148,6 @@ roclet_process.roclet_maestroTz <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @exportS3Method
-roclet_output.roclet_maestroTz <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
-
 # maestroSkip ---------------------------------------------------------------
 
 #' @exportS3Method
@@ -198,13 +178,6 @@ roclet_process.roclet_maestroSkip <- function(x, blocks, env, base_path) {
     val = tags$val,
     node = blocks[[1]]$object$topic
   )
-}
-
-
-#' @exportS3Method
-roclet_output.roclet_maestroSkip <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
 }
 
 # maestroLogLevel ----------------------------------------------------------------
@@ -250,13 +223,6 @@ roclet_process.roclet_maestroLogLevel <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
-
-#' @exportS3Method
-roclet_output.roclet_maestroLogLevel <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
 
 # maestroHours --------------------------------------------------------------
 
@@ -319,13 +285,6 @@ roclet_process.roclet_maestroHours <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
-
-#' @exportS3Method
-roclet_output.roclet_maestroHours <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
 
 # maestroDays --------------------------------------------------------------
 
@@ -410,12 +369,6 @@ roclet_process.roclet_maestroDays <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @exportS3Method
-roclet_output.roclet_maestroDays <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
 # maestroMonths -----------------------------------------------------------
 
 #' @exportS3Method
@@ -478,13 +431,6 @@ roclet_process.roclet_maestroMonths <- function(x, blocks, env, base_path) {
   )
 }
 
-#' @exportS3Method
-roclet_output.roclet_maestroMonths <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
-}
-
-
 # maestroInputs -----------------------------------------------------------
 
 #' @exportS3Method
@@ -492,6 +438,16 @@ roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
 
   x$raw <- x$raw |>
     trimws()
+
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Empty maestroInputs. If pipeline doesn't take inputs, remove maestroInputs tag."
+      )
+    )
+    return(x)
+  }
 
   x$val <- strsplit(x$raw, "\\s+")[[1]]
 
@@ -511,8 +467,39 @@ roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
   )
 }
 
+# maestroOutputs ----------------------------------------------------------
+
 #' @exportS3Method
-roclet_output.roclet_maestroInputs <- function(x, results, base_path, ...) {
-  cli::cli(glue::glue("{results$node}: {results$val}"))
-  invisible(NULL)
+roxy_tag_parse.roxy_tag_maestroOutputs <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Empty maestroOutputs. If pipeline doesn't take inputs, remove maestroOutputs tag."
+      )
+    )
+    return(x)
+  }
+
+  x$val <- strsplit(x$raw, "\\s+")[[1]]
+
+  x
 }
+
+maestroOutputs_roclet <- function() {
+  roxygen2::roclet("maestroOutputs")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroOutputs <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroOutputs")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+

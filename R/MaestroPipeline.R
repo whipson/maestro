@@ -19,7 +19,8 @@ MaestroPipeline <- R6::R6Class(
     #' @param months specific months of year
     #' @param skip whether to skip the pipeline regardless of scheduling
     #' @param log_level log level of the pipeline
-    #' @param inputs unused
+    #' @param inputs names of pipelines that this pipeline is dependent on for input
+    #' @param outputs names of pipelines for which this pipeline is a dependency
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -33,7 +34,8 @@ MaestroPipeline <- R6::R6Class(
       months = NULL,
       skip = FALSE,
       log_level = "INFO",
-      inputs = NULL
+      inputs = NULL,
+      outputs = NULL
     ) {
 
       # Update the private attributes
@@ -47,6 +49,7 @@ MaestroPipeline <- R6::R6Class(
       private$skip <- skip
       private$log_level <- log_level
       private$inputs <- inputs
+      private$outputs <- outputs
 
       # Create transformed private attributes
       # Create units and n
@@ -328,6 +331,7 @@ MaestroPipeline <- R6::R6Class(
     skip = NA,
     log_level = NA_character_,
     inputs = NULL,
+    outputs = NULL,
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,

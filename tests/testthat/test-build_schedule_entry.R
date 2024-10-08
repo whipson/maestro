@@ -98,3 +98,10 @@ test_that("Pipeline with inputs checks for .input", {
     )
   })
 })
+
+test_that("Errors if pipeline self-references as input", {
+  schedule <- build_schedule_entry(
+    test_path("test_pipelines_parse_all_bad/dags_self_reference.R")
+  ) |>
+    expect_error(regexp = "cannot contain self-references")
+})

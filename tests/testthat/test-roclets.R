@@ -246,9 +246,39 @@ test_that("invalid maestroMonths warns", {
 test_that("parse maestroInputs works", {
   res <- roxygen2::roc_proc_text(
     maestroInputs_roclet(),
-    readLines(test_path("test_pipelines/test_pipeline_inputs.R"))
+    readLines(test_path("test_pipelines/test_pipeline_inputs_good.R"))
   )
 
   expect_type(res$val, "character")
   expect_length(res$val, 3L)
+})
+
+test_that("parse maestroInputs warns if empty", {
+  res <- roxygen2::roc_proc_text(
+    maestroInputs_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_inputs_bad.R"))
+  ) |>
+    expect_warning()
+
+  expect_null(res$val)
+})
+
+test_that("parse maestroOutputs works", {
+  res <- roxygen2::roc_proc_text(
+    maestroOutputs_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_outputs_good.R"))
+  )
+
+  expect_type(res$val, "character")
+  expect_length(res$val, 3L)
+})
+
+test_that("parse maestroOutputs warns if empty", {
+  res <- roxygen2::roc_proc_text(
+    maestroOutputs_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_outputs_bad.R"))
+  ) |>
+    expect_warning()
+
+  expect_null(res$val)
 })

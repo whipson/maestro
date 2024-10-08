@@ -46,7 +46,8 @@ Create a new Pipeline object
   months = NULL,
   skip = FALSE,
   log_level = "INFO",
-  inputs = NULL
+  inputs = NULL,
+  outputs = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -73,7 +74,9 @@ Create a new Pipeline object
 
 \item{\code{log_level}}{log level of the pipeline}
 
-\item{\code{inputs}}{unused}
+\item{\code{inputs}}{names of pipelines that this pipeline is dependent on for input}
+
+\item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
 }
 \if{html}{\out{</div>}}
 }
