@@ -439,6 +439,16 @@ roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
   x$raw <- x$raw |>
     trimws()
 
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Empty maestroInputs. If pipeline doesn't take inputs, remove maestroInputs tag."
+      )
+    )
+    return(x)
+  }
+
   x$val <- strsplit(x$raw, "\\s+")[[1]]
 
   x
@@ -456,3 +466,40 @@ roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
+
+# maestroOutputs ----------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroOutputs <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Empty maestroOutputs. If pipeline doesn't take inputs, remove maestroOutputs tag."
+      )
+    )
+    return(x)
+  }
+
+  x$val <- strsplit(x$raw, "\\s+")[[1]]
+
+  x
+}
+
+maestroOutputs_roclet <- function() {
+  roxygen2::roclet("maestroOutputs")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroOutputs <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroOutputs")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
