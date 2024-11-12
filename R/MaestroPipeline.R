@@ -85,12 +85,8 @@ MaestroPipeline <- R6::R6Class(
       cli::cli_text("{.file {private$script_path}}")
       cli::cli_h3("Schedule")
 
-      if (!is.null(private$inputs)) {
-        cli::cli_li("Dependent on: {private$inputs}")
-      } else {
-        cli::cli_li("Frequency: {private$frequency}")
-        cli::cli_li("Start Time: {private$start_time}")
-      }
+      cli::cli_li("Frequency: {private$frequency}")
+      cli::cli_li("Start Time: {private$start_time}")
 
       if (!is.null(private$hours)) {
         cli::cli_li("Hours: {private$hours}")
@@ -109,12 +105,13 @@ MaestroPipeline <- R6::R6Class(
       }
 
       cli::cli_h3("Status")
-      switch (private$status,
-              `Not Run` = cli::cli_li(cli::col_magenta(private$status)),
-              `Success` = cli::cli_li(cli::col_green(private$status)),
-              `Warning` = cli::cli_li(cli::col_yellow(private$status)),
-              `Error` = cli::cli_li(cli::col_red(private$status)),
-              cli::cli_li("Unknown")
+      switch (
+        private$status,
+        `Not Run` = cli::cli_li(cli::col_magenta(private$status)),
+        `Success` = cli::cli_li(cli::col_green(private$status)),
+        `Warning` = cli::cli_li(cli::col_yellow(private$status)),
+        `Error` = cli::cli_li(cli::col_red(private$status)),
+        cli::cli_li("Unknown")
       )
 
       if (!is.na(private$run_time_start)) {
