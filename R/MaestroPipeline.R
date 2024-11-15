@@ -9,8 +9,9 @@ MaestroPipeline <- R6::R6Class(
 
     #' @description
     #' Create a new Pipeline object
-    #' @param script_path path to the script
-    #' @param pipe_name name of the pipeline
+    #' @param pipe_name name for the entire pipeline
+    #' @param pipe_data data.frame containing identifying information for each pipe of the pipeline
+    #' @param adjacency_list data.frame linking inputting pipes (from) to outputting pipes (to)
     #' @param frequency frequency of the pipeline (e.g., 1 day)
     #' @param start_time start time of the pipeline
     #' @param tz time zone of the pipeline
@@ -24,8 +25,15 @@ MaestroPipeline <- R6::R6Class(
     #'
     #' @return MaestroPipeline object
     initialize = function(
-      script_path,
-      pipe_name,
+      pipe_name = NULL,
+      pipe_data = data.frame(
+        pipe_name = character(),
+        script_path = character()
+      ),
+      adjacency_list = data.frame(
+        from = character(),
+        to = character()
+      ),
       frequency = NA_character_,
       start_time = lubridate::NA_POSIXct_,
       tz = NA_character_,
@@ -39,8 +47,8 @@ MaestroPipeline <- R6::R6Class(
     ) {
 
       # Update the private attributes
-      private$script_path <- script_path
-      private$pipe_name <- pipe_name
+      private$pipe_data <- pipe_data
+      private$adjacency_list <- adjacency_list
       private$frequency <- frequency
       private$start_time <- start_time
       private$tz <- tz
@@ -50,6 +58,13 @@ MaestroPipeline <- R6::R6Class(
       private$log_level <- log_level
       private$inputs <- inputs
       private$outputs <- outputs
+
+
+      # Create the pipe name as the first pipe
+      if (is.null(pipe_name) && nrow(pipe_data) > 0) {
+        pipe_name <- pipe_data$pipe_name[[1]]
+      }
+      private$pipe_name <- pipe_name
 
       # Create transformed private attributes
       # Create units and n
@@ -82,7 +97,13 @@ MaestroPipeline <- R6::R6Class(
     #' @return print
     print = function() {
       cli::cli_h3("Maestro Pipeline: {.emph {private$pipe_name}}")
-      cli::cli_text("{.file {private$script_path}}")
+      cli::cli_li("with {.val {nrow(private$pipe_data)}} pipe{?s}: {.pkg {private$pipe_data$pipe_name}}")
+
+      if (nrow(private$pipe_data) > 0) {
+        cli::cli_h3("Dependency graph")
+        print(maestro_dependency_graph_cli(private$adjacency_list))
+      }
+
       cli::cli_h3("Schedule")
 
       cli::cli_li("Frequency: {private$frequency}")
@@ -139,7 +160,7 @@ MaestroPipeline <- R6::R6Class(
       private$run_time_start <- lubridate::now()
       private$status <- "Success"
       pipe_name <- private$pipe_name
-      script_path <- private$script_path
+      script_path <- private$pipe_data$script_path[[1]]
       log_level <- private$log_level
 
       if (!quiet) {
@@ -196,7 +217,7 @@ MaestroPipeline <- R6::R6Class(
     #' @return data.frame
     get_schedule = function() {
       dplyr::tibble(
-        script_path = private$script_path,
+        # script_path = private$script_path,
         pipe_name = private$pipe_name,
         frequency = private$frequency,
         start_time = private$start_time,
@@ -275,7 +296,7 @@ MaestroPipeline <- R6::R6Class(
     get_status = function() {
       dplyr::tibble(
         pipe_name = private$pipe_name,
-        script_path = private$script_path,
+        # script_path = private$script_path,
         invoked = private$status != "Not Run",
         success = invoked && private$status != "Error",
         pipeline_started = private$run_time_start,
@@ -313,13 +334,53 @@ MaestroPipeline <- R6::R6Class(
     #' @return list
     get_messages = function() {
       private$messages
+    },
+
+    #' @description
+    #' Add a dependency in a DAG pipeline
+    #' @param from_name name of the pipe that is sending the input
+    #' @param to_name name of the pipe that is receiving the input
+    #' @param script_path path to the script containing the pipe
+    #' @return invisible
+    add_dag = function(from_name, to_name, script_path) {
+      # stopifnot(from_name %in% self$pipe_data$pipe_name || to_name %in% self$pipe_data$pipe_name)
+
+      if (from_name %in% private$pipe_data$pipe_name) {
+        pipe_name <- to_name
+      } else {
+        pipe_name <- from_name
+      }
+
+      # Add it to the pipe data
+      pipe_to_add <- dplyr::tibble(
+        pipe_name = pipe_name,
+        script_path = script_path
+      )
+
+      private$pipe_data <- private$pipe_data |>
+        dplyr::add_row(pipe_to_add)
+
+      # Add it to the adjacency list
+      adj_to_add <- dplyr::tibble(
+        from = from_name,
+        to = to_name
+      )
+
+      private$adjacency_list <- private$adjacency_list |>
+        dplyr::add_row(adj_to_add)
     }
   ),
 
   private = list(
-
-    script_path = NA_character_,
-    pipe_name = NA_character_,
+    pipe_name = NULL,
+    pipe_data = data.frame(
+      pipe_name = character(),
+      script_path = character()
+    ),
+    adjacency_list = data.frame(
+      from = character(),
+      to = character()
+    ),
     frequency = NA_character_,
     start_time = lubridate::NA_POSIXct_,
     tz = NA_character_,

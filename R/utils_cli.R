@@ -45,3 +45,29 @@ maestro_parse_cli <- function(parse_succeeds, parse_errors) {
 
   return(invisible())
 }
+
+#' cli output for dependency tree
+#'
+#' @param adjacency_list data.frame containing the from and to connections using the pipe_ids (a private attribute of MaestroPipeline)
+#'
+#' @keywords internal
+#' @return cli output
+maestro_dependency_graph_cli <- function(adjacency_list) {
+
+  if (nrow(adjacency_list) == 0) return(invisible())
+
+  names_not_in <- setdiff(unique(c(adjacency_list$from, adjacency_list$to)), adjacency_lc$from)
+
+  childless_dat <- data.frame(
+    from = names_not_in,
+    to = NA_character_
+  )
+
+  adjacency_lc <- adjacency_list |>
+    dplyr::bind_rows(childless_dat) |>
+    dplyr::summarise(to = list(to), .by = from)
+
+  cli::tree(
+    data = adjacency_lc
+  )
+}

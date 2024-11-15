@@ -1,3 +1,9 @@
+# maestro 0.4.0.9000
+
+### Breaking changes
+
+- Column `script_path` is no longer returned from `get_status()` or `get_schedule()` to accommodate pipelines spanning multiple different scripts.
+
 # maestro 0.3.0
 
 This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.
