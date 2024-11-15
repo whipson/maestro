@@ -19,7 +19,7 @@ test_that("MaestroSchedule works", {
 
   expect_s3_class(status, "data.frame")
   expect_in(
-    c("pipe_name", "script_path", "invoked", "success", "pipeline_started",
+    c("pipe_name", "invoked", "success", "pipeline_started",
       "pipeline_ended", "errors", "warnings", "messages", "next_run"
     ),
     names(status)

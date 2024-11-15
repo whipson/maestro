@@ -26,6 +26,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
 \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
+\item \href{#method-MaestroPipeline-add_dag}{\code{MaestroPipeline$add_dag()}}
 \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
 }
 }
@@ -36,8 +37,10 @@ A pipeline is defined as a single R script with a schedule or input
 Create a new Pipeline object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$new(
-  script_path,
-  pipe_name,
+  pipe_name = NULL,
+  pipe_data = data.frame(pipe_id = integer(), pipe_name = character(), script_path =
+    character()),
+  adjacency_list = data.frame(from = integer(), to = integer()),
   frequency = NA_character_,
   start_time = lubridate::NA_POSIXct_,
   tz = NA_character_,
@@ -54,9 +57,11 @@ Create a new Pipeline object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{script_path}}{path to the script}
+\item{\code{pipe_name}}{name for the entire pipeline}
 
-\item{\code{pipe_name}}{name of the pipeline}
+\item{\code{pipe_data}}{data.frame containing identifying information for each pipe of the pipeline}
+
+\item{\code{adjacency_list}}{data.frame linking inputting pipes (from) to outputting pipes (to)}
 
 \item{\code{frequency}}{frequency of the pipeline (e.g., 1 day)}
 
@@ -251,6 +256,30 @@ Get list of messages from the pipeline
 
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-add_dag"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-add_dag}{}}}
+\subsection{Method \code{add_dag()}}{
+Add a dependency in a DAG pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$add_dag(from_name, to_name, script_path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{from_name}}{name of the pipe that is sending the input}
+
+\item{\code{to_name}}{name of the pipe that is receiving the input}
+
+\item{\code{script_path}}{path to the script containing the pipe}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+invisible
 }
 }
 \if{html}{\out{<hr>}}

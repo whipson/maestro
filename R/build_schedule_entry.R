@@ -186,8 +186,18 @@ build_schedule_entry <- function(script_path) {
 
       # Create the new pipeline
       pipeline <- MaestroPipeline$new(
-        script_path = script_path,
-        pipe_name = .x,
+        pipe_name = NULL,
+        pipe_data = data.frame(
+          pipe_id = 1L,
+          pipe_name = .x,
+          script_path = script_path
+        ),
+        adjacency_list = data.frame(
+          from = integer(),
+          to = integer()
+        ),
+        # script_path = script_path,
+        # pipe_name = .x,
         frequency = .y$frequency %n% "daily",
         start_time = as.POSIXct(.y$start_time, tz = tz) %n% as.POSIXct("2024-01-01 00:00:00", tz = tz),
         tz = tz,

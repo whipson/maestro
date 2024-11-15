@@ -11,11 +11,11 @@
     Code
       pipeline$get_schedule()
     Output
-      # A tibble: 1 x 9
-        script_path      pipe_name frequency start_time          tz    skip  log_level
-        <chr>            <chr>     <chr>     <dttm>              <chr> <lgl> <chr>    
-      1 test_pipelines/~ get_mtca~ 1 day     2024-03-01 09:00:00 UTC   FALSE INFO     
-      # i 2 more variables: frequency_n <int>, frequency_unit <chr>
+      # A tibble: 1 x 8
+        pipe_name  frequency start_time          tz    skip  log_level frequency_n
+        <chr>      <chr>     <dttm>              <chr> <lgl> <chr>           <int>
+      1 get_mtcars 1 day     2024-03-01 09:00:00 UTC   FALSE INFO                1
+      # i 1 more variable: frequency_unit <chr>
 
 ---
 
