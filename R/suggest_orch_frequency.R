@@ -35,7 +35,7 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
   }
 
   schedule <- schedule$get_schedule() |>
-    dplyr::filter(!skip)
+    dplyr::filter(!skip, !is.na(frequency_n))
 
   if (nrow(schedule) == 0) {
 
@@ -61,7 +61,8 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     return(schedule$frequency)
   }
 
-  max_freq <- schedule$frequency[[which.max(sch_secs)]]
+  max_idx <- which.max(sch_secs)
+  max_freq <- paste(schedule$frequency_n[[max_idx]], schedule$frequency_unit[[max_idx]])
 
   pipeline_sequences <- purrr::pmap(
     list(schedule$frequency_n, schedule$frequency_unit, schedule$start_time),
