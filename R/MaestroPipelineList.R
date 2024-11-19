@@ -59,6 +59,9 @@ MaestroPipelineList <- R6::R6Class(
     get_pipe_by_name = function(pipe_name) {
       names <- self$get_pipe_names()
       name_idx <- which(names %in% pipe_name)
+      if (length(name_idx) == 0) {
+        cli::cli_abort("No pipeline named {pipe_name} in {.cls MaestroPipelineListL}")
+      }
       self$MaestroPipelines[[name_idx]]
     },
 
@@ -136,6 +139,13 @@ MaestroPipelineList <- R6::R6Class(
       purrr::map(self$MaestroPipelines, ~.x$get_artifacts()) |>
         stats::setNames(self$get_pipe_names()) |>
         purrr::discard(is.null)
+    },
+
+    #' @description
+    #' Get the network structure as a edge list
+    #' @return list
+    get_network = function() {
+
     },
 
     #' @description

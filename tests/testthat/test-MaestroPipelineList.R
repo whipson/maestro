@@ -7,6 +7,11 @@ test_that("Simple pipeline list, no errors", {
   expect_s3_class(pipeline_list, "MaestroPipelineList")
   expect_snapshot(pipeline_list)
   expect_type(pipeline_list$get_pipe_names(), "character")
+  expect_s3_class(pipeline_list$get_pipe_by_name("get_mtcars"), "MaestroPipeline")
+  expect_error(
+    pipeline_list$get_pipe_by_name("asdasd"),
+    regexp = "No pipeline"
+  )
 
   pipeline_list$run(quiet = TRUE)
   pipeline <- pipeline_list$MaestroPipelines[[1]]
