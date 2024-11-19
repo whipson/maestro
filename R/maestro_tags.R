@@ -20,5 +20,7 @@
 #'  | maestroHours     | Hours of day to run pipeline                                        | ints              | 0 12 23                         |                     |
 #'  | maestroDays      | Days of week or days of month to run pipeline                       | ints or strings   | 1 14 30, Mon Wed Sat            |                     |
 #'  | maestroMonths    | Months of year to run pipeline                                      | ints              | 1 3 9 12                        |                     |
+#'  | maestroInputs    | Pipelines that input into this pipeline                             | strings           | my_upstream_pipeline            |                     |
+#'  | maestroOutputs   | Pipelines that take the output from this pipeline                   | strings           | my_downstream_pipeline          |                     |
 #' @name maestro_tags
 NULL

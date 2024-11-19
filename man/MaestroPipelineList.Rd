@@ -42,6 +42,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_messages}{\code{MaestroPipelineList$get_messages()}}
 \item \href{#method-MaestroPipelineList-get_artifacts}{\code{MaestroPipelineList$get_artifacts()}}
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
+\item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
@@ -274,6 +275,19 @@ Get the network structure as a edge list
 
 \subsection{Returns}{
 data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-validate_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-validate_network}{}}}
+\subsection{Method \code{validate_network()}}{
+Validates whether all inputs and outputs exist and that the network is a valid DAG
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$validate_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+warning or invisible
 }
 }
 \if{html}{\out{<hr>}}

@@ -1,3 +1,9 @@
+# maestro 0.4.0.9000
+
+### New features
+
+- Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the `maestroOutputs` and `maestroInputs` tags. Pipelines that input into a downstream pipeline should use the `maestroOutputs` tag. Pipelines that receive input from an upstream pipeline should use the `maestroInputs` tag.
+
 # maestro 0.3.0
 
 This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.
