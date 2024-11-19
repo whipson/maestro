@@ -143,7 +143,7 @@ MaestroPipelineList <- R6::R6Class(
 
     #' @description
     #' Get the network structure as a edge list
-    #' @return list
+    #' @return data.frame
     get_network = function() {
 
     },

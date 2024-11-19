@@ -41,6 +41,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_warnings}{\code{MaestroPipelineList$get_warnings()}}
 \item \href{#method-MaestroPipelineList-get_messages}{\code{MaestroPipelineList$get_messages()}}
 \item \href{#method-MaestroPipelineList-get_artifacts}{\code{MaestroPipelineList$get_artifacts()}}
+\item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
@@ -174,7 +175,7 @@ Get pipelines that are primary (i.e., don't have an inputting pipeline)
 }
 
 \subsection{Returns}{
-MaestroPipelineList
+list of MaestroPipelines
 }
 }
 \if{html}{\out{<hr>}}
@@ -260,6 +261,19 @@ Get artifacts (return values) from the pipelines
 
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_network}{}}}
+\subsection{Method \code{get_network()}}{
+Get the network structure as a edge list
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+data.frame
 }
 }
 \if{html}{\out{<hr>}}

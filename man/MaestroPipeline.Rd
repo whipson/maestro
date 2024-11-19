@@ -110,6 +110,8 @@ Runs the pipeline
   log_file = tempfile(),
   quiet = FALSE,
   log_file_max_bytes = 1e+06,
+  .input = NULL,
+  cli_prepend = "",
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -124,6 +126,10 @@ Runs the pipeline
 \item{\code{quiet}}{whether to silence console output}
 
 \item{\code{log_file_max_bytes}}{maximum bytes of the log file before trimming}
+
+\item{\code{.input}}{input values from upstream pipelines}
+
+\item{\code{cli_prepend}}{text to prepend to cli output}
 
 \item{\code{...}}{additional arguments (unused)}
 }
