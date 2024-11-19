@@ -128,6 +128,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_file path to the log file for logging
     #' @param quiet whether to silence console output
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
+    #' @param .input input values from upstream pipelines
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -136,6 +137,7 @@ MaestroPipeline <- R6::R6Class(
       log_file = tempfile(),
       quiet = FALSE,
       log_file_max_bytes = 1e6,
+      .input = NULL,
       ...
     ) {
 
@@ -171,6 +173,7 @@ MaestroPipeline <- R6::R6Class(
         NULL
       })
 
+      resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
 
       results <- withCallingHandlers(
@@ -221,6 +224,7 @@ MaestroPipeline <- R6::R6Class(
     check_timeliness = function(orch_unit, orch_n, check_datetime = lubridate::now(), ...) {
 
       if (private$skip) return(FALSE)
+      if (!is.null(private$inputs)) return(TRUE) # pipes with a dependency are always timely
 
       orch_string <- paste(orch_n, orch_unit)
       orch_frequency_seconds <- convert_to_seconds(orch_string)
@@ -288,6 +292,20 @@ MaestroPipeline <- R6::R6Class(
         messages = length(private$messages),
         next_run = private$next_run
       )
+    },
+
+    #' @description
+    #' Names of pipelines that receive input from this pipeline
+    #' @return character
+    get_outputs = function() {
+      private$outputs
+    },
+
+    #' @description
+    #' Names of pipelines that input into this pipeline
+    #' @return character
+    get_inputs = function() {
+      private$inputs
     },
 
     #' @description

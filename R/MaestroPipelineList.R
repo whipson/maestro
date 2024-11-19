@@ -53,6 +53,16 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get a MaestroPipeline by its name
+    #' @param pipe_name name of the pipeline
+    #' @return MaestroPipeline
+    get_pipe_by_name = function(pipe_name) {
+      names <- self$get_pipe_names()
+      name_idx <- which(pipe_name %in% names)
+      self$MaestroPipelines[[name_idx]]
+    },
+
+    #' @description
     #' Get the schedule as a data.frame
     #' @return data.frame
     get_schedule = function() {
@@ -68,6 +78,14 @@ MaestroPipelineList <- R6::R6Class(
       dots <- rlang::list2(...)
       timely_pipelines_idx <- do.call(self$check_timeliness, dots)
       MaestroPipelineList$new(self$MaestroPipelines[timely_pipelines_idx])
+    },
+
+    #' @description
+    #' Get pipelines that are primary (i.e., don't have an inputting pipeline)
+    #' @return list of MaestroPipelines
+    get_primary_pipes = function() {
+      primary_pipelines_idx <- purrr::map_lgl(self$MaestroPipelines, ~is.null(.x$get_inputs()))
+      self$MaestroPipelines[primary_pipelines_idx]
     },
 
     #' @description
@@ -148,11 +166,22 @@ MaestroPipelineList <- R6::R6Class(
         }
       }
 
+      primary_pipes <- self$get_primary_pipes()
+
       # Run the pipelines
       mapper_fun(
-        self$MaestroPipelines,
+        primary_pipes,
         purrr::safely(~{
-          do.call(.x$run, dots)
+          .input <- NULL
+          repeat {
+            do.call(.x$run, append(dots, list(.input = .input)))
+            .input <- .x$get_artifacts()
+            out_name <- .x$get_outputs()
+            if (is.null(out_name)) {
+              break
+            }
+            .x <- self$get_pipe_by_name(out_name)
+          }
         }, quiet = TRUE)
       )
 

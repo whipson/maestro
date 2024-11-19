@@ -22,6 +22,8 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
 \item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
 \item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
+\item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
+\item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
 \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
@@ -199,6 +201,32 @@ Get status of the pipeline as a data.frame
 
 \subsection{Returns}{
 data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_outputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_outputs}{}}}
+\subsection{Method \code{get_outputs()}}{
+Names of pipelines that receive input from this pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_outputs()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_inputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_inputs}{}}}
+\subsection{Method \code{get_inputs()}}{
+Names of pipelines that input into this pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_inputs()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
 }
 }
 \if{html}{\out{<hr>}}

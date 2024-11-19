@@ -31,8 +31,10 @@ single script
 \item \href{#method-MaestroPipelineList-print}{\code{MaestroPipelineList$print()}}
 \item \href{#method-MaestroPipelineList-add_pipelines}{\code{MaestroPipelineList$add_pipelines()}}
 \item \href{#method-MaestroPipelineList-get_pipe_names}{\code{MaestroPipelineList$get_pipe_names()}}
+\item \href{#method-MaestroPipelineList-get_pipe_by_name}{\code{MaestroPipelineList$get_pipe_by_name()}}
 \item \href{#method-MaestroPipelineList-get_schedule}{\code{MaestroPipelineList$get_schedule()}}
 \item \href{#method-MaestroPipelineList-get_timely_pipelines}{\code{MaestroPipelineList$get_timely_pipelines()}}
+\item \href{#method-MaestroPipelineList-get_primary_pipes}{\code{MaestroPipelineList$get_primary_pipes()}}
 \item \href{#method-MaestroPipelineList-check_timeliness}{\code{MaestroPipelineList$check_timeliness()}}
 \item \href{#method-MaestroPipelineList-get_status}{\code{MaestroPipelineList$get_status()}}
 \item \href{#method-MaestroPipelineList-get_errors}{\code{MaestroPipelineList$get_errors()}}
@@ -110,6 +112,26 @@ character
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_pipe_by_name"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_pipe_by_name}{}}}
+\subsection{Method \code{get_pipe_by_name()}}{
+Get a MaestroPipeline by its name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_pipe_by_name(pipe_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pipe_name}}{name of the pipeline}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+MaestroPipeline
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipelineList-get_schedule"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_schedule}{}}}
 \subsection{Method \code{get_schedule()}}{
@@ -138,6 +160,19 @@ Get a new MaestroPipelineList containing only those pipelines scheduled to run
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+MaestroPipelineList
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_primary_pipes"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_primary_pipes}{}}}
+\subsection{Method \code{get_primary_pipes()}}{
+Get pipelines that are primary (i.e., don't have an inputting pipeline)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_primary_pipes()}\if{html}{\out{</div>}}
+}
+
 \subsection{Returns}{
 MaestroPipelineList
 }
