@@ -22,6 +22,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
 \item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
 \item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
+\item \href{#method-MaestroPipeline-get_status_chr}{\code{MaestroPipeline$get_status_chr()}}
 \item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
 \item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
 \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
@@ -207,6 +208,19 @@ Get status of the pipeline as a data.frame
 
 \subsection{Returns}{
 data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_status_chr"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_status_chr}{}}}
+\subsection{Method \code{get_status_chr()}}{
+Get status of the pipeline as a string
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_status_chr()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
 }
 }
 \if{html}{\out{<hr>}}
