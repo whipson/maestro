@@ -41,40 +41,44 @@ MaestroPipeline <- R6::R6Class(
       # Update the private attributes
       private$script_path <- script_path
       private$pipe_name <- pipe_name
-      private$frequency <- frequency
-      private$start_time <- start_time
-      private$tz <- tz
-      private$hours <- hours
-      private$months <- months
       private$skip <- skip
       private$log_level <- log_level
       private$inputs <- inputs
       private$outputs <- outputs
 
-      # Create transformed private attributes
-      # Create units and n
-      withCallingHandlers({
-        nunits <- purrr::map(frequency, purrr::possibly(~{
-          parse_rounding_unit(.x)
-        }, otherwise = list(n = NA, unit = NA)))
-      }, purrr_error_indexed = function(err) {
-        rlang::cnd_signal(err$parent)
-      })
+      if (is.null(inputs)) {
 
-      # Create days_of_week and days_of_month from days
-      days_of_week <- purrr::map_if(days, is.factor, as.numeric, .else = ~NA_real_) |>
-        purrr::discard(is.na) |>
-        purrr::list_c()
-      days_of_month <- purrr::map_if(days, is.numeric, ~.x, .else = ~NA_real_) |>
-        purrr::discard(is.na) |>
-        purrr::list_c()
+        private$tz <- tz
+        private$frequency <- frequency
+        private$start_time <- start_time
+        private$hours <- hours
+        private$months <- months
 
-      # Update the transformed private attributes
-      private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
-      private$frequency_n <- purrr::map_int(nunits, ~.x$n)
-      private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
-      private$days_of_week <- days_of_week %n% 1:7
-      private$days_of_month <- days_of_month %n% 1:31
+        # Create transformed private attributes
+        # Create units and n
+        withCallingHandlers({
+          nunits <- purrr::map(frequency, purrr::possibly(~{
+            parse_rounding_unit(.x)
+          }, otherwise = list(n = NA, unit = NA)))
+        }, purrr_error_indexed = function(err) {
+          rlang::cnd_signal(err$parent)
+        })
+
+        # Create days_of_week and days_of_month from days
+        days_of_week <- purrr::map_if(days, is.factor, as.numeric, .else = ~NA_real_) |>
+          purrr::discard(is.na) |>
+          purrr::list_c()
+        days_of_month <- purrr::map_if(days, is.numeric, ~.x, .else = ~NA_real_) |>
+          purrr::discard(is.na) |>
+          purrr::list_c()
+
+        # Update the transformed private attributes
+        private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
+        private$frequency_n <- purrr::map_int(nunits, ~.x$n)
+        private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
+        private$days_of_week <- days_of_week %n% 1:7
+        private$days_of_month <- days_of_month %n% 1:31
+      }
     },
 
     #' @description
@@ -294,6 +298,13 @@ MaestroPipeline <- R6::R6Class(
         messages = length(private$messages),
         next_run = private$next_run
       )
+    },
+
+    #' @description
+    #' Get status of the pipeline as a string
+    #' @return character
+    get_status_chr = function() {
+      private$status
     },
 
     #' @description

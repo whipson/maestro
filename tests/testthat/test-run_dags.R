@@ -9,3 +9,18 @@ test_that("DAGs work as expected", {
   expect_equal(artifacts$subbranch2, 6)
 }) |>
   suppressMessages()
+
+test_that("Error messages for DAGs with nonexistent inputs/outputs", {
+  expect_error({
+    dag_bad <- build_schedule(test_path("test_pipelines_dags_bad"))
+  }, regexp = "Pipeline")
+})
+
+test_that("Error in a DAG pipeline stops downstream computations", {
+  dag_bad <- build_schedule(test_path("test_pipelines_dags_run_bad"))
+  run_schedule(dag_bad)
+  status <- get_status(dag_bad)
+  expect_true(status$invoked[status$pipe_name == "get_num"])
+  expect_true(!status$invoked[status$pipe_name == "multiply"])
+}) |>
+  suppressMessages()

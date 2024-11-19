@@ -149,6 +149,54 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Validates whether all inputs and outputs exist and that the network is a valid DAG
+    #' @return warning or invisible
+    validate_network = function() {
+
+      pipe_names <- self$get_pipe_names()
+
+      inputs <- purrr::map(self$MaestroPipelines, ~.x$get_inputs()) |>
+        purrr::set_names(pipe_names) |>
+        purrr::keep(~!is.null(.x))
+
+      outputs <- purrr::map(self$MaestroPipelines, ~.x$get_outputs()) |>
+        purrr::set_names(pipe_names) |>
+        purrr::keep(~!is.null(.x))
+
+      if (length(inputs) > 0) {
+        withCallingHandlers({
+          purrr::iwalk(inputs, ~{
+            if (!all(.x %in% pipe_names)) {
+              invalid <- .x[which(!.x %in% pipe_names)]
+              cli::cli_abort(
+                "Pipeline {.pkg {.y}} references non-existent input pipeline{?s} {.pkg {invalid}}.",
+                call = NULL
+              )
+            }
+          })
+        }, purrr_error_indexed = function(err) {
+          rlang::cnd_signal(err$parent)
+        })
+      }
+
+      if (length(outputs) > 0) {
+        withCallingHandlers({
+          purrr::iwalk(outputs, ~{
+            if (!all(.x %in% pipe_names)) {
+              invalid <- .x[which(!.x %in% pipe_names)]
+              cli::cli_abort(
+                "Pipeline {.pkg {.y}} references non-existent output pipeline{?s} {.pkg {invalid}}.",
+                call = NULL
+              )
+            }
+          })
+        }, purrr_error_indexed = function(err) {
+          rlang::cnd_signal(err$parent)
+        })
+      }
+    },
+
+    #' @description
     #' Runs all the pipelines in the list
     #' @param ... arguments passed to MaestroPipeline$run
     #' @param cores if using multicore number of cores to run in (uses `furrr`)
@@ -183,6 +231,7 @@ MaestroPipelineList <- R6::R6Class(
         do.call(pipe$run, append(dots, list(.input = .input, ...)))
         .input <- pipe$get_artifacts()
         out_names <- pipe$get_outputs()
+        if (pipe$get_status_chr() == "Error") return(invisible())
         if (is.null(out_names)) return(invisible())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
