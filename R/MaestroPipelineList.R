@@ -53,6 +53,19 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get a MaestroPipeline by its name
+    #' @param pipe_name name of the pipeline
+    #' @return MaestroPipeline
+    get_pipe_by_name = function(pipe_name) {
+      names <- self$get_pipe_names()
+      name_idx <- which(names %in% pipe_name)
+      if (length(name_idx) == 0) {
+        cli::cli_abort("No pipeline named {pipe_name} in {.cls MaestroPipelineListL}")
+      }
+      self$MaestroPipelines[[name_idx]]
+    },
+
+    #' @description
     #' Get the schedule as a data.frame
     #' @return data.frame
     get_schedule = function() {
@@ -68,6 +81,14 @@ MaestroPipelineList <- R6::R6Class(
       dots <- rlang::list2(...)
       timely_pipelines_idx <- do.call(self$check_timeliness, dots)
       MaestroPipelineList$new(self$MaestroPipelines[timely_pipelines_idx])
+    },
+
+    #' @description
+    #' Get pipelines that are primary (i.e., don't have an inputting pipeline)
+    #' @return list of MaestroPipelines
+    get_primary_pipes = function() {
+      primary_pipelines_idx <- purrr::map_lgl(self$MaestroPipelines, ~is.null(.x$get_inputs()))
+      self$MaestroPipelines[primary_pipelines_idx]
     },
 
     #' @description
@@ -121,6 +142,13 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get the network structure as a edge list
+    #' @return data.frame
+    get_network = function() {
+
+    },
+
+    #' @description
     #' Runs all the pipelines in the list
     #' @param ... arguments passed to MaestroPipeline$run
     #' @param cores if using multicore number of cores to run in (uses `furrr`)
@@ -148,12 +176,29 @@ MaestroPipelineList <- R6::R6Class(
         }
       }
 
+      primary_pipes <- self$get_primary_pipes()
+
+      run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
+        depth <- depth + 1
+        do.call(pipe$run, append(dots, list(.input = .input, ...)))
+        .input <- pipe$get_artifacts()
+        out_names <- pipe$get_outputs()
+        if (is.null(out_names)) return(invisible())
+        for (i in out_names) {
+          pipe <- self$get_pipe_by_name(i)
+          run_pipe(
+            pipe,
+            .input = .input,
+            depth = depth,
+            cli_prepend = cli::format_inline(paste0(rep("  ", times = depth), "|-"))
+          )
+        }
+      }
+
       # Run the pipelines
       mapper_fun(
-        self$MaestroPipelines,
-        purrr::safely(~{
-          do.call(.x$run, dots)
-        }, quiet = TRUE)
+        primary_pipes,
+        purrr::safely(run_pipe, quiet = TRUE)
       )
 
       invisible()
