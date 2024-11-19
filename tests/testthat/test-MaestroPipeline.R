@@ -9,6 +9,8 @@ test_that("Simple pipeline, no errors", {
 
   expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status())
+  expect_null(pipeline$get_outputs())
+  expect_null(pipeline$get_inputs())
 
   pipeline$run(quiet = TRUE)
 

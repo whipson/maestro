@@ -67,16 +67,16 @@
     },
     "callr": {
       "Package": "callr",
-      "Version": "3.7.5",
+      "Version": "3.7.6",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "R6",
         "processx",
         "utils"
       ],
-      "Hash": "9f0e4fae4963ba775a5e5c520838c87b"
+      "Hash": "d7e13f49c19103ece9e58ad2d83a7354"
     },
     "cli": {
       "Package": "cli",
@@ -201,14 +201,14 @@
     },
     "glue": {
       "Package": "glue",
-      "Version": "1.7.0",
+      "Version": "1.8.0",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "e0b3a53876554bd45879e596cdb10a52"
+      "Hash": "5899f1eaa825580172bb56c08266f37c"
     },
     "highr": {
       "Package": "highr",
@@ -387,13 +387,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.0.5",
+      "Version": "1.0.10",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "32c3f93e8360f667ca5863272ec8ba6a"
+      "Hash": "d0387d5687ec933dd7587efd4cfa2d85"
     },
     "rlang": {
       "Package": "rlang",

@@ -88,6 +88,9 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
   # Create the schedule
   schedule <- MaestroSchedule$new(Pipelines = pipeline_results)
 
+  # Validate the schedule
+  schedule$PipelineList$validate_network()
+
   if (!quiet) {
     maestro_parse_cli(pipeline_results, pipeline_errors)
   }

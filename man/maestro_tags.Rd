@@ -19,6 +19,8 @@ maestro tags follow the format \verb{#' @maestroTagName}
    maestroHours \tab Hours of day to run pipeline \tab ints \tab 0 12 23 \tab  \cr
    maestroDays \tab Days of week or days of month to run pipeline \tab ints or strings \tab 1 14 30, Mon Wed Sat \tab  \cr
    maestroMonths \tab Months of year to run pipeline \tab ints \tab 1 3 9 12 \tab  \cr
+   maestroInputs \tab Pipelines that input into this pipeline \tab strings \tab my_upstream_pipeline \tab  \cr
+   maestroOutputs \tab Pipelines that take the output from this pipeline \tab strings \tab my_downstream_pipeline \tab  \cr
 }
 
 }

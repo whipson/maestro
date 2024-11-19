@@ -19,7 +19,8 @@ MaestroPipeline <- R6::R6Class(
     #' @param months specific months of year
     #' @param skip whether to skip the pipeline regardless of scheduling
     #' @param log_level log level of the pipeline
-    #' @param inputs unused
+    #' @param inputs names of pipelines that this pipeline is dependent on for input
+    #' @param outputs names of pipelines for which this pipeline is a dependency
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -33,45 +34,51 @@ MaestroPipeline <- R6::R6Class(
       months = NULL,
       skip = FALSE,
       log_level = "INFO",
-      inputs = NULL
+      inputs = NULL,
+      outputs = NULL
     ) {
 
       # Update the private attributes
       private$script_path <- script_path
       private$pipe_name <- pipe_name
-      private$frequency <- frequency
-      private$start_time <- start_time
-      private$tz <- tz
-      private$hours <- hours
-      private$months <- months
       private$skip <- skip
       private$log_level <- log_level
       private$inputs <- inputs
+      private$outputs <- outputs
 
-      # Create transformed private attributes
-      # Create units and n
-      withCallingHandlers({
-        nunits <- purrr::map(frequency, purrr::possibly(~{
-          parse_rounding_unit(.x)
-        }, otherwise = list(n = NA, unit = NA)))
-      }, purrr_error_indexed = function(err) {
-        rlang::cnd_signal(err$parent)
-      })
+      if (is.null(inputs)) {
 
-      # Create days_of_week and days_of_month from days
-      days_of_week <- purrr::map_if(days, is.factor, as.numeric, .else = ~NA_real_) |>
-        purrr::discard(is.na) |>
-        purrr::list_c()
-      days_of_month <- purrr::map_if(days, is.numeric, ~.x, .else = ~NA_real_) |>
-        purrr::discard(is.na) |>
-        purrr::list_c()
+        private$tz <- tz
+        private$frequency <- frequency
+        private$start_time <- start_time
+        private$hours <- hours
+        private$months <- months
 
-      # Update the transformed private attributes
-      private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
-      private$frequency_n <- purrr::map_int(nunits, ~.x$n)
-      private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
-      private$days_of_week <- days_of_week %n% 1:7
-      private$days_of_month <- days_of_month %n% 1:31
+        # Create transformed private attributes
+        # Create units and n
+        withCallingHandlers({
+          nunits <- purrr::map(frequency, purrr::possibly(~{
+            parse_rounding_unit(.x)
+          }, otherwise = list(n = NA, unit = NA)))
+        }, purrr_error_indexed = function(err) {
+          rlang::cnd_signal(err$parent)
+        })
+
+        # Create days_of_week and days_of_month from days
+        days_of_week <- purrr::map_if(days, is.factor, as.numeric, .else = ~NA_real_) |>
+          purrr::discard(is.na) |>
+          purrr::list_c()
+        days_of_month <- purrr::map_if(days, is.numeric, ~.x, .else = ~NA_real_) |>
+          purrr::discard(is.na) |>
+          purrr::list_c()
+
+        # Update the transformed private attributes
+        private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
+        private$frequency_n <- purrr::map_int(nunits, ~.x$n)
+        private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
+        private$days_of_week <- days_of_week %n% 1:7
+        private$days_of_month <- days_of_month %n% 1:31
+      }
     },
 
     #' @description
@@ -125,6 +132,8 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_file path to the log file for logging
     #' @param quiet whether to silence console output
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
+    #' @param .input input values from upstream pipelines
+    #' @param cli_prepend text to prepend to cli output
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -133,6 +142,8 @@ MaestroPipeline <- R6::R6Class(
       log_file = tempfile(),
       quiet = FALSE,
       log_file_max_bytes = 1e6,
+      .input = NULL,
+      cli_prepend = "",
       ...
     ) {
 
@@ -143,7 +154,7 @@ MaestroPipeline <- R6::R6Class(
       log_level <- private$log_level
 
       if (!quiet) {
-        cli::cli_progress_step("{cli::col_blue(pipe_name)}")
+        cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
       }
 
       # Set the logger to null - we just want the text in a variable
@@ -168,6 +179,7 @@ MaestroPipeline <- R6::R6Class(
         NULL
       })
 
+      resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
 
       results <- withCallingHandlers(
@@ -218,6 +230,7 @@ MaestroPipeline <- R6::R6Class(
     check_timeliness = function(orch_unit, orch_n, check_datetime = lubridate::now(), ...) {
 
       if (private$skip) return(FALSE)
+      if (!is.null(private$inputs)) return(TRUE) # pipes with a dependency are always timely
 
       orch_string <- paste(orch_n, orch_unit)
       orch_frequency_seconds <- convert_to_seconds(orch_string)
@@ -288,6 +301,27 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get status of the pipeline as a string
+    #' @return character
+    get_status_chr = function() {
+      private$status
+    },
+
+    #' @description
+    #' Names of pipelines that receive input from this pipeline
+    #' @return character
+    get_outputs = function() {
+      private$outputs
+    },
+
+    #' @description
+    #' Names of pipelines that input into this pipeline
+    #' @return character
+    get_inputs = function() {
+      private$inputs
+    },
+
+    #' @description
     #' Get artifacts (return values) from the pipeline
     #' @return list
     get_artifacts = function() {
@@ -328,6 +362,7 @@ MaestroPipeline <- R6::R6Class(
     skip = NA,
     log_level = NA_character_,
     inputs = NULL,
+    outputs = NULL,
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,

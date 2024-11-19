@@ -31,14 +31,18 @@ single script
 \item \href{#method-MaestroPipelineList-print}{\code{MaestroPipelineList$print()}}
 \item \href{#method-MaestroPipelineList-add_pipelines}{\code{MaestroPipelineList$add_pipelines()}}
 \item \href{#method-MaestroPipelineList-get_pipe_names}{\code{MaestroPipelineList$get_pipe_names()}}
+\item \href{#method-MaestroPipelineList-get_pipe_by_name}{\code{MaestroPipelineList$get_pipe_by_name()}}
 \item \href{#method-MaestroPipelineList-get_schedule}{\code{MaestroPipelineList$get_schedule()}}
 \item \href{#method-MaestroPipelineList-get_timely_pipelines}{\code{MaestroPipelineList$get_timely_pipelines()}}
+\item \href{#method-MaestroPipelineList-get_primary_pipes}{\code{MaestroPipelineList$get_primary_pipes()}}
 \item \href{#method-MaestroPipelineList-check_timeliness}{\code{MaestroPipelineList$check_timeliness()}}
 \item \href{#method-MaestroPipelineList-get_status}{\code{MaestroPipelineList$get_status()}}
 \item \href{#method-MaestroPipelineList-get_errors}{\code{MaestroPipelineList$get_errors()}}
 \item \href{#method-MaestroPipelineList-get_warnings}{\code{MaestroPipelineList$get_warnings()}}
 \item \href{#method-MaestroPipelineList-get_messages}{\code{MaestroPipelineList$get_messages()}}
 \item \href{#method-MaestroPipelineList-get_artifacts}{\code{MaestroPipelineList$get_artifacts()}}
+\item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
+\item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
@@ -110,6 +114,26 @@ character
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_pipe_by_name"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_pipe_by_name}{}}}
+\subsection{Method \code{get_pipe_by_name()}}{
+Get a MaestroPipeline by its name
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_pipe_by_name(pipe_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pipe_name}}{name of the pipeline}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+MaestroPipeline
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipelineList-get_schedule"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_schedule}{}}}
 \subsection{Method \code{get_schedule()}}{
@@ -140,6 +164,19 @@ Get a new MaestroPipelineList containing only those pipelines scheduled to run
 }
 \subsection{Returns}{
 MaestroPipelineList
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_primary_pipes"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_primary_pipes}{}}}
+\subsection{Method \code{get_primary_pipes()}}{
+Get pipelines that are primary (i.e., don't have an inputting pipeline)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_primary_pipes()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+list of MaestroPipelines
 }
 }
 \if{html}{\out{<hr>}}
@@ -225,6 +262,32 @@ Get artifacts (return values) from the pipelines
 
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_network}{}}}
+\subsection{Method \code{get_network()}}{
+Get the network structure as a edge list
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-validate_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-validate_network}{}}}
+\subsection{Method \code{validate_network()}}{
+Validates whether all inputs and outputs exist and that the network is a valid DAG
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$validate_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+warning or invisible
 }
 }
 \if{html}{\out{<hr>}}

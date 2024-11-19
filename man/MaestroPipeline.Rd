@@ -22,6 +22,9 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
 \item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
 \item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
+\item \href{#method-MaestroPipeline-get_status_chr}{\code{MaestroPipeline$get_status_chr()}}
+\item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
+\item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
 \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
@@ -46,7 +49,8 @@ Create a new Pipeline object
   months = NULL,
   skip = FALSE,
   log_level = "INFO",
-  inputs = NULL
+  inputs = NULL,
+  outputs = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -73,7 +77,9 @@ Create a new Pipeline object
 
 \item{\code{log_level}}{log level of the pipeline}
 
-\item{\code{inputs}}{unused}
+\item{\code{inputs}}{names of pipelines that this pipeline is dependent on for input}
+
+\item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
 }
 \if{html}{\out{</div>}}
 }
@@ -105,6 +111,8 @@ Runs the pipeline
   log_file = tempfile(),
   quiet = FALSE,
   log_file_max_bytes = 1e+06,
+  .input = NULL,
+  cli_prepend = "",
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -119,6 +127,10 @@ Runs the pipeline
 \item{\code{quiet}}{whether to silence console output}
 
 \item{\code{log_file_max_bytes}}{maximum bytes of the log file before trimming}
+
+\item{\code{.input}}{input values from upstream pipelines}
+
+\item{\code{cli_prepend}}{text to prepend to cli output}
 
 \item{\code{...}}{additional arguments (unused)}
 }
@@ -196,6 +208,45 @@ Get status of the pipeline as a data.frame
 
 \subsection{Returns}{
 data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_status_chr"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_status_chr}{}}}
+\subsection{Method \code{get_status_chr()}}{
+Get status of the pipeline as a string
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_status_chr()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_outputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_outputs}{}}}
+\subsection{Method \code{get_outputs()}}{
+Names of pipelines that receive input from this pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_outputs()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_inputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_inputs}{}}}
+\subsection{Method \code{get_inputs()}}{
+Names of pipelines that input into this pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_inputs()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
 }
 }
 \if{html}{\out{<hr>}}

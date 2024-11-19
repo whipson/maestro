@@ -17,7 +17,8 @@ build_schedule_entry <- function(script_path) {
     hours = "maestroHours",
     days = "maestroDays",
     months = "maestroMonths",
-    inputs = "maestroInputs"
+    inputs = "maestroInputs",
+    outputs = "maestroOutputs"
   )
 
 
@@ -73,15 +74,46 @@ build_schedule_entry <- function(script_path) {
     )
   }
 
-  # Verify that pipes with maestroInput use the .input parameter
+  # Checks on pipelines with maestroInput
   withCallingHandlers({
     purrr::walk2(tag_list, maestro_tag_vals, ~{
       if (!all(is.na(.y$inputs))) {
+
+        pipe_name <- .x$object$topic
+        inputs <- roxygen2::block_get_tag_value(.x, "maestroInputs")
+        if (pipe_name %in% inputs) {
+          cli::cli_abort(
+            c("`@maestroInput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
+              contains an input with the same name."),
+            call = NULL
+          )
+        }
+
         params <- roxygen2::block_get_tag_value(.x, ".formals")
         if (!".input" %in% params) {
           cli::cli_abort(
             c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
               "i" = "Example: {.code pipeline <- function(.input) ...}"),
+            call = NULL
+          )
+        }
+      }
+    })
+  }, purrr_error_indexed = function(err) {
+    rlang::cnd_signal(err$parent)
+  })
+
+  # Checks on pipelines with maestroOutput
+  withCallingHandlers({
+    purrr::walk2(tag_list, maestro_tag_vals, ~{
+      if (!all(is.na(.y$outputs))) {
+
+        pipe_name <- .x$object$topic
+        outputs <- roxygen2::block_get_tag_value(.x, "maestroOutputs")
+        if (pipe_name %in% outputs) {
+          cli::cli_abort(
+            c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
+              contains an output with the same name."),
             call = NULL
           )
         }
@@ -164,7 +196,8 @@ build_schedule_entry <- function(script_path) {
         hours = .y$hours %n% 0:23,
         days = .y$days %n% NULL,
         months = .y$months %n% 1:12,
-        inputs = .y$inputs %n% NULL
+        inputs = .y$inputs %n% NULL,
+        outputs = .y$outputs %n% NULL
       )
 
       # Append to the list of pipelines

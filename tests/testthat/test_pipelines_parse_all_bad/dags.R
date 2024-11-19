@@ -3,4 +3,7 @@ with_inputs <- function() {
 
 }
 
+#' @maestroOutputs fun4 fun5
+with_outputs <- function() {
 
+}

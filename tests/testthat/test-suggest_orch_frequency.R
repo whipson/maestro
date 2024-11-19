@@ -20,3 +20,8 @@ test_that("suggest_orch_frequency gives expected errors", {
   }, regexp = "Schedule must be an object")
 })
 
+test_that("suggest_orch_frequency works with DAG schedules", {
+  schedule <- build_schedule(test_path("test_pipelines_dags_good"))
+  expect_true(!is.na(suggest_orch_frequency(schedule)))
+}) |>
+  suppressMessages()
