@@ -129,6 +129,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param quiet whether to silence console output
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
     #' @param .input input values from upstream pipelines
+    #' @param cli_prepend text to prepend to cli output
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -138,6 +139,7 @@ MaestroPipeline <- R6::R6Class(
       quiet = FALSE,
       log_file_max_bytes = 1e6,
       .input = NULL,
+      cli_prepend = "",
       ...
     ) {
 
@@ -148,7 +150,7 @@ MaestroPipeline <- R6::R6Class(
       log_level <- private$log_level
 
       if (!quiet) {
-        cli::cli_progress_step("{cli::col_blue(pipe_name)}")
+        cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
       }
 
       # Set the logger to null - we just want the text in a variable

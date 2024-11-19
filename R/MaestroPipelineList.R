@@ -58,7 +58,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return MaestroPipeline
     get_pipe_by_name = function(pipe_name) {
       names <- self$get_pipe_names()
-      name_idx <- which(pipe_name %in% names)
+      name_idx <- which(names %in% pipe_name)
       self$MaestroPipelines[[name_idx]]
     },
 
@@ -168,21 +168,27 @@ MaestroPipelineList <- R6::R6Class(
 
       primary_pipes <- self$get_primary_pipes()
 
+      run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
+        depth <- depth + 1
+        do.call(pipe$run, append(dots, list(.input = .input, ...)))
+        .input <- pipe$get_artifacts()
+        out_names <- pipe$get_outputs()
+        if (is.null(out_names)) return(invisible())
+        for (i in out_names) {
+          pipe <- self$get_pipe_by_name(i)
+          run_pipe(
+            pipe,
+            .input = .input,
+            depth = depth,
+            cli_prepend = cli::format_inline(paste0(rep("  ", times = depth), "|-"))
+          )
+        }
+      }
+
       # Run the pipelines
       mapper_fun(
         primary_pipes,
-        purrr::safely(~{
-          .input <- NULL
-          repeat {
-            do.call(.x$run, append(dots, list(.input = .input)))
-            .input <- .x$get_artifacts()
-            out_name <- .x$get_outputs()
-            if (is.null(out_name)) {
-              break
-            }
-            .x <- self$get_pipe_by_name(out_name)
-          }
-        }, quiet = TRUE)
+        purrr::safely(run_pipe, quiet = TRUE)
       )
 
       invisible()
