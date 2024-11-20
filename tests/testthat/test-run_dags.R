@@ -3,6 +3,7 @@ test_that("DAGs work as expected", {
   run_schedule(dag)
   artifacts <- dag$get_artifacts()
   expect_true(all(dag$get_status()$success))
+  expect_snapshot(dag$get_network())
   expect_equal(artifacts$with_inputs, "input message is: hello")
   expect_equal(artifacts$branch2, 2)
   expect_equal(artifacts$subbranch1, 2)

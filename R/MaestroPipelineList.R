@@ -87,7 +87,9 @@ MaestroPipelineList <- R6::R6Class(
     #' Get pipelines that are primary (i.e., don't have an inputting pipeline)
     #' @return list of MaestroPipelines
     get_primary_pipes = function() {
-      primary_pipelines_idx <- purrr::map_lgl(self$MaestroPipelines, ~is.null(.x$get_inputs()))
+      network <- self$get_network()
+      names <- self$get_pipe_names()
+      primary_pipelines_idx <- which(!names %in% network$to)
       self$MaestroPipelines[primary_pipelines_idx]
     },
 
@@ -145,7 +147,49 @@ MaestroPipelineList <- R6::R6Class(
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {
+      if (!is.null(private$network)) return(private$network)
 
+      network <- dplyr::tibble(
+        from = character(),
+        to = character()
+      )
+
+      if (length(self$MaestroPipelines) > 0) {
+        network <- purrr::map(self$MaestroPipelines, ~{
+          network_dat <- dplyr::tibble(
+            from = character(),
+            to = character()
+          )
+          to <- .x$get_outputs()
+          from <- .x$get_inputs()
+          this <- .x$get_pipe_name()
+          if (!is.null(to)) {
+            network_dat <- network_dat |>
+              dplyr::bind_rows(
+                dplyr::tibble(
+                  from = this,
+                  to = to
+                )
+              )
+          }
+
+          if (!is.null(from)) {
+            network_dat <- network_dat |>
+              dplyr::bind_rows(
+                dplyr::tibble(
+                  from = from,
+                  to = this
+                )
+              )
+          }
+          network_dat
+        }) |>
+          purrr::list_rbind() |>
+          dplyr::distinct(from, to)
+      }
+
+      private$network <- network
+      network
     },
 
     #' @description
@@ -225,14 +269,15 @@ MaestroPipelineList <- R6::R6Class(
       }
 
       primary_pipes <- self$get_primary_pipes()
+      network <- self$get_network()
 
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
         depth <- depth + 1
         do.call(pipe$run, append(dots, list(.input = .input, ...)))
         .input <- pipe$get_artifacts()
-        out_names <- pipe$get_outputs()
+        out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() == "Error") return(invisible())
-        if (is.null(out_names)) return(invisible())
+        if (length(out_names) == 0) return(invisible())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
           run_pipe(
@@ -252,5 +297,9 @@ MaestroPipelineList <- R6::R6Class(
 
       invisible()
     }
+  ),
+
+  private = list(
+    network = NULL
   )
 )

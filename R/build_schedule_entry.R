@@ -18,7 +18,8 @@ build_schedule_entry <- function(script_path) {
     days = "maestroDays",
     months = "maestroMonths",
     inputs = "maestroInputs",
-    outputs = "maestroOutputs"
+    outputs = "maestroOutputs",
+    maestro = "maestro"
   )
 
 

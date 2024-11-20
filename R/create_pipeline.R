@@ -11,6 +11,9 @@
 #' @param open whether or not to open the script upon creation
 #' @param quiet whether to silence messages in the console (default = `FALSE`)
 #' @param overwrite whether or not to overwrite an existing pipeline of the same name and location.
+#' @param skip whether to skip the pipeline when running in the orchestrator (default = `FALSE`)
+#' @param inputs vector of names of pipelines that input into this pipeline (default = `NULL` for no inputs)
+#' @param outputs vector of names of pipelines that receive output from this pipeline (default = `NULL` for no outputs)
 #'
 #' @return invisible
 #' @export
@@ -46,8 +49,29 @@ create_pipeline <- function(
     log_level = "INFO",
     quiet = FALSE,
     open = interactive(),
-    overwrite = FALSE
+    overwrite = FALSE,
+    skip = FALSE,
+    inputs = NULL,
+    outputs = NULL
   ) {
+
+  skip <- if (skip) {
+    "#' @maestroSkip"
+  } else {
+    ""
+  }
+
+  inputs <- if (!is.null(inputs)) {
+    paste("#'", paste(inputs, collapse = " "))
+  } else {
+    ""
+  }
+
+  outputs <- if (!is.null(outputs)) {
+    paste("#'", paste(outputs, collapse = " "))
+  } else {
+    ""
+  }
 
   # Makes a valid name for a pipe
   pipe_name <- gsub("\\.", "_", make.names(pipe_name))

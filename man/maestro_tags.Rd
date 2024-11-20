@@ -21,6 +21,7 @@ maestro tags follow the format \verb{#' @maestroTagName}
    maestroMonths \tab Months of year to run pipeline \tab ints \tab 1 3 9 12 \tab  \cr
    maestroInputs \tab Pipelines that input into this pipeline \tab strings \tab my_upstream_pipeline \tab  \cr
    maestroOutputs \tab Pipelines that take the output from this pipeline \tab strings \tab my_downstream_pipeline \tab  \cr
+   maestro \tab Generic tag for identifying a maestro pipeline with all defaults \tab n/a. \tab  \tab  \cr
 }
 
 }

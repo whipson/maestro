@@ -188,6 +188,43 @@ MaestroSchedule <- R6::R6Class(
     #' @return list
     get_artifacts = function() {
       self$PipelineList$get_artifacts()
+    },
+
+    #' @description
+    #' Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)
+    #' @return data.frame
+    get_network = function() {
+      self$PipelineList$get_network()
+    },
+
+    #' @description
+    #' Visualize the DAG relationships between pipelines in the schedule
+    #' @return interactive visualization
+    show_network = function() {
+
+      pipe_names <- self$PipelineList$get_pipe_names()
+
+      if (length(pipe_names) == 0) cli::cli_abort("No pipelines in schedule.", call = NULL)
+
+      rlang::check_installed("DiagrammeR")
+
+      net <- self$get_network()
+
+      nodes_df <- dplyr::tibble(
+        name = pipe_names
+      ) |>
+        dplyr::mutate(id = 1:dplyr::n())
+
+      edges_df <- net |>
+        dplyr::mutate(
+          from = purrr::map_int(from, ~nodes_df$id[nodes_df$name == .x]),
+          to = purrr::map_int(to, ~nodes_df$id[nodes_df$name == .x])
+        )
+
+      node <- DiagrammeR::create_node_df(n = nrow(nodes_df), label = nodes_df$name)
+      edge <- DiagrammeR::create_edge_df(from = edges_df$from, to = edges_df$to)
+      g <- DiagrammeR::create_graph(node, edge)
+      DiagrammeR::render_graph(g, "tree")
     }
   ),
 

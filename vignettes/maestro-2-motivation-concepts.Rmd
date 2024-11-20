@@ -83,13 +83,11 @@ By passing the `orch_frequency = "1 hour"` to `run_schedule()`, we're saying tha
 
 [targets](https://docs.ropensci.org/targets/index.html) is a "pipeline tool for statistics and data science in R". If you have multiple connected components of a pipeline, `targets` skips computation of tasks that are up-to-date. `targets` seems to be primarily used for projects with a single output (e.g., model, document) where there are multiple steps that cumulatively take a long time to complete. In contrast, `maestro` is focused on projects with multiple *independent* pipelines. Moreover, `maestro` pipelines are primarily used when the *up-to-dateness* of the source data is unknown (e.g., coming from an API or database), unlike in `targets` where it determines the *up-to-dateness* based on the contents of a file.
 
-That said, `targets` and `maestro` may be complimentary in a single project. One possible case would be to use `maestro` to orchestrate `targets` pipelines for tasks such as ETL (e.g., `maestro` kicks off the pipeline but then downstream computations are avoided if there's no new data from source). This is a possible exciting integration that we hope to investigate further!
-
 ### {Python} dagster
 
 [Dagster](https://dagster.io/) is an "open source orchestration platform for the development, production, and observation of data assets". Like `maestro`, dagster uses decorators (special comments) to configure *data assets* (functions). Unlike `maestro`, dagster is primarily for chaining together dependent components of a multi-step pipeline - a DAG. It also supports a developer UI and is more fully developed than `maestro` at the current time.
 
-DAG support is something we've considered for `maestro`. It seems feasible but would be a dramatic step up in the complexity of the package. Conceivably, you could tag `maestro` pipelines to form a dependency graph and then `maestro` would validate the graph and coordinate the chaining and passing of data from one component to the next.
+DAGs are supported in `maestro` by defining `maestroInputs` and `maestroOutputs` tags, but `maestro` is still predominately geared toward projects with multiple pipelines running simultaneously or on different schedules.
 
 ## When to not use maestro?
 

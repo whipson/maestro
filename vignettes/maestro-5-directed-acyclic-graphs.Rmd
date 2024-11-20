@@ -9,7 +9,7 @@ vignette: >
 
 A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) or DAG is a kind of network graph where nodes are connected by edges, and these connections cannot loop back or cycle. Most data orchestration tools lay out a data pipeline as a DAG where data is passed from one function to the next until it reaches the end. This allows for more module, single-purpose functions and can make it easier to identify where errors are occurring.
 
-You can create DAG pipelines in maestro using the `maestroInputs` and `maestroOutputs` tags. Let's see this in action.
+You can create DAG pipelines in maestro using the `maestroInputs` and/or `maestroOutputs` tags. Let's see this in action.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 dir.create("pipelines")
@@ -33,7 +33,9 @@ writeLines(
 )
 ```
 
-We'll create three simple pipelines. `start` outputs a vector, `high_road` takes an input and makes it all uppercase, `low_road` makes the input all lowercase. We use the `maestroOutputs` tag to indicate the names of the downstream pipelines (i.e., these pipelines use the output of the target pipeline as input) and we use the `maestroInputs` tag to indicate the names of pipelines that are used as input.
+We'll create three simple pipelines. `start` outputs a vector, `high_road` takes an input and makes it all uppercase, `low_road` makes the input all lowercase. We use the `maestroOutputs` tag to indicate the names of the downstream pipelines (i.e., these pipelines use the output of the target pipeline as input) and we use the `maestroInputs` tag to indicate the names of pipelines that are used as input.[^1]
+
+[^1]: Specifying the outputs and inputs is redundant. You can specify just the outputs or just the inputs if you like, but make sure all pipelines are identified as maestro pipelines by including at least one maestro tag (you could make use of the catch-all `@maestro` tag for this.
 
 Note the use of `.input` as a parameter for all pipelines that receive an input. It is important to have this here to enable the passing of data from inputs to outputs. It must be named `.input`.
 
@@ -103,7 +105,7 @@ my_etl <- function() {
 
 It's pretty concise, so we probably wouldn't bother breaking it apart in practice, but let's do it for illustrative purposes (and also get rid of the messaging).
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 file.remove("pipelines/dags.R")
 dir.create("pipelines")
 writeLines(
@@ -116,14 +118,13 @@ writeLines(
     mtcars
   }
   
-  #' @maestroInputs extract
   #' @maestroOutputs load
   transform <- function(.input) {
     .input |> 
       dplyr::mutate(hp_deviation = hp - mean(hp))
   }
   
-  #' @maestroInputs transform
+  #' @maestro
   load <- function(.input) {
     write.csv(.input, file = paste0('transformed_mtcars.csv'))
   }",
@@ -140,14 +141,13 @@ extract <- function() {
   mtcars
 }
 
-#' @maestroInputs extract
 #' @maestroOutputs load
 transform <- function(.input) {
   .input |> 
     dplyr::mutate(hp_deviation = hp - mean(hp))
 }
 
-#' @maestroInputs transform
+#' @maestro
 load <- function(.input) {
   write.csv(.input, file = paste0("transformed_mtcars.csv"))
 }
@@ -160,6 +160,12 @@ status <- run_schedule(
   schedule,
   run_all = TRUE
 )
+```
+
+When developing these pipelines, it is helpful to visualize the dependency structure. We can do this by calling `show_network()` on the schedule:
+
+```{r}
+show_network(schedule)
 ```
 
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}

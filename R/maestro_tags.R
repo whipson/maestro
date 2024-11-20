@@ -22,5 +22,6 @@
 #'  | maestroMonths    | Months of year to run pipeline                                      | ints              | 1 3 9 12                        |                     |
 #'  | maestroInputs    | Pipelines that input into this pipeline                             | strings           | my_upstream_pipeline            |                     |
 #'  | maestroOutputs   | Pipelines that take the output from this pipeline                   | strings           | my_downstream_pipeline          |                     |
+#'  | maestro          | Generic tag for identifying a maestro pipeline with all defaults    | n/a.              |                                 |                     |
 #' @name maestro_tags
 NULL

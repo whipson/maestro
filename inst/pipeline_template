@@ -4,6 +4,9 @@
 #' @maestroStartTime {{start_time}}
 #' @maestroTz {{tz}}
 #' @maestroLogLevel {{log_level}}
+{{inputs}}
+{{outputs}}
+{{skip}}
 
 {{pipe_name}} <- function() {
 
