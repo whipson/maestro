@@ -503,3 +503,24 @@ roclet_process.roclet_maestroOutputs <- function(x, blocks, env, base_path) {
   )
 }
 
+
+# maestro -----------------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestro <- function(x) {
+  x$val <- TRUE
+  x
+}
+
+maestro_roclet <- function() {
+  roxygen2::roclet("maestro")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestro <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestro")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}

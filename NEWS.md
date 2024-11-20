@@ -8,6 +8,12 @@
 
 - `MaestroSchedule` gains new methods `get_network()` (returns a data.frame) and `show_network()` (returns a visualization using {DiagrammeR}).
 
+- Added catch-all `maestro` tag to identify a function as a pipeline without specifying other configurations.
+
+### Minor changes
+
+- skip argument added to `create_pipeline` to allow for interactive creation of pipelines that default to skip.
+
 ### Bug fixes
 
 - Fixed issue with `suggest_orch_frequency` when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.

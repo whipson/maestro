@@ -282,3 +282,11 @@ test_that("parse maestroOutputs warns if empty", {
 
   expect_null(res$val)
 })
+
+test_that("parse maestro works", {
+  res <- roxygen2::roc_proc_text(
+    maestro_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_maestro.R"))
+  )
+  expect_true(res$val)
+})
