@@ -209,13 +209,6 @@ projects with multiple <em>independent</em> pipelines. Moreover,
 <em>up-to-dateness</em> of the source data is unknown (e.g., coming from
 an API or database), unlike in <code>targets</code> where it determines
 the <em>up-to-dateness</em> based on the contents of a file.</p>
-<p>That said, <code>targets</code> and <code>maestro</code> may be
-complimentary in a single project. One possible case would be to use
-<code>maestro</code> to orchestrate <code>targets</code> pipelines for
-tasks such as ETL (e.g., <code>maestro</code> kicks off the pipeline but
-then downstream computations are avoided if there’s no new data from
-source). This is a possible exciting integration that we hope to
-investigate further!</p>
 </div>
 <div class="section level3">
 <h3 id="python-dagster">{Python} dagster<a class="anchor" aria-label="anchor" href="#python-dagster"></a>
@@ -228,12 +221,10 @@ of data assets”. Like <code>maestro</code>, dagster uses decorators
 dependent components of a multi-step pipeline - a DAG. It also supports
 a developer UI and is more fully developed than <code>maestro</code> at
 the current time.</p>
-<p>DAG support is something we’ve considered for <code>maestro</code>.
-It seems feasible but would be a dramatic step up in the complexity of
-the package. Conceivably, you could tag <code>maestro</code> pipelines
-to form a dependency graph and then <code>maestro</code> would validate
-the graph and coordinate the chaining and passing of data from one
-component to the next.</p>
+<p>DAGs are supported in <code>maestro</code> by defining
+<code>maestroInputs</code> and <code>maestroOutputs</code> tags, but
+<code>maestro</code> is still predominately geared toward projects with
+multiple pipelines running simultaneously or on different schedules.</p>
 </div>
 </div>
 <div class="section level2">

@@ -72,8 +72,9 @@
 
 
 
-
-<div class="row">
+<link href="maestro-5-directed-acyclic-graphs_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="maestro-5-directed-acyclic-graphs_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="maestro-5-directed-acyclic-graphs_files/viz-1.8.2/viz.js"></script><link href="maestro-5-directed-acyclic-graphs_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="maestro-5-directed-acyclic-graphs_files/grViz-binding-1.0.11/grViz.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Directed Acyclic Graphs (DAGs)</h1>
             
@@ -92,15 +93,19 @@ data is passed from one function to the next until it reaches the end.
 This allows for more module, single-purpose functions and can make it
 easier to identify where errors are occurring.</p>
 <p>You can create DAG pipelines in maestro using the
-<code>maestroInputs</code> and <code>maestroOutputs</code> tags. Let’s
-see this in action.</p>
+<code>maestroInputs</code> and/or <code>maestroOutputs</code> tags.
+Let’s see this in action.</p>
 <p>We’ll create three simple pipelines. <code>start</code> outputs a
 vector, <code>high_road</code> takes an input and makes it all
 uppercase, <code>low_road</code> makes the input all lowercase. We use
 the <code>maestroOutputs</code> tag to indicate the names of the
 downstream pipelines (i.e., these pipelines use the output of the target
 pipeline as input) and we use the <code>maestroInputs</code> tag to
-indicate the names of pipelines that are used as input.</p>
+indicate the names of pipelines that are used as input.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;Specifying the outputs and inputs is redundant. You can
+specify just the outputs or just the inputs if you like, but make sure
+all pipelines are identified as maestro pipelines by including at least
+one maestro tag (you could make use of the catch-all
+&lt;code&gt;@maestro&lt;/code&gt; tag for this.&lt;/p&gt;"><sup>1</sup></a></p>
 <p>Note the use of <code>.input</code> as a parameter for all pipelines
 that receive an input. It is important to have this here to enable the
 passing of data from inputs to outputs. It must be named
@@ -136,20 +141,20 @@ console will reflect the network structure of the DAG.</p>
 <span>  run_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 13:05:43]</span></span>
+<span><span class="co">## ── [2024-11-20 19:46:45]</span></span>
 <span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">start</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">start</span> <span style="color: #B2B2B2;">[30ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">start</span> <span style="color: #B2B2B2;">[31ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">high_road</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">high_road</span> <span style="color: #B2B2B2;">[8ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">high_road</span> <span style="color: #B2B2B2;">[9ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">low_road</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">low_road</span> <span style="color: #B2B2B2;">[8ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">low_road</span> <span style="color: #B2B2B2;">[11ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 13:05:43]</span></span>
-<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.09 sec elapsed </span></span>
+<span><span class="co">## ── [2024-11-20 19:46:45]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.22 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 <p>We can verify that it worked by obtaining the return values from the
@@ -192,8 +197,7 @@ Consider the example on the home page:</p>
 <p>It’s pretty concise, so we probably wouldn’t bother breaking it apart
 in practice, but let’s do it for illustrative purposes (and also get rid
 of the messaging).</p>
-<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' @maestroFrequency 1 day</span></span>
 <span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
 <span><span class="co">#' @maestroOutputs transform</span></span>
@@ -202,43 +206,50 @@ of the messaging).</p>
 <span>  <span class="va">mtcars</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co">#' @maestroInputs extract</span></span>
 <span><span class="co">#' @maestroOutputs load</span></span>
 <span><span class="va">transform</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">.input</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>hp_deviation <span class="op">=</span> <span class="va">hp</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">hp</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co">#' @maestroInputs transform</span></span>
+<span><span class="co">#' @maestro</span></span>
 <span><span class="va">load</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">.input</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"transformed_mtcars.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 1 script successfully parsed</span></span></code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>,</span>
 <span>  run_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 13:05:43]</span></span>
+<span><span class="co">## ── [2024-11-20 19:46:46]</span></span>
 <span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">extract</span></span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">extract</span> <span style="color: #B2B2B2;">[9ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">transform</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">transform</span> <span style="color: #B2B2B2;">[16ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">transform</span> <span style="color: #B2B2B2;">[13ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span>   |-<span style="color: #0000BB;">load</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span>   |-<span style="color: #0000BB;">load</span> <span style="color: #B2B2B2;">[9ms]</span></span></span>
+<span><span class="co">## <span style="color: #00BB00;">✔</span>   |-<span style="color: #0000BB;">load</span> <span style="color: #B2B2B2;">[10ms]</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 13:05:43]</span></span>
-<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.058 sec elapsed </span></span>
+<span><span class="co">## ── [2024-11-20 19:46:46]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.068 sec elapsed </span></span>
 <span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span>
 <span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
+<p>When developing these pipelines, it is helpful to visualize the
+dependency structure. We can do this by calling
+<code><a href="../reference/show_network.html">show_network()</a></code> on the schedule:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/show_network.html">show_network</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"extract\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,3!\"] \n  \"2\" [label = \"transform\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,2!\"] \n  \"3\" [label = \"load\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,1!\"] \n  \"1\"->\"2\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
+
   </main>
 </div>
 

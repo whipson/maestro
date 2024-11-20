@@ -88,6 +88,8 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <li><p><a href="#method-MaestroSchedule-get_schedule"><code>MaestroSchedule$get_schedule()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_status"><code>MaestroSchedule$get_status()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_artifacts"><code>MaestroSchedule$get_artifacts()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-get_network"><code>MaestroSchedule$get_network()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-show_network"><code>MaestroSchedule$show_network()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-clone"><code>MaestroSchedule$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroSchedule-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -189,10 +191,34 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <p>list</p>
 </div>
 
+</div><p></p><hr><a id="method-MaestroSchedule-get_network"></a><div class="section">
+<h3 id="method-get-network-">Method <code>get_network()</code><a class="anchor" aria-label="anchor" href="#method-get-network-"></a></h3>
+<p>Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)</p><div class="section">
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroSchedule-show_network"></a><div class="section">
+<h3 id="method-show-network-">Method <code><a href="show_network.html">show_network()</a></code><a class="anchor" aria-label="anchor" href="#method-show-network-"></a></h3>
+<p>Visualize the DAG relationships between pipelines in the schedule</p><div class="section">
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">show_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<p>interactive visualization</p>
+</div>
+
 </div><p></p><hr><a id="method-MaestroSchedule-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
