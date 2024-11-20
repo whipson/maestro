@@ -112,3 +112,10 @@ test_that("Errors if pipeline self-references as output", {
   ) |>
     expect_error(regexp = "cannot contain self-references")
 })
+
+test_that("Pipelines with maestro tag get picked up", {
+  res <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_maestro.R")
+  )
+  expect_equal(length(res$MaestroPipelines), 1)
+})
