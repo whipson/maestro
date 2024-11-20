@@ -16,6 +16,7 @@ test_that("MaestroSchedule works", {
   })
 
   status <- schedule$get_status()
+  expect_snapshot(schedule$get_network())
 
   expect_s3_class(status, "data.frame")
   expect_in(

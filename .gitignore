@@ -7,3 +7,5 @@ maestro.log
 pipelines
 orchestrator.R
 inst/doc
+.DS_Store
+.Rprofile

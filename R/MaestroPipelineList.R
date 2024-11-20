@@ -145,7 +145,22 @@ MaestroPipelineList <- R6::R6Class(
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {
-
+      purrr::map(self$MaestroPipelines, ~{
+        network_dat <- dplyr::tibble(
+          from = character(),
+          to = character()
+        )
+        to <- .x$get_outputs()
+        if (!is.null(to)) {
+          from <- .x$get_pipe_name()
+          network_dat <- dplyr::tibble(
+            from = from,
+            to = to
+          )
+        }
+        network_dat
+      }) |>
+        purrr::list_rbind()
     },
 
     #' @description

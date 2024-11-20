@@ -40,6 +40,8 @@ if (interactive()) {
 \item \href{#method-MaestroSchedule-get_schedule}{\code{MaestroSchedule$get_schedule()}}
 \item \href{#method-MaestroSchedule-get_status}{\code{MaestroSchedule$get_status()}}
 \item \href{#method-MaestroSchedule-get_artifacts}{\code{MaestroSchedule$get_artifacts()}}
+\item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
+\item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
 \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
 }
 }
@@ -139,6 +141,32 @@ Get artifacts (return values) from the pipelines
 
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroSchedule-get_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-get_network}{}}}
+\subsection{Method \code{get_network()}}{
+Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroSchedule-show_network"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-show_network}{}}}
+\subsection{Method \code{show_network()}}{
+Visualize the DAG relationships between pipelines in the schedule
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$show_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+interactive visualization
 }
 }
 \if{html}{\out{<hr>}}

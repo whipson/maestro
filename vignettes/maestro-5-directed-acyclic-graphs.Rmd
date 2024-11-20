@@ -103,7 +103,7 @@ my_etl <- function() {
 
 It's pretty concise, so we probably wouldn't bother breaking it apart in practice, but let's do it for illustrative purposes (and also get rid of the messaging).
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 file.remove("pipelines/dags.R")
 dir.create("pipelines")
 writeLines(
@@ -160,6 +160,12 @@ status <- run_schedule(
   schedule,
   run_all = TRUE
 )
+```
+
+When developing these pipelines, it is helpful to visualize the dependency structure. We can do this by calling `show_network()` on the schedule:
+
+```{r}
+show_network(schedule)
 ```
 
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}

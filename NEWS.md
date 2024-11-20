@@ -4,6 +4,10 @@
 
 - Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the `maestroOutputs` and `maestroInputs` tags. Pipelines that input into a downstream pipeline should use the `maestroOutputs` tag. Pipelines that receive input from an upstream pipeline should use the `maestroInputs` tag.
 
+- New function `show_network` for visualizing the connections between pipelines that are connected in a DAG.
+
+- `MaestroSchedule` gains new methods `get_network()` (returns a data.frame) and `show_network()` (returns a visualization using {DiagrammeR}).
+
 ### Bug fixes
 
 - Fixed issue with `suggest_orch_frequency` when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.
