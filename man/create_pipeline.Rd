@@ -13,7 +13,10 @@ create_pipeline(
   log_level = "INFO",
   quiet = FALSE,
   open = interactive(),
-  overwrite = FALSE
+  overwrite = FALSE,
+  skip = FALSE,
+  inputs = NULL,
+  outputs = NULL
 )
 }
 \arguments{
@@ -34,6 +37,12 @@ create_pipeline(
 \item{open}{whether or not to open the script upon creation}
 
 \item{overwrite}{whether or not to overwrite an existing pipeline of the same name and location.}
+
+\item{skip}{whether to skip the pipeline when running in the orchestrator (default = \code{FALSE})}
+
+\item{inputs}{vector of names of pipelines that input into this pipeline (default = \code{NULL} for no inputs)}
+
+\item{outputs}{vector of names of pipelines that receive output from this pipeline (default = \code{NULL} for no outputs)}
 }
 \value{
 invisible
