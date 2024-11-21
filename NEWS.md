@@ -2,7 +2,7 @@
 
 ### New features
 
-- Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the `maestroOutputs` and `maestroInputs` tags. Pipelines that input into a downstream pipeline should use the `maestroOutputs` tag. Pipelines that receive input from an upstream pipeline should use the `maestroInputs` tag.
+- Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the `maestroOutputs` and `maestroInputs` tags. Pipelines that input into a downstream pipeline should use the `maestroOutputs` tag. Pipelines that receive input from an upstream pipeline should use the `maestroInputs` tag (#98).
 
 - New function `show_network` for visualizing the connections between pipelines that are connected in a DAG.
 
