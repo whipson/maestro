@@ -51,7 +51,7 @@
 <h2 class="pkg-version" data-toc-text="0.4.0.9000" id="maestro-0409000">maestro 0.4.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0409000"></a></h2>
 <div class="section level4">
 <h4 id="new-features-0-4-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0-9000"></a></h4>
-<ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag.</p></li>
+<ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag (<a href="https://github.com/whipson/maestro/issues/98" class="external-link">#98</a>).</p></li>
 <li><p>New function <code>show_network</code> for visualizing the connections between pipelines that are connected in a DAG.</p></li>
 <li><p><code>MaestroSchedule</code> gains new methods <code>get_network()</code> (returns a data.frame) and <code><a href="../reference/show_network.html">show_network()</a></code> (returns a visualization using {DiagrammeR}).</p></li>
 <li><p>Added catch-all <code>maestro</code> tag to identify a function as a pipeline without specifying other configurations.</p></li>
@@ -62,7 +62,8 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-4-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0-9000"></a></h4>
-<ul><li>Fixed issue with <code>suggest_orch_frequency</code> when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.</li>
+<ul><li><p>Fixed issue with <code>suggest_orch_frequency</code> when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.</p></li>
+<li><p>Fixed issue where pipeline sourcing failures were appearing as successful runs in status outputs.</p></li>
 </ul></div>
 </div>
     <div class="section level2">

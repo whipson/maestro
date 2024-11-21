@@ -133,33 +133,31 @@ console will reflect the network structure of the DAG.</p>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 1 script successfully parsed</span></span></code></pre>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
+<span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>,</span>
 <span>  run_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 19:46:45]</span></span>
-<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">start</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">start</span> <span style="color: #B2B2B2;">[31ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">high_road</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">high_road</span> <span style="color: #B2B2B2;">[9ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">low_road</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">low_road</span> <span style="color: #B2B2B2;">[11ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 19:46:45]</span></span>
-<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.22 sec elapsed </span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span>
-<span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-11-21 16:22:18]</span></span>
+<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">start</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">start</span> <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">high_road</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">high_road</span> <span style="color: #B2B2B2;">[28ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">low_road</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">low_road</span> <span style="color: #B2B2B2;">[8ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-11-21 16:22:19]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.1 sec elapsed</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span></code></pre>
+<pre><code><span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 <p>We can verify that it worked by obtaining the return values from the
 pipelines.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_artifacts.html">get_artifacts</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $start</span></span>
 <span><span class="co">## [1] "a" "A"</span></span>
@@ -175,7 +173,7 @@ pipelines.</p>
 <p>A great case for using DAGs is with ETL/ELT pipelines. Each component
 of extract, transform, and load could be a single element in the DAG.
 Consider the example on the home page:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Example ETL pipeline</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
 <span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
@@ -197,7 +195,7 @@ Consider the example on the home page:</p>
 <p>It’s pretty concise, so we probably wouldn’t bother breaking it apart
 in practice, but let’s do it for illustrative purposes (and also get rid
 of the messaging).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' @maestroFrequency 1 day</span></span>
 <span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
 <span><span class="co">#' @maestroOutputs transform</span></span>
@@ -216,35 +214,33 @@ of the messaging).</p>
 <span><span class="va">load</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">.input</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"transformed_mtcars.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> 1 script successfully parsed</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>,</span>
 <span>  run_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 19:46:46]</span></span>
-<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span> </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">extract</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">extract</span> <span style="color: #B2B2B2;">[9ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">transform</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">transform</span> <span style="color: #B2B2B2;">[13ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span>   |-<span style="color: #0000BB;">load</span></span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span>   |-<span style="color: #0000BB;">load</span> <span style="color: #B2B2B2;">[10ms]</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## ── [2024-11-20 19:46:46]</span></span>
-<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.068 sec elapsed </span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span>
-<span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-11-21 16:22:19]</span></span>
+<span><span class="co">## Running pipelines <span style="color: #00BB00;">▶</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="color: #0000BB;">extract</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">extract</span> <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> |-<span style="color: #0000BB;">transform</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> |-<span style="color: #0000BB;">transform</span> <span style="color: #B2B2B2;">[13ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span>   |-<span style="color: #0000BB;">load</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span>   |-<span style="color: #0000BB;">load</span> <span style="color: #B2B2B2;">[12ms]</span></span></span></code></pre>
+<pre><code><span><span class="co">## </span></span></code></pre>
+<pre><code><span><span class="co">## ── [2024-11-21 16:22:19]</span></span>
+<span><span class="co">## Pipeline execution completed <span style="color: #555555;">■</span> | 0.063 sec elapsed</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> 3 successes | <span style="color: #000000;">→</span> 0 skipped | <span style="color: #BB00BB;">!</span> 0 warnings | <span style="color: #BB0000;">✖</span> 0 errors | <span style="color: #00BBBB;">◼</span> 3 total</span></span></code></pre>
+<pre><code><span><span class="co">## ────────────────────────────────────────────────────────────────────────────────</span></span></code></pre>
 <p>When developing these pipelines, it is helpful to visualize the
 dependency structure. We can do this by calling
 <code><a href="../reference/show_network.html">show_network()</a></code> on the schedule:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/show_network.html">show_network</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
 <div class="grViz html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:700px;height:432.632880098888px;"></div>
 <script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"extract\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,3!\"] \n  \"2\" [label = \"transform\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,2!\"] \n  \"3\" [label = \"load\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\", pos = \"0,1!\"] \n  \"1\"->\"2\" \n  \"2\"->\"3\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
