@@ -140,19 +140,3 @@ The function `build_schedule()` scours through all the pipelines in the
 project and builds a schedule. Then `run_schedule()` checks each
 pipeline’s scheduled time against the system time within some margin of
 rounding and calls those pipelines to run.
-
-### Multicore
-
-If you have several pipelines and/or pipelines that take awhile to run,
-it can be more efficient to split computation across multiple CPU cores.
-
-``` r
-library(furrr)
-
-plan(multisession)
-
-run_schedule(
-  schedule,
-  cores = 4
-)
-```

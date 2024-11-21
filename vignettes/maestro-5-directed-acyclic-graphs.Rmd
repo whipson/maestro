@@ -64,7 +64,7 @@ Now we'll create and run the schedule. Notice that the output in the console wil
 
 library(maestro)
 
-schedule <- build_schedule()
+schedule <- build_schedule(quiet = TRUE)
 
 status <- run_schedule(
   schedule,
@@ -154,7 +154,7 @@ load <- function(.input) {
 ```
 
 ```{r}
-schedule <- build_schedule()
+schedule <- build_schedule(quiet = TRUE)
 
 status <- run_schedule(
   schedule,

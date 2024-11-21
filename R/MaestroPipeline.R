@@ -169,15 +169,12 @@ MaestroPipeline <- R6::R6Class(
       maestro_context <- new.env()
 
       # Source the script
-      tryCatch({
-        source(script_path, local = maestro_context)
-      }, error = \(e) {
-        logger::log_error(conditionMessage(e), namespace = pipe_name)
-        cli::cli_abort("Error sourcing {.code {pipe_name}}")
-      }, warning = \(w) {
-        logger::log_warn(conditionMessage(w), namespace = pipe_name)
-        NULL
-      })
+      withCallingHandlers(
+        source(script_path, local = maestro_context),
+        error = private$error_handler,
+        warning = private$warning_handler,
+        message = private$message_handler
+      )
 
       resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)

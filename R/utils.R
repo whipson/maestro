@@ -171,3 +171,54 @@ get_pipeline_run_sequence <- function(
   if (is.null(rhs) || length(rhs) == 0 || all(is.na(rhs))) return(lhs)
   rhs
 }
+
+#' Checks whether a DAG is valid (no loops)
+#'
+#' @param edges a data.frame of edges (from, to)
+#'
+#' @keywords internal
+#' @return boolean
+is_valid_dag <- function(edges) {
+
+  # Create an adjacency list
+  adj_list <- split(edges$to, edges$from)
+
+  # Find all nodes (unique vertices)
+  nodes <- unique(c(edges$from, edges$to))
+
+  # Initialize in-degree for each node
+  in_degree <- stats::setNames(rep(0, length(nodes)), nodes)
+
+  # Calculate in-degrees
+  for (to in edges$to) {
+    in_degree[to] <- in_degree[to] + 1
+  }
+
+  # Topological sorting using Kahn's Algorithm
+  topological_sort <- function(nodes, adj_list, in_degree) {
+    sorted <- c()
+    queue <- nodes[in_degree == 0]
+
+    while (length(queue) > 0) {
+      current <- queue[1]
+      queue <- queue[-1]
+      sorted <- c(sorted, current)
+
+      if (!is.null(adj_list[[current]])) {
+        for (neighbor in adj_list[[current]]) {
+          in_degree[neighbor] <- in_degree[neighbor] - 1
+          if (in_degree[neighbor] == 0) {
+            queue <- c(queue, neighbor)
+          }
+        }
+      }
+    }
+
+    length(sorted) == length(nodes)
+  }
+
+  # Check if the graph is a DAG
+  is_dag <- topological_sort(nodes, adj_list, in_degree)
+
+  is_dag
+}

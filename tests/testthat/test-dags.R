@@ -114,3 +114,89 @@ test_that("Providing just maestroInput or just maestroOutput works fine", {
   })
 }) |>
   suppressMessages()
+
+test_that("Resources are passed correctly for pipes with inputs", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs end
+      start <- function(start_val) {
+        start_val
+      }
+
+      #' @maestro
+      end <- function(.input, val) {
+        .input * val
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      resources = list(
+        start_val = 2,
+        val = 4
+      )
+    )
+    out <- get_artifacts(schedule)
+    expect_equal(out$end, 2 * 4)
+  })
+}) |>
+  suppressMessages()
+
+test_that("DAG with a loop fails validation", {
+
+  # Loop with no primary
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "#' @maestroOutputs loopy2
+      loopy1 <- function(.input = 1) {
+        .input * 2
+      }
+
+      #' @maestroOutputs loopy3
+      loopy2 <- function(.input = 1) {
+        .input * 3
+      }
+
+      #' @maestroOutputs loopy1
+      loopy3 <- function(.input = 1) {
+        .input * 4
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    expect_error({
+      schedule <- build_schedule()
+    }, regexp = "Invalid DAG")
+  })
+
+  # Primary followed by loop
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "#' @maestroOutputs loopy2
+      loopy1 <- function(.input = 1) {
+        .input * 2
+      }
+
+      #' @maestroOutputs loopy3
+      loopy2 <- function(.input = 1) {
+        .input * 3
+      }
+
+      #' @maestroOutputs loopy2
+      loopy3 <- function(.input = 1) {
+        .input * 4
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    expect_error({
+      schedule <- build_schedule()
+    }, regexp = "Invalid DAG")
+  })
+})
