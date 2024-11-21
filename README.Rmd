@@ -35,7 +35,6 @@ asciicast::init_knitr_engine(
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/maestro)](https://cran.r-project.org/package=maestro)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/maestro)](https://CRAN.R-project.org/package=maestro)
 [![Monthly Downloads](https://cranlogs.r-pkg.org/badges/maestro)](https://cran.r-project.org/package=maestro)
-
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data pipelines in R. At its core, maestro is an R script scheduler that is unique in two ways:
