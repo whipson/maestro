@@ -272,7 +272,7 @@ MaestroPipelineList <- R6::R6Class(
       network <- self$get_network()
 
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
-        depth <- depth + 1
+        depth <- min(depth + 1, 6)
         do.call(pipe$run, append(dots, list(.input = .input, ...)))
         .input <- pipe$get_artifacts()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
@@ -280,11 +280,12 @@ MaestroPipelineList <- R6::R6Class(
         if (length(out_names) == 0) return(invisible())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
+          prepend <- paste0(rep("  ", times = depth), "|-")
           run_pipe(
             pipe,
             .input = .input,
             depth = depth,
-            cli_prepend = cli::format_inline(paste0(rep("  ", times = depth), "|-"))
+            cli_prepend = cli::format_inline(prepend)
           )
         }
       }

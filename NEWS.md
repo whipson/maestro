@@ -18,6 +18,8 @@
 
 - Fixed issue with `suggest_orch_frequency` when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.
 
+- Fixed issue where pipeline sourcing failures were appearing as successful runs in status outputs.
+
 # maestro 0.3.0
 
 This version refactors much of the code base to rely on R6 classes for pipelines and schedules. Pay careful attention to the breaking changes to see how existing code may be impacted.

@@ -114,3 +114,34 @@ test_that("Providing just maestroInput or just maestroOutput works fine", {
   })
 }) |>
   suppressMessages()
+
+test_that("Resources are passed correctly for pipes with inputs", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs end
+      start <- function(start_val) {
+        start_val
+      }
+
+      #' @maestro
+      end <- function(.input, val) {
+        .input * val
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      resources = list(
+        start_val = 2,
+        val = 4
+      )
+    )
+    out <- get_artifacts(schedule)
+    expect_equal(out$end, 2 * 4)
+  })
+}) |>
+  suppressMessages()
