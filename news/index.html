@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,20 +48,20 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0.9000" id="maestro-0409000">maestro 0.4.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0409000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="maestro-040">maestro 0.4.0<a class="anchor" aria-label="anchor" href="#maestro-040"></a></h2>
 <div class="section level4">
-<h4 id="new-features-0-4-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0-9000"></a></h4>
+<h4 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h4>
 <ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag (<a href="https://github.com/whipson/maestro/issues/98" class="external-link">#98</a>).</p></li>
 <li><p>New function <code>show_network</code> for visualizing the connections between pipelines that are connected in a DAG.</p></li>
 <li><p><code>MaestroSchedule</code> gains new methods <code>get_network()</code> (returns a data.frame) and <code><a href="../reference/show_network.html">show_network()</a></code> (returns a visualization using {DiagrammeR}).</p></li>
 <li><p>Added catch-all <code>maestro</code> tag to identify a function as a pipeline without specifying other configurations.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="minor-changes-0-4-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-4-0-9000"></a></h4>
+<h4 id="minor-changes-0-4-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-4-0"></a></h4>
 <ul><li>skip argument added to <code>create_pipeline</code> to allow for interactive creation of pipelines that default to skip.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-4-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0-9000"></a></h4>
+<h4 id="bug-fixes-0-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-0"></a></h4>
 <ul><li><p>Fixed issue with <code>suggest_orch_frequency</code> when using different styles of frequency (e.g., 1 day vs. daily) in a single schedule.</p></li>
 <li><p>Fixed issue where pipeline sourcing failures were appearing as successful runs in status outputs.</p></li>
 </ul></div>
