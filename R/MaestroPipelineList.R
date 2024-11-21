@@ -238,6 +238,15 @@ MaestroPipelineList <- R6::R6Class(
           rlang::cnd_signal(err$parent)
         })
       }
+
+      network <- self$get_network()
+
+      if (!is_valid_dag(network)) {
+        cli::cli_abort(
+          "Invalid DAG detected. Ensure there are no cycles in the DAG.",
+          call = NULL
+        )
+      }
     },
 
     #' @description
