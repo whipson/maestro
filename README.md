@@ -13,7 +13,6 @@ coverage](https://codecov.io/gh/whipson/maestro/branch/main/graph/badge.svg)](ht
 Downloads](https://cranlogs.r-pkg.org/badges/grand-total/maestro)](https://CRAN.R-project.org/package=maestro)
 [![Monthly
 Downloads](https://cranlogs.r-pkg.org/badges/maestro)](https://cran.r-project.org/package=maestro)
-
 <!-- badges: end -->
 
 `maestro` is a lightweight framework for creating and orchestrating data
