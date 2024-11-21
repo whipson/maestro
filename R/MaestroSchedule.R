@@ -10,18 +10,6 @@ MaestroSchedule <- R6::R6Class(
 
   "MaestroSchedule",
 
-  active = list(
-    #' @field status deprecation
-    #' @field artifacts deprecation
-    status = function() {
-      lifecycle::deprecate_stop("0.3.0", I("Indexing schedule$status"), details = c(i = "Use `get_status(schedule)` instead"))
-    },
-
-    artifacts = function() {
-      lifecycle::deprecate_stop("0.3.0", I("Indexing schedule$artifacts"), details = c(i = "Use `get_artifacts(schedule)` instead"))
-    }
-  ),
-
   public = list(
 
     #' @field PipelineList object of type MaestroPipelineList
