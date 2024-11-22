@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,11 +44,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/whipson/maestro/blob/0.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/whipson/maestro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0" id="maestro-040">maestro 0.4.0<a class="anchor" aria-label="anchor" href="#maestro-040"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.1" id="maestro-041">maestro 0.4.1<a class="anchor" aria-label="anchor" href="#maestro-041"></a></h2>
+<div class="section level4">
+<h4 id="bug-fixes-0-4-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-4-1"></a></h4>
+<ul><li><p>Fixed issue where pipelines with a dependency would run on a time schedule even if the upstream pipeline didn’t run (and vice versa).</p></li>
+<li><p>Fixed output of next scheduled pipelines to better reflect DAG structures.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="maestro-040">maestro 0.4.0<a class="anchor" aria-label="anchor" href="#maestro-040"></a></h2><p class="text-muted">CRAN release: 2024-11-21</p>
 <div class="section level4">
 <h4 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h4>
 <ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag (<a href="https://github.com/whipson/maestro/issues/98" class="external-link">#98</a>).</p></li>
