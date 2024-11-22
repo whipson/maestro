@@ -200,3 +200,151 @@ test_that("DAG with a loop fails validation", {
     }, regexp = "Invalid DAG")
   })
 })
+
+test_that("Even if a downstream pipeline is 'scheduled' it doesn't run unless the upstream component does", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 09:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs end
+      start <- function() {
+        2
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 08:00:00
+      #' @maestroTz UTC
+      end <- function(.input) {
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-11-22 08:00:00", tz = "UTC")
+    )
+
+    expect_snapshot(schedule$get_status()$invoked)
+  })
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 09:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs mid
+      start <- function() {
+        2
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 08:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs end
+      mid <- function(.input) {
+        .input / 10
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 08:00:00
+      #' @maestroTz UTC
+      end <- function(.input) {
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-11-22 08:00:00", tz = "UTC")
+    )
+
+    expect_snapshot(schedule$get_status()$invoked)
+  })
+}) |>
+  suppressMessages()
+
+test_that("Even if a downstream pipeline is 'scheduled' it runs if the upstream component does", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 09:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs end
+      start <- function() {
+        2
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 10:00:00
+      #' @maestroTz UTC
+      end <- function(.input) {
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-11-22 09:00:00", tz = "UTC")
+    )
+
+    expect_snapshot(schedule$get_status()$invoked)
+  })
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 09:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs mid
+      start <- function() {
+        2
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 10:00:00
+      #' @maestroTz UTC
+      #' @maestroOutputs end
+      mid <- function(.input) {
+        .input / 10
+      }
+
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-11-22 10:00:00
+      #' @maestroTz UTC
+      end <- function(.input) {
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-11-22 09:00:00", tz = "UTC")
+    )
+
+    expect_snapshot(schedule$get_status()$invoked)
+  })
+}) |>
+  suppressMessages()

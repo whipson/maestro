@@ -16,3 +16,31 @@
       8 high_road end        
       9 low_road  end        
 
+# Even if a downstream pipeline is 'scheduled' it doesn't run unless the upstream component does
+
+    Code
+      schedule$get_status()$invoked
+    Output
+      [1] FALSE FALSE
+
+---
+
+    Code
+      schedule$get_status()$invoked
+    Output
+      [1] FALSE FALSE FALSE
+
+# Even if a downstream pipeline is 'scheduled' it runs if the upstream component does
+
+    Code
+      schedule$get_status()$invoked
+    Output
+      [1] TRUE TRUE
+
+---
+
+    Code
+      schedule$get_status()$invoked
+    Output
+      [1] TRUE TRUE TRUE
+

@@ -16,10 +16,12 @@ MaestroPipelineList <- R6::R6Class(
     #' @description
     #' Create a MaestroPipelineList object
     #' @param MaestroPipelines list of MaestroPipelines
+    #' @param network initialize a network
     #' @return MaestroPipelineList
-    initialize = function(MaestroPipelines = list()) {
+    initialize = function(MaestroPipelines = list(), network = NULL) {
       self$n_pipelines <- length(MaestroPipelines)
       self$MaestroPipelines <- MaestroPipelines
+      private$network <- network
     },
 
     #' @description
@@ -80,7 +82,7 @@ MaestroPipelineList <- R6::R6Class(
     get_timely_pipelines = function(...) {
       dots <- rlang::list2(...)
       timely_pipelines_idx <- do.call(self$check_timeliness, dots)
-      MaestroPipelineList$new(self$MaestroPipelines[timely_pipelines_idx])
+      MaestroPipelineList$new(self$MaestroPipelines[timely_pipelines_idx], network = private$network)
     },
 
     #' @description
@@ -241,11 +243,27 @@ MaestroPipelineList <- R6::R6Class(
 
       network <- self$get_network()
 
-      if (!is_valid_dag(network)) {
-        cli::cli_abort(
-          "Invalid DAG detected. Ensure there are no cycles in the DAG.",
-          call = NULL
-        )
+
+      if (nrow(network) > 0) {
+
+        # Ensure that the outputs and inputs are reflected in the pipelines
+        purrr::walk2(network$from, network$to, ~{
+          from_pipe <- self$get_pipe_by_name(.x)
+          to_pipe <- self$get_pipe_by_name(.y)
+
+          cur_inputs <- to_pipe$get_inputs()
+          cur_outputs <- from_pipe$get_outputs()
+
+          from_pipe$update_outputs(unique(c(cur_outputs, .y)))
+          to_pipe$update_inputs(unique(c(cur_inputs, .x)))
+        })
+
+        if (!is_valid_dag(network)) {
+          cli::cli_abort(
+            "Invalid DAG detected. Ensure there are no cycles in the DAG.",
+            call = NULL
+          )
+        }
       }
     },
 

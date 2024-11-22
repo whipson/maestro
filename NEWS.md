@@ -1,3 +1,11 @@
+# maestro 0.4.1
+
+### Bug fixes
+
+- Fixed issue where pipelines with a dependency would run on a time schedule even if the upstream pipeline didn't run (and vice versa).
+
+- Fixed output of next scheduled pipelines to better reflect DAG structures.
+
 # maestro 0.4.0
 
 ### New features
