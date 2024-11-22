@@ -53,13 +53,15 @@ single script
 \subsection{Method \code{new()}}{
 Create a MaestroPipelineList object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$new(MaestroPipelines = list())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$new(MaestroPipelines = list(), network = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{MaestroPipelines}}{list of MaestroPipelines}
+
+\item{\code{network}}{initialize a network}
 }
 \if{html}{\out{</div>}}
 }

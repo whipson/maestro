@@ -29,6 +29,8 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
 \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
+\item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
+\item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
 \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
 }
 }
@@ -297,6 +299,46 @@ Get list of messages from the pipeline
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_messages()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-update_inputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-update_inputs}{}}}
+\subsection{Method \code{update_inputs()}}{
+Update the inputs of a pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$update_inputs(inputs)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{inputs}}{character vector of inputting pipeline names}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-update_outputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-update_outputs}{}}}
+\subsection{Method \code{update_outputs()}}{
+Update the outputs of a pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$update_outputs(outputs)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{outputs}}{character vector of outputting pipeline names}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 list
 }

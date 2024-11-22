@@ -344,6 +344,22 @@ MaestroPipeline <- R6::R6Class(
     #' @return list
     get_messages = function() {
       private$messages
+    },
+
+    #' @description
+    #' Update the inputs of a pipeline
+    #' @param inputs character vector of inputting pipeline names
+    #' @return list
+    update_inputs = function(inputs) {
+      private$inputs <- inputs
+    },
+
+    #' @description
+    #' Update the outputs of a pipeline
+    #' @param outputs character vector of outputting pipeline names
+    #' @return list
+    update_outputs = function(outputs) {
+      private$outputs <- outputs
     }
   ),
 
