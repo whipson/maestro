@@ -9,7 +9,7 @@ based on the current time."><meta property="og:image" content="https://whipson.g
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,8 @@ based on the current time.</p>
 <span>  logging <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  log_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_file_max_bytes <span class="op">=</span> <span class="fl">1e+06</span>,</span>
-<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log_to_console <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,7 +121,11 @@ a multisession plan must be executed in the orchestrator (see details)</p></dd>
 
 
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
-<dd><p>silence metrics to the console (default = <code>FALSE</code>)</p></dd>
+<dd><p>silence metrics to the console (default = <code>FALSE</code>). Note this does not affect messages generated from pipelines when <code>log_to_console = TRUE</code>.</p></dd>
+
+
+<dt id="arg-log-to-console">log_to_console<a class="anchor" aria-label="anchor" href="#arg-log-to-console"></a></dt>
+<dd><p>whether or not to include pipeline messages, warnings, errors to the console (default = <code>FALSE</code>) (see Logging &amp; Console Output section)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -166,6 +171,22 @@ the same argument but requiring different values.</p>
 <p>Pipelines can be run in parallel using the <code>cores</code> argument. First, you must run <code>future::plan(future::multisession)</code>
 in the orchestrator. Then, supply the desired number of cores to the <code>cores</code> argument. Note that
 console output appears different in multicore mode.</p>
+</div>
+
+<div class="section">
+<h3 id="logging-amp-console-output">Logging &amp; Console Output<a class="anchor" aria-label="anchor" href="#logging-amp-console-output"></a></h3>
+
+
+<p>By default, <code>maestro</code> suppresses pipeline messages, warnings, and errors from appearing in the console, but
+messages coming from <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and other console logging packages like <code>cli</code> and <code>logger</code> are not suppressed
+and will be interwoven into the output generated from <code>run_schedule()</code>. Messages from <code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code> and related functions are always suppressed
+due to the nature of how those functions operate with standard output.</p>
+<p>Users are advised to make use of R's <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code>, and <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> functions in their pipelines
+for managing conditions. Use <code>log_to_console = TRUE</code> to print these to the console.</p>
+<p>Maestro can generate a log file that is appended to each time the orchestrator is run. Use <code>logging = TRUE</code> and
+maestro will create a <code>maestro.log</code> file in the project directory (use <code>log_file</code> argument to specify an exact log file).
+This log file will be appended to until it exceeds the byte size defined in <code>log_file_max_bytes</code> argument after which
+the log file is deleted.</p>
 </div>
 
     </div>
