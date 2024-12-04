@@ -186,6 +186,16 @@ test_that("invalid maestroHours warns", {
   expect_null(res$val)
 })
 
+test_that("invalid maestroHours warns", {
+  res <- roxygen2::roc_proc_text(
+    maestroHours_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_hours_bad2.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
 test_that("parse maestroDays works for days of month", {
   res <- roxygen2::roc_proc_text(
     maestroDays_roclet(),
@@ -208,6 +218,16 @@ test_that("invalid maestroDays warns for invalid days of month", {
   res <- roxygen2::roc_proc_text(
     maestroDays_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_days_bad2.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
+test_that("invalid maestroDays warns for invalid days of month", {
+  res <- roxygen2::roc_proc_text(
+    maestroDays_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_days_bad3.R"))
   ) |>
     expect_warning(regexp = "Invalid")
 
@@ -237,6 +257,16 @@ test_that("invalid maestroMonths warns", {
   res <- roxygen2::roc_proc_text(
     maestroMonths_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_months_bad.R"))
+  ) |>
+    expect_warning(regexp = "Invalid")
+
+  expect_null(res$val)
+})
+
+test_that("invalid maestroMonths warns", {
+  res <- roxygen2::roc_proc_text(
+    maestroMonths_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_months_bad2.R"))
   ) |>
     expect_warning(regexp = "Invalid")
 
