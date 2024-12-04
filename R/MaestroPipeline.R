@@ -134,7 +134,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
     #' @param .input input values from upstream pipelines
     #' @param cli_prepend text to prepend to cli output
-    #' @param console_out whether or not to output statements in the console (FALSE is to suppress and append to log)
+    #' @param log_to_console whether or not to output statements in the console (FALSE is to suppress and append to log)
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -145,7 +145,7 @@ MaestroPipeline <- R6::R6Class(
       log_file_max_bytes = 1e6,
       .input = NULL,
       cli_prepend = "",
-      console_out = FALSE,
+      log_to_console = FALSE,
       ...
     ) {
 
@@ -159,7 +159,7 @@ MaestroPipeline <- R6::R6Class(
         cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
       }
 
-      if (console_out) {
+      if (log_to_console) {
         logger_fun <- logger::appender_tee
       } else {
         logger_fun <- logger::appender_file

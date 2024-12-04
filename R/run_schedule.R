@@ -40,7 +40,7 @@
 #' due to the nature of how those functions operate with standard output.
 #'
 #' Users are advised to make use of R's `message()`, `warning()`, and `stop()` functions in their pipelines
-#' for managing conditions. Use `console_out = TRUE` to print these to the console.
+#' for managing conditions. Use `log_to_console = TRUE` to print these to the console.
 #'
 #' Maestro can generate a log file that is appended to each time the orchestrator is run. Use `logging = TRUE` and
 #' maestro will create a `maestro.log` file in the project directory (use `log_file` argument to specify an exact log file).
@@ -59,8 +59,8 @@
 #' @param logging whether or not to write the logs to a file (default = `FALSE`)
 #' @param log_file path to the log file (ignored if `logging == FALSE`)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
-#' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `console_out = TRUE`.
-#' @param console_out whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
+#' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `log_to_console = TRUE`.
+#' @param log_to_console whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
 #'
 #' @return MaestroSchedule object
 #' @importFrom R.utils countLines
@@ -98,7 +98,7 @@ run_schedule <- function(
     log_file = NULL,
     log_file_max_bytes = 1e6,
     quiet = FALSE,
-    console_out = FALSE
+    log_to_console = FALSE
 ) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
@@ -176,7 +176,7 @@ run_schedule <- function(
     log_file = log_file,
     log_file_max_bytes = log_file_max_bytes,
     quiet = quiet,
-    console_out = console_out
+    log_to_console = log_to_console
   )
 
   return(schedule)

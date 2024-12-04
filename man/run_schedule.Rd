@@ -16,7 +16,7 @@ run_schedule(
   log_file = NULL,
   log_file_max_bytes = 1e+06,
   quiet = FALSE,
-  console_out = FALSE
+  log_to_console = FALSE
 )
 }
 \arguments{
@@ -42,9 +42,9 @@ a multisession plan must be executed in the orchestrator (see details)}
 
 \item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 
-\item{quiet}{silence metrics to the console (default = \code{FALSE}). Note this does not affect messages generated from pipelines when \code{console_out = TRUE}.}
+\item{quiet}{silence metrics to the console (default = \code{FALSE}). Note this does not affect messages generated from pipelines when \code{log_to_console = TRUE}.}
 
-\item{console_out}{whether or not to include pipeline messages, warnings, errors to the console (default = \code{FALSE}) (see Logging & Console Output section)}
+\item{log_to_console}{whether or not to include pipeline messages, warnings, errors to the console (default = \code{FALSE}) (see Logging & Console Output section)}
 }
 \value{
 MaestroSchedule object
@@ -92,7 +92,7 @@ and will be interwoven into the output generated from \code{run_schedule()}. Mes
 due to the nature of how those functions operate with standard output.
 
 Users are advised to make use of R's \code{message()}, \code{warning()}, and \code{stop()} functions in their pipelines
-for managing conditions. Use \code{console_out = TRUE} to print these to the console.
+for managing conditions. Use \code{log_to_console = TRUE} to print these to the console.
 
 Maestro can generate a log file that is appended to each time the orchestrator is run. Use \code{logging = TRUE} and
 maestro will create a \code{maestro.log} file in the project directory (use \code{log_file} argument to specify an exact log file).
