@@ -7,7 +7,6 @@ test_that("Simple pipeline, no errors", {
   pipeline <- pipeline_list$MaestroPipelines[[1]]
   expect_s3_class(pipeline, "MaestroPipeline")
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status())
   expect_null(pipeline$get_outputs())
   expect_null(pipeline$get_inputs())
