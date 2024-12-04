@@ -134,6 +134,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
     #' @param .input input values from upstream pipelines
     #' @param cli_prepend text to prepend to cli output
+    #' @param console_out whether or not to output statements in the console (FALSE is to suppress and append to log)
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -144,6 +145,7 @@ MaestroPipeline <- R6::R6Class(
       log_file_max_bytes = 1e6,
       .input = NULL,
       cli_prepend = "",
+      console_out = FALSE,
       ...
     ) {
 
@@ -157,10 +159,16 @@ MaestroPipeline <- R6::R6Class(
         cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
       }
 
+      if (console_out) {
+        logger_fun <- logger::appender_tee
+      } else {
+        logger_fun <- logger::appender_file
+      }
+
       # Set the logger to null - we just want the text in a variable
       logger::log_threshold(level = log_level, namespace = pipe_name)
       logger::log_appender(
-        appender = logger::appender_file(log_file, max_bytes = log_file_max_bytes),
+        appender = logger_fun(log_file, max_bytes = log_file_max_bytes),
         namespace = pipe_name
       )
       logger::log_layout(maestro_logger, namespace = pipe_name)
