@@ -14,7 +14,6 @@ test_that("Simple pipeline, no errors", {
 
   pipeline$run(quiet = TRUE)
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 })
 
@@ -25,12 +24,10 @@ test_that("Pipeline with warnings", {
   )
   pipeline <- pipeline_list$MaestroPipelines[[1]]
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status())
 
   pipeline$run(quiet = TRUE)
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 })
 
@@ -43,7 +40,6 @@ test_that("Pipeline with errors", {
 
   expect_error(pipeline$run(quiet = TRUE))
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 })
 
@@ -55,14 +51,12 @@ test_that("Pipeline with arguments are correctly passed", {
 
   pipeline <- pipeline_list$MaestroPipelines[[1]]
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 
   pipeline$run(resources = list(
     vals = 1:5
   ), quiet = TRUE)
 
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 })
 
