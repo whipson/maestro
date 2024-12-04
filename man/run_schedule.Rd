@@ -15,7 +15,8 @@ run_schedule(
   logging = FALSE,
   log_file = NULL,
   log_file_max_bytes = 1e+06,
-  quiet = FALSE
+  quiet = FALSE,
+  log_to_console = FALSE
 )
 }
 \arguments{
@@ -41,7 +42,9 @@ a multisession plan must be executed in the orchestrator (see details)}
 
 \item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 
-\item{quiet}{silence metrics to the console (default = \code{FALSE})}
+\item{quiet}{silence metrics to the console (default = \code{FALSE}). Note this does not affect messages generated from pipelines when \code{log_to_console = TRUE}.}
+
+\item{log_to_console}{whether or not to include pipeline messages, warnings, errors to the console (default = \code{FALSE}) (see Logging & Console Output section)}
 }
 \value{
 MaestroSchedule object
@@ -79,6 +82,22 @@ the same argument but requiring different values.
 Pipelines can be run in parallel using the \code{cores} argument. First, you must run \code{future::plan(future::multisession)}
 in the orchestrator. Then, supply the desired number of cores to the \code{cores} argument. Note that
 console output appears different in multicore mode.
+}
+
+\subsection{Logging & Console Output}{
+
+By default, \code{maestro} suppresses pipeline messages, warnings, and errors from appearing in the console, but
+messages coming from \code{print()} and other console logging packages like \code{cli} and \code{logger} are not suppressed
+and will be interwoven into the output generated from \code{run_schedule()}. Messages from \code{cat()} and related functions are always suppressed
+due to the nature of how those functions operate with standard output.
+
+Users are advised to make use of R's \code{message()}, \code{warning()}, and \code{stop()} functions in their pipelines
+for managing conditions. Use \code{log_to_console = TRUE} to print these to the console.
+
+Maestro can generate a log file that is appended to each time the orchestrator is run. Use \code{logging = TRUE} and
+maestro will create a \code{maestro.log} file in the project directory (use \code{log_file} argument to specify an exact log file).
+This log file will be appended to until it exceeds the byte size defined in \code{log_file_max_bytes} argument after which
+the log file is deleted.
 }
 }
 \examples{

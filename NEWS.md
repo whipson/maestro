@@ -1,3 +1,9 @@
+# maestro 0.5.0.9000
+
+### New features
+
+- Pipeline errors, warnings, and messages can now be printed to the console using `run_schedule(log_to_console = TRUE)`. These logs will be interwoven between messages created by `maestro` (#130).
+
 # maestro 0.4.1
 
 ### Bug fixes

@@ -235,15 +235,6 @@ roxy_tag_parse.roxy_tag_maestroHours <- function(x) {
   if (x$raw != "") {
     x_sep <- tryCatch({
       as.numeric(strsplit(x$raw, "\\s+")[[1]])
-    }, error = function(e) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Invalid maestroHours `{x$raw}`.
-        Must be one or more integers [0-23] separated by spaces (e.g., 1 4 7)"
-        )
-      )
-      return()
     }, warning = function(w) {
       roxygen2::roxy_tag_warning(
         x,
@@ -300,27 +291,7 @@ roxy_tag_parse.roxy_tag_maestroDays <- function(x) {
 
     if (all(grepl("[0-9]", x_sep))) {
 
-      x_sep <- tryCatch({
-        as.numeric(x_sep)
-      }, error = function(e) {
-        roxygen2::roxy_tag_warning(
-          x,
-          glue::glue(
-            "Invalid maestroDays `{x$raw}`.
-            Must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
-          )
-        )
-        return()
-      }, warning = function(w) {
-        roxygen2::roxy_tag_warning(
-          x,
-          glue::glue(
-            "Invalid maestroDays `{x$raw}`.
-            Must be either integers [1-31] or values Mon, Tue, etc. separated by spaces"
-          )
-        )
-        return()
-      })
+      x_sep <- as.numeric(x_sep)
 
       # Check for values [1-31]
       if (!all(x_sep %in% 1:31)) {
@@ -380,15 +351,6 @@ roxy_tag_parse.roxy_tag_maestroMonths <- function(x) {
   if (x$raw != "") {
     x_sep <- tryCatch({
       as.numeric(strsplit(x$raw, "\\s+")[[1]])
-    }, error = function(e) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Invalid maestroMonths `{x$raw}`.
-        Must be one or more integers [1-12] separated by spaces (e.g., 1 6 12)"
-        )
-      )
-      return()
     }, warning = function(w) {
       roxygen2::roxy_tag_warning(
         x,

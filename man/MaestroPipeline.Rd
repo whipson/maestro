@@ -115,6 +115,7 @@ Runs the pipeline
   log_file_max_bytes = 1e+06,
   .input = NULL,
   cli_prepend = "",
+  log_to_console = FALSE,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -133,6 +134,8 @@ Runs the pipeline
 \item{\code{.input}}{input values from upstream pipelines}
 
 \item{\code{cli_prepend}}{text to prepend to cli output}
+
+\item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
 
 \item{\code{...}}{additional arguments (unused)}
 }

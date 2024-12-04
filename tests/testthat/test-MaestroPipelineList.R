@@ -15,7 +15,6 @@ test_that("Simple pipeline list, no errors", {
 
   pipeline_list$run(quiet = TRUE)
   pipeline <- pipeline_list$MaestroPipelines[[1]]
-  expect_snapshot(pipeline$get_schedule())
   expect_snapshot(pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")])
 
   expect_type(

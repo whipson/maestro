@@ -32,6 +32,21 @@
 #' in the orchestrator. Then, supply the desired number of cores to the `cores` argument. Note that
 #' console output appears different in multicore mode.
 #'
+#' ## Logging & Console Output
+#'
+#' By default, `maestro` suppresses pipeline messages, warnings, and errors from appearing in the console, but
+#' messages coming from `print()` and other console logging packages like `cli` and `logger` are not suppressed
+#' and will be interwoven into the output generated from `run_schedule()`. Messages from `cat()` and related functions are always suppressed
+#' due to the nature of how those functions operate with standard output.
+#'
+#' Users are advised to make use of R's `message()`, `warning()`, and `stop()` functions in their pipelines
+#' for managing conditions. Use `log_to_console = TRUE` to print these to the console.
+#'
+#' Maestro can generate a log file that is appended to each time the orchestrator is run. Use `logging = TRUE` and
+#' maestro will create a `maestro.log` file in the project directory (use `log_file` argument to specify an exact log file).
+#' This log file will be appended to until it exceeds the byte size defined in `log_file_max_bytes` argument after which
+#' the log file is deleted.
+#'
 #' @param schedule object of type MaestroSchedule created using `build_schedule()`
 #' @inheritParams get_pipeline_run_sequence
 #' @param orch_frequency of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.
@@ -44,7 +59,8 @@
 #' @param logging whether or not to write the logs to a file (default = `FALSE`)
 #' @param log_file path to the log file (ignored if `logging == FALSE`)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
-#' @param quiet silence metrics to the console (default = `FALSE`)
+#' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `log_to_console = TRUE`.
+#' @param log_to_console whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
 #'
 #' @return MaestroSchedule object
 #' @importFrom R.utils countLines
@@ -81,7 +97,8 @@ run_schedule <- function(
     logging = FALSE,
     log_file = NULL,
     log_file_max_bytes = 1e6,
-    quiet = FALSE
+    quiet = FALSE,
+    log_to_console = FALSE
 ) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
@@ -158,7 +175,8 @@ run_schedule <- function(
     cores = cores,
     log_file = log_file,
     log_file_max_bytes = log_file_max_bytes,
-    quiet = quiet
+    quiet = quiet,
+    log_to_console = log_to_console
   )
 
   return(schedule)
