@@ -44,6 +44,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-6-logging.html">Logging</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -216,6 +217,23 @@ we’ll use a regular R script. Here is where you’ll run
 <span>  <span class="va">schedule</span>,</span>
 <span>  orch_frequency <span class="op">=</span> <span class="st">"1 hour"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+<span style="color: #2AA198;">ℹ</span> 1 script successfully parsed                                                  
+                                                                                
+── [2024-12-05 18:38:25]                                                        
+Running pipelines <span style="color: #859900;">▶</span>                                                             
+                                                                                
+── [2024-12-05 18:38:25]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.015 sec elapsed                              
+<span style="color: #859900;">✔</span> 0 successes | <span style="color: #073642;">→</span> 1 skipped | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total             
+────────────────────────────────────────────────────────────────────────────────
+                                                                                
+── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
+Pipe name | Next scheduled run                                                  
+• my_pipe | 2024-12-06                                                          
+</pre>
+</div>
 <p>Building the schedule gets <code>maestro</code> to look through the
 pipelines in the pipelines folder and creates a schedule object. Then,
 you pass that to <code><a href="../reference/run_schedule.html">run_schedule()</a></code> along with how often the

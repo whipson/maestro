@@ -16,7 +16,10 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Use Cases">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="maestro-3-use-cases_files/libs/quarto-html/popper.min.js"></script><script src="maestro-3-use-cases_files/libs/quarto-html/tippy.umd.min.js"></script><link href="maestro-3-use-cases_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="maestro-3-use-cases_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Use Cases">
+<meta property="og:image" content="https://whipson.github.io/maestro/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -44,6 +47,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-6-logging.html">Logging</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -69,40 +73,34 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Use Cases</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-3-use-cases.Rmd" class="external-link"><code>vignettes/maestro-3-use-cases.Rmd</code></a></small>
-      <div class="d-none name"><code>maestro-3-use-cases.Rmd</code></div>
+      <img src="../logo.png" class="logo" alt=""><h1></h1>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-3-use-cases.qmd" class="external-link"><code>vignettes/maestro-3-use-cases.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="section level2">
-<h2 id="hourly-pipeline">Hourly Pipeline<a class="anchor" aria-label="anchor" href="#hourly-pipeline"></a>
-</h2>
-<p>This pipeline is an example of a standard <em>extract transform
-load</em> (ETL) workflow. The pipeline is scheduled to run every
-<strong>3 hours</strong> starting on <strong>2024-04-25</strong> at
-<strong>05:45:00</strong>. The goal of the pipeline is to perform the
-following:</p>
+
+
+
+
+
+    <header id="title-block-header" class="quarto-title-block"><h1 class="title">Use Cases</h1></header><section class="section level3"><h3 id="hourly-pipeline">Hourly Pipeline<a class="anchor" aria-label="anchor" href="#hourly-pipeline"></a>
+</h3>
+<p>This pipeline is an example of a standard <em>extract transform load</em> (ETL) workflow. The pipeline is scheduled to run every <strong>3 hours</strong> starting on <strong>2024-04-25</strong> at <strong>05:45:00</strong>. The goal of the pipeline is to perform the following:</p>
 <ul>
 <li>access online hosted CSV file</li>
 <li>perform lite data wrangling</li>
 <li>write file to local storage in parquet format</li>
 </ul>
-<p>This example is setup as a simple set of tasks creating objects that
-are used in the next series of tasks. All components of the pipeline are
-within the <code>pipeline_wildfire_hourly</code> function, which has no
-parameters.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>This example is setup as a simple set of tasks creating objects that are used in the next series of tasks. All components of the pipeline are within the <code>pipeline_wildfire_hourly</code> function, which has no parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' pipeline_wildfire_hourly maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 3 hour</span></span>
@@ -137,26 +135,18 @@ parameters.</p>
 <span>                                                         <span class="st">"-{i}.parquet"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="daily-pipeline">Daily Pipeline<a class="anchor" aria-label="anchor" href="#daily-pipeline"></a>
-</h2>
-<p>This pipeline is an example of a standard <em>extract transform
-load</em> (ETL) workflow. The pipeline is scheduled to run every
-<strong>day</strong> starting on <strong>2024-04-25</strong> at
-<strong>06:30:00</strong>. The goal of the pipeline is to perform the
-following:</p>
+</section><section class="section level3"><h3 id="daily-pipeline">Daily Pipeline<a class="anchor" aria-label="anchor" href="#daily-pipeline"></a>
+</h3>
+<p>This pipeline is an example of a standard <em>extract transform load</em> (ETL) workflow. The pipeline is scheduled to run every <strong>day</strong> starting on <strong>2024-04-25</strong> at <strong>06:30:00</strong>. The goal of the pipeline is to perform the following:</p>
 <ul>
 <li>submit a request to an API</li>
 <li>extract data from the API</li>
 <li>add insert datetime column</li>
 <li>write file to local storage in parquet format</li>
 </ul>
-<p>This example has a custom function that is used to access and extract
-the data from the API, which is piped into additional tasks. All
-components of the pipeline are within the
-<code>pipeline_climate_daily</code> function, which has no
-parameters.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>This example has a custom function that is used to access and extract the data from the API, which is piped into additional tasks. All components of the pipeline are within the <code>pipeline_climate_daily</code> function, which has no parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' pipeline_climate_daily maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
@@ -210,10 +200,110 @@ parameters.</p>
 <span>      <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</section><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'light-border',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config);
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

@@ -7,7 +7,8 @@ articles:
   maestro-3-use-cases: maestro-3-use-cases.html
   maestro-4-advanced-scheduling: maestro-4-advanced-scheduling.html
   maestro-5-directed-acyclic-graphs: maestro-5-directed-acyclic-graphs.html
-last_built: 2024-12-04T18:48Z
+  maestro-6-logging: maestro-6-logging.html
+last_built: 2024-12-05T18:38Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles

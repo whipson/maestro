@@ -25,6 +25,7 @@ based on the current time."><meta property="og:image" content="https://whipson.g
     <li><a class="dropdown-item" href="../articles/maestro-3-use-cases.html">Use Cases</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-6-logging.html">Logging</a></li>
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -66,11 +67,12 @@ based on the current time.</p>
 <span>  run_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  n_show_next <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  logging <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  log_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  logging <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  log_file <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  log_file_max_bytes <span class="op">=</span> <span class="fl">1e+06</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  log_to_console <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  log_to_console <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log_to_file <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,11 +111,11 @@ a multisession plan must be executed in the orchestrator (see details)</p></dd>
 
 
 <dt id="arg-logging">logging<a class="anchor" aria-label="anchor" href="#arg-logging"></a></dt>
-<dd><p>whether or not to write the logs to a file (default = <code>FALSE</code>)</p></dd>
+<dd><p>whether or not to write the logs to a file (deprecated in 0.5.0 - use <code>log_to_file</code> and/or <code>log_to_console</code> arguments instead)</p></dd>
 
 
 <dt id="arg-log-file">log_file<a class="anchor" aria-label="anchor" href="#arg-log-file"></a></dt>
-<dd><p>path to the log file (ignored if <code>logging == FALSE</code>)</p></dd>
+<dd><p>path to the log file (ignored if <code>log_to_file == FALSE</code>) (deprecated in 0.5.0 - use <code>log_to_file</code>)</p></dd>
 
 
 <dt id="arg-log-file-max-bytes">log_file_max_bytes<a class="anchor" aria-label="anchor" href="#arg-log-file-max-bytes"></a></dt>
@@ -126,6 +128,10 @@ a multisession plan must be executed in the orchestrator (see details)</p></dd>
 
 <dt id="arg-log-to-console">log_to_console<a class="anchor" aria-label="anchor" href="#arg-log-to-console"></a></dt>
 <dd><p>whether or not to include pipeline messages, warnings, errors to the console (default = <code>FALSE</code>) (see Logging &amp; Console Output section)</p></dd>
+
+
+<dt id="arg-log-to-file">log_to_file<a class="anchor" aria-label="anchor" href="#arg-log-to-file"></a></dt>
+<dd><p>either a boolean to indicate whether to create and append to a <code>maestro.log</code> or a character path to a specific log file. If <code>FALSE</code> or <code>NULL</code> it will not log to a file.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -183,8 +189,8 @@ and will be interwoven into the output generated from <code>run_schedule()</code
 due to the nature of how those functions operate with standard output.</p>
 <p>Users are advised to make use of R's <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code>, <code><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning()</a></code>, and <code><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop()</a></code> functions in their pipelines
 for managing conditions. Use <code>log_to_console = TRUE</code> to print these to the console.</p>
-<p>Maestro can generate a log file that is appended to each time the orchestrator is run. Use <code>logging = TRUE</code> and
-maestro will create a <code>maestro.log</code> file in the project directory (use <code>log_file</code> argument to specify an exact log file).
+<p>Maestro can generate a log file that is appended to each time the orchestrator is run. Use <code>log_to_file = TRUE</code> or <code>log_to_file = '[path-to-file]'</code> and
+maestro will create/append to a file in the project directory.
 This log file will be appended to until it exceeds the byte size defined in <code>log_file_max_bytes</code> argument after which
 the log file is deleted.</p>
 </div>
