@@ -1,9 +1,8 @@
 ---
 title: "Use Cases"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Use Cases}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 

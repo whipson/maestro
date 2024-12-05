@@ -1,9 +1,8 @@
 ---
 title: "Motivation and Concepts"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Motivation and Concepts}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 

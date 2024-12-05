@@ -1,11 +1,21 @@
 ---
 title: "Advanced Scheduling"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Advanced Scheduling}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r}
+#| echo: false
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE
+)
+options(asciicast_theme = "pkgdown")
+
+library(maestro)
+```
 
 This vignette covers more advanced concepts and examples related to scheduling. At it's core, maestro adheres to two keys principles:
 
@@ -60,7 +70,7 @@ daily_example <- function() {
 
 For demonstration purposes, I'll manually set the check time to be 08:00:00 UTC (this is the time maestro will use to compare against the scheduled time). In practice, you almost always want this to be the system time using either `Sys.time()` or `lubridate::now()`.
 
-```{r}
+```{asciicast}
 # ./orchestrator.R
 
 library(maestro)
@@ -78,7 +88,7 @@ We can see that the pipeline executed even though the current time was not 09:20
 
 Let's see what happens if we up the frequency of the orchestrator:
 
-```{r}
+```{asciicast}
 # ./orchestrator.R
 status <- run_schedule(
   schedule,
