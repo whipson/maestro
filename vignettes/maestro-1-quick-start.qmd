@@ -26,6 +26,7 @@ asciicast::init_knitr_engine(
     set.seed(1) 
   })
 )
+
 options(asciicast_theme = "pkgdown")
 ```
 
@@ -41,6 +42,10 @@ A fully realized `maestro` project involves the following components and actions
 3.  A process external to R to schedule the orchestrator (e.g., cron, Posit Connect).
 
 ### Project Setup
+
+```{r}
+library(maestro)
+```
 
 Create a `maestro` project in an existing project or a new project using `create_maestro()` or the New Project wizard in RStudio. This creates the orchestrator script and the folder of pipelines with one sample pipeline. Your project should look something like this:
 
