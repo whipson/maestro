@@ -42,8 +42,8 @@
 #' Users are advised to make use of R's `message()`, `warning()`, and `stop()` functions in their pipelines
 #' for managing conditions. Use `log_to_console = TRUE` to print these to the console.
 #'
-#' Maestro can generate a log file that is appended to each time the orchestrator is run. Use `logging = TRUE` and
-#' maestro will create a `maestro.log` file in the project directory (use `log_file` argument to specify an exact log file).
+#' Maestro can generate a log file that is appended to each time the orchestrator is run. Use `log_to_file = TRUE` or `log_to_file = '[path-to-file]'` and
+#' maestro will create/append to a file in the project directory.
 #' This log file will be appended to until it exceeds the byte size defined in `log_file_max_bytes` argument after which
 #' the log file is deleted.
 #'
@@ -56,11 +56,12 @@
 #' @param n_show_next show the next n scheduled pipes
 #' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and
 #' a multisession plan must be executed in the orchestrator (see details)
-#' @param logging whether or not to write the logs to a file (default = `FALSE`)
-#' @param log_file path to the log file (ignored if `logging == FALSE`)
+#' @param logging whether or not to write the logs to a file (deprecated in 0.5.0 - use `log_to_file` and/or `log_to_console` arguments instead)
+#' @param log_file path to the log file (ignored if `log_to_file == FALSE`) (deprecated in 0.5.0 - use `log_to_file`)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
 #' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `log_to_console = TRUE`.
 #' @param log_to_console whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
+#' @param log_to_file either a boolean to indicate whether to create and append to a `maestro.log` or a character path to a specific log file. If `FALSE` or `NULL` it will not log to a file.
 #'
 #' @return MaestroSchedule object
 #' @importFrom R.utils countLines
@@ -94,12 +95,37 @@ run_schedule <- function(
     run_all = FALSE,
     n_show_next = 5,
     cores = 1,
-    logging = FALSE,
-    log_file = NULL,
+    logging = lifecycle::deprecated(),
+    log_file = lifecycle::deprecated(),
     log_file_max_bytes = 1e6,
     quiet = FALSE,
-    log_to_console = FALSE
+    log_to_console = FALSE,
+    log_to_file = FALSE
 ) {
+
+  warned_about_logging_dep <- FALSE
+  if (lifecycle::is_present(logging)) {
+    lifecycle::deprecate_warn(
+      "0.5.0",
+      "maestro::run_schedule(logging)",
+      "maestro::run_schedule(log_to_file)",
+      details = "To enable logging to a file use either `log_to_file = TRUE` or, more specifically, `log_to_file = '[path-to-log-file]'`"
+    )
+    warned_about_logging_dep <- TRUE
+    log_to_file <- TRUE
+  }
+
+  if (lifecycle::is_present(log_file)) {
+    if (!warned_about_logging_dep) {
+      lifecycle::deprecate_warn(
+        "0.5.0",
+        "maestro::run_schedule(log_file)",
+        "maestro::run_schedule(log_to_file)",
+        details = "To enable logging to a file use either `log_to_file = TRUE` or, more specifically, `log_to_file = '[path-to-log-file]'`"
+      )
+    }
+    log_to_file <- log_file
+  }
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -137,14 +163,21 @@ run_schedule <- function(
     )
   })
 
-  # Ensure that log file exists if it's requested
-  if (logging) {
-    if (!rlang::is_scalar_character(log_file)) cli::cli_abort(
-      "When {.code logging == TRUE}, {.code log_file} must be a single character."
+  # Check if we're logging to a file
+  if (!rlang::is_scalar_logical(log_to_file) && !rlang::is_scalar_character(log_to_file)) {
+    cli::cli_abort(
+      "When not NULL, {.code log_to_file} must be a single boolean or a single character string."
     )
-    if (!file.exists(log_file)) file.create(log_file)
+  }
+
+  if (is.logical(log_to_file) && log_to_file) {
+    log_to_file <- "maestro.log"
+  }
+
+  if (is.character(log_to_file)) {
+    if (!file.exists(log_to_file)) file.create(log_to_file)
   } else {
-    log_file <- tempfile()
+    log_to_file <- tempfile()
   }
 
   # Ensure that elements in resources are named
@@ -173,7 +206,7 @@ run_schedule <- function(
     run_all = run_all,
     n_show_next = n_show_next,
     cores = cores,
-    log_file = log_file,
+    log_file = log_to_file,
     log_file_max_bytes = log_file_max_bytes,
     quiet = quiet,
     log_to_console = log_to_console

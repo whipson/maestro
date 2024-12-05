@@ -411,14 +411,14 @@ MaestroPipeline <- R6::R6Class(
 
     warning_handler = function(w) {
       warning_log <- logger::log_warn(conditionMessage(w), namespace = private$pipe_name)
-      private$warnings <- c(private$warnings, warning_log$default$record)
+      private$warnings <- c(private$warnings, w$message)
       private$status <- "Warning"
       invokeRestart("muffleWarning")
     },
 
     message_handler = function(m) {
       message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
-      private$messages <- c(private$messages, message_log$default$record)
+      private$messages <- c(private$messages, m$message)
       invokeRestart("muffleMessage")
     }
   )

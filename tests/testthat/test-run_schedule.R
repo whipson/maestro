@@ -156,16 +156,44 @@ test_that("run_schedule handles errors in a pipeline", {
 
   withr::with_tempfile("log", {
     expect_message({
-      output <- run_schedule(schedule, run_all = TRUE, logging = TRUE, log_file = log)
+      output <- run_schedule(schedule, run_all = TRUE, log_to_file = log)
     })
     status <- output$get_status()
 
-    expect_gt(length(readLines(log)), 0)
+    log_len_t1 <- length(readLines(log))
+    expect_gt(log_len_t1, 0)
 
     errors <- last_run_errors()
     expect_type(errors, "list")
     expect_length(errors, 1)
     expect_true(all(!is.na(status$pipeline_started)))
+
+    # Run again to ensure log file is appended to
+    run_schedule(schedule, run_all = TRUE, log_to_file = log)
+    log_len_t2 <- length(readLines(log))
+    expect_gt(log_len_t2, log_len_t1)
+  })
+}) |>
+  suppressMessages()
+
+test_that("run_schedule creates maestro.log if log_to_file is TRUE", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_some_errors"))
+
+  withr::with_tempdir({
+    run_schedule(schedule, run_all = TRUE, log_to_file = TRUE)
+    expect_true(file.exists("maestro.log"))
+  })
+}) |>
+  suppressMessages()
+
+test_that("run_schedule doesn't create maestro.log if log_to_file is FALSE", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_some_errors"))
+
+  withr::with_tempdir({
+    run_schedule(schedule, run_all = TRUE, log_to_file = FALSE)
+    expect_true(!file.exists("maestro.log"))
   })
 }) |>
   suppressMessages()
@@ -203,3 +231,16 @@ test_that("errors if resources are unnamed or non unique", {
     run_schedule(schedule, resources = list(a = 1, a = 2))
   }, regexp = "All elements")
 })
+
+test_that("deprecation for logging arguments", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+  expect_warning({
+    run_schedule(schedule, logging = TRUE)
+  })
+
+  expect_warning({
+    run_schedule(schedule, log_file = "asdas")
+  })
+}) |>
+  suppressMessages()

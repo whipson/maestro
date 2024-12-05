@@ -1,8 +1,16 @@
 # maestro 0.5.0.9000
 
+### Breaking changes
+
+- `run_schedule()` arguments `logging` and `log_file` are deprecated. Use `log_to_file = TRUE` to log to a generic maestro.log file or `log_to_file = '[path-to-your-log-file]'` to log to a specific text file.
+
 ### New features
 
 - Pipeline errors, warnings, and messages can now be printed to the console using `run_schedule(log_to_console = TRUE)`. These logs will be interwoven between messages created by `maestro` (#130).
+
+### Bug fixes
+
+- Message and warning counts are now properly displayed in the status and output of `run_schedule()`, as well as in `last_run_messages()` and `last_run_warnings()`, even if they are below the `maestroLogLevel`.
 
 # maestro 0.4.1
 
