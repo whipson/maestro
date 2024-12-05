@@ -7,12 +7,30 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| echo: false
+
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
 )
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  same_process = TRUE,
+  startup = quote({
+    library(maestro)
+    set.seed(1) 
+  })
+)
+
+options(asciicast_theme = "pkgdown")
 ```
+
 
 A common task in data engineering is to automate, schedule, and monitor multiple data processing pipelines. This is called **orchestration**. `maestro` is an R package that helps orchestrate data pipelines.
 
@@ -32,6 +50,25 @@ library(maestro)
 
 Create a `maestro` project in an existing project or a new project using `create_maestro()` or the New Project wizard in RStudio. This creates the orchestrator script and the folder of pipelines with one sample pipeline. Your project should look something like this:
 
+```{r echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
+dir.create("pipelines")
+writeLines(
+  "
+  #' my_pipe maestro pipeline
+  #'
+  #' @maestroFrequency 1 day
+  #' @maestroStartTime 2024-05-24
+  #' @maestroTz UTC
+  #' @maestroLogLevel INFO
+  
+  my_pipe <- function() {
+  
+    # Pipeline code
+  }",
+  con = "pipelines/my_pipe.R"
+)
+```
+
 ```         
 maestro_project
 ├── maestro_project.Rproj
@@ -49,7 +86,7 @@ Pipelines are the jobs you want to automate, schedule, and monitor. For the most
 
 A pipeline is simply an R function with decorators called maestro tags. Maestro tags are special code comments used for communicating the scheduling and configuration of a pipeline to the orchestrator. Let's take a quick look at the sample `my_pipe.R`:
 
-```{r}
+```{r eval=FALSE}
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
@@ -96,7 +133,8 @@ my_pipe <- function() {
 
 A project with a single pipeline is ok, but in `maestro` is more useful when you have multiple jobs to run. You can add more pipelines to your pipelines directory manually or use `create_pipeline()`:
 
-```{r example-pipe, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+```{r example-pipe}
+#| eval: false
 create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",
@@ -115,7 +153,7 @@ The orchestrator is the process that schedules and monitors the pipelines.
 
 The orchestrator can be an R script, Quarto/RMarkdown doc, but here we'll use a regular R script. Here is where you'll run `maestro` functions. The two main functions are `build_schedule()` and `run_schedule()`.
 
-```{r orch, echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE}
+```{asciicast}
 library(maestro)
 
 schedule <- build_schedule()
@@ -131,3 +169,7 @@ Building the schedule gets `maestro` to look through the pipelines in the pipeli
 Importantly, it isn't `maestro`'s job to actually run it this often - it's *your* job to make sure it runs at that frequency (e.g., deploying it via cron or some cloud environment where code can be scheduled).[^1]
 
 [^1]: The decision around how often to run the orchestrator depends on the frequencies of the pipelines in the project. The simplest guideline is to take the frequency of your most often recurring pipeline and split that in half. So for example, if my most often running pipeline runs every 1 day then my orchestrator should run every 12 hours.
+
+```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
+unlink("pipelines", recursive = TRUE)
+```

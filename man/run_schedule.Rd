@@ -12,11 +12,12 @@ run_schedule(
   run_all = FALSE,
   n_show_next = 5,
   cores = 1,
-  logging = FALSE,
-  log_file = NULL,
+  logging = lifecycle::deprecated(),
+  log_file = lifecycle::deprecated(),
   log_file_max_bytes = 1e+06,
   quiet = FALSE,
-  log_to_console = FALSE
+  log_to_console = FALSE,
+  log_to_file = FALSE
 )
 }
 \arguments{
@@ -36,15 +37,17 @@ Does not apply to pipes with a \code{maestroSkip} tag.}
 \item{cores}{number of cpu cores to run if running in parallel. If > 1, \code{furrr} is used and
 a multisession plan must be executed in the orchestrator (see details)}
 
-\item{logging}{whether or not to write the logs to a file (default = \code{FALSE})}
+\item{logging}{whether or not to write the logs to a file (deprecated in 0.5.0 - use \code{log_to_file} and/or \code{log_to_console} arguments instead)}
 
-\item{log_file}{path to the log file (ignored if \code{logging == FALSE})}
+\item{log_file}{path to the log file (ignored if \code{log_to_file == FALSE}) (deprecated in 0.5.0 - use \code{log_to_file})}
 
 \item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 
 \item{quiet}{silence metrics to the console (default = \code{FALSE}). Note this does not affect messages generated from pipelines when \code{log_to_console = TRUE}.}
 
 \item{log_to_console}{whether or not to include pipeline messages, warnings, errors to the console (default = \code{FALSE}) (see Logging & Console Output section)}
+
+\item{log_to_file}{either a boolean to indicate whether to create and append to a \code{maestro.log} or a character path to a specific log file. If \code{FALSE} or \code{NULL} it will not log to a file.}
 }
 \value{
 MaestroSchedule object
@@ -94,8 +97,8 @@ due to the nature of how those functions operate with standard output.
 Users are advised to make use of R's \code{message()}, \code{warning()}, and \code{stop()} functions in their pipelines
 for managing conditions. Use \code{log_to_console = TRUE} to print these to the console.
 
-Maestro can generate a log file that is appended to each time the orchestrator is run. Use \code{logging = TRUE} and
-maestro will create a \code{maestro.log} file in the project directory (use \code{log_file} argument to specify an exact log file).
+Maestro can generate a log file that is appended to each time the orchestrator is run. Use \code{log_to_file = TRUE} or \code{log_to_file = '[path-to-file]'} and
+maestro will create/append to a file in the project directory.
 This log file will be appended to until it exceeds the byte size defined in \code{log_file_max_bytes} argument after which
 the log file is deleted.
 }

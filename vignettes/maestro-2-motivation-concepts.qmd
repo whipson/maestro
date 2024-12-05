@@ -1,9 +1,8 @@
 ---
 title: "Motivation and Concepts"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Motivation and Concepts}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -12,9 +11,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-
-```{r setup, echo = FALSE}
 ```
 
 ## What is maestro?

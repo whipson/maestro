@@ -14,5 +14,5 @@ my_etl <- function() {
 
   # Load - write to a location
   message("Writing")
-  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
+  # write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }

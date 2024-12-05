@@ -35,13 +35,17 @@ RoxygenNote: 7.3.2
 Depends: 
     R (>= 4.1.0)
 Suggests: 
+    asciicast,
     DiagrammeR,
     furrr,
     future,
     knitr,
+    quarto,
     rmarkdown,
     rstudioapi,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr,
+    quarto

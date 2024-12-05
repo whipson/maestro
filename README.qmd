@@ -1,29 +1,24 @@
 ---
 output: 
   github_document
+format: gfm
 always_allow_html: yes
+default-image-extension: ""
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE, cache = FALSE}
+#| echo: false
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%",
-  cache = TRUE,
-  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
+  out.width = "100%"
 )
-# knitr::opts_knit$set(root.dir = 'sample_project')
-Sys.setenv(CLI_TICK_TIME = "100")
 asciicast::init_knitr_engine(
-  startup = quote({
-    library(maestro)
-    set.seed(1) }),
   echo = TRUE,
   echo_input = FALSE
 )
+options(asciicast_theme = "pkgdown")
 ```
 
 # maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" alt="maestro website" align="right" height="138"/></a>
@@ -75,6 +70,8 @@ sample_project
     └── pipe2.R
 ```
 
+Use `maestro::create_maestro()` to easily create this project structure in a blank R project.
+
 Let's look at each of these in more detail.
 
 ### Pipelines
@@ -98,7 +95,7 @@ my_etl <- function() {
   
   # Load - write to a location
   message("Writing")
-  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
+  # write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }
 ```
 
@@ -127,7 +124,8 @@ schedule <- build_schedule(pipeline_dir = "pipelines")
 # Checks which pipelines are due to run and then executes them
 output <- run_schedule(
   schedule, 
-  orch_frequency = "1 day"
+  orch_frequency = "1 day", 
+  n_show_next = 0
 )
 ```
 

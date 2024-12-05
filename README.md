@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" alt="maestro website" align="right" height="138"/></a>
@@ -60,6 +61,9 @@ The project file structure will look like this:
         ├── pipe1.R
         └── pipe2.R
 
+Use `maestro::create_maestro()` to easily create this project structure
+in a blank R project.
+
 Let’s look at each of these in more detail.
 
 ### Pipelines
@@ -87,7 +91,7 @@ my_etl <- function() {
   
   # Load - write to a location
   message("Writing")
-  write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
+  # write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
 }
 ```
 
@@ -126,14 +130,13 @@ schedule <- build_schedule(pipeline_dir = "pipelines")
 # Checks which pipelines are due to run and then executes them
 output <- run_schedule(
   schedule, 
-  orch_frequency = "1 day"
+  orch_frequency = "1 day", 
+  n_show_next = 0
 )
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README-/unnamed-chunk-3-dark.svg">
-<img src="man/figures/README-/unnamed-chunk-3.svg" width="100%" />
-</picture>
+<img src="man/figures/README-/unnamed-chunk-3.svg"
+style="width:100.0%" />
 
 The function `build_schedule()` scours through all the pipelines in the
 project and builds a schedule. Then `run_schedule()` checks each

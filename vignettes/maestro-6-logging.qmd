@@ -1,0 +1,265 @@
+---
+title: "Logging"
+vignette: >
+  %\VignetteIndexEntry{Logging}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| echo: false
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  same_process = TRUE,
+  startup = quote({
+    library(maestro)
+    set.seed(1) 
+  })
+)
+options(asciicast_theme = "pkgdown")
+```
+
+Logging is critical for monitoring pipelines in a deployed environment. Logging is a way of tracking error messages, warnings, and other user generated informational messages. Maestro provides several options for logging these conditions from pipelines - logging to a file and/or logging to the console. Maestro leverages [logger](https://daroczig.github.io/logger/) for managing and formatting logs.
+
+## Conditions in R: Message, Warning, Error
+
+R has three types of conditions (increasing in severity): message, warning, and error. Maestro makes use of this system for reporting the statuses of pipelines and for managing logs. For this reason, we recommend using `message()` for adding informational logs to pipelines in contrast to `print()` and `cat()`.
+
+There are also several logging packages for R including `logger` and `logr`. As we'll see later, these can be integrated with maestro as well with some special modifications.
+
+## Log to File
+
+Maestro allows for a log file to be continuously appended to with pipeline logs. Conventionally, we give it a name of `maestro.log`, but this can be any text file. Here we create a sample set of 3 pipelines, one with a message, one with a warning, and another with an error.
+
+```{r}
+#| echo: false
+#| output: false
+dir.create("pipelines")
+writeLines(
+  "
+  #' @maestroFrequency hourly
+  hello <- function() {
+    message('hello')
+  }
+  
+  #' @maestroFrequency hourly
+  uhh <- function() {
+    warning('this could be a problem')
+  }
+  
+  #' @maestroFrequency hourly
+  oh_no <- function() {
+    stop('this is bad')
+  }",
+  con = "pipelines/logs.R"
+)
+```
+
+```{r}
+#| eval: false
+#' pipelines/logs.R
+#' @maestroFrequency hourly
+hello <- function() {
+  message('hello')
+}
+
+#' @maestroFrequency hourly
+uhh <- function() {
+  warning('this could be a problem')
+}
+
+#' @maestroFrequency hourly
+oh_no <- function() {
+  stop('this is bad')
+}
+```
+
+Now we run the orchestrator. For demo purposes, we'll set `run_all = TRUE` to allow all pipelines to run regardless of scheduling. We set `log_to_file = TRUE` argument to tell it to log to a file. This creates (and later appends to) a generic 'maestro.log' file in the project directory. We can see the typical output of a maestro schedule as the pipeline runs.
+
+```{asciicast}
+# orchestrator.R
+library(maestro)
+
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule, 
+  run_all = TRUE,
+  log_to_file = TRUE
+)
+```
+
+Now let's take a look at the log file. We can see the logs formatted with the name of the pipeline from where the message came, the type of log (INFO, WARN, or ERROR), the timestamp, and the message itself.
+
+```{asciicast}
+readLines("maestro.log")
+```
+
+## Log to Console
+
+We can also have the logs printed directly to the console using the `log_to_console` argument.
+
+```{asciicast}
+# orchestrator.R
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule, 
+  run_all = TRUE,
+  log_to_console = TRUE
+)
+```
+
+Now the logs have been interwoven with the output from maestro. Both logging options operate independently, so it is possible to log to a file and to the console.
+
+```{r}
+#| echo: false
+#| output: false
+file.remove("maestro.log")
+```
+
+## Log Levels
+
+Maestro uses the concept of log levels (also known as thresholds) to allow users to suppress logs that do not meet a severity threshold. If, for example, you were only concerned with error messages and wanted to ignore warnings and info messages, you would use the `maestroLogLevel` tag for the relevant pipelines.
+
+```{r}
+#| echo: false
+#| output: false
+unlink("pipelines", recursive = TRUE)
+dir.create("pipelines")
+writeLines(
+  "
+  #' @maestroFrequency hourly
+  #' @maestroLogLevel ERROR
+  hello <- function() {
+    message('hello')
+  }
+  
+  #' @maestroFrequency hourly
+  #' @maestroLogLevel ERROR
+  uhh <- function() {
+    warning('this could be a problem')
+  }
+  
+  #' @maestroFrequency hourly
+  #' @maestroLogLevel ERROR
+  oh_no <- function() {
+    stop('this is bad')
+  }",
+  con = "pipelines/logs.R"
+)
+```
+
+```{r}
+#| eval: false
+#' pipelines/logs.R
+#' @maestroFrequency hourly
+#' @maestroLogLevel ERROR
+hello <- function() {
+  message('hello')
+}
+
+#' @maestroFrequency hourly
+#' @maestroLogLevel ERROR
+uhh <- function() {
+  warning('this could be a problem')
+}
+
+#' @maestroFrequency hourly
+#' @maestroLogLevel ERROR
+oh_no <- function() {
+  stop('this is bad')
+}
+```
+
+Now, only the error messages are displayed and logged.
+
+```{asciicast}
+# orchestrator.R
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule, 
+  run_all = TRUE,
+  log_to_console = TRUE
+)
+```
+
+By default, pipelines use a log level of INFO, which means that all messages, warnings, and errors are logged.
+
+## Other Loggers
+
+If you wish to use other logging libraries, we recommend using [logger](https://daroczig.github.io/logger/). You can put these statements anywhere in your pipelines and they'll propagate into the logs that maestro uses. Best approach is to use the `namespace` argument and reference the name of the pipeline.
+
+```{r}
+#| echo: false
+#| output: false
+unlink("pipelines", recursive = TRUE)
+dir.create("pipelines")
+writeLines(
+  "
+  #' @maestroFrequency hourly
+  hello <- function() {
+    logger::log_info('hi', namespace = 'hello')
+  }
+  
+  #' @maestroFrequency hourly
+  uhh <- function() {
+    logger::log_warn('this could be a problem', namespace = 'uhh')
+  }
+  
+  #' @maestroFrequency hourly
+  oh_no <- function() {
+    logger::log_error('this is bad', namespace = 'oh_no')
+  }",
+  con = "pipelines/logs.R"
+)
+```
+
+```{r}
+#| eval: false
+#' pipelines/logs.R
+#' @maestroFrequency hourly
+hello <- function() {
+  logger::log_info("hi", namespace = "hello")
+}
+
+#' @maestroFrequency hourly
+uhh <- function() {
+  logger::log_warn("this could be a problem", namespace = "uhh")
+}
+
+#' @maestroFrequency hourly
+oh_no <- function() {
+  logger::log_error("this is bad", namespace = "oh_no")
+}
+```
+
+```{asciicast}
+# orchestrator.R
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule, 
+  run_all = TRUE,
+  log_to_console = TRUE
+)
+```
+
+Note that logger just creates messages and does not actually trigger conditions. This impacts how the statuses of pipelines appear. It is important to use match the namespace with the name of your pipeline (i.e., the function name) for the logs to appear in a log file.
+
+```{r cleanup}
+#| echo: false
+#| output: false
+unlink("pipelines", recursive = TRUE)
+file.remove("maestro.log")
+```

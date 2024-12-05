@@ -6,12 +6,33 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  same_process = TRUE,
+  startup = quote({
+    library(maestro)
+    set.seed(1) 
+  })
+)
+options(asciicast_theme = "pkgdown")
+```
+
 
 A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) or DAG is a kind of network graph where nodes are connected by edges, and these connections cannot loop back or cycle. Most data orchestration tools lay out a data pipeline as a DAG where data is passed from one function to the next until it reaches the end. This allows for more module, single-purpose functions and can make it easier to identify where errors are occurring.
 
 You can create DAG pipelines in maestro using the `maestroInputs` and/or `maestroOutputs` tags. Let's see this in action.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 dir.create("pipelines")
 writeLines(
   "
@@ -39,7 +60,7 @@ We'll create three simple pipelines. `start` outputs a vector, `high_road` takes
 
 Note the use of `.input` as a parameter for all pipelines that receive an input. It is important to have this here to enable the passing of data from inputs to outputs. It must be named `.input`.
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
 #' ./pipelines/dags.R
 #' @maestroOutputs high_road low_road
 start <- function() {
@@ -59,9 +80,8 @@ low_road <- function(.input) {
 
 Now we'll create and run the schedule. Notice that the output in the console will reflect the network structure of the DAG.
 
-```{r}
+```{asciicast}
 # ./orchestrator.R
-
 library(maestro)
 
 schedule <- build_schedule(quiet = TRUE)
@@ -70,11 +90,7 @@ status <- run_schedule(
   schedule,
   run_all = TRUE
 )
-```
 
-We can verify that it worked by obtaining the return values from the pipelines.
-
-```{r}
 get_artifacts(schedule)
 ```
 
@@ -82,7 +98,7 @@ get_artifacts(schedule)
 
 A great case for using DAGs is with ETL/ELT pipelines. Each component of extract, transform, and load could be a single element in the DAG. Consider the example on the home page:
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
 #' Example ETL pipeline
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
@@ -105,7 +121,7 @@ my_etl <- function() {
 
 It's pretty concise, so we probably wouldn't bother breaking it apart in practice, but let's do it for illustrative purposes (and also get rid of the messaging).
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 file.remove("pipelines/dags.R")
 dir.create("pipelines")
 writeLines(
@@ -132,7 +148,7 @@ writeLines(
 )
 ```
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
 #' @maestroOutputs transform
@@ -153,7 +169,9 @@ load <- function(.input) {
 }
 ```
 
-```{r}
+```{asciicast}
+library(maestro)
+
 schedule <- build_schedule(quiet = TRUE)
 
 status <- run_schedule(
@@ -164,7 +182,11 @@ status <- run_schedule(
 
 When developing these pipelines, it is helpful to visualize the dependency structure. We can do this by calling `show_network()` on the schedule:
 
-```{r}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(maestro)
+
+schedule <- build_schedule(quiet = TRUE)
+
 show_network(schedule)
 ```
 
