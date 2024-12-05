@@ -42,10 +42,6 @@ A fully realized `maestro` project involves the following components and actions
 
 ### Project Setup
 
-```{r}
-library(maestro)
-```
-
 Create a `maestro` project in an existing project or a new project using `create_maestro()` or the New Project wizard in RStudio. This creates the orchestrator script and the folder of pipelines with one sample pipeline. Your project should look something like this:
 
 ```{r}
@@ -135,7 +131,7 @@ my_pipe <- function() {
 A project with a single pipeline is ok, but in `maestro` is more useful when you have multiple jobs to run. You can add more pipelines to your pipelines directory manually or use `create_pipeline()`:
 
 ```{r example-pipe}
-#| echo: false
+#| eval: false
 create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",

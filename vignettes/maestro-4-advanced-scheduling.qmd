@@ -26,8 +26,6 @@ asciicast::init_knitr_engine(
   })
 )
 options(asciicast_theme = "pkgdown")
-
-library(maestro)
 ```
 
 This vignette covers more advanced concepts and examples related to scheduling. At it's core, maestro adheres to two keys principles:

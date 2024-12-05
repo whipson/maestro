@@ -25,8 +25,6 @@ asciicast::init_knitr_engine(
   })
 )
 options(asciicast_theme = "pkgdown")
-
-library(maestro)
 ```
 
 
@@ -95,22 +93,7 @@ status <- run_schedule(
   schedule,
   run_all = TRUE
 )
-```
 
-We can verify that it worked by obtaining the return values from the pipelines.
-
-```{r}
-#| echo: false
-#| output: false
-schedule <- build_schedule(quiet = TRUE)
-
-status <- run_schedule(
-  schedule,
-  run_all = TRUE
-)
-```
-
-```{r}
 get_artifacts(schedule)
 ```
 
@@ -194,6 +177,8 @@ load <- function(.input) {
 ```
 
 ```{asciicast}
+library(maestro)
+
 schedule <- build_schedule(quiet = TRUE)
 
 status <- run_schedule(
@@ -207,10 +192,10 @@ When developing these pipelines, it is helpful to visualize the dependency struc
 ```{r}
 #| echo: false
 #| output: false
-schedule <- build_schedule(quiet = TRUE)
-```
+library(maestro)
 
-```{r}
+schedule <- build_schedule(quiet = TRUE)
+
 show_network(schedule)
 ```
 
