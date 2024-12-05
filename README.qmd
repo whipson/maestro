@@ -3,6 +3,7 @@ output:
   github_document
 format: gfm
 always_allow_html: yes
+default-image-extension: ""
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
