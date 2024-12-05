@@ -1,12 +1,12 @@
 ---
 title: "Directed Acyclic Graphs (DAGs)"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Directed Acyclic Graphs (DAGs)}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-```{r}
-#| echo: false
+```{r echo=FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "",
@@ -32,9 +32,7 @@ A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 
 You can create DAG pipelines in maestro using the `maestroInputs` and/or `maestroOutputs` tags. Let's see this in action.
 
-```{r}
-#| echo: false
-#| output: false
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 dir.create("pipelines")
 writeLines(
   "
@@ -62,8 +60,7 @@ We'll create three simple pipelines. `start` outputs a vector, `high_road` takes
 
 Note the use of `.input` as a parameter for all pipelines that receive an input. It is important to have this here to enable the passing of data from inputs to outputs. It must be named `.input`.
 
-```{r}
-#| eval: false
+```{r eval=FALSE}
 #' ./pipelines/dags.R
 #' @maestroOutputs high_road low_road
 start <- function() {
@@ -101,8 +98,7 @@ get_artifacts(schedule)
 
 A great case for using DAGs is with ETL/ELT pipelines. Each component of extract, transform, and load could be a single element in the DAG. Consider the example on the home page:
 
-```{r}
-#| eval: false
+```{r eval=FALSE}
 #' Example ETL pipeline
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
@@ -125,9 +121,7 @@ my_etl <- function() {
 
 It's pretty concise, so we probably wouldn't bother breaking it apart in practice, but let's do it for illustrative purposes (and also get rid of the messaging).
 
-```{r}
-#| echo: false
-#| output: false
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 file.remove("pipelines/dags.R")
 dir.create("pipelines")
 writeLines(
@@ -154,8 +148,7 @@ writeLines(
 )
 ```
 
-```{r}
-#| eval: false
+```{r eval=FALSE}
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
 #' @maestroOutputs transform
@@ -189,9 +182,7 @@ status <- run_schedule(
 
 When developing these pipelines, it is helpful to visualize the dependency structure. We can do this by calling `show_network()` on the schedule:
 
-```{r}
-#| echo: false
-#| output: false
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 library(maestro)
 
 schedule <- build_schedule(quiet = TRUE)

@@ -16,11 +16,6 @@ This pipeline is an example of a standard *extract transform load* (ETL) workflo
 
 This example is setup as a simple set of tasks creating objects that are used in the next series of tasks. All components of the pipeline are within the `pipeline_wildfire_hourly` function, which has no parameters.
 
-```{r}
-library(maestro)
-```
-
-
 ```{r eval = FALSE, message = FALSE, warning = FALSE}
 #' pipeline_wildfire_hourly maestro pipeline
 #'

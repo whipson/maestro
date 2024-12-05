@@ -1,8 +1,9 @@
 ---
 title: "Quick Start"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quick Start}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -49,9 +50,7 @@ library(maestro)
 
 Create a `maestro` project in an existing project or a new project using `create_maestro()` or the New Project wizard in RStudio. This creates the orchestrator script and the folder of pipelines with one sample pipeline. Your project should look something like this:
 
-```{r}
-#| echo: false
-#| output: false
+```{r echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
 dir.create("pipelines")
 writeLines(
   "
@@ -87,8 +86,7 @@ Pipelines are the jobs you want to automate, schedule, and monitor. For the most
 
 A pipeline is simply an R function with decorators called maestro tags. Maestro tags are special code comments used for communicating the scheduling and configuration of a pipeline to the orchestrator. Let's take a quick look at the sample `my_pipe.R`:
 
-```{r}
-#| eval: false
+```{r eval=FALSE}
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
