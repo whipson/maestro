@@ -41,9 +41,11 @@ Suggests:
     future,
     knitr,
     quarto,
+    rmarkdown,
     rstudioapi,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
 VignetteBuilder: 
+    knitr,
     quarto

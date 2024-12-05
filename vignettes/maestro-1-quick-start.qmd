@@ -8,9 +8,19 @@ vignette: >
 
 ```{r}
 #| echo: false
+
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
 asciicast::init_knitr_engine(
   echo = TRUE,
-  echo_input = FALSE
+  echo_input = FALSE,
+  same_process = TRUE,
 )
 options(asciicast_theme = "pkgdown")
 ```
@@ -120,7 +130,8 @@ my_pipe <- function() {
 
 A project with a single pipeline is ok, but in `maestro` is more useful when you have multiple jobs to run. You can add more pipelines to your pipelines directory manually or use `create_pipeline()`:
 
-```{r example-pipe, echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE}
+```{r example-pipe}
+#| echo: false
 create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",

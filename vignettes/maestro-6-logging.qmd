@@ -8,9 +8,18 @@ vignette: >
 
 ```{r}
 #| echo: false
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
 asciicast::init_knitr_engine(
   echo = TRUE,
-  echo_input = FALSE
+  echo_input = FALSE,
+  same_process = TRUE,
 )
 options(asciicast_theme = "pkgdown")
 ```

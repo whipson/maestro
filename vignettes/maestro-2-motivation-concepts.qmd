@@ -13,9 +13,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, echo = FALSE}
-```
-
 ## What is maestro?
 
 `maestro` is an R package for creating and orchestrating many data pipelines in R. If you have several batch jobs/pipelines that you want to schedule and monitor from within a single R project, then `maestro` is for you. All you do is *decorate* R functions with special `roxygen2` tags and then execute an orchestrator script:
