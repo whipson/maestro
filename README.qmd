@@ -124,8 +124,7 @@ schedule <- build_schedule(pipeline_dir = "pipelines")
 # Checks which pipelines are due to run and then executes them
 output <- run_schedule(
   schedule, 
-  orch_frequency = "1 day", 
-  n_show_next = 0
+  orch_frequency = "1 day"
 )
 ```
 
