@@ -30,7 +30,7 @@ weekly <- function() {
 }
 
 #' @maestroStartTime 5000-12-12 10:10:10
-#' @maestroFrequency 30 seconds
+#' @maestroFrequency 1 day
 way_in_the_future <- function() {
   invisible()
 }

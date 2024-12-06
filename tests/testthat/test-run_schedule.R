@@ -11,7 +11,8 @@ test_that("run_schedule works on different kinds of frequencies", {
       run_schedule(
         schedule,
         orch_frequency = .x
-      )
+      ) |>
+        suppressWarnings()
     })
   })
 }) |>
@@ -26,13 +27,15 @@ test_that("run_schedule errors if check_datetime is not a timestamp", {
     run_schedule(
       schedule,
       check_datetime = "a"
-    )
+    ),
+    regexp = "must be a"
   )
 
   # But Dates work
   expect_no_error(
     run_schedule(
       schedule,
+      orch_frequency = "hourly",
       check_datetime = as.Date("2024-01-01")
     )
   )
@@ -44,7 +47,7 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
     suppressMessages()
 
   expect_no_message({
-    run_schedule(schedule, run_all = TRUE, quiet = TRUE)
+    run_schedule(schedule, orch_frequency = "hourly", run_all = TRUE, quiet = TRUE)
   })
 
   expect_type(last_run_messages(), "list")
@@ -76,7 +79,8 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     orch_frequency = "1 month",
     check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
     quiet = TRUE
-  )
+  ) |>
+    suppressWarnings()
   status <- output$get_status()
 
   expect_snapshot(
@@ -91,7 +95,8 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     orch_frequency = "4 days",
     check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
     quiet = TRUE
-  )
+  ) |>
+    suppressWarnings()
   status <- output$get_status()
 
   expect_snapshot(
@@ -224,23 +229,41 @@ test_that("errors if resources are unnamed or non unique", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
 
   expect_error({
-    run_schedule(schedule, resources = list(1))
+    run_schedule(schedule, orch_frequency = "hourly", resources = list(1))
   }, regexp = "All elements")
 
   expect_error({
-    run_schedule(schedule, resources = list(a = 1, a = 2))
+    run_schedule(schedule, orch_frequency = "hourly", resources = list(a = 1, a = 2))
   }, regexp = "All elements")
 })
 
 test_that("deprecation for logging arguments", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
-  expect_warning({
-    run_schedule(schedule, logging = TRUE)
+  withr::with_tempdir({
+    expect_warning({
+      run_schedule(schedule, orch_frequency = "hourly", logging = TRUE)
+    })
   })
 
+  withr::with_tempdir({
+    expect_warning({
+      run_schedule(schedule, orch_frequency = "hourly", log_file = "asdas")
+    })
+  })
+}) |>
+  suppressMessages()
+
+test_that("warns if the orch frequency is less than the highest pipe frequency", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
   expect_warning({
-    run_schedule(schedule, log_file = "asdas")
+    run_schedule(schedule, orch_frequency = "daily")
+  })
+
+  # Unless run_all = TRUE
+  expect_no_warning({
+    run_schedule(schedule, orch_frequency = "daily", run_all = TRUE)
   })
 }) |>
   suppressMessages()

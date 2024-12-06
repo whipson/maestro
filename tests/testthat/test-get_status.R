@@ -1,6 +1,6 @@
 test_that("get_status returns a data.frame", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
-  schedule <- run_schedule(schedule)
+  schedule <- run_schedule(schedule, orch_frequency = "hourly")
 
   expect_s3_class(
     get_status(schedule),

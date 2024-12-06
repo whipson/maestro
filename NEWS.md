@@ -10,9 +10,15 @@
 
 - `run_schedule()` arguments `logging` and `log_file` are deprecated. Use `log_to_file = TRUE` to log to a generic maestro.log file or `log_to_file = '[path-to-your-log-file]'` to log to a specific text file.
 
+### Minor changes
+
+- `run_schedule()` now warns if the unit of `orch_frequency` is lower frequency than the highest frequency pipeline in the project.
+
 ### Bug fixes
 
 - Message and warning counts are now properly displayed in the status and output of `run_schedule()`, as well as in `last_run_messages()` and `last_run_warnings()`, even if they are below the `maestroLogLevel`.
+
+- Fixed display of `run_schedule()` to have more accurate next run times for pipelines. This issue was evident when running orchestrator on a frequency of daily or lower.
 
 # maestro 0.4.1
 

@@ -222,3 +222,24 @@ is_valid_dag <- function(edges) {
 
   is_dag
 }
+
+standardize_units <- function(unit) {
+  dplyr::case_match(
+    unit,
+    c("second", "seconds", "sec", "secs") ~ "second",
+    c("minute", "minutes", "min", "mins") ~ "minute",
+    c("hour", "hours") ~ "hour",
+    c("day", "days") ~ "day",
+    c("week", "weeks") ~ "week",
+    c("month", "months") ~ "month",
+    c("quarter", "quarters") ~ "quarter",
+    c("year", "years") ~ "year"
+  )
+}
+
+units_lt_units <- function(u1, u2) {
+  order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
+  u1_ord <- factor(u1, levels = order, ordered = TRUE)
+  u2_ord <- factor(u2, levels = order, ordered = TRUE)
+  u1_ord < u2_ord
+}

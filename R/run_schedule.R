@@ -135,6 +135,10 @@ run_schedule <- function(
     )
   }
 
+  if (!(lubridate::is.Date(check_datetime) | lubridate::is.POSIXct(check_datetime))) {
+    cli::cli_abort("`check_datetime` must be a {.cls Date} or {.cls POSIXct} type.")
+  }
+
   # Get the orchestrator nunits
   orch_nunits <- tryCatch({
     parse_rounding_unit(orch_frequency)
@@ -162,6 +166,28 @@ run_schedule <- function(
       call = NULL
     )
   })
+
+  # Warn if running the orchestrator less frequent than the highest frequency pipeline
+  sch <- get_schedule(schedule)
+
+  if (nrow(sch) > 0 && !run_all) {
+    sch_nunits <- sch |>
+      dplyr::select(pipe_name, frequency_n, frequency_unit) |>
+      dplyr::filter(!is.na(frequency_n))
+    sch_units_lt_orch_unit <- units_lt_units(sch_nunits$frequency_unit, standardize_units(orch_nunits$unit))
+    if (any(sch_units_lt_orch_unit)) {
+      which_sch_nunits_lt_orch_unit <- sch_nunits[sch_units_lt_orch_unit,]
+      offending_pipe_names <- which_sch_nunits_lt_orch_unit$pipe_name
+      offending_pipe_units <- which_sch_nunits_lt_orch_unit$frequency_unit
+      cli::cli_warn(
+        c(
+          "Pipeline{?s} {.pkg {offending_pipe_names}} {?has/have} {? a frequency/frequencies} higher (i.e., more often)
+        than the frequency of the orchestrator. This means the pipeline{?s} will not run as frequently as specified.",
+          "i" = "Consider increasing the frequency of the orchestrator or decreasing the pipeline frequency."
+        )
+      )
+    }
+  }
 
   # Check if we're logging to a file
   if (!rlang::is_scalar_logical(log_to_file) && !rlang::is_scalar_character(log_to_file)) {
