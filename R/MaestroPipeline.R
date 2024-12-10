@@ -213,15 +213,15 @@ MaestroPipeline <- R6::R6Class(
     #' @return data.frame
     get_schedule = function() {
       dplyr::tibble(
-        script_path = private$script_path,
-        pipe_name = private$pipe_name,
-        frequency = private$frequency,
-        start_time = private$start_time,
-        tz = private$tz,
-        skip = private$skip,
-        log_level = private$log_level,
-        frequency_n = private$frequency_n,
-        frequency_unit = private$frequency_unit
+        script_path = private$script_path %n% character(),
+        pipe_name = private$pipe_name %n% character(),
+        frequency = private$frequency %n% character(),
+        start_time = private$start_time %n% lubridate::POSIXct(),
+        tz = private$tz %n% character(),
+        skip = private$skip %n% logical(),
+        log_level = private$log_level %n% character(),
+        frequency_n = private$frequency_n %n% integer(),
+        frequency_unit = private$frequency_unit %n% character()
       )
     },
 
@@ -268,7 +268,7 @@ MaestroPipeline <- R6::R6Class(
         pipeline_months = private$months
       )
 
-      next_run <- purrr::pluck(future_sequence, 2)
+      next_run <- future_sequence[future_sequence > check_datetime][[1]]
 
       if (is.null(next_run)) {
         pipeline_frequency_seconds <- convert_to_seconds(paste(private$frequency_n, private$frequency_unit))
