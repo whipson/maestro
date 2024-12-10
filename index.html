@@ -161,8 +161,7 @@
 <span><span class="co"># Checks which pipelines are due to run and then executes them</span></span>
 <span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>, </span>
-<span>  orch_frequency <span class="op">=</span> <span class="st">"1 day"</span>, </span>
-<span>  n_show_next <span class="op">=</span> <span class="fl">0</span></span>
+<span>  orch_frequency <span class="op">=</span> <span class="st">"1 day"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-/unnamed-chunk-3.svg" style="width:100.0%"></p>
 <p>The function <code><a href="reference/build_schedule.html">build_schedule()</a></code> scours through all the pipelines in the project and builds a schedule. Then <code><a href="reference/run_schedule.html">run_schedule()</a></code> checks each pipeline’s scheduled time against the system time within some margin of rounding and calls those pipelines to run.</p>

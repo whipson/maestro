@@ -62,8 +62,14 @@
 <code><a href="../reference/run_schedule.html">run_schedule()</a></code> arguments <code>logging</code> and <code>log_file</code> are deprecated. Use <code>log_to_file = TRUE</code> to log to a generic maestro.log file or <code>log_to_file = '[path-to-your-log-file]'</code> to log to a specific text file.</li>
 </ul></div>
 <div class="section level4">
+<h4 id="minor-changes-0-5-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-5-0-9000"></a></h4>
+<ul><li>
+<code><a href="../reference/run_schedule.html">run_schedule()</a></code> now warns if the unit of <code>orch_frequency</code> is lower frequency than the highest frequency pipeline in the project.</li>
+</ul></div>
+<div class="section level4">
 <h4 id="bug-fixes-0-5-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0-9000"></a></h4>
-<ul><li>Message and warning counts are now properly displayed in the status and output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, as well as in <code><a href="../reference/last_run_messages.html">last_run_messages()</a></code> and <code><a href="../reference/last_run_warnings.html">last_run_warnings()</a></code>, even if they are below the <code>maestroLogLevel</code>.</li>
+<ul><li><p>Message and warning counts are now properly displayed in the status and output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, as well as in <code><a href="../reference/last_run_messages.html">last_run_messages()</a></code> and <code><a href="../reference/last_run_warnings.html">last_run_warnings()</a></code>, even if they are below the <code>maestroLogLevel</code>.</p></li>
+<li><p>Fixed display of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> to have more accurate next run times for pipelines. This issue was evident when running orchestrator on a frequency of daily or lower.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
