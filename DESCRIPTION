@@ -36,14 +36,17 @@ Depends:
     R (>= 4.1.0)
 Suggests: 
     asciicast,
+    connectapi,
     DiagrammeR,
     furrr,
     future,
     knitr,
     quarto,
     rmarkdown,
+    rsconnect,
     rstudioapi,
     testthat (>= 3.0.0),
+    tools,
     withr
 Config/testthat/edition: 3
 VignetteBuilder: 
