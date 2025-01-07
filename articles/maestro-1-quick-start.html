@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,6 +86,8 @@
 
     
     
+<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
 <p>A common task in data engineering is to automate, schedule, and
 monitor multiple data processing pipelines. This is called
 <strong>orchestration</strong>. <code>maestro</code> is an R package
@@ -103,7 +105,7 @@ Posit Connect).</p></li>
 <div class="section level3">
 <h3 id="project-setup">Project Setup<a class="anchor" aria-label="anchor" href="#project-setup"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span></code></pre></div>
 <p>Create a <code>maestro</code> project in an existing project or a new
 project using <code><a href="../reference/create_maestro.html">create_maestro()</a></code> or the New Project wizard in
@@ -130,7 +132,7 @@ of comments.</p>
 tags. Maestro tags are special code comments used for communicating the
 scheduling and configuration of a pipeline to the orchestrator. Let’s
 take a quick look at the sample <code>my_pipe.R</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
@@ -160,7 +162,7 @@ and load it into a file system or database). In technical terms, it’s
 the <em>side effect</em> of the code and not its return value that is
 important.</p>
 <p>Here’s a more realistic, albeit impractical, example:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
@@ -185,7 +187,7 @@ important.</p>
 is more useful when you have multiple jobs to run. You can add more
 pipelines to your pipelines directory manually or use
 <code><a href="../reference/create_pipeline.html">create_pipeline()</a></code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/create_pipeline.html">create_pipeline</a></span><span class="op">(</span></span>
 <span>  pipe_name <span class="op">=</span> <span class="st">"another_pipeline"</span>,</span>
 <span>  pipeline_dir <span class="op">=</span> <span class="st">"pipelines"</span>,</span>
@@ -208,7 +210,7 @@ pipelines.</p>
 we’ll use a regular R script. Here is where you’ll run
 <code>maestro</code> functions. The two main functions are
 <code><a href="../reference/build_schedule.html">build_schedule()</a></code> and <code><a href="../reference/run_schedule.html">run_schedule()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -219,19 +221,21 @@ we’ll use a regular R script. Here is where you’ll run
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
+Error in get(paste0(generic, ".", class), envir = get_method_env()) :           
+  object 'type_sum.accel' not found                                             
 <span style="color: #2AA198;">ℹ</span> 1 script successfully parsed                                                  
                                                                                 
-── [2024-12-10 13:14:59]                                                        
+── [2025-01-07 13:33:27]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
                                                                                 
-── [2024-12-10 13:14:59]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.021 sec elapsed                              
+── [2025-01-07 13:33:27]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.02 sec elapsed                               
 <span style="color: #859900;">✔</span> 0 successes | <span style="color: #073642;">→</span> 1 skipped | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• my_pipe | 2024-12-11                                                          
+• my_pipe | 2025-01-08                                                          
 </pre>
 </div>
 <p>Building the schedule gets <code>maestro</code> to look through the

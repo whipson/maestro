@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1></h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Motivation and Concepts</h1>
 
 
 
@@ -90,17 +90,17 @@
 
 
 
-    <header id="title-block-header" class="quarto-title-block"><h1 class="title">Motivation and Concepts</h1></header><section class="section level3"><h3 id="what-is-maestro">What is maestro?<a class="anchor" aria-label="anchor" href="#what-is-maestro"></a>
-</h3>
+    <section class="level2"><h2 id="what-is-maestro">What is maestro?<a class="anchor" aria-label="anchor" href="#what-is-maestro"></a>
+</h2>
 <p><code>maestro</code> is an R package for creating and orchestrating many data pipelines in R. If you have several batch jobs/pipelines that you want to schedule and monitor from within a single R project, then <code>maestro</code> is for you. All you do is <em>decorate</em> R functions with special <code>roxygen2</code> tags and then execute an orchestrator script:</p>
-</section><section class="section level3"><h3 id="why-do-i-need-maestro">Why do I need maestro?<a class="anchor" aria-label="anchor" href="#why-do-i-need-maestro"></a>
-</h3>
+</section><section class="level2"><h2 id="why-do-i-need-maestro">Why do I need maestro?<a class="anchor" aria-label="anchor" href="#why-do-i-need-maestro"></a>
+</h2>
 <p>Running data pipelines is an essential component of data engineering. It is not unusual to have dozens of pipelines that need to run at different frequencies, and when you go to deploy these pipelines scheduling and monitoring them quickly becomes unwieldy. Perhaps you’ve considered moving to heftier orchestration suites such as Airflow, Dagster, and others which require learning entirely new skills and pose their own challenges with deployment. <code>maestro</code> allows you to orchestrate your pipelines entirely in R. All you then need is an environment to deploy your <code>maestro</code> project.</p>
-</section><section class="section level3"><h3 id="pipelines">Pipelines<a class="anchor" aria-label="anchor" href="#pipelines"></a>
-</h3>
+</section><section class="level2"><h2 id="pipelines">Pipelines<a class="anchor" aria-label="anchor" href="#pipelines"></a>
+</h2>
 <p>A pipeline is some process that takes raw data (often from an external source) and moves it somewhere else often transforming it along the way. Think of a pipeline as a factory assembly line where data is the raw material. As this data travels along the pipeline, it undergoes various transformations—such as cleaning, aggregation, and analysis—making it increasingly refined and valuable. The refined product is then stored in a new location where it can be used either by an end consumer or another pipeline. The prototypical type of pipeline in data engineering is ETL (<strong>E</strong>xtract, <strong>T</strong>ransform, <strong>L</strong>oad), where data is extracted from a source, transformed, then loaded into storage.</p>
-<section class="level3"><h4 id="scheduled-batch-processing">Scheduled Batch Processing<a class="anchor" aria-label="anchor" href="#scheduled-batch-processing"></a>
-</h4>
+<section class="level3"><h3 id="scheduled-batch-processing">Scheduled Batch Processing<a class="anchor" aria-label="anchor" href="#scheduled-batch-processing"></a>
+</h3>
 <p>The pipeline needs to run regularly and automatically to process new data. Most analytic workloads undergo batch processing - the processing of data in discrete timed batches. In scheduled batch processing, you as the engineer decide how often you want your pipeline to run (every day at 12:00?, every hour on the 15th minute?).</p>
 <p>In <code>maestro</code> a pipeline is an R function with <code>roxygen2</code> comments for scheduling and configuration:</p>
 <div class="cell">
@@ -120,11 +120,11 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">random_data</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
-</section></section><section class="section level3"><h3 id="orchestrator">Orchestrator<a class="anchor" aria-label="anchor" href="#orchestrator"></a>
-</h3>
+</section></section><section class="level2"><h2 id="orchestrator">Orchestrator<a class="anchor" aria-label="anchor" href="#orchestrator"></a>
+</h2>
 <p>An orchestrator is a process that triggers pipelines to run. Think of it as the factory manager who turns on various assembly lines as needed. It also monitors all the pipelines to ensure smooth operation. Just like the factory manager, the orchestrator operates in “shifts” and so needs to be scheduled to perform it’s job too.</p>
-<section class="level3"><h4 id="rounded-scheduling">Rounded Scheduling<a class="anchor" aria-label="anchor" href="#rounded-scheduling"></a>
-</h4>
+<section class="level3"><h3 id="rounded-scheduling">Rounded Scheduling<a class="anchor" aria-label="anchor" href="#rounded-scheduling"></a>
+</h3>
 <p>Importantly, <code>maestro</code> needs to know how often you’re going to run the orchestrator. Unlike most orchestration tools out there, <code>maestro</code> isn’t intended to be continuously running, which saves you on compute resources. But this means that pipelines won’t necessarily run <em>exactly</em> when they’re scheduled to. This is a concept we call <em>rounded scheduling.</em></p>
 <p>Let’s say we have a pipeline scheduled to run hourly on the 02 minute mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every hour on the 00 minute. When the orchestrator runs, it’ll be slightly before the pipeline scheduled time, but it’ll trigger the pipeline anyway because it’s close enough within the frequency of the orchestrator. If instead our orchestrator ran every 15 minutes, it’d still only execute the pipeline once in the hour. But if we underprovisioned the orchestrator and ran it only every day, then the pipeline would only execute once a day. So an important guideline is that the orchestrator needs to run at least as frequency as your highest frequency pipeline.</p>
 <p>In <code>maestro</code> an orchestrator is an R script or Quarto like this:</p>
@@ -140,31 +140,31 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>By passing the <code>orch_frequency = "1 hour"</code> to <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, we’re saying that we intend to run the orchestrator every 1 hour.</p>
-</section></section><section class="section level3"><h3 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>
+</section></section><section class="level2"><h2 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>
+</h2>
+<section class="level3"><h3 id="r-targets">{R} targets<a class="anchor" aria-label="anchor" href="#r-targets"></a>
 </h3>
-<section class="level3"><h4 id="r-targets">{R} targets<a class="anchor" aria-label="anchor" href="#r-targets"></a>
-</h4>
 <p><a href="https://docs.ropensci.org/targets/index.html" class="external-link">targets</a> is a “pipeline tool for statistics and data science in R”. If you have multiple connected components of a pipeline, <code>targets</code> skips computation of tasks that are up-to-date. <code>targets</code> seems to be primarily used for projects with a single output (e.g., model, document) where there are multiple steps that cumulatively take a long time to complete. In contrast, <code>maestro</code> is focused on projects with multiple <em>independent</em> pipelines. Moreover, <code>maestro</code> pipelines are primarily used when the <em>up-to-dateness</em> of the source data is unknown (e.g., coming from an API or database), unlike in <code>targets</code> where it determines the <em>up-to-dateness</em> based on the contents of a file.</p>
-</section><section class="level3"><h4 id="python-dagster">{Python} dagster<a class="anchor" aria-label="anchor" href="#python-dagster"></a>
-</h4>
+</section><section class="level3"><h3 id="python-dagster">{Python} dagster<a class="anchor" aria-label="anchor" href="#python-dagster"></a>
+</h3>
 <p><a href="https://dagster.io/" class="external-link">Dagster</a> is an “open source orchestration platform for the development, production, and observation of data assets”. Like <code>maestro</code>, dagster uses decorators (special comments) to configure <em>data assets</em> (functions). Unlike <code>maestro</code>, dagster is primarily for chaining together dependent components of a multi-step pipeline - a DAG. It also supports a developer UI and is more fully developed than <code>maestro</code> at the current time.</p>
 <p>DAGs are supported in <code>maestro</code> by defining <code>maestroInputs</code> and <code>maestroOutputs</code> tags, but <code>maestro</code> is still predominately geared toward projects with multiple pipelines running simultaneously or on different schedules.</p>
-</section></section><section class="section level3"><h3 id="when-to-not-use-maestro">When to not use maestro?<a class="anchor" aria-label="anchor" href="#when-to-not-use-maestro"></a>
-</h3>
+</section></section><section class="level2"><h2 id="when-to-not-use-maestro">When to not use maestro?<a class="anchor" aria-label="anchor" href="#when-to-not-use-maestro"></a>
+</h2>
 <p>While <code>maestro</code> can be used for almost any data engineering task that can be performed in R, there are cases where it is less appropriate to use it.</p>
-<section class="level3"><h4 id="streaming-and-event-driven">Streaming and Event-driven<a class="anchor" aria-label="anchor" href="#streaming-and-event-driven"></a>
-</h4>
+<section class="level3"><h3 id="streaming-and-event-driven">Streaming and Event-driven<a class="anchor" aria-label="anchor" href="#streaming-and-event-driven"></a>
+</h3>
 <p><code>maestro</code> does not support streaming (i.e., continuous) or event-driven pipelines. Only batch processes can be run in <code>maestro</code>.</p>
-</section><section class="level3"><h4 id="hundreds-of-pipelines">Hundreds of pipelines<a class="anchor" aria-label="anchor" href="#hundreds-of-pipelines"></a>
-</h4>
+</section><section class="level3"><h3 id="hundreds-of-pipelines">Hundreds of pipelines<a class="anchor" aria-label="anchor" href="#hundreds-of-pipelines"></a>
+</h3>
 <p>Although there is no hard limit to the number of pipelines you can run in <code>maestro</code> (and there are ways of maximizing its efficiency as the number of pipelines increases, such as using multiple cores), we advise against using <code>maestro</code> to run <em>this</em> many pipelines - at least not in a single project. There are several reasons for this: (1) the orchestrator execution time will be become a problem even with multiple cores; (2) organizing and keeping track of this many pipelines in a single R project becomes difficult; (3) the number of dependencies to manage in the project will likely balloon.</p>
 <p>If you wish to continue using <code>maestro</code> in this scenario, then our recommendation is to split the jobs into multiple projects all running on <code>maestro</code>.</p>
 <p>Nevertheless, if you have hundreds of jobs to run it’s likely an indicator that your enterprise has matured out of <code>maestro</code> into something a bit more sophisticated.</p>
-</section><section class="level3"><h4 id="high-frequency-jobs">High frequency jobs<a class="anchor" aria-label="anchor" href="#high-frequency-jobs"></a>
-</h4>
+</section><section class="level3"><h3 id="high-frequency-jobs">High frequency jobs<a class="anchor" aria-label="anchor" href="#high-frequency-jobs"></a>
+</h3>
 <p>If you have pipelines that need to run every minute or less you may want to look for a solution that supports near real time or real time data processing. The orchestrator may have trouble keeping up if it’s scheduled to run this often.</p>
-</section><section class="level3"><h4 id="multiple-languages-r-python">Multiple languages (R + Python)<a class="anchor" aria-label="anchor" href="#multiple-languages-r-python"></a>
-</h4>
+</section><section class="level3"><h3 id="multiple-languages-r-python">Multiple languages (R + Python)<a class="anchor" aria-label="anchor" href="#multiple-languages-r-python"></a>
+</h3>
 <p><code>maestro</code> is for R pipelines only. Using <code>reticulate</code> may help with Python in a pinch though.</p>
 </section></section><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

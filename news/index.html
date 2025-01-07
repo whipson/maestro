@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,24 +50,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.0.9000" id="maestro-0509000">maestro 0.5.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0509000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="maestro-050">maestro 0.5.0<a class="anchor" aria-label="anchor" href="#maestro-050"></a></h2>
 <div class="section level4">
-<h4 id="new-features-0-5-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0-9000"></a></h4>
+<h4 id="new-features-0-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-0"></a></h4>
 <ul><li><p>Pipeline errors, warnings, and messages can now be printed to the console using <code>run_schedule(log_to_console = TRUE)</code>. These logs will be interwoven between messages created by <code>maestro</code> (<a href="https://github.com/whipson/maestro/issues/130" class="external-link">#130</a>).</p></li>
 <li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> gains <code>log_to_file</code> argument to specify whether to log to a file (replaces <code>logging</code> and <code>log_file</code> arguments).</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="deprecated-functionality-0-5-0-9000">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-0-5-0-9000"></a></h4>
+<h4 id="deprecated-functionality-0-5-0">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-0-5-0"></a></h4>
 <ul><li>
 <code><a href="../reference/run_schedule.html">run_schedule()</a></code> arguments <code>logging</code> and <code>log_file</code> are deprecated. Use <code>log_to_file = TRUE</code> to log to a generic maestro.log file or <code>log_to_file = '[path-to-your-log-file]'</code> to log to a specific text file.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="minor-changes-0-5-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-5-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/run_schedule.html">run_schedule()</a></code> now warns if the unit of <code>orch_frequency</code> is lower frequency than the highest frequency pipeline in the project.</li>
+<h4 id="minor-changes-0-5-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-5-0"></a></h4>
+<ul><li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> now warns if the unit of <code>orch_frequency</code> is lower frequency than the highest frequency pipeline in the project.</p></li>
+<li><p><code><a href="../reference/run_schedule.html">run_schedule()</a></code> enforces a minimum <code>orch_frequency</code> of 1 year (e.g., ‘2 years’ or more no longer valid).</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-5-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0-9000"></a></h4>
+<h4 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h4>
 <ul><li><p>Message and warning counts are now properly displayed in the status and output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, as well as in <code><a href="../reference/last_run_messages.html">last_run_messages()</a></code> and <code><a href="../reference/last_run_warnings.html">last_run_warnings()</a></code>, even if they are below the <code>maestroLogLevel</code>.</p></li>
 <li><p>Fixed display of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> to have more accurate next run times for pipelines. This issue was evident when running orchestrator on a frequency of daily or lower.</p></li>
 </ul></div>
