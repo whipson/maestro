@@ -152,6 +152,14 @@ run_schedule <- function(
     )
   })
 
+  # Enforce minimum orch frequency of 1 year
+  if (orch_nunits$unit == "year" && orch_nunits$n > 1) {
+    cli::cli_abort(
+      "Invalid `orch_frequency` {orch_frequency}. Minimum frequency is 1 year.",
+      call = NULL
+    )
+  }
+
   # Additional parse using timechange to verify it isn't something like 500 days,
   # which isn't understood by timechange
   tryCatch({
