@@ -1,4 +1,4 @@
-# maestro 0.5.0.9000
+# maestro 0.5.0
 
 ### New features
 
@@ -13,6 +13,8 @@
 ### Minor changes
 
 - `run_schedule()` now warns if the unit of `orch_frequency` is lower frequency than the highest frequency pipeline in the project.
+
+- `run_schedule()` enforces a minimum `orch_frequency` of 1 year (e.g., '2 years' or more no longer valid).
 
 ### Bug fixes
 
