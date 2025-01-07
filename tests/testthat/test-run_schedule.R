@@ -3,7 +3,7 @@ test_that("run_schedule works on different kinds of frequencies", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
-                  "1 quarter", "12 months", "4 years", "24 hours",
+                  "1 quarter", "12 months", "1 years", "24 hours",
                   "31 days", "1 secs", "50 seconds", "daily", "hourly", "weekly")
 
   purrr::walk(test_freqs, ~{
@@ -267,3 +267,13 @@ test_that("warns if the orch frequency is less than the highest pipe frequency",
   })
 }) |>
   suppressMessages()
+
+test_that("errors if orch_frequency is less than 1 year", {
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+  expect_error({
+    run_schedule(
+      schedule,
+      orch_frequency = "2 years"
+    )
+  }, regexp = "Invalid `orch_frequency`")
+})
