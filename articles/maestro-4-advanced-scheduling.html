@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.5.0/vignettes/maestro-4-advanced-scheduling.qmd" class="external-link"><code>vignettes/maestro-4-advanced-scheduling.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-4-advanced-scheduling.qmd" class="external-link"><code>vignettes/maestro-4-advanced-scheduling.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -90,13 +90,7 @@
 
 
 
-    <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Error in get(paste0(generic, ".", class), envir = get_method_env()) :
-  object 'type_sum.accel' not found</code></pre>
-</div>
-</div>
-<p>This vignette covers more advanced concepts and examples related to scheduling. At it’s core, maestro adheres to two keys principles:</p>
+    <p>This vignette covers more advanced concepts and examples related to scheduling. At it’s core, maestro adheres to two keys principles:</p>
 <ol type="1">
 <li>Stateless: It does not need to be continuously running - it can be run in a serverless architecture</li>
 <li>Use of <em>rounded scheduling</em>: The timeliness of pipeline executions depends on how often you run your orchestrator</li>
@@ -112,7 +106,7 @@
 <p>Let’s look at some examples:</p>
 <p>First, we’ll consider one pipeline that is scheduled to run daily at 09:20:00 and we’ll configure the orchestrator to run daily.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ./pipelines/daily_example.R</span></span>
 <span><span class="co">#' daily_example maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
@@ -125,7 +119,7 @@
 </div>
 <p>For demonstration purposes, I’ll manually set the check time to be 08:00:00 UTC (this is the time maestro will use to compare against the scheduled time). In practice, you almost always want this to be the system time using either <code><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time()</a></code> or <code><a href="https://lubridate.tidyverse.org/reference/now.html" class="external-link">lubridate::now()</a></code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ./orchestrator.R</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span>
@@ -138,16 +132,14 @@
 <span>  check_datetime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-20 08:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
-<pre>Error in get(paste0(generic, ".", class), envir = get_method_env()) :
-  object 'type_sum.accel' not found
-<span style="color: #2AA198;">ℹ</span> 1 script successfully parsed
+<pre><span style="color: #2AA198;">ℹ</span> 1 script successfully parsed
 
-── [2025-01-07 14:39:17]
+── [2025-02-18 18:08:07]
 Running pipelines <span style="color: #859900;">▶</span>
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">daily_example</span> <span style="color: #b8b8b8;">[30ms]</span>
 
-── [2025-01-07 14:39:17]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.058 sec elapsed
+── [2025-02-18 18:08:07]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.059 sec elapsed
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #073642;">→</span> 0 skipped | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -160,7 +152,7 @@ Pipe name | Next scheduled run
 <p>We can see that the pipeline executed even though the current time was not 09:20:00. This is because we set the orchestrator to run daily and so it considers it close enough to within a day.</p>
 <p>Let’s see what happens if we up the frequency of the orchestrator:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ./orchestrator.R</span></span>
 <span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>,</span>
@@ -169,11 +161,11 @@ Pipe name | Next scheduled run
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
-── [2025-01-07 14:39:17]
+── [2025-02-18 18:08:07]
 Running pipelines <span style="color: #859900;">▶</span>
 
-── [2025-01-07 14:39:17]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0 sec elapsed
+── [2025-02-18 18:08:07]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.001 sec elapsed
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #073642;">→</span> 0 skipped | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -222,7 +214,7 @@ The takeaway message is that the timeliness of the pipeline depends on how frequ
 </h3>
 <p>If your pipeline runs hourly at a minimum, you can run it on specific hours. This could be useful, for example, if you have pipelines you only want to run during business hours. Use the <code>maestroHours</code> tag with integers corresponding to hours [0-23] separated by white space. Be sure to use the corresponding <code>maestroFrequency</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_hours maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency hourly</span></span>
@@ -236,7 +228,7 @@ The takeaway message is that the timeliness of the pipeline depends on how frequ
 </h3>
 <p>If your pipeline runs at least daily, you can run it on specific days of week or days of month. If doing days of week use strings like Mon, Tue, Wed, etc. If using days of month use integers [1-31]. You cannot specify both days of week and days of month.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_days_of_week maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency daily</span></span>
@@ -259,7 +251,7 @@ The takeaway message is that the timeliness of the pipeline depends on how frequ
 </h3>
 <p>If your pipeline runs at least monthly, you can run it on specific months. Use integers [1-12] to specify the months.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' specific_months maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency months</span></span>
@@ -271,7 +263,7 @@ The takeaway message is that the timeliness of the pipeline depends on how frequ
 </div>
 <p>Note that you can use combinations of these specifiers depending on the minimum frequency of the pipeline. For example, an hourly pipeline can run on specific hours and days. If you wanted a pipeline to only run on business hours including not on weekends. It could look like this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' business_hours maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency hourly</span></span>
