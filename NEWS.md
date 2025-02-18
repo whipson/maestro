@@ -1,3 +1,9 @@
+# maestro 0.5.1
+
+### Bug fixes
+
+- Updated error messages and documentation to reflect that a `maestroFrequency` of multiple weeks (e.g., 2 weeks) is invalid.
+
 # maestro 0.5.0
 
 ### New features

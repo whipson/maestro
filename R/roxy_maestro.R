@@ -26,7 +26,7 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
         x,
         glue::glue(
           "Invalid maestroFrequency `{x$raw}`.
-          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)
+          Must have a format of [number] [units] (e.g., 1 day, 1 week, 4 months, etc)
           or one of hourly, daily, weekly, etc."
         )
       )
@@ -40,7 +40,7 @@ roxy_tag_parse.roxy_tag_maestroFrequency <- function(x) {
         x,
         glue::glue(
           "Invalid maestroFrequency `{x$raw}`.
-          Must have a format of [number] [units] (e.g., 1 day, 2 weeks, 4 months, etc)
+          Must have a format of [number] [units] (e.g., 1 day, 1 week, 4 months, etc)
           or one of hourly, daily, weekly, etc."
         )
       )

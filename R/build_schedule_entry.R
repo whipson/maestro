@@ -22,7 +22,6 @@ build_schedule_entry <- function(script_path) {
     maestro = "maestro"
   )
 
-
   # Initial Validation ------------------------------------------------------
 
   # Get all the roxygen tags - this actually executes the script, which is fine
