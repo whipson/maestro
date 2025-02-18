@@ -4,7 +4,7 @@ maestro_logger <- logger::layout_glue_generator(
 
 #' Convert a duration string to number of seconds
 #'
-#' @param time_string string like 1 day, 2 weeks, 12 hours, etc.
+#' @param time_string string like 1 day, 1 week, 12 hours, etc.
 #' @keywords internal
 #' @return number of seconds
 convert_to_seconds <- function(time_string) {
@@ -57,7 +57,7 @@ valid_units <- c(
 
 #' Parse a time string
 #'
-#' @param time_string string like 1 day, daily, 2 weeks, 12 hours, etc.
+#' @param time_string string like 1 day, daily, 1 week, 12 hours, etc.
 #'
 #' @keywords internal
 #' @return nunit list

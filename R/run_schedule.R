@@ -146,7 +146,7 @@ run_schedule <- function(
     cli::cli_abort(
       c(
         "Invalid `orch_frequency` {orch_frequency}.",
-        "i" = "Must be of the format like '1 day', '2 weeks', 'hourly', etc."
+        "i" = "Must be of the format like '1 day', '1 week', 'hourly', etc."
       ),
       call = NULL
     )

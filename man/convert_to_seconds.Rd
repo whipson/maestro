@@ -7,7 +7,7 @@
 convert_to_seconds(time_string)
 }
 \arguments{
-\item{time_string}{string like 1 day, 2 weeks, 12 hours, etc.}
+\item{time_string}{string like 1 day, 1 week, 12 hours, etc.}
 }
 \value{
 number of seconds

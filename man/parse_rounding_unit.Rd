@@ -7,7 +7,7 @@
 parse_rounding_unit(time_string)
 }
 \arguments{
-\item{time_string}{string like 1 day, daily, 2 weeks, 12 hours, etc.}
+\item{time_string}{string like 1 day, daily, 1 week, 12 hours, etc.}
 }
 \value{
 nunit list
