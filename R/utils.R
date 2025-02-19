@@ -84,8 +84,9 @@ parse_rounding_unit <- function(time_string) {
   unit <- matches[[1]][3]
 
   unit_fmt <- unit |>
-    trimws() |>
-    gsub("s$", "", x = _)
+    trimws()
+
+  unit_fmt <- gsub("s$", "", x = unit_fmt)
 
   if (!unit_fmt %in% valid_units) {
     stop(glue::glue("Invalid rounding unit `{time_string}`."))
