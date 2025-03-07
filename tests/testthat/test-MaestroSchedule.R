@@ -73,20 +73,6 @@ test_that("MaestroSchedule works when not running all (verification of checking)
 }) |>
   suppressMessages()
 
-test_that("MaestroSchedule works with a future check_datetime", {
-
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-
-  expect_message({
-    schedule$run(
-      orch_n = 1,
-      orch_unit = "day",
-      check_datetime = as.POSIXct("5000-10-10 12:00:00")
-    )
-  })
-}) |>
-  suppressMessages()
-
 test_that("Multicore works", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))

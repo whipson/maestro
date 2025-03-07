@@ -149,6 +149,8 @@ get_pipeline_run_sequence <- function(
     pipeline_sequence <- seq(pipeline_datetime, check_datetime, by = paste(pipeline_n, pipeline_unit))
   }
 
+  pipeline_sequence <- adjust_for_dst(pipeline_sequence[[1]], pipeline_sequence)
+
   if (!all(0:23 %in% pipeline_hours)) {
     pipeline_sequence <- pipeline_sequence[lubridate::hour(pipeline_sequence) %in% pipeline_hours]
   }
@@ -243,4 +245,30 @@ units_lt_units <- function(u1, u2) {
   u1_ord <- factor(u1, levels = order, ordered = TRUE)
   u2_ord <- factor(u2, levels = order, ordered = TRUE)
   u1_ord < u2_ord
+}
+
+adjust_for_dst <- function(base_timestamp, adjustable_timestamps) {
+
+  base_dst <- lubridate::dst(base_timestamp)
+
+  adjustment <- ifelse(
+    lubridate::dst(adjustable_timestamps) == base_dst,
+    0,
+    ifelse(base_dst, 1, -1)
+  )
+
+  adjustable_timestamps + lubridate::hours(adjustment)
+}
+
+inflate_by_dst <- function(base_timestamp, adjustable_timestamps) {
+
+  base_dst <- lubridate::dst(base_timestamp)
+
+  adjustment <- ifelse(
+    lubridate::dst(adjustable_timestamps) == base_dst,
+    0,
+    1
+  )
+
+  adjustable_timestamps + lubridate::hours(adjustment)
 }

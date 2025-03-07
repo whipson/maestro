@@ -74,6 +74,8 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     status$next_run
   )
 
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
   output <- run_schedule(
     schedule,
     orch_frequency = "1 month",
@@ -90,6 +92,8 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     status$next_run
   )
 
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
   output <- run_schedule(
     schedule,
     orch_frequency = "4 days",
@@ -97,6 +101,24 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     quiet = TRUE
   ) |>
     suppressWarnings()
+  status <- output$get_status()
+
+  expect_snapshot(
+    status$invoked
+  )
+  expect_snapshot(
+    status$next_run
+  )
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+
+  output <- run_schedule(
+    schedule,
+    orch_frequency = "hourly",
+    check_datetime = as.POSIXct("2024-03-02 09:00:00", tz = "America/Halifax"),
+    quiet = TRUE
+  )
+
   status <- output$get_status()
 
   expect_snapshot(
@@ -127,6 +149,8 @@ test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, month
     status$next_run
   )
 
+  schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
+
   output <- run_schedule(
     schedule,
     orch_frequency = "hourly",
@@ -142,6 +166,95 @@ test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, month
   expect_snapshot(
     status$next_run
   )
+})
+
+test_that("run_schedule timeliness checks - specifiers on a non UTC timezone", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2025-01-01 00:00:00
+      #' @maestroHours 0 4 7 12 18
+      non_utc_hours <- function() {
+
+      }
+      ",
+      con = "pipelines/non_utc_hours.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-01-01 04:00:00", tz = "America/Halifax"),
+      quiet = TRUE
+    )
+
+    status <- get_status(schedule)
+    expect_true(status$invoked[status$pipe_name == "non_utc_hours"])
+  })
+})
+
+test_that("run_schedule timeliness checks - non UTC daylight savings ", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency daily
+      #' @maestroStartTime 2025-03-07 00:00:00
+      non_utc <- function() {
+
+      }
+      ",
+      con = "pipelines/non_utc.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-03-10 00:00:00", tz = "America/Halifax"),
+      quiet = TRUE
+    )
+
+    status <- get_status(schedule)
+    expect_true(status$invoked[status$pipe_name == "non_utc"])
+  })
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2025-03-07 00:00:00
+      #' @maestroHours 4
+      non_utc <- function() {
+
+      }
+      ",
+      con = "pipelines/non_utc.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-03-10 04:00:00", tz = "America/Halifax"),
+      quiet = TRUE
+    )
+
+    status <- get_status(schedule)
+    expect_true(status$invoked[status$pipe_name == "non_utc"])
+  })
 })
 
 test_that("run_schedule propagates warnings", {

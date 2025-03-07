@@ -50,7 +50,7 @@ MaestroPipeline <- R6::R6Class(
 
         private$tz <- tz
         private$frequency <- frequency
-        private$start_time <- start_time
+        private$start_time <- lubridate::with_tz(start_time, tz)
         private$hours <- hours
         private$months <- months
 
@@ -239,15 +239,18 @@ MaestroPipeline <- R6::R6Class(
 
       orch_string <- paste(orch_n, orch_unit)
       orch_frequency_seconds <- convert_to_seconds(orch_string)
+
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
+      pipeline_datetime_round <- timechange::time_round(private$start_time, unit = orch_string)
+
+      check_datetime_round_adj <- inflate_by_dst(pipeline_datetime_round, check_datetime_round)
 
       pipeline_sequence <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
         pipeline_datetime = pipeline_datetime_round,
-        check_datetime = check_datetime_round,
+        check_datetime = check_datetime_round_adj,
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
