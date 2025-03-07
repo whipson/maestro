@@ -113,3 +113,48 @@ Make sure you select **Publish with source code** so that you can trigger the or
 Once it has been published you can set the schedule using the Schedule tab. Be sure to use the same schedule frequency as your orchestration frequency:
 
 ![](images/maestro-posit-scheduled.png)
+
+This is a relatively easy way to deploy a maestro project assuming you have a Posit Connect license.
+
+::: callout-note
+[Posit Connect Cloud](https://connect.posit.cloud/), a managed instance of Posit Connect, may be another option for deploying maestro projects, although currently this has not be tested.
+:::
+
+### Limitations
+
+While a more robust deployment compared to local Cron/TaskManager, observability is still *initially* limited to manually viewing the rendered Quarto doc. With a bit of extra tinkering, however, you can trigger some side effects in the orchestration script such as sending the [pipeline statuses to a database for display in a dashboard](https://whipson.github.io/data-in-flight/posts/you-dont-need-airflow/main.html#monitoring), or [triggering an email](https://docs.posit.co/connect/user/quarto/#email-customization) to be sent if any pipelines fail.
+
+On the other hand, you may not appreciate the additional overhead that comes with needing to execute the orchestrator as a Quarto doc. Personally, I don't think this creates a meaningful cost in terms of run time or compute (assuming you're not triggering too many side effects after the orchestration), but it does require a Quarto installation on the Posit Connect instance, which could be a non-starter in some cases.
+
+Finally, if your Posit Connect instance is deployed on a server managed by someone other than yourself you may run into issues if the server becomes unavailable or you cannot debug problems at the server level. In particular, viewing pipeline logs can be difficult since the logs get stored at the project level and are thus not accessible in Connect. These instead will need to be sent somewhere they can be inspected.
+
+## Cloud
+
+There are virtually limitless options for deploying in the cloud. In fact, the options described above can also be applied to a cloud-based server (e.g., spin up a Linux server and use Cron to run the schedule and just keep the server running indefinitely).
+
+Here we'll focus on a specific pattern of maestro deployment that works well in the cloud both in terms of cost and ease of deployment. We'll avoid tutorials with specific cloud providers and instead generalize the types of services needed while providing examples of popular specific services. If you're looking for a walk through for a cloud-based deployment, check out this [blog post](https://whipson.github.io/data-in-flight/posts/maestro-gcp-deployment/maestro-gcp-deployment.html) using Google Cloud Platform (GCP).
+
+### Serverless Cloud
+
+The advantage of maestro is its serverless design. This means that for virtually all use cases you don't need to have a server running continuously. Instead, you can only run the server *when the orchestrator needs to run*. This usually results in cost savings.
+
+For a basic maestro cloud deployment, you need two services:
+
+1.  Serverless execution environment (i.e., something to run the code)
+2.  Scheduler (i.e., something to tell the code when to run)
+
+Some cloud providers may bundle these services together, others may offer them as separate services.
+
+For example, in Amazon Web Services (AWS), the serverless execution environment would be a Lambda function and the scheduler could be EventBridge. In GCP it would be Cloud Run scheduled via Cloud Scheduler. In Azure it would be Azure Functions configured with a Timer Trigger, and so on.
+
+As usual, be sure to use the same scheduling frequency as the orchestrator frequency.
+
+### Limitations
+
+The only limitation in the cloud is your skill/time and your budget. Often these two limitations are inversely correlated: managed cloud services like Digital Ocean ease the pain of deployment at the cost of taking more of your money. Availability is not likely to be an issue, but custom tinkering will be needed to set up observability. Finally, it is worth considering best practices such as CI/CD to make it easier to update the maestro project. This will also require additional cloud services and therefore cost.
+
+## Final Considerations
+
+It's important to remember that deploying a maestro project is not all that different from deploying a single R script. It just has a few extra files that need to go with it. One recommendation for deployment is to take advantage of maestro's serverless nature. If you only need to run your orchestrator daily, don't deploy it where you are charged for something that runs continuously (that's 23 hours a day you're paying for nothing).
+
+It's also important to consider that deployment *for you* likely means more than just maestro running in isolation. Maestro really only makes sense if it's doing something like extracting data from a source and inserting it into a database, or generating and storing predictions from a model. All of this lies outside maestro's functionality but is nevertheless part of the entire deployment stack.
