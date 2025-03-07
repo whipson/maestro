@@ -1,3 +1,13 @@
+# maestro 0.5.2
+
+### Bug fixes
+
+- Specifying maestroHours, maestroDays, maestroMonths now correctly adopts the time zone specified in maestroTz (#141).
+
+- When using non UTC time zones, the presence of Daylight Savings Time in the maestroStartTime is used to adjust the sequence so that invocations occur on the same time interval.
+
+- Other time zone fixes to deal with differing maestroTz and system time checks.
+
 # maestro 0.5.1
 
 ### Bug fixes
