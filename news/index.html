@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-4-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-logging.html">Logging</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-7-deployment.html">Deployment</a></li>
   </ul></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -50,7 +51,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.1" id="maestro-051">maestro 0.5.1<a class="anchor" aria-label="anchor" href="#maestro-051"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.2" id="maestro-052">maestro 0.5.2<a class="anchor" aria-label="anchor" href="#maestro-052"></a></h2>
+<div class="section level4">
+<h4 id="bug-fixes-0-5-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-2"></a></h4>
+<ul><li><p>Specifying maestroHours, maestroDays, maestroMonths now correctly adopts the time zone specified in maestroTz (<a href="https://github.com/whipson/maestro/issues/141" class="external-link">#141</a>).</p></li>
+<li><p>When using non UTC time zones, the presence of Daylight Savings Time in the maestroStartTime is used to adjust the sequence so that invocations occur on the same time interval.</p></li>
+<li><p>Other time zone fixes to deal with differing maestroTz and system time checks.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.1" id="maestro-051">maestro 0.5.1<a class="anchor" aria-label="anchor" href="#maestro-051"></a></h2><p class="text-muted">CRAN release: 2025-02-19</p>
 <div class="section level4">
 <h4 id="bug-fixes-0-5-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-1"></a></h4>
 <ul><li>Updated error messages and documentation to reflect that a <code>maestroFrequency</code> of multiple weeks (e.g., 2 weeks) is invalid.</li>
