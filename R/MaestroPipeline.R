@@ -264,7 +264,7 @@ MaestroPipeline <- R6::R6Class(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
         pipeline_datetime = cur_run,
-        check_datetime = cur_run + lubridate::years(1),
+        check_datetime = cur_run + lubridate::days(365),
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
