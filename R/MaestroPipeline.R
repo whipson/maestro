@@ -78,6 +78,34 @@ MaestroPipeline <- R6::R6Class(
         private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
         private$days_of_week <- days_of_week %n% 1:7
         private$days_of_month <- days_of_month %n% 1:31
+
+
+        # Create the run sequence
+        start_time_adj <- private$start_time
+
+        if (start_time_adj < (lubridate::now() - lubridate::days(365))) {
+          prev_year <- lubridate::year(lubridate::now()) - 1
+          start_time_adj <- lubridate::make_datetime(
+            year = prev_year,
+            month = lubridate::month(private$start_time),
+            day = lubridate::day(private$start_time),
+            hour = lubridate::hour(private$start_time),
+            min = lubridate::minute(private$start_time),
+            sec = lubridate::second(private$start_time),
+            tz = private$tz
+          )
+        }
+
+        private$run_sequence <- get_pipeline_run_sequence(
+          pipeline_n = private$frequency_n,
+          pipeline_unit = private$frequency_unit,
+          pipeline_datetime = private$start_time,
+          check_datetime = start_time_adj + lubridate::days(365 * 3),
+          pipeline_hours = private$hours,
+          pipeline_days_of_week = private$days_of_week,
+          pipeline_days_of_month = private$days_of_month,
+          pipeline_months = private$months
+        )
       }
     },
 
@@ -239,50 +267,43 @@ MaestroPipeline <- R6::R6Class(
 
       orch_string <- paste(orch_n, orch_unit)
       orch_frequency_seconds <- convert_to_seconds(orch_string)
-
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      pipeline_datetime_round <- timechange::time_round(private$start_time, unit = orch_string)
+      # pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
 
-      check_datetime_round_adj <- inflate_by_dst(pipeline_datetime_round, check_datetime_round)
+      pipeline_sequence <- private$run_sequence
 
-      pipeline_sequence <- get_pipeline_run_sequence(
-        pipeline_n = private$frequency_n,
-        pipeline_unit = private$frequency_unit,
-        pipeline_datetime = pipeline_datetime_round,
-        check_datetime = check_datetime_round_adj,
-        pipeline_hours = private$hours,
-        pipeline_days_of_week = private$days_of_week,
-        pipeline_days_of_month = private$days_of_month,
-        pipeline_months = private$months
-      )
+      pipeline_sequence_round <- unique(timechange::time_round(pipeline_sequence, unit = orch_string))
 
-      cur_run <- utils::tail(pipeline_sequence, n = 1)
-      is_scheduled_now <- check_datetime_round == cur_run
+      # pipeline_sequence <- get_pipeline_run_sequence(
+      #   pipeline_n = private$frequency_n,
+      #   pipeline_unit = private$frequency_unit,
+      #   pipeline_datetime = pipeline_datetime_round,
+      #   check_datetime = check_datetime_round,
+      #   pipeline_hours = private$hours,
+      #   pipeline_days_of_week = private$days_of_week,
+      #   pipeline_days_of_month = private$days_of_month,
+      #   pipeline_months = private$months
+      # )
 
-      future_sequence <- get_pipeline_run_sequence(
-        pipeline_n = private$frequency_n,
-        pipeline_unit = private$frequency_unit,
-        pipeline_datetime = cur_run,
-        check_datetime = cur_run + lubridate::days(365),
-        pipeline_hours = private$hours,
-        pipeline_days_of_week = private$days_of_week,
-        pipeline_days_of_month = private$days_of_month,
-        pipeline_months = private$months
-      )
+      check_datetime_int <- as.integer(check_datetime_round)
+      pipeline_seq_round_int <- as.integer(pipeline_sequence_round)
+      is_scheduled_now_idx <- which(pipeline_seq_round_int %in% check_datetime_int)
+      if (length(is_scheduled_now_idx) == 0) {
+        is_scheduled_now <- FALSE
+      } else {
+        is_scheduled_now <- TRUE
+      }
 
-      next_run <- future_sequence[future_sequence > check_datetime][[1]]
-
-      if (is.null(next_run)) {
-        pipeline_frequency_seconds <- convert_to_seconds(paste(private$frequency_n, private$frequency_unit))
-
-        next_run <- timechange::time_round(
-          timechange::time_add(
-            cur_run,
-            second = max(orch_frequency_seconds, pipeline_frequency_seconds)
-          ),
-          unit = orch_string
-        )
+      if (is_scheduled_now) {
+        next_run <- tryCatch({
+          next_idx <- is_scheduled_now_idx + 1
+          pipeline_sequence_round[[next_idx]]
+        }, error = function(e) {
+          NULL
+        })
+      } else {
+        next_run <- pipeline_sequence_round[pipeline_sequence_round > check_datetime_round][[1]]
       }
 
       private$next_run <- next_run
@@ -394,6 +415,7 @@ MaestroPipeline <- R6::R6Class(
     days_of_month = NULL,
     frequency_n = NA_integer_,
     frequency_unit = NA_character_,
+    run_sequence = lubridate::NA_POSIXct_,
 
     # Dynamic attributes
     status = "Not Run",
