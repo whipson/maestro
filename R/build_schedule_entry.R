@@ -154,7 +154,7 @@ build_schedule_entry <- function(script_path) {
     purrr::walk2(pipe_names, maestro_tag_vals, ~{
 
       # Validate hours
-      if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly")) {
+      if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly", "1 hour")) {
         cli::cli_abort(
           c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of 'hourly'.",
             "i" = "Issue is with pipeline named {.x}."),
@@ -163,7 +163,8 @@ build_schedule_entry <- function(script_path) {
       }
 
       # Validate days
-      if (!all(is.na(maestro_tag_vals[[1]]$days)) && !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly")) {
+      if (!all(is.na(maestro_tag_vals[[1]]$days)) &&
+          !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly", "1 day", "1 hour")) {
         cli::cli_abort(
           c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of 'daily' or 'hourly'.",
             "i" = "Issue is with pipeline named {.x}."),
@@ -173,7 +174,7 @@ build_schedule_entry <- function(script_path) {
 
       # Validate months
       if (!all(is.na(maestro_tag_vals[[1]]$months)) && !maestro_tag_vals[[1]]$frequency %in%
-          c("monthly", "biweekly", "weekly", "daily", "hourly")) {
+          c("monthly", "biweekly", "weekly", "daily", "hourly", "1 month", "1 week", "1 day", "1 hour")) {
         cli::cli_abort(
           c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
           'monthly', 'biweekly', 'weekly', 'daily', or 'hourly'.",

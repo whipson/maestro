@@ -259,16 +259,3 @@ adjust_for_dst <- function(base_timestamp, adjustable_timestamps) {
 
   adjustable_timestamps + lubridate::hours(adjustment)
 }
-
-inflate_by_dst <- function(base_timestamp, adjustable_timestamps) {
-
-  base_dst <- lubridate::dst(base_timestamp)
-
-  adjustment <- ifelse(
-    lubridate::dst(adjustable_timestamps) == base_dst,
-    0,
-    1
-  )
-
-  adjustable_timestamps + lubridate::hours(adjustment)
-}
