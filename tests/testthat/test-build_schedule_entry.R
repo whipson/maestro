@@ -119,3 +119,26 @@ test_that("Pipelines with maestro tag get picked up", {
   )
   expect_equal(length(res$MaestroPipelines), 1)
 })
+
+test_that("Pipelines with maestroHours and maestroFrequency = 1 hour are valid", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2025-01-01 00:00:00
+      #' @maestroHours 0 4 7 12 18
+      hourly <- function() {
+
+      }
+      ",
+      con = "pipelines/hourly.R"
+    )
+
+    expect_no_error({
+      build_schedule_entry("pipelines/hourly.R")
+    })
+  })
+})
