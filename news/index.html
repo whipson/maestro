@@ -59,9 +59,10 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-5-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-2"></a></h4>
-<ul><li><p>Specifying maestroHours, maestroDays, maestroMonths now correctly adopts the time zone specified in maestroTz (<a href="https://github.com/whipson/maestro/issues/141" class="external-link">#141</a>).</p></li>
-<li><p>When using non UTC time zones, the presence of Daylight Savings Time in the maestroStartTime is used to adjust the sequence so that invocations occur on the same time interval.</p></li>
-<li><p>Other time zone fixes to deal with differing maestroTz and system time checks.</p></li>
+<ul><li><p>Specifying <code>maestroHours</code>, <code>maestroDays</code>, <code>maestroMonths</code> now correctly adopts the time zone specified in <code>maestroTz</code> (<a href="https://github.com/whipson/maestro/issues/141" class="external-link">#141</a>).</p></li>
+<li><p>When using non UTC time zones, the presence of Daylight Savings Time in the <code>maestroStartTime</code> is used to adjust the sequence so that invocations occur on the same time interval.</p></li>
+<li><p>Other time zone fixes to deal with differing <code>maestroTz</code> and system time checks.</p></li>
+<li><p><code>maestroHours</code>, was only valid when <code>maestroFrequency</code> was specified as ‘hourly’, but now ‘1 hour’ is also acceptable (same applies for other specifier tags).</p></li>
 </ul></div>
 </div>
     <div class="section level2">
