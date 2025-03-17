@@ -1,3 +1,9 @@
+# maestro 0.6.0.9000
+
+### New features
+
+- `maestroStartTime` now accepts a timestamp formatted like HH:MM:SS. This is useful for pipelines running on a daily or hourly frequency because the date is often arbitrary in those cases. 
+
 # maestro 0.5.2
 
 ### Minor changes
