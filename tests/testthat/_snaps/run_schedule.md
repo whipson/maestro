@@ -100,3 +100,10 @@
       [5] "2024-05-04 00:00:00 UTC" "2024-10-01 00:00:00 UTC"
       [7] "2024-05-01 01:00:00 UTC"
 
+# maestroStartTime with HH:MM:SS runs on the expected time
+
+    Code
+      status$invoked
+    Output
+      [1] TRUE
+

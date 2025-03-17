@@ -74,24 +74,31 @@ roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
   x$raw <- x$raw |>
     trimws()
 
-  if (x$raw == "") {
-    x$val <- "1970-01-01 00:00:00"
-  } else {
-    tryCatch({
+  tryCatch({
+
+    if (x$raw == "") {
+      x$val <- "1970-01-01 00:00:00"
+    } else if (nchar(x$raw) == 8) {
+      x_ts <- as.POSIXct(x$raw, format = "%H:%M:%S") # check if coercible
+      x_ts <- strftime(x_ts, format = "%Y-%m-%d %H:%M:%S")
+      x$val <- x_ts
+    } else {
       x_ts <- as.POSIXct(x$raw) # check if coercible
       x_ts <- strftime(x_ts, format = "%Y-%m-%d %H:%M:%S")
       x$val <- x_ts
-    }, error = \(e) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Invalid maestroStartTime `{x$raw}`.
-          Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS"
-        )
+    }
+
+  }, error = \(e) {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Invalid maestroStartTime `{x$raw}`.
+          Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS or HH:MM:SS"
       )
-      return()
-    })
-  }
+    )
+    return()
+  })
+
 
   x
 }

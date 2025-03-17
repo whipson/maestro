@@ -473,3 +473,30 @@ test_that("errors if orch_frequency is less than 1 year", {
     )
   }, regexp = "Invalid `orch_frequency`")
 })
+
+test_that("maestroStartTime with HH:MM:SS runs on the expected time", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 10:00:00
+      hhmmss <- function() {
+
+      }
+      ",
+      con = "pipelines/hhmmss.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-03-17 10:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_snapshot(status$invoked)
+})

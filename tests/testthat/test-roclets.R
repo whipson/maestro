@@ -320,3 +320,28 @@ test_that("parse maestro works", {
   )
   expect_true(res$val)
 })
+
+test_that("maestroStartTime formatted as HH:MM:SS is valid", {
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 10:00:00
+      hhmmss <- function() {
+
+      }
+      ",
+      con = "hhmmss.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroStartTime_roclet(),
+      readLines("hhmmss.R")
+    )
+  })
+
+  expect_type(res$val, "character")
+  time <- as.POSIXct(res$val)
+  expect_s3_class(time, "POSIXct")
+  expect_equal(lubridate::year(time), lubridate::year(lubridate::today()))
+})
