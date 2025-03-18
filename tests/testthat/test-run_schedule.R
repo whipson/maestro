@@ -492,11 +492,44 @@ test_that("maestroStartTime with HH:MM:SS runs on the expected time", {
     run_schedule(
       schedule,
       orch_frequency = "1 hour",
-      check_datetime = as.POSIXct("2025-03-17 10:00:00", tz = "UTC"),
+      check_datetime = as.POSIXct(glue::glue("{lubridate::today()} 10:00:00"), tz = "UTC"),
       quiet = TRUE
     )
     status <- get_status(schedule)
   })
 
   expect_snapshot(status$invoked)
+})
+
+test_that("maestroPriority works as expected", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 10:00:00
+      p2 <- function() {
+      }
+
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 10:00:00
+      #' @maestroPriority 1
+      q1 <- function() {
+        Sys.sleep(1)
+      }
+      ",
+      con = "pipelines/priorities.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-03-17 10:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_snapshot(status$pipe_name)
 })

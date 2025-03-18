@@ -345,3 +345,66 @@ test_that("maestroStartTime formatted as HH:MM:SS is valid", {
   expect_s3_class(time, "POSIXct")
   expect_equal(lubridate::year(time), lubridate::year(lubridate::today()))
 })
+
+test_that("maestroPriority works", {
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroPriority 1
+      priority <- function() {
+
+      }
+      ",
+      con = "priority.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroPriority_roclet(),
+      readLines("priority.R")
+    )
+  })
+  expect_equal(res$val, "1")
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroPriority
+      priority <- function() {
+
+      }
+      ",
+      con = "priority.R"
+    )
+
+    expect_warning({
+      res <- roxygen2::roc_proc_text(
+        maestroPriority_roclet(),
+        readLines("priority.R")
+      )
+    }, regexp = "Empty maestroPriority")
+
+    expect_null(res$val)
+  })
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFrequency 1 hour
+      #' @maestroPriority 1.5
+      priority <- function() {
+
+      }
+      ",
+      con = "priority.R"
+    )
+
+    expect_warning({
+      res <- roxygen2::roc_proc_text(
+        maestroPriority_roclet(),
+        readLines("priority.R")
+      )
+    }, regexp = "Invalid maestroPriority")
+  })
+})

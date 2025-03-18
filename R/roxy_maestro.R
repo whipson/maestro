@@ -493,3 +493,48 @@ roclet_process.roclet_maestro <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
+
+
+# maestroPriority ---------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroPriority <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      "Empty maestroPriority. If pipeline doesn't have a specified priority remove maestroPriority tag."
+    )
+    return(x)
+  } else {
+    if (!grepl("^\\d+$", x$raw) || x$raw == "0") {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroPriority `{x$raw}`.
+          Must be a single positive integer from 1 on."
+        )
+      )
+      return(x)
+    }
+    x$val <- x$raw
+  }
+
+  x
+}
+
+maestroPriority_roclet <- function() {
+  roxygen2::roclet("maestroPriority")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroPriority <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroPriority")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}

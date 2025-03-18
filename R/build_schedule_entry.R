@@ -19,7 +19,8 @@ build_schedule_entry <- function(script_path) {
     months = "maestroMonths",
     inputs = "maestroInputs",
     outputs = "maestroOutputs",
-    maestro = "maestro"
+    maestro = "maestro",
+    priority = "maestroPriority"
   )
 
   # Initial Validation ------------------------------------------------------
@@ -198,7 +199,8 @@ build_schedule_entry <- function(script_path) {
         days = .y$days %n% NULL,
         months = .y$months %n% 1:12,
         inputs = .y$inputs %n% NULL,
-        outputs = .y$outputs %n% NULL
+        outputs = .y$outputs %n% NULL,
+        priority = as.numeric(.y$priority %n% Inf)
       )
 
       # Append to the list of pipelines

@@ -25,6 +25,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_status_chr}{\code{MaestroPipeline$get_status_chr()}}
 \item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
 \item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
+\item \href{#method-MaestroPipeline-get_priority}{\code{MaestroPipeline$get_priority()}}
 \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
@@ -52,7 +53,8 @@ Create a new Pipeline object
   skip = FALSE,
   log_level = "INFO",
   inputs = NULL,
-  outputs = NULL
+  outputs = NULL,
+  priority = Inf
 )}\if{html}{\out{</div>}}
 }
 
@@ -82,6 +84,8 @@ Create a new Pipeline object
 \item{\code{inputs}}{names of pipelines that this pipeline is dependent on for input}
 
 \item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
+
+\item{\code{priority}}{priority of the pipeline}
 }
 \if{html}{\out{</div>}}
 }
@@ -252,6 +256,19 @@ Names of pipelines that input into this pipeline
 
 \subsection{Returns}{
 character
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_priority"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_priority}{}}}
+\subsection{Method \code{get_priority()}}{
+Get priority of the pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_priority()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+numeric
 }
 }
 \if{html}{\out{<hr>}}
