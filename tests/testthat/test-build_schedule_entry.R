@@ -142,3 +142,44 @@ test_that("Pipelines with maestroHours and maestroFrequency = 1 hour are valid",
     })
   })
 })
+
+test_that("Pipelines with maestroStartTime in HH:MM:SS and a multi-unit frequency fail", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency 2 days
+      #' @maestroStartTime 00:00:00
+      hourly <- function() {
+
+      }
+      ",
+      con = "pipelines/hourly.R"
+    )
+
+    expect_error({
+      build_schedule_entry("pipelines/hourly.R")
+    }, regexp = "Cannot use a `@maestroStartTime`")
+  })
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroTz America/Halifax
+      #' @maestroFrequency weekly
+      #' @maestroStartTime 00:00:00
+      hourly <- function() {
+
+      }
+      ",
+      con = "pipelines/hourly.R"
+    )
+
+    expect_error({
+      build_schedule_entry("pipelines/hourly.R")
+    }, regexp = "`@maestroStartTime`")
+  })
+})

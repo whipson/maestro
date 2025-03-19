@@ -341,7 +341,7 @@ test_that("maestroStartTime formatted as HH:MM:SS is valid", {
   })
 
   expect_type(res$val, "character")
-  time <- as.POSIXct(res$val)
+  time <- as.POSIXct(res$val, format = "%H:%M:%S")
   expect_s3_class(time, "POSIXct")
   expect_equal(lubridate::year(time), lubridate::year(lubridate::today()))
 })

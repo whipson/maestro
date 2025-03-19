@@ -186,12 +186,38 @@ build_schedule_entry <- function(script_path) {
 
       tz <- .y$tz %n% "UTC"
 
+      # Find the format for the start time
+      start_time_fmt <- lubridate::guess_formats(.y$start_time, c("%Y-%m-%d %H:%M:%S", "%H:%M:%S"))
+
+      if ("HMS" %in% names(start_time_fmt)) {
+        if (!is.null(.y$frequency)) {
+          nunits <- parse_rounding_unit(.y$frequency)
+          if (nunits$n > 1 && nunits$unit == "day") {
+            cli::cli_abort(
+              c("Cannot use a `@maestroStartTime` with format %H:%M:%S in combination with
+                a multi-unit daily `@maestroFrequency`.",
+                "i" = "Instead use something like `daily` or `1 day`."),
+              call = NULL
+            )
+          }
+          if (nunits$unit %in% c("week", "month", "year")) {
+            cli::cli_abort(
+              c("`@maestroStartTime` with format %H:%M:%S is only valid for `@maestroFrequency` of minute, hour, or day."),
+              call = NULL
+            )
+          }
+        }
+        start_time <- as.POSIXct(.y$start_time, "%H:%M:%S", tz = tz)
+      } else {
+        start_time <- as.POSIXct(.y$start_time, tz = tz)
+      }
+
       # Create the new pipeline
       pipeline <- MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
-        start_time = as.POSIXct(.y$start_time, tz = tz) %n% as.POSIXct("2024-01-01 00:00:00", tz = tz),
+        start_time = start_time %n% as.POSIXct("2024-01-01 00:00:00", tz = tz),
         tz = tz,
         skip = .y$skip %n% FALSE,
         log_level = .y$log_level %n% "INFO",
