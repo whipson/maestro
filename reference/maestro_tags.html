@@ -9,7 +9,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,6 +27,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
     <li><a class="dropdown-item" href="../articles/maestro-5-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-deployment.html">Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-8-tag-reference.html">Maestro Tag Reference</a></li>
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -49,7 +50,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Maestro Tags</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.5.2/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
       <div class="d-none name"><code>maestro_tags.Rd</code></div>
     </div>
 
@@ -61,11 +62,143 @@ of pipelines.</p>
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>maestro tags follow the format <code>#' @maestroTagName</code></p><div class="section">
-<h3 id="tag-list">Tag List<a class="anchor" aria-label="anchor" href="#tag-list"></a></h3>
-<table class="table table"><tr><td>tagName</td><td>description</td><td>value</td><td>examples (comma sep.)</td><td>default</td></tr><tr><td>maestroFrequency</td><td>Time unit for scheduling</td><td>string</td><td>1 hour, daily, 3 days, 5 weeks</td><td>1 day</td></tr><tr><td>maestroLogLevel</td><td>Threshold for logging when logging is requested</td><td>string</td><td>INFO, WARN, ERROR</td><td>INFO</td></tr><tr><td>maestroSkip</td><td>Skips the pipeline when running (presence of tag indicates to skip)</td><td>n/a</td><td></td><td></td></tr><tr><td>maestroStartTime</td><td>Start time of the pipeline; sets the point in time for recurrence</td><td>date or timestamp</td><td>1970-01-01 00:00:00, 2024-03-28</td><td>1970-01-01 00:00:00</td></tr><tr><td>maestroTz</td><td>Timezone of the start time</td><td>string</td><td>UTC, America/Halifax</td><td>UTC</td></tr><tr><td>maestroHours</td><td>Hours of day to run pipeline</td><td>ints</td><td>0 12 23</td><td></td></tr><tr><td>maestroDays</td><td>Days of week or days of month to run pipeline</td><td>ints or strings</td><td>1 14 30, Mon Wed Sat</td><td></td></tr><tr><td>maestroMonths</td><td>Months of year to run pipeline</td><td>ints</td><td>1 3 9 12</td><td></td></tr><tr><td>maestroInputs</td><td>Pipelines that input into this pipeline</td><td>strings</td><td>my_upstream_pipeline</td><td></td></tr><tr><td>maestroOutputs</td><td>Pipelines that take the output from this pipeline</td><td>strings</td><td>my_downstream_pipeline</td><td></td></tr><tr><td>maestro</td><td>Generic tag for identifying a maestro pipeline with all defaults</td><td>n/a.</td><td></td><td></td></tr></table></div>
-
+    <p>maestro tags follow the format: <code>#' @maestroTagName value</code></p>
+<p>Some tags may not take a value.</p>
+<p>maestro tags must be written above the function that is to be included as a pipeline.
+A typical pipeline with tags could look like this:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#' @maestroFrequency 1 hour</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#' @maestroStartTime 12:30:00</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#' @maestroLogLevel WARN</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>my_pipeline <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>   <span class="co"># Pipeline code</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>}</span></code></pre><p></p></div>
+<p>Below are descriptions of all the tags currently available in maestro along
+with examples.</p>
     </div>
+    <div class="section level2">
+    <h2 id="maestrofrequency">maestroFrequency<a class="anchor" aria-label="anchor" href="#maestrofrequency"></a></h2>
+    <p>How often to run the pipeline. This tag takes a time unit indicating how long
+to wait between subsequent runs of the pipeline. Acceptable values include
+an integer value followed by one of minute(s), hour(s), day(s), week(s), month(s),
+and year(s). Note that some combinations of integer + unit may be invalid.
+Adverbs like 'hourly', 'daily', 'weekly', etc. are also valid.</p>
+<p>Default: <code>1 day</code></p>
+<p>Examples:</p><ul><li><p><code>#' @maestroFrequency 1 hour</code></p></li>
+<li><p><code>#' @maestroFrequency daily</code></p></li>
+<li><p><code>#' @maestroFrequency 2 weeks</code></p></li>
+<li><p><code>#' @maestroFrequency 3 months</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrostarttime">maestroStartTime<a class="anchor" aria-label="anchor" href="#maestrostarttime"></a></h2>
+    <p>Timestamp, date, or time corresponding to the start time of the pipeline. This
+also sets the cadence of the pipeline in some cases. For instance, if the start time
+is <code>2025-03-18 03:00:00</code> and the frequency is daily, the pipeline will run at 03:00
+every day. A value in the future prevents the pipeline from running until that time
+has been reached.</p>
+<p>Default: <code>2024-01-01 00:00:00</code></p>
+<p>Examples:</p><ul><li><p><code>#' @maestroStartTime 2025-02-05 12:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime 2025-01-01</code></p></li>
+<li><p><code>#' @maestroStartTime 08:00:00</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrotz">maestroTz<a class="anchor" aria-label="anchor" href="#maestrotz"></a></h2>
+    <p>Timezone in which the maestroStartTime is to be considered. Takes any valid timezone
+string that can be found in <code><a href="https://rdrr.io/r/base/timezones.html" class="external-link">OlsonNames()</a></code>.</p>
+<p>Default: <code>UTC</code></p>
+<p>Examples:</p><ul><li><p><code>#' @maestroTz Europe/Paris</code></p></li>
+<li><p><code>#' @maestroTz America/Halifax</code></p></li>
+<li><p><code>#' @maestroTz US/Pacific</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrologlevel">maestroLogLevel<a class="anchor" aria-label="anchor" href="#maestrologlevel"></a></h2>
+    <p>Minimum logging threshold for messages, warnings, and errors that come from the pipeline.
+These levels correspond to those in <code>logger:::log_levels_supported</code> but most commonly
+used are ERROR, WARN, INFO. For example, if you use <code>WARN</code> then any messages of lower
+urgency (i.e., INFO) will be suppressed, but errors will be logged.</p>
+<p>Default: <code>INFO</code></p>
+<p>Examples:</p><ul><li><p><code>#' @maestroLogLevel ERROR</code></p></li>
+<li><p><code>#' @maestroLogLevel WARN</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrohours">maestroHours<a class="anchor" aria-label="anchor" href="#maestrohours"></a></h2>
+    <p>Specific hours of the day in which to run the pipeline. This only applies for pipelines that run
+at an hourly or minutely frequency. Acceptable values are integers from 0-23 separated
+by spaces. If empty, pipeline runs at all hours. This tag uses the timezone specified by
+<code>maestroTz</code> (will be UTC if empty).</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroHours 1 4 7 10</code></p></li>
+<li><p><code>#' @maestroHours 0 5 20</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrodays">maestroDays<a class="anchor" aria-label="anchor" href="#maestrodays"></a></h2>
+    <p>Specific days of week or days of month on which to run the pipeline. This only applies
+for pipelines that run at a minutely, hourly, or daily frequency. Acceptable values are
+either integers from 1-31 or day of week strings like Mon, Tue, Wed, etc. These two
+options cannot be used in combination.</p>
+<p>Default:</p>
+<p>Examples</p><ul><li><p><code>#' @maestroDays 1 11 21 31</code></p></li>
+<li><p><code>#' @maestroDays Mon Tue Wed Thu Fri</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestromonths">maestroMonths<a class="anchor" aria-label="anchor" href="#maestromonths"></a></h2>
+    <p>Specific months of the year on which to run the pipeline. This only applies for
+pipelines that do run at least monthly. Acceptable values are integers (1-12) corresponding
+to the month of the year (e.g., 1 = January, 2 = February, etc.).</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroMonths 3 8 12</code></p></li>
+<li><p><code>#' @maestroMonths 10</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestroinputs">maestroInputs<a class="anchor" aria-label="anchor" href="#maestroinputs"></a></h2>
+    <p>For a DAG style pipeline, the names of pipelines that input into the pipeline.
+These names must match the function name defining the inputting pipeline. Multiple
+pipelines can be used as inputs and the input value is used in the target pipeline
+via the required <code>.input</code> parameter. Note that this tag could be redundant if the
+inputting pipeline uses <code>maestroOutputs</code>.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroInputs extract verify</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrooutputs">maestroOutputs<a class="anchor" aria-label="anchor" href="#maestrooutputs"></a></h2>
+    <p>For a DAG style pipeline, the names of pipelines that receive the return value of
+this pipeline as input. These names must match the function name defining the
+outputting pipeline. Multiple pipelines can be outputted into. The return value
+of the pipeline will be passed into the receiving pipeline. Note that this tag
+could be redundant if pipeline to be inputted into uses <code>maestroInputs</code>.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroOutputs transform</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestroskip">maestroSkip<a class="anchor" aria-label="anchor" href="#maestroskip"></a></h2>
+    <p>Flags a pipeline to never be executed even if it is scheduled to run. This can
+be useful when developing or testing a pipeline. This tag takes no value, instead
+the presence of the tag indicates whether it is skipped. This tag is ignored when
+<code>run_schedule(..., run_all = TRUE)</code> or when using <code><a href="invoke.html">invoke()</a></code>.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroSkip</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestropriority">maestroPriority<a class="anchor" aria-label="anchor" href="#maestropriority"></a></h2>
+    <p>Determines the order in which pipelines that run at the same scheduled instance
+are executed. Values are positive integers from 1 to N. Order is determined in
+descending order such that 1 indicates the highest priority. Pipelines with the
+same priority run in the order in which <code><a href="build_schedule.html">build_schedule()</a></code> parses the pipeline
+(usually alphabetical according to file name and then line number within file).
+By default, all pipelines are given equal priority.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroPriority 1</code></p></li>
+<li><p><code>#' @maestroPriority 3</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a></h2>
+    <p>Generic tag for identifying a maestro pipeline with all the defaults. Useful
+when you want a pipeline to be scheduled via maestro that accepts all default
+tag values. Only use this tag if you have no other maestro tags. The tag takes
+no value.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestro</code></p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

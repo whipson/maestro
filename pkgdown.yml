@@ -9,7 +9,8 @@ articles:
   maestro-5-directed-acyclic-graphs: maestro-5-directed-acyclic-graphs.html
   maestro-6-logging: maestro-6-logging.html
   maestro-7-deployment: maestro-7-deployment.html
-last_built: 2025-03-17T11:43Z
+  maestro-8-tag-reference: maestro-8-tag-reference.html
+last_built: 2025-03-21T12:50Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles
