@@ -86,6 +86,8 @@ Examples:
 
 -   `#' @maestroLogLevel WARN`
 
+------------------------------------------------------------------------
+
 # Specifier Tags
 
 ## maestroHours
@@ -124,6 +126,8 @@ Examples:
 
 -   `#' @maestroMonths 10`
 
+------------------------------------------------------------------------
+
 # DAG Tags
 
 ## maestroInputs
@@ -146,6 +150,8 @@ Examples:
 
 -   `#' @maestroOutputs transform`
 
+------------------------------------------------------------------------
+
 # Advanced Tags
 
 ## maestroSkip
@@ -166,7 +172,8 @@ Default:
 
 Examples:
 
--   `#' @maestroPriority 1` - `#' @maestroPriority 3`
+-   `#' @maestroPriority 1`
+-   `#' @maestroPriority 3`
 
 ## maestro
 
