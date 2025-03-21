@@ -21,6 +21,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_level log level of the pipeline
     #' @param inputs names of pipelines that this pipeline is dependent on for input
     #' @param outputs names of pipelines for which this pipeline is a dependency
+    #' @param priority priority of the pipeline
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -35,7 +36,8 @@ MaestroPipeline <- R6::R6Class(
       skip = FALSE,
       log_level = "INFO",
       inputs = NULL,
-      outputs = NULL
+      outputs = NULL,
+      priority = Inf
     ) {
 
       # Update the private attributes
@@ -45,6 +47,7 @@ MaestroPipeline <- R6::R6Class(
       private$log_level <- log_level
       private$inputs <- inputs
       private$outputs <- outputs
+      private$priority <- priority
 
       if (is.null(inputs)) {
 
@@ -249,7 +252,8 @@ MaestroPipeline <- R6::R6Class(
         skip = private$skip %n% logical(),
         log_level = private$log_level %n% character(),
         frequency_n = private$frequency_n %n% integer(),
-        frequency_unit = private$frequency_unit %n% character()
+        frequency_unit = private$frequency_unit %n% character(),
+        priority = private$priority
       )
     },
 
@@ -351,6 +355,13 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get priority of the pipeline
+    #' @return numeric
+    get_priority = function() {
+      private$priority
+    },
+
+    #' @description
     #' Get artifacts (return values) from the pipeline
     #' @return list
     get_artifacts = function() {
@@ -408,6 +419,7 @@ MaestroPipeline <- R6::R6Class(
     log_level = NA_character_,
     inputs = NULL,
     outputs = NULL,
+    priority = Inf,
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,
