@@ -166,7 +166,8 @@ Default:
 
 Examples:
 
--   `#' @maestroPriority 1` - `#' @maestroPriority 3`
+-   `#' @maestroPriority 1`
+-   `#' @maestroPriority 3`
 
 ## maestro
 
