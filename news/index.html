@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,11 +52,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.0.9000" id="maestro-0609000">maestro 0.6.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0609000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.3" id="maestro-053">maestro 0.5.3<a class="anchor" aria-label="anchor" href="#maestro-053"></a></h2>
 <div class="section level4">
-<h4 id="new-features-0-6-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9000"></a></h4>
-<ul><li><p>New <code>maestroPriority</code> tag that determines the order in which pipelines on the same schedule instance execute. Uses integer values from 1-N where 1 is the highest priority.</p></li>
-<li><p><code>maestroStartTime</code> now accepts a timestamp formatted like HH:MM:SS. This is useful for pipelines running on a daily or hourly frequency because the date is often arbitrary in those cases (<a href="https://github.com/whipson/maestro/issues/143" class="external-link">#143</a>).</p></li>
+<h4 id="bug-fixes-0-5-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-3"></a></h4>
+<ul><li>Fallback within <code><a href="../reference/build_schedule.html">build_schedule()</a></code> to address CRAN check.</li>
 </ul></div>
 </div>
     <div class="section level2">
