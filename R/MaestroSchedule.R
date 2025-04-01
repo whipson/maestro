@@ -23,7 +23,13 @@ MaestroSchedule <- R6::R6Class(
       Pipelines = NULL
     ) {
       self$PipelineList <- MaestroPipelineList$new()
-      for (pipeline in Pipelines) {
+      pipeline_list <- purrr::map(Pipelines, ~.x$MaestroPipelines) |>
+        purrr::list_flatten()
+      priorities <- purrr::map(pipeline_list, ~.x$get_priority()) |>
+        purrr::list_c()
+      if (length(priorities) == 0) priorities <- list()
+      pipeline_list <- pipeline_list[order(priorities)]
+      for (pipeline in pipeline_list) {
         self$PipelineList$add_pipelines(pipeline)
       }
     },

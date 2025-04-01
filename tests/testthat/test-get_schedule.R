@@ -17,6 +17,6 @@ test_that("errors if schedule is not a MaestroSchedule", {
 
 test_that("get_schedule works with DAG schedules", {
   schedule <- build_schedule(test_path("test_pipelines_dags_good"))
-  expect_snapshot(get_schedule(schedule)[c("script_path", "pipe_name", "frequency", "tz", "skip", "log_level"),])
+  expect_snapshot(get_schedule(schedule)[, c("script_path", "pipe_name", "frequency", "tz", "skip", "log_level")])
 }) |>
   suppressMessages()

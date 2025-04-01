@@ -74,24 +74,30 @@ roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
   x$raw <- x$raw |>
     trimws()
 
-  if (x$raw == "") {
-    x$val <- "1970-01-01 00:00:00"
-  } else {
-    tryCatch({
+  tryCatch({
+
+    if (x$raw == "") {
+      x$val <- "1970-01-01 00:00:00"
+    } else if (nchar(x$raw) == 8) {
+      x_ts <- as.POSIXct(x$raw, format = "%H:%M:%S") # check if coercible
+      x$val <- x$raw
+    } else {
       x_ts <- as.POSIXct(x$raw) # check if coercible
       x_ts <- strftime(x_ts, format = "%Y-%m-%d %H:%M:%S")
       x$val <- x_ts
-    }, error = \(e) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Invalid maestroStartTime `{x$raw}`.
-          Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS"
-        )
+    }
+
+  }, error = \(e) {
+    roxygen2::roxy_tag_warning(
+      x,
+      glue::glue(
+        "Invalid maestroStartTime `{x$raw}`.
+          Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS or HH:MM:SS"
       )
-      return()
-    })
-  }
+    )
+    return()
+  })
+
 
   x
 }
@@ -481,6 +487,51 @@ maestro_roclet <- function() {
 #' @exportS3Method
 roclet_process.roclet_maestro <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestro")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+
+# maestroPriority ---------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroPriority <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw == "") {
+    roxygen2::roxy_tag_warning(
+      x,
+      "Empty maestroPriority. If pipeline doesn't have a specified priority remove maestroPriority tag."
+    )
+    return(x)
+  } else {
+    if (!grepl("^\\d+$", x$raw) || x$raw == "0") {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Invalid maestroPriority `{x$raw}`.
+          Must be a single positive integer from 1 on."
+        )
+      )
+      return(x)
+    }
+    x$val <- x$raw
+  }
+
+  x
+}
+
+maestroPriority_roclet <- function() {
+  roxygen2::roclet("maestroPriority")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroPriority <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroPriority")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic

@@ -6,22 +6,195 @@
 #' @md
 #' @details
 #'
-#' maestro tags follow the format `#' @@maestroTagName`
+#' maestro tags follow the format: `#' @@maestroTagName value`
 #'
-#' ### Tag List
+#' Some tags may not take a value.
 #'
-#'  | tagName          | description                                                         | value             | examples (comma sep.)           | default             |
-#'  |------------------|---------------------------------------------------------------------|-------------------|---------------------------------|---------------------|
-#'  | maestroFrequency | Time unit for scheduling                                            | string            | 1 hour, daily, 3 days, 5 weeks  | 1 day               |
-#'  | maestroLogLevel  | Threshold for logging when logging is requested                     | string            | INFO, WARN, ERROR               | INFO                |
-#'  | maestroSkip      | Skips the pipeline when running (presence of tag indicates to skip) | n/a               |                                 |                     |
-#'  | maestroStartTime | Start time of the pipeline; sets the point in time for recurrence   | date or timestamp | 1970-01-01 00:00:00, 2024-03-28 | 1970-01-01 00:00:00 |
-#'  | maestroTz        | Timezone of the start time                                          | string            | UTC, America/Halifax            | UTC                 |
-#'  | maestroHours     | Hours of day to run pipeline                                        | ints              | 0 12 23                         |                     |
-#'  | maestroDays      | Days of week or days of month to run pipeline                       | ints or strings   | 1 14 30, Mon Wed Sat            |                     |
-#'  | maestroMonths    | Months of year to run pipeline                                      | ints              | 1 3 9 12                        |                     |
-#'  | maestroInputs    | Pipelines that input into this pipeline                             | strings           | my_upstream_pipeline            |                     |
-#'  | maestroOutputs   | Pipelines that take the output from this pipeline                   | strings           | my_downstream_pipeline          |                     |
-#'  | maestro          | Generic tag for identifying a maestro pipeline with all defaults    | n/a.              |                                 |                     |
+#' maestro tags must be written above the function that is to be included as a pipeline.
+#' A typical pipeline with tags could look like this:
+#'
+#' ```
+#' #' @@maestroFrequency 1 hour
+#' #' @@maestroStartTime 12:30:00
+#' #' @@maestroLogLevel WARN
+#' my_pipeline <- function() {
+#'
+#'    # Pipeline code
+#' }
+#' ```
+#' Below are descriptions of all the tags currently available in maestro along
+#' with examples.
+#'
+#'
+#' # maestroFrequency
+#'
+#' How often to run the pipeline. This tag takes a time unit indicating how long
+#' to wait between subsequent runs of the pipeline. Acceptable values include
+#' an integer value followed by one of minute(s), hour(s), day(s), week(s), month(s),
+#' and year(s). Note that some combinations of integer + unit may be invalid.
+#' Adverbs like 'hourly', 'daily', 'weekly', etc. are also valid.
+#'
+#' Default: `1 day`
+#'
+#' Examples:
+#' - `#' @maestroFrequency 1 hour`
+#' - `#' @maestroFrequency daily`
+#' - `#' @maestroFrequency 2 weeks`
+#' - `#' @maestroFrequency 3 months`
+#'
+#'
+#' # maestroStartTime
+#'
+#' Timestamp, date, or time corresponding to the start time of the pipeline. This
+#' also sets the cadence of the pipeline in some cases. For instance, if the start time
+#' is `2025-03-18 03:00:00` and the frequency is daily, the pipeline will run at 03:00
+#' every day. A value in the future prevents the pipeline from running until that time
+#' has been reached.
+#'
+#' Default: `2024-01-01 00:00:00`
+#'
+#' Examples:
+#' - `#' @maestroStartTime 2025-02-05 12:00:00`
+#' - `#' @maestroStartTime 2025-01-01`
+#' - `#' @maestroStartTime 08:00:00`
+#'
+#'
+#' # maestroTz
+#'
+#' Timezone in which the maestroStartTime is to be considered. Takes any valid timezone
+#' string that can be found in `OlsonNames()`.
+#'
+#' Default: `UTC`
+#'
+#' Examples:
+#' - `#' @maestroTz Europe/Paris`
+#' - `#' @maestroTz America/Halifax`
+#' - `#' @maestroTz US/Pacific`
+#'
+#'
+#' # maestroLogLevel
+#'
+#' Minimum logging threshold for messages, warnings, and errors that come from the pipeline.
+#' These levels correspond to those in `logger:::log_levels_supported` but most commonly
+#' used are ERROR, WARN, INFO. For example, if you use `WARN` then any messages of lower
+#' urgency (i.e., INFO) will be suppressed, but errors will be logged.
+#'
+#' Default: `INFO`
+#'
+#' Examples:
+#' - `#' @maestroLogLevel ERROR`
+#' - `#' @maestroLogLevel WARN`
+#'
+#'
+#' # maestroHours
+#'
+#' Specific hours of the day in which to run the pipeline. This only applies for pipelines that run
+#' at an hourly or minutely frequency. Acceptable values are integers from 0-23 separated
+#' by spaces. If empty, pipeline runs at all hours. This tag uses the timezone specified by
+#' `maestroTz` (will be UTC if empty).
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroHours 1 4 7 10`
+#' - `#' @maestroHours 0 5 20`
+#'
+#'
+#' # maestroDays
+#'
+#' Specific days of week or days of month on which to run the pipeline. This only applies
+#' for pipelines that run at a minutely, hourly, or daily frequency. Acceptable values are
+#' either integers from 1-31 or day of week strings like Mon, Tue, Wed, etc. These two
+#' options cannot be used in combination.
+#'
+#' Default:
+#'
+#' Examples
+#' - `#' @maestroDays 1 11 21 31`
+#' - `#' @maestroDays Mon Tue Wed Thu Fri`
+#'
+#'
+#' # maestroMonths
+#'
+#' Specific months of the year on which to run the pipeline. This only applies for
+#' pipelines that do run at least monthly. Acceptable values are integers (1-12) corresponding
+#' to the month of the year (e.g., 1 = January, 2 = February, etc.).
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroMonths 3 8 12`
+#' - `#' @maestroMonths 10`
+#'
+#'
+#' # maestroInputs
+#'
+#' For a DAG style pipeline, the names of pipelines that input into the pipeline.
+#' These names must match the function name defining the inputting pipeline. Multiple
+#' pipelines can be used as inputs and the input value is used in the target pipeline
+#' via the required `.input` parameter. Note that this tag could be redundant if the
+#' inputting pipeline uses `maestroOutputs`.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroInputs extract verify`
+#'
+#'
+#' # maestroOutputs
+#'
+#' For a DAG style pipeline, the names of pipelines that receive the return value of
+#' this pipeline as input. These names must match the function name defining the
+#' outputting pipeline. Multiple pipelines can be outputted into. The return value
+#' of the pipeline will be passed into the receiving pipeline. Note that this tag
+#' could be redundant if pipeline to be inputted into uses `maestroInputs`.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroOutputs transform`
+#'
+#'
+#' # maestroSkip
+#'
+#' Flags a pipeline to never be executed even if it is scheduled to run. This can
+#' be useful when developing or testing a pipeline. This tag takes no value, instead
+#' the presence of the tag indicates whether it is skipped. This tag is ignored when
+#' `run_schedule(..., run_all = TRUE)` or when using `invoke()`.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroSkip`
+#'
+#'
+#' # maestroPriority
+#'
+#' Determines the order in which pipelines that run at the same scheduled instance
+#' are executed. Values are positive integers from 1 to N. Order is determined in
+#' descending order such that 1 indicates the highest priority. Pipelines with the
+#' same priority run in the order in which `build_schedule()` parses the pipeline
+#' (usually alphabetical according to file name and then line number within file).
+#' By default, all pipelines are given equal priority.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroPriority 1`
+#' - `#' @maestroPriority 3`
+#'
+#'
+#' # maestro
+#'
+#' Generic tag for identifying a maestro pipeline with all the defaults. Useful
+#' when you want a pipeline to be scheduled via maestro that accepts all default
+#' tag values. Only use this tag if you have no other maestro tags. The tag takes
+#' no value.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestro`
+#'
 #' @name maestro_tags
 NULL
