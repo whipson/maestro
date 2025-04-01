@@ -83,7 +83,13 @@ MaestroPipeline <- R6::R6Class(
         # Create the run sequence
         start_time_adj <- private$start_time
 
-        if (start_time_adj < (lubridate::now() - lubridate::days(365))) {
+        is_start_time_old <- tryCatch({
+          start_time_adj < (lubridate::now() - lubridate::days(365))
+        }, error = function(e) {
+          TRUE
+        })
+
+        if (is_start_time_old) {
           prev_year <- lubridate::year(lubridate::now()) - 1
           start_time_adj <- lubridate::make_datetime(
             year = prev_year,

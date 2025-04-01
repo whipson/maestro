@@ -1,3 +1,9 @@
+# maestro 0.5.3
+
+### Bug fixes
+
+- Fallback within `build_schedule()` to address CRAN check.
+
 # maestro 0.5.2
 
 ### Minor changes
