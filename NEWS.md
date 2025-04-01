@@ -1,10 +1,8 @@
-# maestro 0.6.0.9000
+# maestro 0.5.3
 
-### New features
+### Bug fixes
 
-- New `maestroPriority` tag that determines the order in which pipelines on the same schedule instance execute. Uses integer values from 1-N where 1 is the highest priority.
-
-- `maestroStartTime` now accepts a timestamp formatted like HH:MM:SS. This is useful for pipelines running on a daily or hourly frequency because the date is often arbitrary in those cases (#143). 
+- Fallback within `build_schedule()` to address CRAN check.
 
 # maestro 0.5.2
 
