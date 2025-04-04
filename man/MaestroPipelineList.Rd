@@ -32,6 +32,7 @@ single script
 \item \href{#method-MaestroPipelineList-add_pipelines}{\code{MaestroPipelineList$add_pipelines()}}
 \item \href{#method-MaestroPipelineList-get_pipe_names}{\code{MaestroPipelineList$get_pipe_names()}}
 \item \href{#method-MaestroPipelineList-get_pipe_by_name}{\code{MaestroPipelineList$get_pipe_by_name()}}
+\item \href{#method-MaestroPipelineList-get_priorities}{\code{MaestroPipelineList$get_priorities()}}
 \item \href{#method-MaestroPipelineList-get_schedule}{\code{MaestroPipelineList$get_schedule()}}
 \item \href{#method-MaestroPipelineList-get_timely_pipelines}{\code{MaestroPipelineList$get_timely_pipelines()}}
 \item \href{#method-MaestroPipelineList-get_primary_pipes}{\code{MaestroPipelineList$get_primary_pipes()}}
@@ -106,7 +107,7 @@ invisible
 \if{html}{\out{<a id="method-MaestroPipelineList-get_pipe_names"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_pipe_names}{}}}
 \subsection{Method \code{get_pipe_names()}}{
-Get names of the pipelines in the list
+Get names of the pipelines in the list arranged by priority
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_pipe_names()}\if{html}{\out{</div>}}
 }
@@ -133,6 +134,19 @@ Get a MaestroPipeline by its name
 }
 \subsection{Returns}{
 MaestroPipeline
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_priorities"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_priorities}{}}}
+\subsection{Method \code{get_priorities()}}{
+Get priorities
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_priorities()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+numeric
 }
 }
 \if{html}{\out{<hr>}}

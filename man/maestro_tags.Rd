@@ -8,21 +8,205 @@ maestro tags are roxygen2 comments for configuring the scheduling and execution
 of pipelines.
 }
 \details{
-maestro tags follow the format \verb{#' @maestroTagName}
-\subsection{Tag List}{\tabular{lllll}{
-   tagName \tab description \tab value \tab examples (comma sep.) \tab default \cr
-   maestroFrequency \tab Time unit for scheduling \tab string \tab 1 hour, daily, 3 days, 5 weeks \tab 1 day \cr
-   maestroLogLevel \tab Threshold for logging when logging is requested \tab string \tab INFO, WARN, ERROR \tab INFO \cr
-   maestroSkip \tab Skips the pipeline when running (presence of tag indicates to skip) \tab n/a \tab  \tab  \cr
-   maestroStartTime \tab Start time of the pipeline; sets the point in time for recurrence \tab date or timestamp \tab 1970-01-01 00:00:00, 2024-03-28 \tab 1970-01-01 00:00:00 \cr
-   maestroTz \tab Timezone of the start time \tab string \tab UTC, America/Halifax \tab UTC \cr
-   maestroHours \tab Hours of day to run pipeline \tab ints \tab 0 12 23 \tab  \cr
-   maestroDays \tab Days of week or days of month to run pipeline \tab ints or strings \tab 1 14 30, Mon Wed Sat \tab  \cr
-   maestroMonths \tab Months of year to run pipeline \tab ints \tab 1 3 9 12 \tab  \cr
-   maestroInputs \tab Pipelines that input into this pipeline \tab strings \tab my_upstream_pipeline \tab  \cr
-   maestroOutputs \tab Pipelines that take the output from this pipeline \tab strings \tab my_downstream_pipeline \tab  \cr
-   maestro \tab Generic tag for identifying a maestro pipeline with all defaults \tab n/a. \tab  \tab  \cr
+maestro tags follow the format: \verb{#' @maestroTagName value}
+
+Some tags may not take a value.
+
+maestro tags must be written above the function that is to be included as a pipeline.
+A typical pipeline with tags could look like this:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{#' @maestroFrequency 1 hour
+#' @maestroStartTime 12:30:00
+#' @maestroLogLevel WARN
+my_pipeline <- function() \{
+
+   # Pipeline code
+\}
+}\if{html}{\out{</div>}}
+
+Below are descriptions of all the tags currently available in maestro along
+with examples.
+}
+\section{maestroFrequency}{
+How often to run the pipeline. This tag takes a time unit indicating how long
+to wait between subsequent runs of the pipeline. Acceptable values include
+an integer value followed by one of minute(s), hour(s), day(s), week(s), month(s),
+and year(s). Note that some combinations of integer + unit may be invalid.
+Adverbs like 'hourly', 'daily', 'weekly', etc. are also valid.
+
+Default: \verb{1 day}
+
+Examples:
+\itemize{
+\item \verb{#' @maestroFrequency 1 hour}
+\item \verb{#' @maestroFrequency daily}
+\item \verb{#' @maestroFrequency 2 weeks}
+\item \verb{#' @maestroFrequency 3 months}
+}
 }
 
+\section{maestroStartTime}{
+Timestamp, date, or time corresponding to the start time of the pipeline. This
+also sets the cadence of the pipeline in some cases. For instance, if the start time
+is \verb{2025-03-18 03:00:00} and the frequency is daily, the pipeline will run at 03:00
+every day. A value in the future prevents the pipeline from running until that time
+has been reached.
+
+Default: \verb{2024-01-01 00:00:00}
+
+Examples:
+\itemize{
+\item \verb{#' @maestroStartTime 2025-02-05 12:00:00}
+\item \verb{#' @maestroStartTime 2025-01-01}
+\item \verb{#' @maestroStartTime 08:00:00}
 }
 }
+
+\section{maestroTz}{
+Timezone in which the maestroStartTime is to be considered. Takes any valid timezone
+string that can be found in \code{OlsonNames()}.
+
+Default: \code{UTC}
+
+Examples:
+\itemize{
+\item \verb{#' @maestroTz Europe/Paris}
+\item \verb{#' @maestroTz America/Halifax}
+\item \verb{#' @maestroTz US/Pacific}
+}
+}
+
+\section{maestroLogLevel}{
+Minimum logging threshold for messages, warnings, and errors that come from the pipeline.
+These levels correspond to those in \code{logger:::log_levels_supported} but most commonly
+used are ERROR, WARN, INFO. For example, if you use \code{WARN} then any messages of lower
+urgency (i.e., INFO) will be suppressed, but errors will be logged.
+
+Default: \code{INFO}
+
+Examples:
+\itemize{
+\item \verb{#' @maestroLogLevel ERROR}
+\item \verb{#' @maestroLogLevel WARN}
+}
+}
+
+\section{maestroHours}{
+Specific hours of the day in which to run the pipeline. This only applies for pipelines that run
+at an hourly or minutely frequency. Acceptable values are integers from 0-23 separated
+by spaces. If empty, pipeline runs at all hours. This tag uses the timezone specified by
+\code{maestroTz} (will be UTC if empty).
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroHours 1 4 7 10}
+\item \verb{#' @maestroHours 0 5 20}
+}
+}
+
+\section{maestroDays}{
+Specific days of week or days of month on which to run the pipeline. This only applies
+for pipelines that run at a minutely, hourly, or daily frequency. Acceptable values are
+either integers from 1-31 or day of week strings like Mon, Tue, Wed, etc. These two
+options cannot be used in combination.
+
+Default:
+
+Examples
+\itemize{
+\item \verb{#' @maestroDays 1 11 21 31}
+\item \verb{#' @maestroDays Mon Tue Wed Thu Fri}
+}
+}
+
+\section{maestroMonths}{
+Specific months of the year on which to run the pipeline. This only applies for
+pipelines that do run at least monthly. Acceptable values are integers (1-12) corresponding
+to the month of the year (e.g., 1 = January, 2 = February, etc.).
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroMonths 3 8 12}
+\item \verb{#' @maestroMonths 10}
+}
+}
+
+\section{maestroInputs}{
+For a DAG style pipeline, the names of pipelines that input into the pipeline.
+These names must match the function name defining the inputting pipeline. Multiple
+pipelines can be used as inputs and the input value is used in the target pipeline
+via the required \code{.input} parameter. Note that this tag could be redundant if the
+inputting pipeline uses \code{maestroOutputs}.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroInputs extract verify}
+}
+}
+
+\section{maestroOutputs}{
+For a DAG style pipeline, the names of pipelines that receive the return value of
+this pipeline as input. These names must match the function name defining the
+outputting pipeline. Multiple pipelines can be outputted into. The return value
+of the pipeline will be passed into the receiving pipeline. Note that this tag
+could be redundant if pipeline to be inputted into uses \code{maestroInputs}.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroOutputs transform}
+}
+}
+
+\section{maestroSkip}{
+Flags a pipeline to never be executed even if it is scheduled to run. This can
+be useful when developing or testing a pipeline. This tag takes no value, instead
+the presence of the tag indicates whether it is skipped. This tag is ignored when
+\code{run_schedule(..., run_all = TRUE)} or when using \code{invoke()}.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroSkip}
+}
+}
+
+\section{maestroPriority}{
+Determines the order in which pipelines that run at the same scheduled instance
+are executed. Values are positive integers from 1 to N. Order is determined in
+descending order such that 1 indicates the highest priority. Pipelines with the
+same priority run in the order in which \code{build_schedule()} parses the pipeline
+(usually alphabetical according to file name and then line number within file).
+By default, all pipelines are given equal priority.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroPriority 1}
+\item \verb{#' @maestroPriority 3}
+}
+}
+
+\section{maestro}{
+Generic tag for identifying a maestro pipeline with all the defaults. Useful
+when you want a pipeline to be scheduled via maestro that accepts all default
+tag values. Only use this tag if you have no other maestro tags. The tag takes
+no value.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestro}
+}
+}
+
