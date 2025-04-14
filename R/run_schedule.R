@@ -54,10 +54,7 @@
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
 #' Does not apply to pipes with a `maestroSkip` tag.
 #' @param n_show_next show the next n scheduled pipes
-#' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and
-#' a multisession plan must be executed in the orchestrator (see details)
-#' @param logging whether or not to write the logs to a file (deprecated in 0.5.0 - use `log_to_file` and/or `log_to_console` arguments instead)
-#' @param log_file path to the log file (ignored if `log_to_file == FALSE`) (deprecated in 0.5.0 - use `log_to_file`)
+#' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and a multisession plan must be executed in the orchestrator (see details)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)
 #' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `log_to_console = TRUE`.
 #' @param log_to_console whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
@@ -95,37 +92,11 @@ run_schedule <- function(
     run_all = FALSE,
     n_show_next = 5,
     cores = 1,
-    logging = lifecycle::deprecated(),
-    log_file = lifecycle::deprecated(),
     log_file_max_bytes = 1e6,
     quiet = FALSE,
     log_to_console = FALSE,
     log_to_file = FALSE
 ) {
-
-  warned_about_logging_dep <- FALSE
-  if (lifecycle::is_present(logging)) {
-    lifecycle::deprecate_warn(
-      "0.5.0",
-      "maestro::run_schedule(logging)",
-      "maestro::run_schedule(log_to_file)",
-      details = "To enable logging to a file use either `log_to_file = TRUE` or, more specifically, `log_to_file = '[path-to-log-file]'`"
-    )
-    warned_about_logging_dep <- TRUE
-    log_to_file <- TRUE
-  }
-
-  if (lifecycle::is_present(log_file)) {
-    if (!warned_about_logging_dep) {
-      lifecycle::deprecate_warn(
-        "0.5.0",
-        "maestro::run_schedule(log_file)",
-        "maestro::run_schedule(log_to_file)",
-        details = "To enable logging to a file use either `log_to_file = TRUE` or, more specifically, `log_to_file = '[path-to-log-file]'`"
-      )
-    }
-    log_to_file <- log_file
-  }
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -140,40 +111,7 @@ run_schedule <- function(
   }
 
   # Get the orchestrator nunits
-  orch_nunits <- tryCatch({
-    parse_rounding_unit(orch_frequency)
-  }, error = \(e) {
-    cli::cli_abort(
-      c(
-        "Invalid `orch_frequency` {orch_frequency}.",
-        "i" = "Must be of the format like '1 day', '1 week', 'hourly', etc."
-      ),
-      call = NULL
-    )
-  })
-
-  # Enforce minimum orch frequency of 1 year
-  if (orch_nunits$unit == "year" && orch_nunits$n > 1) {
-    cli::cli_abort(
-      "Invalid `orch_frequency` {orch_frequency}. Minimum frequency is 1 year.",
-      call = NULL
-    )
-  }
-
-  # Additional parse using timechange to verify it isn't something like 500 days,
-  # which isn't understood by timechange
-  tryCatch({
-    timechange::time_round(Sys.time(), paste(orch_nunits$n, orch_nunits$unit))
-  }, error = \(e) {
-    timechange_error_fmt <- gsub('\\..*', '', e$message)
-    cli::cli_abort(
-      c(
-        "Invalid `orch_frequency` {orch_frequency}.
-        {timechange_error_fmt}."
-      ),
-      call = NULL
-    )
-  })
+  orch_nunits <- validate_orch_frequency(orch_frequency)
 
   # Warn if running the orchestrator less frequent than the highest frequency pipeline
   sch <- get_schedule(schedule)

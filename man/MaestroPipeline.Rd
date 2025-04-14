@@ -32,6 +32,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
 \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
 \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
+\item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
 \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
 }
 }
@@ -340,7 +341,7 @@ Update the inputs of a pipeline
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-list
+vector
 }
 }
 \if{html}{\out{<hr>}}
@@ -360,7 +361,27 @@ Update the outputs of a pipeline
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-list
+vector
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_run_sequence"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_run_sequence}{}}}
+\subsection{Method \code{get_run_sequence()}}{
+Get the run sequence of a pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_run_sequence()}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{outputs}}{character vector of times}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+vector
 }
 }
 \if{html}{\out{<hr>}}
