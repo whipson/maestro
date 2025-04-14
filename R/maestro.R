@@ -13,5 +13,5 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
     "next_run", "frequency_n", "frequency_unit", "errors", "pipe_name",
     "script_path", "invoked", "success", "pipeline_started", "pipeline_ended",
     "messages", "run_time", "run_date", "run_time_15min", "n_runs",
-    "hours", "days_of_week", "days_of_month", "days", "months")
+    "hours", "days_of_week", "days_of_month", "days", "months", "slot")
 )
