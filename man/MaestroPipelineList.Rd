@@ -42,6 +42,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_warnings}{\code{MaestroPipelineList$get_warnings()}}
 \item \href{#method-MaestroPipelineList-get_messages}{\code{MaestroPipelineList$get_messages()}}
 \item \href{#method-MaestroPipelineList-get_artifacts}{\code{MaestroPipelineList$get_artifacts()}}
+\item \href{#method-MaestroPipelineList-get_run_sequences}{\code{MaestroPipelineList$get_run_sequences()}}
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
@@ -274,6 +275,19 @@ list
 Get artifacts (return values) from the pipelines
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_artifacts()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_run_sequences"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_run_sequences}{}}}
+\subsection{Method \code{get_run_sequences()}}{
+Get run sequences from the pipelines
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

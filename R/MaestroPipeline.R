@@ -109,7 +109,7 @@ MaestroPipeline <- R6::R6Class(
           pipeline_n = private$frequency_n,
           pipeline_unit = private$frequency_unit,
           pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(365 * 3),
+          check_datetime = start_time_adj + lubridate::days(365 * 2),
           pipeline_hours = private$hours,
           pipeline_days_of_week = private$days_of_week,
           pipeline_days_of_month = private$days_of_month,
@@ -279,22 +279,9 @@ MaestroPipeline <- R6::R6Class(
       orch_frequency_seconds <- convert_to_seconds(orch_string)
       check_datetime_round <- timechange::time_round(check_datetime, unit = orch_string)
 
-      # pipeline_datetime_round <- timechange::time_round(private$start_time_utc, unit = orch_string)
-
       pipeline_sequence <- private$run_sequence
 
       pipeline_sequence_round <- unique(timechange::time_round(pipeline_sequence, unit = orch_string))
-
-      # pipeline_sequence <- get_pipeline_run_sequence(
-      #   pipeline_n = private$frequency_n,
-      #   pipeline_unit = private$frequency_unit,
-      #   pipeline_datetime = pipeline_datetime_round,
-      #   check_datetime = check_datetime_round,
-      #   pipeline_hours = private$hours,
-      #   pipeline_days_of_week = private$days_of_week,
-      #   pipeline_days_of_month = private$days_of_month,
-      #   pipeline_months = private$months
-      # )
 
       check_datetime_int <- as.integer(check_datetime_round)
       pipeline_seq_round_int <- as.integer(pipeline_sequence_round)
@@ -398,7 +385,7 @@ MaestroPipeline <- R6::R6Class(
     #' @description
     #' Update the inputs of a pipeline
     #' @param inputs character vector of inputting pipeline names
-    #' @return list
+    #' @return vector
     update_inputs = function(inputs) {
       private$inputs <- inputs
     },
@@ -406,9 +393,17 @@ MaestroPipeline <- R6::R6Class(
     #' @description
     #' Update the outputs of a pipeline
     #' @param outputs character vector of outputting pipeline names
-    #' @return list
+    #' @return vector
     update_outputs = function(outputs) {
       private$outputs <- outputs
+    },
+
+    #' @description
+    #' Get the run sequence of a pipeline
+    #' @param outputs character vector of times
+    #' @return vector
+    get_run_sequence = function() {
+      private$run_sequence
     }
   ),
 

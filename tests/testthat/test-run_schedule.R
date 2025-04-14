@@ -433,23 +433,6 @@ test_that("errors if resources are unnamed or non unique", {
   }, regexp = "All elements")
 })
 
-test_that("deprecation for logging arguments", {
-
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
-  withr::with_tempdir({
-    expect_warning({
-      run_schedule(schedule, orch_frequency = "hourly", logging = TRUE)
-    })
-  })
-
-  withr::with_tempdir({
-    expect_warning({
-      run_schedule(schedule, orch_frequency = "hourly", log_file = "asdas")
-    })
-  })
-}) |>
-  suppressMessages()
-
 test_that("warns if the orch frequency is less than the highest pipe frequency", {
 
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)

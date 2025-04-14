@@ -259,3 +259,42 @@ adjust_for_dst <- function(base_timestamp, adjustable_timestamps) {
 
   adjustable_timestamps + lubridate::hours(adjustment)
 }
+
+validate_orch_frequency <- function(orch_frequency) {
+  orch_nunits <- tryCatch({
+    parse_rounding_unit(orch_frequency)
+  }, error = \(e) {
+    cli::cli_abort(
+      c(
+        "Invalid `orch_frequency` {orch_frequency}.",
+        "i" = "Must be of the format like '1 day', '1 week', 'hourly', etc."
+      ),
+      call = NULL
+    )
+  })
+
+  # Enforce minimum orch frequency of 1 year
+  if (orch_nunits$unit == "year" && orch_nunits$n > 1) {
+    cli::cli_abort(
+      "Invalid `orch_frequency` {orch_frequency}. Minimum frequency is 1 year.",
+      call = NULL
+    )
+  }
+
+  # Additional parse using timechange to verify it isn't something like 500 days,
+  # which isn't understood by timechange
+  tryCatch({
+    timechange::time_round(Sys.time(), paste(orch_nunits$n, orch_nunits$unit))
+  }, error = \(e) {
+    timechange_error_fmt <- gsub('\\..*', '', e$message)
+    cli::cli_abort(
+      c(
+        "Invalid `orch_frequency` {orch_frequency}.
+        {timechange_error_fmt}."
+      ),
+      call = NULL
+    )
+  })
+
+  orch_nunits
+}

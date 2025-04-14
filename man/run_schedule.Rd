@@ -12,8 +12,6 @@ run_schedule(
   run_all = FALSE,
   n_show_next = 5,
   cores = 1,
-  logging = lifecycle::deprecated(),
-  log_file = lifecycle::deprecated(),
   log_file_max_bytes = 1e+06,
   quiet = FALSE,
   log_to_console = FALSE,
@@ -34,12 +32,7 @@ Does not apply to pipes with a \code{maestroSkip} tag.}
 
 \item{n_show_next}{show the next n scheduled pipes}
 
-\item{cores}{number of cpu cores to run if running in parallel. If > 1, \code{furrr} is used and
-a multisession plan must be executed in the orchestrator (see details)}
-
-\item{logging}{whether or not to write the logs to a file (deprecated in 0.5.0 - use \code{log_to_file} and/or \code{log_to_console} arguments instead)}
-
-\item{log_file}{path to the log file (ignored if \code{log_to_file == FALSE}) (deprecated in 0.5.0 - use \code{log_to_file})}
+\item{cores}{number of cpu cores to run if running in parallel. If > 1, \code{furrr} is used and a multisession plan must be executed in the orchestrator (see details)}
 
 \item{log_file_max_bytes}{numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)}
 

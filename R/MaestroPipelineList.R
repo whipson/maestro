@@ -153,6 +153,15 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get run sequences from the pipelines
+    #' @return list
+    get_run_sequences = function() {
+      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence()) |>
+        stats::setNames(self$get_pipe_names()) |>
+        purrr::discard(is.null)
+    },
+
+    #' @description
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {
