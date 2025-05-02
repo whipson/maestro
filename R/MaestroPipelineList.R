@@ -37,7 +37,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return invisible
     add_pipelines = function(MaestroPipelines = NULL) {
       if ("MaestroPipeline" %in% class(MaestroPipelines)) {
-        self$n_pipelines <- self$n_pipelines + length(MaestroPipelines)
+        self$n_pipelines <- self$n_pipelines + 1
         self$MaestroPipelines <- append(self$MaestroPipelines, MaestroPipelines)
       } else {
         purrr::walk(MaestroPipelines$MaestroPipelines, ~{
