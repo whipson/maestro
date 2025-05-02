@@ -8,6 +8,9 @@
 #' and you want to see what recurring time intervals may be available or underused
 #' for new pipelines.
 #'
+#' Note that this function is intended for use in an interactive session while developing
+#' a maestro project. It is not intended for use in the orchestrator.
+#'
 #' As an example, consider we have four pipelines running at various frequencies
 #' and the orchestrator running every hour. Then let's say there's to be a new
 #' pipeline that runs every day. One might ask 'what hour should I schedule this new
@@ -16,7 +19,7 @@
 #' are already scheduled to run and choose the ones with the lowest usage.
 #'
 #' @inheritParams run_schedule
-#' @param slot_interval a time unit indicating the interval of time to consider between slots (e.g., '1 hour')
+#' @param slot_interval a time unit indicating the interval of time to consider between slots (e.g., 'hour', 'day')
 #'
 #' @returns data.frame
 #' @export

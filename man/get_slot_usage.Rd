@@ -11,7 +11,7 @@ get_slot_usage(schedule, orch_frequency, slot_interval = "hour")
 
 \item{orch_frequency}{of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.}
 
-\item{slot_interval}{a time unit indicating the interval of time to consider between slots (e.g., '1 hour')}
+\item{slot_interval}{a time unit indicating the interval of time to consider between slots (e.g., 'hour', 'day')}
 }
 \value{
 data.frame
@@ -25,6 +25,9 @@ determines the level of granularity to consider.
 This function is particularly useful when you have multiple pipelines in a project
 and you want to see what recurring time intervals may be available or underused
 for new pipelines.
+
+Note that this function is intended for use in an interactive session while developing
+a maestro project. It is not intended for use in the orchestrator.
 
 As an example, consider we have four pipelines running at various frequencies
 and the orchestrator running every hour. Then let's say there's to be a new
