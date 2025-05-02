@@ -10,11 +10,17 @@
 
 ### Removed features
 
-- Arugments `logging` and `log_file` in `run_schedule()`, which were deprecated in maestro 0.5.0 are now fully removed.
+- Arguments `logging` and `log_file` in `run_schedule()`, which were deprecated in maestro 0.5.0 are now fully removed.
 
 ### Minor changes
 
 - Reduced the cached length of schedule sequences to 2 years in advance. (This only affects workflows where a schedule is cached instead of rebuilt each orchestration run).
+
+### Bug fixes
+
+- `n_pipelines` attribute of `<MaestroPipelineList>` now corresponds correctly to the number of pipelines.
+
+- `create_pipeline` no longer adds extra line breaks where optional tags would be.
 
 # maestro 0.5.3
 

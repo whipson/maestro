@@ -46,6 +46,11 @@ get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
     )
   }
 
+  if (length(schedule$PipelineList$MaestroPipelines) == 0) {
+    cli::cli_inform("No pipelines in schedule.")
+    return(invisible())
+  }
+
   # Get the orchestrator nunits
   orch_nunits <- validate_orch_frequency(orch_frequency)
 
@@ -68,15 +73,10 @@ get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
     ) |>
     purrr::list_rbind()
 
-  if (nrow(run_sequences_all) == 0) {
-    cli::cli_inform("No pipelines in schedule.")
-    return(invisible())
-  }
-
   window_fmt <- switch (window_std,
     second = "%S",
-    minute = "%M:%S",
-    hour = "%H:%M:%S",
+    minute = "%M",
+    hour = "%H:%M",
     day = "%d",
     week = "%a",
     month = "%b",
@@ -85,6 +85,7 @@ get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
   )
 
   run_sequences_all |>
+    dplyr::filter(!is.na(slot)) |>
     dplyr::mutate(
       slot = format(slot, window_fmt)
     ) |>

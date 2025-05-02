@@ -4,18 +4,18 @@
       avail_hour
     Output
       # A tibble: 24 x 3
-         slot     n_runs pipe_names               
-         <chr>     <int> <chr>                    
-       1 00:00:00      2 hourly1, hourly2         
-       2 01:00:00      2 hourly1, hourly3         
-       3 02:00:00      3 hourly1, hourly2, hourly3
-       4 03:00:00      1 hourly1                  
-       5 04:00:00      3 hourly1, hourly2, hourly3
-       6 05:00:00      2 hourly1, hourly3         
-       7 06:00:00      2 hourly1, hourly2         
-       8 07:00:00      2 hourly1, hourly3         
-       9 08:00:00      3 hourly1, hourly2, hourly3
-      10 09:00:00      1 hourly1                  
+         slot  n_runs pipe_names               
+         <chr>  <int> <chr>                    
+       1 00:00      2 hourly1, hourly2         
+       2 01:00      2 hourly1, hourly3         
+       3 02:00      3 hourly1, hourly2, hourly3
+       4 03:00      1 hourly1                  
+       5 04:00      3 hourly1, hourly2, hourly3
+       6 05:00      2 hourly1, hourly3         
+       7 06:00      2 hourly1, hourly2         
+       8 07:00      2 hourly1, hourly3         
+       9 08:00      3 hourly1, hourly2, hourly3
+      10 09:00      1 hourly1                  
       # i 14 more rows
 
 ---
@@ -44,18 +44,18 @@
       avail_hour
     Output
       # A tibble: 24 x 3
-         slot     n_runs pipe_names
-         <chr>     <int> <chr>     
-       1 00:00:00      1 hourly1   
-       2 01:00:00      1 hourly1   
-       3 02:00:00      1 hourly1   
-       4 03:00:00      1 hourly1   
-       5 04:00:00      1 hourly1   
-       6 05:00:00      1 hourly1   
-       7 06:00:00      1 hourly1   
-       8 07:00:00      1 hourly1   
-       9 08:00:00      1 hourly1   
-      10 09:00:00      1 hourly1   
+         slot  n_runs pipe_names
+         <chr>  <int> <chr>     
+       1 00:00      1 hourly1   
+       2 01:00      1 hourly1   
+       3 02:00      1 hourly1   
+       4 03:00      1 hourly1   
+       5 04:00      1 hourly1   
+       6 05:00      1 hourly1   
+       7 06:00      1 hourly1   
+       8 07:00      1 hourly1   
+       9 08:00      1 hourly1   
+      10 09:00      1 hourly1   
       # i 14 more rows
 
 ---
