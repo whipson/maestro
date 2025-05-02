@@ -14,6 +14,7 @@
 #' @param skip whether to skip the pipeline when running in the orchestrator (default = `FALSE`)
 #' @param inputs vector of names of pipelines that input into this pipeline (default = `NULL` for no inputs)
 #' @param outputs vector of names of pipelines that receive output from this pipeline (default = `NULL` for no outputs)
+#' @param priority a single positive integer corresponding to the order in which this pipeline will be invoked in the presence of other simultaneously invoked pipelines.
 #'
 #' @return invisible
 #' @export
@@ -52,23 +53,36 @@ create_pipeline <- function(
     overwrite = FALSE,
     skip = FALSE,
     inputs = NULL,
-    outputs = NULL
+    outputs = NULL,
+    priority = NULL
   ) {
 
   skip <- if (skip) {
-    "#' @maestroSkip"
+    "\n#' @maestroSkip"
   } else {
     ""
   }
 
   inputs <- if (!is.null(inputs)) {
-    paste("#'", paste(inputs, collapse = " "))
+    paste("\n#'", paste(inputs, collapse = " "))
   } else {
     ""
   }
 
   outputs <- if (!is.null(outputs)) {
-    paste("#'", paste(outputs, collapse = " "))
+    paste("\n#'", paste(outputs, collapse = " "))
+  } else {
+    ""
+  }
+
+  priority <- if (!is.null(priority)) {
+    if (!(rlang::is_scalar_integerish(priority) && priority > 0)) {
+      cli::cli_abort(
+        c("`priority` must be a single positive whole number."),
+        call = NULL
+      )
+    }
+    paste("\n#' @maestroPriority", priority)
   } else {
     ""
   }

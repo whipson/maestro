@@ -16,7 +16,8 @@ create_pipeline(
   overwrite = FALSE,
   skip = FALSE,
   inputs = NULL,
-  outputs = NULL
+  outputs = NULL,
+  priority = NULL
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ create_pipeline(
 \item{inputs}{vector of names of pipelines that input into this pipeline (default = \code{NULL} for no inputs)}
 
 \item{outputs}{vector of names of pipelines that receive output from this pipeline (default = \code{NULL} for no outputs)}
+
+\item{priority}{a single positive integer corresponding to the order in which this pipeline will be invoked in the presence of other simultaneously invoked pipelines.}
 }
 \value{
 invisible

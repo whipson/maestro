@@ -61,4 +61,40 @@ test_that("Populate after instantiation", {
   new_pipeline_list$add_pipelines(pipelines[[1]])
   expect_s3_class(new_pipeline_list, "MaestroPipelineList")
   expect_s3_class(new_pipeline_list$MaestroPipelines[[1]], "MaestroPipeline")
+  expect_equal(new_pipeline_list$n_pipelines, 1)
+})
+
+test_that("Attribute n_pipelines is valid", {
+  pipeline_list1 <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_daily_good.R")
+  )
+
+  expect_equal(pipeline_list1$n_pipelines, 1)
+
+  pipeline_list2 <- build_schedule_entry(
+    test_path("test_pipelines/test_multi_fun_pipeline.R")
+  )
+
+  expect_equal(pipeline_list2$n_pipelines, 2)
+
+  new_pipe <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_hours_good.R")
+  )
+
+  pipeline_list2$add_pipelines(new_pipe)
+
+  expect_equal(pipeline_list2$n_pipelines, 3)
+})
+
+test_that("Can add two MaestroPipelineLists", {
+  pipeline_list1 <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_daily_good.R")
+  )
+
+  pipeline_list2 <- build_schedule_entry(
+    test_path("test_pipelines/test_multi_fun_pipeline.R")
+  )
+
+  pipeline_list1$add_pipelines(pipeline_list2)
+  expect_equal(pipeline_list1$n_pipelines, 3)
 })

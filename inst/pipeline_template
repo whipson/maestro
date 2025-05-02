@@ -3,10 +3,7 @@
 #' @maestroFrequency {{frequency}}
 #' @maestroStartTime {{start_time}}
 #' @maestroTz {{tz}}
-#' @maestroLogLevel {{log_level}}
-{{inputs}}
-{{outputs}}
-{{skip}}
+#' @maestroLogLevel {{log_level}}{{priority}}{{inputs}}{{outputs}}{{skip}}
 
 {{pipe_name}} <- function() {
 

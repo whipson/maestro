@@ -1,3 +1,27 @@
+# maestro 0.6.0.9000
+
+### New features
+
+- New function `get_slot_usage` to help identify the number of pipelines running on a scheduled time slot.
+
+- New `maestroPriority` tag that determines the order in which pipelines on the same schedule instance execute. Uses integer values from 1-N where 1 is the highest priority.
+
+- `maestroStartTime` now accepts a timestamp formatted like HH:MM:SS. This is useful for pipelines running on a daily or hourly frequency because the date is often arbitrary in those cases (#143). 
+
+### Removed features
+
+- Arguments `logging` and `log_file` in `run_schedule()`, which were deprecated in maestro 0.5.0 are now fully removed.
+
+### Minor changes
+
+- Reduced the cached length of schedule sequences to 2 years in advance. (This only affects workflows where a schedule is cached instead of rebuilt each orchestration run).
+
+### Bug fixes
+
+- `n_pipelines` attribute of `<MaestroPipelineList>` now corresponds correctly to the number of pipelines.
+
+- `create_pipeline` no longer adds extra line breaks where optional tags would be.
+
 # maestro 0.5.3
 
 ### Bug fixes

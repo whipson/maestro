@@ -76,3 +76,17 @@ test_that("create_pipeline aborts if pipeline already exists", {
   })
 }) |>
   suppressMessages()
+
+test_that("create_pipeline with priority", {
+  withr::with_tempdir({
+    create_pipeline("new-pipe", start_time = "10:00:00", open = FALSE, priority = 1, quiet = TRUE)
+
+    expect_no_error({
+      schedule <- build_schedule(quiet = TRUE)
+
+      run_schedule(schedule, quiet = TRUE)
+    })
+
+    expect_true(file.exists("pipelines/new_pipe.R"))
+  })
+})

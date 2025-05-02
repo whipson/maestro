@@ -37,7 +37,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return invisible
     add_pipelines = function(MaestroPipelines = NULL) {
       if ("MaestroPipeline" %in% class(MaestroPipelines)) {
-        self$n_pipelines <- self$n_pipelines + length(MaestroPipelines)
+        self$n_pipelines <- self$n_pipelines + 1
         self$MaestroPipelines <- append(self$MaestroPipelines, MaestroPipelines)
       } else {
         purrr::walk(MaestroPipelines$MaestroPipelines, ~{
@@ -148,6 +148,15 @@ MaestroPipelineList <- R6::R6Class(
     #' @return list
     get_artifacts = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_artifacts()) |>
+        stats::setNames(self$get_pipe_names()) |>
+        purrr::discard(is.null)
+    },
+
+    #' @description
+    #' Get run sequences from the pipelines
+    #' @return list
+    get_run_sequences = function() {
+      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence()) |>
         stats::setNames(self$get_pipe_names()) |>
         purrr::discard(is.null)
     },
