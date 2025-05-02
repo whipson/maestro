@@ -5,12 +5,11 @@
 <url><loc>https://whipson.github.io/maestro/articles/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/articles/maestro-1-quick-start.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/articles/maestro-2-motivation-concepts.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-3-use-cases.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-4-advanced-scheduling.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-5-directed-acyclic-graphs.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-6-logging.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-7-deployment.html</loc></url>
-<url><loc>https://whipson.github.io/maestro/articles/maestro-8-tag-reference.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-3-advanced-scheduling.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-4-directed-acyclic-graphs.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-5-logging.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-6-deployment.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-7-tag-reference.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/authors.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/news/index.html</loc></url>
@@ -26,6 +25,7 @@
 <url><loc>https://whipson.github.io/maestro/reference/get_artifacts.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_pipeline_run_sequence.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_schedule.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/get_slot_usage.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_status.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/invoke.html</loc></url>
