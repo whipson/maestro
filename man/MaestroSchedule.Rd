@@ -32,6 +32,7 @@ if (interactive()) {
 \item \href{#method-MaestroSchedule-get_status}{\code{MaestroSchedule$get_status()}}
 \item \href{#method-MaestroSchedule-get_artifacts}{\code{MaestroSchedule$get_artifacts()}}
 \item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
+\item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
 \item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
 \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
 }
@@ -141,6 +142,19 @@ list
 Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_network()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+data.frame
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroSchedule-get_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-get_flags}{}}}
+\subsection{Method \code{get_flags()}}{
+Get all pipeline flags as a long data.frame
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_flags()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

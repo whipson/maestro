@@ -408,3 +408,106 @@ test_that("maestroPriority works", {
     }, regexp = "Invalid maestroPriority")
   })
 })
+
+test_that("parse maestroFlags works", {
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFlags critical
+      tagged <- function() {
+
+      }
+      ",
+      con = "tag.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroFlags_roclet(),
+      readLines("tag.R")
+    )
+
+    expect_equal(res$val, "critical")
+  })
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroFlags critical awesome
+      tagged <- function() {
+
+      }
+      ",
+      con = "tag.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroFlags_roclet(),
+      readLines("tag.R")
+    )
+
+    expect_equal(length(res$val), 2)
+  })
+})
+
+test_that("parse maestroLabel works", {
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroLabel severity critical
+      labelled <- function() {
+
+      }
+      ",
+      con = "label.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroLabel_roclet(),
+      readLines("label.R")
+    )
+
+    expect_equal(res$val[[1]], c("severity", "critical"))
+  })
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroLabel a lot of labels
+      labelled <- function() {
+
+      }
+      ",
+      con = "label.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroLabel_roclet(),
+      readLines("label.R")
+    ) |>
+      expect_warning()
+
+    expect_null(res$val[[1]])
+  })
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroLabel severity critical
+      #' @maestroLabel domain transportation
+      labelled <- function() {
+
+      }
+      ",
+      con = "label.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroLabel_roclet(),
+      readLines("label.R")
+    )
+
+    expect_equal(length(res$val), 2)
+  })
+})

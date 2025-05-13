@@ -184,6 +184,18 @@
 #' - `#' @maestroPriority 3`
 #'
 #'
+#' # maestroFlags
+#'
+#' Arbitrary labeling tags which are then made accessible via `get_flags()`. A pipeline
+#' can have multiple tags separated by spaces.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroFlags critical etl cloud`
+#' - `#' @maestroFlags aviation`
+#'
+#'
 #' # maestro
 #'
 #' Generic tag for identifying a maestro pipeline with all the defaults. Useful

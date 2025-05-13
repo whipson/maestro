@@ -43,6 +43,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_messages}{\code{MaestroPipelineList$get_messages()}}
 \item \href{#method-MaestroPipelineList-get_artifacts}{\code{MaestroPipelineList$get_artifacts()}}
 \item \href{#method-MaestroPipelineList-get_run_sequences}{\code{MaestroPipelineList$get_run_sequences()}}
+\item \href{#method-MaestroPipelineList-get_flags}{\code{MaestroPipelineList$get_flags()}}
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
@@ -288,6 +289,19 @@ list
 Get run sequences from the pipelines
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_flags}{}}}
+\subsection{Method \code{get_flags()}}{
+Get the flags of the pipelines as a named list
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_flags()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

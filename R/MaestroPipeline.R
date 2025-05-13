@@ -22,6 +22,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param inputs names of pipelines that this pipeline is dependent on for input
     #' @param outputs names of pipelines for which this pipeline is a dependency
     #' @param priority priority of the pipeline
+    #' @param flags arbitrary pipelines flags
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -37,7 +38,8 @@ MaestroPipeline <- R6::R6Class(
       log_level = "INFO",
       inputs = NULL,
       outputs = NULL,
-      priority = Inf
+      priority = Inf,
+      flags = c()
     ) {
 
       # Update the private attributes
@@ -48,6 +50,7 @@ MaestroPipeline <- R6::R6Class(
       private$inputs <- inputs
       private$outputs <- outputs
       private$priority <- priority
+      private$flags <- flags
 
       if (is.null(inputs)) {
 
@@ -383,6 +386,13 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the flags of a pipeline as a vector
+    #' @return character
+    get_flags = function() {
+      private$flags
+    },
+
+    #' @description
     #' Update the inputs of a pipeline
     #' @param inputs character vector of inputting pipeline names
     #' @return vector
@@ -421,6 +431,7 @@ MaestroPipeline <- R6::R6Class(
     inputs = NULL,
     outputs = NULL,
     priority = Inf,
+    flags = c(),
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,
