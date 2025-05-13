@@ -537,3 +537,66 @@ roclet_process.roclet_maestroPriority <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
+
+
+# maestroFlags --------------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroFlags <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  x_sep <- strsplit(x$raw, "\\s+")[[1]]
+  x$val <- x_sep
+  x
+}
+
+maestroFlags_roclet <- function() {
+  roxygen2::roclet("maestroFlags")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroFlags <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroFlags")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+
+# maestroLabel ------------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroLabel <- function(x) {
+
+  x$raw <- x$raw |>
+    trimws()
+
+  x_sep <- strsplit(x$raw, "\\s+")[[1]]
+  if (length(x_sep) != 2) {
+    roxygen2::roxy_tag_warning(
+      x,
+      "Invalid maestroLabel. Should follow the format `#' @maestroLabel key value`."
+    )
+    return(x)
+  }
+  x$val <- x_sep
+  x
+}
+
+maestroLabel_roclet <- function() {
+  roxygen2::roclet("maestroLabel")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroLabel <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tags(blocks[[1]], "maestroLabel")
+  list(
+    val = purrr::map(tags, ~{
+      .x$val
+    }),
+    node = blocks[[1]]$object$topic
+  )
+}

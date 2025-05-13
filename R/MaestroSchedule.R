@@ -192,6 +192,20 @@ MaestroSchedule <- R6::R6Class(
     },
 
     #' @description
+    #' Get all pipeline flags as a long data.frame
+    #' @return data.frame
+    get_flags = function() {
+      flag_list <- self$PipelineList$get_flags()
+      purrr::imap(flag_list, ~{
+        dplyr::tibble(
+          pipe_name = .y,
+          flag = .x
+        )
+      }) |>
+        purrr::list_rbind()
+    },
+
+    #' @description
     #' Visualize the DAG relationships between pipelines in the schedule
     #' @return interactive visualization
     show_network = function() {

@@ -162,6 +162,14 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get the flags of the pipelines as a named list
+    #' @return list
+    get_flags = function() {
+      purrr::map(self$MaestroPipelines, ~.x$get_flags()) |>
+        stats::setNames(self$get_pipe_names())
+    },
+
+    #' @description
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {

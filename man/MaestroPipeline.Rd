@@ -30,6 +30,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
 \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
+\item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
 \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
 \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
 \item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
@@ -55,7 +56,8 @@ Create a new Pipeline object
   log_level = "INFO",
   inputs = NULL,
   outputs = NULL,
-  priority = Inf
+  priority = Inf,
+  flags = c()
 )}\if{html}{\out{</div>}}
 }
 
@@ -87,6 +89,8 @@ Create a new Pipeline object
 \item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
 
 \item{\code{priority}}{priority of the pipeline}
+
+\item{\code{flags}}{arbitrary pipelines flags}
 }
 \if{html}{\out{</div>}}
 }
@@ -322,6 +326,19 @@ Get list of messages from the pipeline
 
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_flags}{}}}
+\subsection{Method \code{get_flags()}}{
+Get the flags of a pipeline as a vector
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_flags()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
 }
 }
 \if{html}{\out{<hr>}}

@@ -196,6 +196,19 @@ Examples:
 }
 }
 
+\section{maestroFlags}{
+Arbitrary labeling tags which are then made accessible via \code{get_flags()}. A pipeline
+can have multiple tags separated by spaces.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroFlags critical etl cloud}
+\item \verb{#' @maestroFlags aviation}
+}
+}
+
 \section{maestro}{
 Generic tag for identifying a maestro pipeline with all the defaults. Useful
 when you want a pipeline to be scheduled via maestro that accepts all default

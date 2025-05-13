@@ -1,6 +1,8 @@
-# maestro 0.6.0.9000
+# maestro 0.6.0
 
 ### New features
+
+- New `maestroFlags` tag that allows passing arbitrary pipeline tags, which is useful for documentation and labeling. Tags are now accessible via `get_flags()`.
 
 - New function `get_slot_usage` to help identify the number of pipelines running on a scheduled time slot.
 
