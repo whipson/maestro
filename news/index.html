@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,23 +51,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.0.9000" id="maestro-0609000">maestro 0.6.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0609000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="maestro-060">maestro 0.6.0<a class="anchor" aria-label="anchor" href="#maestro-060"></a></h2>
 <div class="section level4">
-<h4 id="new-features-0-6-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0-9000"></a></h4>
-<ul><li><p>New function <code>get_slot_usage</code> to help identify the number of pipelines running on a scheduled time slot.</p></li>
+<h4 id="new-features-0-6-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h4>
+<ul><li><p>New <code>maestroFlags</code> tag that allows passing arbitrary pipeline tags, which is useful for documentation and labeling. Tags are now accessible via <code><a href="../reference/get_flags.html">get_flags()</a></code>.</p></li>
+<li><p>New function <code>get_slot_usage</code> to help identify the number of pipelines running on a scheduled time slot.</p></li>
 <li><p>New <code>maestroPriority</code> tag that determines the order in which pipelines on the same schedule instance execute. Uses integer values from 1-N where 1 is the highest priority.</p></li>
 <li><p><code>maestroStartTime</code> now accepts a timestamp formatted like HH:MM:SS. This is useful for pipelines running on a daily or hourly frequency because the date is often arbitrary in those cases (<a href="https://github.com/whipson/maestro/issues/143" class="external-link">#143</a>).</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="removed-features-0-6-0-9000">Removed features<a class="anchor" aria-label="anchor" href="#removed-features-0-6-0-9000"></a></h4>
+<h4 id="removed-features-0-6-0">Removed features<a class="anchor" aria-label="anchor" href="#removed-features-0-6-0"></a></h4>
 <ul><li>Arguments <code>logging</code> and <code>log_file</code> in <code><a href="../reference/run_schedule.html">run_schedule()</a></code>, which were deprecated in maestro 0.5.0 are now fully removed.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="minor-changes-0-6-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-6-0-9000"></a></h4>
+<h4 id="minor-changes-0-6-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-6-0"></a></h4>
 <ul><li>Reduced the cached length of schedule sequences to 2 years in advance. (This only affects workflows where a schedule is cached instead of rebuilt each orchestration run).</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-6-0-9000">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0-9000"></a></h4>
+<h4 id="bug-fixes-0-6-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-0"></a></h4>
 <ul><li><p><code>n_pipelines</code> attribute of <code>&lt;MaestroPipelineList&gt;</code> now corresponds correctly to the number of pipelines.</p></li>
 <li><p><code>create_pipeline</code> no longer adds extra line breaks where optional tags would be.</p></li>
 </ul></div>

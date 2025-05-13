@@ -9,7 +9,7 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,7 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <li><p><a href="#method-MaestroSchedule-get_status"><code>MaestroSchedule$get_status()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_artifacts"><code>MaestroSchedule$get_artifacts()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_network"><code>MaestroSchedule$get_network()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-get_flags"><code>MaestroSchedule$get_flags()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-show_network"><code>MaestroSchedule$show_network()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-clone"><code>MaestroSchedule$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroSchedule-new"></a><div class="section">
@@ -194,22 +195,34 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <p>data.frame</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroSchedule-show_network"></a><div class="section">
-<h3 id="method-show-network-">Method <code><a href="show_network.html">show_network()</a></code><a class="anchor" aria-label="anchor" href="#method-show-network-"></a></h3>
-<p>Visualize the DAG relationships between pipelines in the schedule</p><div class="section">
+</div><p></p><hr><a id="method-MaestroSchedule-get_flags"></a><div class="section">
+<h3 id="method-get-flags-">Method <code><a href="get_flags.html">get_flags()</a></code><a class="anchor" aria-label="anchor" href="#method-get-flags-"></a></h3>
+<p>Get all pipeline flags as a long data.frame</p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">show_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroSchedule-show_network"></a><div class="section">
+<h3 id="method-show-network-">Method <code><a href="show_network.html">show_network()</a></code><a class="anchor" aria-label="anchor" href="#method-show-network-"></a></h3>
+<p>Visualize the DAG relationships between pipelines in the schedule</p><div class="section">
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">show_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
 <p>interactive visualization</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroSchedule-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 

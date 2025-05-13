@@ -9,7 +9,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,6 +188,14 @@ By default, all pipelines are given equal priority.</p>
 <p>Default:</p>
 <p>Examples:</p><ul><li><p><code>#' @maestroPriority 1</code></p></li>
 <li><p><code>#' @maestroPriority 3</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestroflags">maestroFlags<a class="anchor" aria-label="anchor" href="#maestroflags"></a></h2>
+    <p>Arbitrary labeling tags which are then made accessible via <code><a href="get_flags.html">get_flags()</a></code>. A pipeline
+can have multiple tags separated by spaces.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroFlags critical etl cloud</code></p></li>
+<li><p><code>#' @maestroFlags aviation</code></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a></h2>
