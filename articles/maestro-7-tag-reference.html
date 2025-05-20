@@ -58,6 +58,7 @@
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-2-0/maestro-0-2-0.html">0.2.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-3-0/maestro-0-3-0.html">0.3.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html">0.4.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html">0.6.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -81,7 +82,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.6.0/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -141,6 +142,14 @@
 <ul>
 <li><p><code>#' @maestroLogLevel ERROR</code></p></li>
 <li><p><code>#' @maestroLogLevel WARN</code></p></li>
+</ul></section><section class="level2"><h3 id="maestroflags">maestroFlags<a class="anchor" aria-label="anchor" href="#maestroflags"></a>
+</h3>
+<p>Arbitrary labeling tags which are then made accessible via <code><a href="../reference/get_flags.html">get_flags()</a></code>. A pipeline can have multiple tags separated by spaces.</p>
+<p>Default:</p>
+<p>Examples</p>
+<ul>
+<li><p><code>#' @maestroFlags critical aviation</code></p></li>
+<li><p><code>#' @maestroFlags time-series</code></p></li>
 </ul>
 <hr></section></section><section class="section level2"><h2 id="specifier-tags">Specifier Tags<a class="anchor" aria-label="anchor" href="#specifier-tags"></a>
 </h2>
