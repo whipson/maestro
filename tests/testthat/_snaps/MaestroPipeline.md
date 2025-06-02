@@ -48,7 +48,7 @@
       # A tibble: 1 x 5
         invoked success errors warnings messages
         <lgl>   <lgl>    <int>    <int>    <int>
-      1 TRUE    FALSE        2        0        0
+      1 TRUE    FALSE        1        0        0
 
 # Pipeline with arguments are correctly passed
 

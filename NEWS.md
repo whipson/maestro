@@ -1,3 +1,11 @@
+# maestro 0.6.1
+
+### Bug fixes
+
+- `maestro::invoke()` now properly passes resources (arguments) to pipelines (#157).
+
+- Number of errors reported in `get_status()` is now accurately reported.
+
 # maestro 0.6.0
 
 ### New features
