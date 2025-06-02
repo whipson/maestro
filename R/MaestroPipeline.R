@@ -322,7 +322,7 @@ MaestroPipeline <- R6::R6Class(
         success = invoked && private$status != "Error",
         pipeline_started = private$run_time_start,
         pipeline_ended = private$run_time_end,
-        errors = length(private$errors),
+        errors = length(private$errors$message),
         warnings = length(private$warnings),
         messages = length(private$messages),
         next_run = private$next_run
