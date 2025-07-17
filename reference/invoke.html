@@ -91,7 +91,8 @@ purposes or if you want to just run something one-off.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Scheduling parameters such as the frequency, start time, and specifiers are ignored.
-The pipeline will be run even if <code>maestroSkip</code> is present.</p>
+The pipeline will be run even if <code>maestroSkip</code> is present. If the pipeline is a DAG
+pipeline, <code>invoke</code> will attempt to execute the full DAG.</p>
     </div>
 
     <div class="section level2">
