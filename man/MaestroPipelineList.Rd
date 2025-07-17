@@ -340,7 +340,7 @@ warning or invisible
 \subsection{Method \code{run()}}{
 Runs all the pipelines in the list
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$run(..., cores = 1L)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$run(..., cores = 1L, pipes_to_run = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -349,6 +349,8 @@ Runs all the pipelines in the list
 \item{\code{...}}{arguments passed to MaestroPipeline$run}
 
 \item{\code{cores}}{if using multicore number of cores to run in (uses \code{furrr})}
+
+\item{\code{pipes_to_run}}{an optional vector of pipe names to run. If \code{NULL} defaults to all primary pipelines}
 }
 \if{html}{\out{</div>}}
 }

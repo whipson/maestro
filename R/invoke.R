@@ -4,7 +4,8 @@
 #' purposes or if you want to just run something one-off.
 #'
 #' Scheduling parameters such as the frequency, start time, and specifiers are ignored.
-#' The pipeline will be run even if `maestroSkip` is present.
+#' The pipeline will be run even if `maestroSkip` is present. If the pipeline is a DAG
+#' pipeline, `invoke` will attempt to execute the full DAG.
 #'
 #' @inheritParams run_schedule
 #' @param pipe_name name of a single pipe name from the schedule
