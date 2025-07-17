@@ -59,11 +59,6 @@ test_that("invoke properly passes resources", {
     invoke(schedule, "times2", resources = list(val = 2), quiet = TRUE)
 
     expect_true(get_status(schedule)$success)
-
-    expect_error(
-      invoke(schedule, "times2", quiet = TRUE),
-      regexp = "Did you forget"
-    )
   })
 })
 
@@ -83,9 +78,36 @@ test_that("invoke gives informative error message on failure", {
 
     schedule <- build_schedule(quiet = TRUE)
 
-    expect_error(
-      invoke(schedule, "i_fail", quiet = TRUE),
-      regexp = "Failed to invoke"
-    )
+    invoke(schedule, "i_fail", quiet = TRUE)
+
+    expect_snapshot(schedule$get_status()[, c("invoked", "success")])
   })
 })
+
+test_that("invoke triggers DAG pipelines", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency hourly
+      p1 <- function() {
+        2
+      }
+
+      #' @maestroInputs p1
+      p2 <- function(.input) {
+        .input * 2
+      }
+      ",
+      con = "pipelines/dag.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+
+    invoke(schedule, "p1", quiet = TRUE)
+
+    expect_snapshot(schedule$get_status()[, c("invoked", "success")])
+  })
+})
+

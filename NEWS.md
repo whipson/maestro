@@ -1,5 +1,9 @@
 # maestro 0.6.1
 
+### Minor changes
+
+- `maestro::invoke()` on a DAG pipeline successfully executes the full DAG.
+
 ### Bug fixes
 
 - `maestro::invoke()` now properly passes resources (arguments) to pipelines (#157).

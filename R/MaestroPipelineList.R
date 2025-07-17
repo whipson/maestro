@@ -295,9 +295,10 @@ MaestroPipelineList <- R6::R6Class(
     #' Runs all the pipelines in the list
     #' @param ... arguments passed to MaestroPipeline$run
     #' @param cores if using multicore number of cores to run in (uses `furrr`)
+    #' @param pipes_to_run an optional vector of pipe names to run. If `NULL` defaults to all primary pipelines
     #'
     #' @return invisible
-    run = function(..., cores = 1L) {
+    run = function(..., cores = 1L, pipes_to_run = NULL) {
       dots <- rlang::list2(...)
 
       # Parallelization
@@ -319,7 +320,9 @@ MaestroPipelineList <- R6::R6Class(
         }
       }
 
-      primary_pipes <- self$get_primary_pipes()
+      if (is.null(pipes_to_run)) {
+        pipes_to_run <- self$get_primary_pipes()
+      }
       network <- self$get_network()
 
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
@@ -343,7 +346,7 @@ MaestroPipelineList <- R6::R6Class(
 
       # Run the pipelines
       mapper_fun(
-        primary_pipes,
+        pipes_to_run,
         purrr::safely(run_pipe, quiet = TRUE)
       )
 

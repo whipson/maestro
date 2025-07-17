@@ -24,7 +24,8 @@ purposes or if you want to just run something one-off.
 }
 \details{
 Scheduling parameters such as the frequency, start time, and specifiers are ignored.
-The pipeline will be run even if \code{maestroSkip} is present.
+The pipeline will be run even if \code{maestroSkip} is present. If the pipeline is a DAG
+pipeline, \code{invoke} will attempt to execute the full DAG.
 }
 \examples{
 if (interactive()) {

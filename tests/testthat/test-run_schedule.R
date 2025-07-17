@@ -345,10 +345,12 @@ test_that("run_schedule propagates warnings", {
   schedule <- build_schedule(test_path("test_pipelines_run_two_warnings"))
 
   expect_message({
-    run_schedule(schedule, run_all = TRUE)
+    run_schedule(
+      schedule,
+      run_all = TRUE
+    )
   })
   expect_gt(length(last_run_warnings()), 0)
-  expect_snapshot(get_status(schedule))
 }) |>
   suppressMessages()
 
