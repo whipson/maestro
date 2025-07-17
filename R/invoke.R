@@ -68,11 +68,8 @@ invoke <- function(schedule, pipe_name, resources = list(), ...) {
     }
   }
 
-  pipeline_idx <- which(pipe_names == pipe_name)
-  pipeline_to_run <- schedule$PipelineList$MaestroPipelines[[pipeline_idx]]
-
   tryCatch({
-    pipeline_to_run$run(..., resources = resources)
+    schedule$PipelineList$run(..., resources = resources)
   }, error = function(e) {
 
     if (e$message == "unused argument (`NA` = NULL)") {
