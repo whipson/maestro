@@ -2,7 +2,7 @@
 
 ### Minor changes
 
-- `maestro::invoke()` on a DAG pipeline successfully executes the full DAG.
+- `maestro::invoke()` on a DAG pipeline successfully executes the full DAG (#156).
 
 ### Bug fixes
 
