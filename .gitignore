@@ -9,3 +9,5 @@ orchestrator.R
 inst/doc
 .DS_Store
 .Rprofile
+.dockerignore
+.Rbuildignore

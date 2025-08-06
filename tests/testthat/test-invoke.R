@@ -111,3 +111,30 @@ test_that("invoke triggers DAG pipelines", {
   })
 })
 
+test_that("invoke only runs the pipeline selected", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency hourly
+      pipe1 <- function() {
+        2
+      }
+
+      #' @maestroFrequency daily
+      pipe2 <- function() {
+        4
+      }
+      ",
+      con = "pipelines/invoked.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+
+    invoke(schedule, "pipe2", quiet = TRUE)
+
+    expect_equal(sum(schedule$get_status()$invoked), 1)
+  })
+})
+

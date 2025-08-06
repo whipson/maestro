@@ -68,6 +68,19 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get a MaestroPipelineList with selected pipelines
+    #' @param pipe_names names of the pipelines
+    #' @return MaestroPipelineList
+    get_pipes_by_name = function(pipe_names) {
+      names <- self$get_pipe_names()
+      names_idx <- which(names %in% pipe_names)
+      if (length(names_idx) == 0) {
+        cli::cli_abort("No pipelines named {pipe_names} in {.cls MaestroPipelineList}")
+      }
+      self$MaestroPipelines[names_idx]
+    },
+
+    #' @description
     #' Get priorities
     #' @return numeric
     get_priorities = function() {
@@ -322,6 +335,8 @@ MaestroPipelineList <- R6::R6Class(
 
       if (is.null(pipes_to_run)) {
         pipes_to_run <- self$get_primary_pipes()
+      } else {
+        pipes_to_run <- self$get_pipes_by_name(pipes_to_run)
       }
       network <- self$get_network()
 

@@ -70,7 +70,7 @@ invoke <- function(schedule, pipe_name, resources = list(), ...) {
   }
 
   tryCatch({
-    schedule$PipelineList$run(..., resources = resources)
+    schedule$PipelineList$run(..., resources = resources, pipes_to_run = pipe_name)
   }, error = function(e) {
 
     if (e$message == "unused argument (`NA` = NULL)") {
