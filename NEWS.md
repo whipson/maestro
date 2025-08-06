@@ -1,8 +1,12 @@
-# maestro 0.7.0.9000
+# maestro 0.6.2
 
 ### Minor changes
 
 - Console output of `run_schedule()` simplified. Counts of skipped pipelines removed to avoid confusion with `@maestroSkip` tag. 'Total' now refers to the total number of pipelines invoked in a run - not all pipelines in the project.
+
+### Bug fixes
+
+- `maestro::invoke()` only runs the selected pipeline or DAG rather than accidentally running all pipelines in the schedule (#161)
 
 # maestro 0.6.1
 
