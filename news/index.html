@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,10 +52,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.7.0.9000" id="maestro-0709000">maestro 0.7.0.9000<a class="anchor" aria-label="anchor" href="#maestro-0709000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.2" id="maestro-062">maestro 0.6.2<a class="anchor" aria-label="anchor" href="#maestro-062"></a></h2>
 <div class="section level4">
-<h4 id="minor-changes-0-7-0-9000">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-7-0-9000"></a></h4>
+<h4 id="minor-changes-0-6-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-6-2"></a></h4>
 <ul><li>Console output of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> simplified. Counts of skipped pipelines removed to avoid confusion with <code>@maestroSkip</code> tag. ‘Total’ now refers to the total number of pipelines invoked in a run - not all pipelines in the project.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-6-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-2"></a></h4>
+<ul><li>
+<code><a href="../reference/invoke.html">maestro::invoke()</a></code> only runs the selected pipeline or DAG rather than accidentally running all pipelines in the schedule (<a href="https://github.com/whipson/maestro/issues/161" class="external-link">#161</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">

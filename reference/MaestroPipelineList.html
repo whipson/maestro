@@ -17,7 +17,7 @@ single script"><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,6 +95,7 @@ single script</p>
 <li><p><a href="#method-MaestroPipelineList-add_pipelines"><code>MaestroPipelineList$add_pipelines()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_pipe_names"><code>MaestroPipelineList$get_pipe_names()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_pipe_by_name"><code>MaestroPipelineList$get_pipe_by_name()</code></a></p></li>
+<li><p><a href="#method-MaestroPipelineList-get_pipes_by_name"><code>MaestroPipelineList$get_pipes_by_name()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_priorities"><code>MaestroPipelineList$get_priorities()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_schedule"><code>MaestroPipelineList$get_schedule()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_timely_pipelines"><code>MaestroPipelineList$get_timely_pipelines()</code></a></p></li>
@@ -199,67 +200,55 @@ single script</p>
 <p>MaestroPipeline</p>
 </div>
 
+</div><p></p><hr><a id="method-MaestroPipelineList-get_pipes_by_name"></a><div class="section">
+<h3 id="method-get-pipes-by-name-">Method <code>get_pipes_by_name()</code><a class="anchor" aria-label="anchor" href="#method-get-pipes-by-name-"></a></h3>
+<p>Get a MaestroPipelineList with selected pipelines</p><div class="section">
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_pipes_by_name</span><span class="op">(</span><span class="va">pipe_names</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>pipe_names</code></dt>
+<dd><p>names of the pipelines</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>MaestroPipelineList</p>
+</div>
+
 </div><p></p><hr><a id="method-MaestroPipelineList-get_priorities"></a><div class="section">
 <h3 id="method-get-priorities-">Method <code>get_priorities()</code><a class="anchor" aria-label="anchor" href="#method-get-priorities-"></a></h3>
 <p>Get priorities</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_priorities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
 <p>numeric</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-get_schedule"></a><div class="section">
 <h3 id="method-get-schedule-">Method <code><a href="get_schedule.html">get_schedule()</a></code><a class="anchor" aria-label="anchor" href="#method-get-schedule-"></a></h3>
 <p>Get the schedule as a data.frame</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_schedule</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p>data.frame</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-get_timely_pipelines"></a><div class="section">
 <h3 id="method-get-timely-pipelines-">Method <code>get_timely_pipelines()</code><a class="anchor" aria-label="anchor" href="#method-get-timely-pipelines-"></a></h3>
 <p>Get a new MaestroPipelineList containing only those pipelines scheduled to run</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_timely_pipelines</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>...</code></dt>
-<dd><p>arguments passed to self$check_timeliness</p></dd>
-
-
-</dl><p></p></div>
-</div>
-<div class="section">
-<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
-<p>MaestroPipelineList</p>
-</div>
-
-</div><p></p><hr><a id="method-MaestroPipelineList-get_primary_pipes"></a><div class="section">
-<h3 id="method-get-primary-pipes-">Method <code>get_primary_pipes()</code><a class="anchor" aria-label="anchor" href="#method-get-primary-pipes-"></a></h3>
-<p>Get pipelines that are primary (i.e., don't have an inputting pipeline)</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_primary_pipes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
-<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
-<p>list of MaestroPipelines</p>
-</div>
-
-</div><p></p><hr><a id="method-MaestroPipelineList-check_timeliness"></a><div class="section">
-<h3 id="method-check-timeliness-">Method <code>check_timeliness()</code><a class="anchor" aria-label="anchor" href="#method-check-timeliness-"></a></h3>
-<p>Check whether pipelines in the list are scheduled to run based on orchestrator frequency and current time</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">check_timeliness</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_timely_pipelines</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -271,39 +260,59 @@ single script</p>
 </dl><p></p></div>
 </div>
 <div class="section">
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<p>MaestroPipelineList</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroPipelineList-get_primary_pipes"></a><div class="section">
+<h3 id="method-get-primary-pipes-">Method <code>get_primary_pipes()</code><a class="anchor" aria-label="anchor" href="#method-get-primary-pipes-"></a></h3>
+<p>Get pipelines that are primary (i.e., don't have an inputting pipeline)</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_primary_pipes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
 <h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<p>list of MaestroPipelines</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroPipelineList-check_timeliness"></a><div class="section">
+<h3 id="method-check-timeliness-">Method <code>check_timeliness()</code><a class="anchor" aria-label="anchor" href="#method-check-timeliness-"></a></h3>
+<p>Check whether pipelines in the list are scheduled to run based on orchestrator frequency and current time</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">check_timeliness</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>...</code></dt>
+<dd><p>arguments passed to self$check_timeliness</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>logical</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-get_status"></a><div class="section">
 <h3 id="method-get-status-">Method <code><a href="get_status.html">get_status()</a></code><a class="anchor" aria-label="anchor" href="#method-get-status-"></a></h3>
 <p>Get status of the pipelines as a data.frame</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_status</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
 <p>data.frame</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-get_errors"></a><div class="section">
 <h3 id="method-get-errors-">Method <code>get_errors()</code><a class="anchor" aria-label="anchor" href="#method-get-errors-"></a></h3>
 <p>Get list of errors from the pipelines</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_errors</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
-<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
-<p>list</p>
-</div>
-
-</div><p></p><hr><a id="method-MaestroPipelineList-get_warnings"></a><div class="section">
-<h3 id="method-get-warnings-">Method <code>get_warnings()</code><a class="anchor" aria-label="anchor" href="#method-get-warnings-"></a></h3>
-<p>Get list of warnings from the pipelines</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_warnings</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_errors</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -311,11 +320,11 @@ single script</p>
 <p>list</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroPipelineList-get_messages"></a><div class="section">
-<h3 id="method-get-messages-">Method <code>get_messages()</code><a class="anchor" aria-label="anchor" href="#method-get-messages-"></a></h3>
-<p>Get list of messages from the pipelines</p><div class="section">
+</div><p></p><hr><a id="method-MaestroPipelineList-get_warnings"></a><div class="section">
+<h3 id="method-get-warnings-">Method <code>get_warnings()</code><a class="anchor" aria-label="anchor" href="#method-get-warnings-"></a></h3>
+<p>Get list of warnings from the pipelines</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_messages</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_warnings</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -323,11 +332,11 @@ single script</p>
 <p>list</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroPipelineList-get_artifacts"></a><div class="section">
-<h3 id="method-get-artifacts-">Method <code><a href="get_artifacts.html">get_artifacts()</a></code><a class="anchor" aria-label="anchor" href="#method-get-artifacts-"></a></h3>
-<p>Get artifacts (return values) from the pipelines</p><div class="section">
+</div><p></p><hr><a id="method-MaestroPipelineList-get_messages"></a><div class="section">
+<h3 id="method-get-messages-">Method <code>get_messages()</code><a class="anchor" aria-label="anchor" href="#method-get-messages-"></a></h3>
+<p>Get list of messages from the pipelines</p><div class="section">
 <h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_artifacts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_messages</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -335,11 +344,11 @@ single script</p>
 <p>list</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroPipelineList-get_run_sequences"></a><div class="section">
-<h3 id="method-get-run-sequences-">Method <code>get_run_sequences()</code><a class="anchor" aria-label="anchor" href="#method-get-run-sequences-"></a></h3>
-<p>Get run sequences from the pipelines</p><div class="section">
+</div><p></p><hr><a id="method-MaestroPipelineList-get_artifacts"></a><div class="section">
+<h3 id="method-get-artifacts-">Method <code><a href="get_artifacts.html">get_artifacts()</a></code><a class="anchor" aria-label="anchor" href="#method-get-artifacts-"></a></h3>
+<p>Get artifacts (return values) from the pipelines</p><div class="section">
 <h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_run_sequences</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_artifacts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -347,11 +356,11 @@ single script</p>
 <p>list</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroPipelineList-get_flags"></a><div class="section">
-<h3 id="method-get-flags-">Method <code><a href="get_flags.html">get_flags()</a></code><a class="anchor" aria-label="anchor" href="#method-get-flags-"></a></h3>
-<p>Get the flags of the pipelines as a named list</p><div class="section">
+</div><p></p><hr><a id="method-MaestroPipelineList-get_run_sequences"></a><div class="section">
+<h3 id="method-get-run-sequences-">Method <code>get_run_sequences()</code><a class="anchor" aria-label="anchor" href="#method-get-run-sequences-"></a></h3>
+<p>Get run sequences from the pipelines</p><div class="section">
 <h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_run_sequences</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -359,39 +368,51 @@ single script</p>
 <p>list</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroPipelineList-get_network"></a><div class="section">
-<h3 id="method-get-network-">Method <code>get_network()</code><a class="anchor" aria-label="anchor" href="#method-get-network-"></a></h3>
-<p>Get the network structure as a edge list</p><div class="section">
+</div><p></p><hr><a id="method-MaestroPipelineList-get_flags"></a><div class="section">
+<h3 id="method-get-flags-">Method <code><a href="get_flags.html">get_flags()</a></code><a class="anchor" aria-label="anchor" href="#method-get-flags-"></a></h3>
+<p>Get the flags of the pipelines as a named list</p><div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="returns-17">Returns<a class="anchor" aria-label="anchor" href="#returns-17"></a></h4>
+<p>list</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroPipelineList-get_network"></a><div class="section">
+<h3 id="method-get-network-">Method <code>get_network()</code><a class="anchor" aria-label="anchor" href="#method-get-network-"></a></h3>
+<p>Get the network structure as a edge list</p><div class="section">
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
 <p>data.frame</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-validate_network"></a><div class="section">
 <h3 id="method-validate-network-">Method <code>validate_network()</code><a class="anchor" aria-label="anchor" href="#method-validate-network-"></a></h3>
 <p>Validates whether all inputs and outputs exist and that the network is a valid DAG</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">validate_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
+<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
 <p>warning or invisible</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-run"></a><div class="section">
 <h3 id="method-run-">Method <code>run()</code><a class="anchor" aria-label="anchor" href="#method-run-"></a></h3>
 <p>Runs all the pipelines in the list</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">run</span><span class="op">(</span><span class="va">...</span>, cores <span class="op">=</span> <span class="fl">1L</span>, pipes_to_run <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>arguments passed to MaestroPipeline$run</p></dd>
 
@@ -407,19 +428,19 @@ single script</p>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
 <p>invisible</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipelineList-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
