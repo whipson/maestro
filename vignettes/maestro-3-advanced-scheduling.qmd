@@ -142,7 +142,7 @@ data.frame(
 )
 ```
 
-All three pipelines are hourly but they start on different 10-minute intervals. If we run the orchestrator at `1 hour` they'll all execute at the same time. If it is important that the execute at different times, we should set it to `10 minutes`.
+All three pipelines are hourly but they start on different 10-minute intervals. If we run the orchestrator at `1 hour` they'll all execute at the same time. If it is important that they execute at different times, we should set it to `10 minutes`.
 
 So a good heuristic is to run it as often as the smallest interval of time difference between any pipeline. This is pretty good so long as we don't run it so often that the pipelines can't complete before the next execution time. We don't recommend running the orchestrator more frequently than every 5 minutes unless you're confident that your pipelines are fast to execute.[^1]
 
