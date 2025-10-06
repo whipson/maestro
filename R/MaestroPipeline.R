@@ -85,7 +85,6 @@ MaestroPipeline <- R6::R6Class(
         private$days_of_week <- days_of_week %n% 1:7
         private$days_of_month <- days_of_month %n% 1:31
 
-
         # Create the run sequence
         start_time_adj <- private$start_time
 
@@ -96,9 +95,9 @@ MaestroPipeline <- R6::R6Class(
         })
 
         if (is_start_time_old) {
-          prev_year <- lubridate::year(lubridate::now()) - 1
+          floor_year <- lubridate::year(lubridate::now())
           start_time_adj <- lubridate::make_datetime(
-            year = prev_year,
+            year = floor_year,
             month = lubridate::month(private$start_time),
             day = lubridate::day(private$start_time),
             hour = lubridate::hour(private$start_time),

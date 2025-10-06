@@ -1,3 +1,9 @@
+# maestro 0.6.3
+
+### Bug fixes
+
+- Fixed issue with scheduler on certain frequencies over 1 month when the start time was less than 1 year ago.
+
 # maestro 0.6.2
 
 ### Minor changes
