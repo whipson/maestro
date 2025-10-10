@@ -23,6 +23,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param outputs names of pipelines for which this pipeline is a dependency
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
+    #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -39,7 +40,8 @@ MaestroPipeline <- R6::R6Class(
       inputs = NULL,
       outputs = NULL,
       priority = Inf,
-      flags = c()
+      flags = c(),
+      run_if = NULL
     ) {
 
       # Update the private attributes
@@ -51,6 +53,7 @@ MaestroPipeline <- R6::R6Class(
       private$outputs <- outputs
       private$priority <- priority
       private$flags <- flags
+      private$run_if <- run_if
 
       if (is.null(inputs)) {
 
@@ -188,8 +191,6 @@ MaestroPipeline <- R6::R6Class(
       ...
     ) {
 
-      private$run_time_start <- lubridate::now()
-      private$status <- "Success"
       pipe_name <- private$pipe_name
       script_path <- private$script_path
       log_level <- private$log_level
@@ -225,6 +226,30 @@ MaestroPipeline <- R6::R6Class(
 
       resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
+
+      do_run <- TRUE
+      if (!is.null(private$run_if)) {
+        cond <- tryCatch({
+          eval_code_str(
+            private$run_if,
+            vars = resources,
+            inherit = maestro_context
+          )
+        }, error = function(e) {
+          cli::cli_abort("maestroRunIf condition resulted in an error")
+        })
+
+        if (!rlang::is_scalar_logical(cond)) {
+          cli::cli_abort("maestroRunIf condition did not result in a single TRUE/FALSE.")
+        }
+
+        do_run <- cond
+      }
+
+      if (!do_run) return(invisible())
+
+      private$run_time_start <- lubridate::now()
+      private$status <- "Success"
 
       results <- withCallingHandlers(
         do.call(pipe_name, args = resources[names(args)], envir = maestro_context),
@@ -431,6 +456,7 @@ MaestroPipeline <- R6::R6Class(
     outputs = NULL,
     priority = Inf,
     flags = c(),
+    run_if = NULL,
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,

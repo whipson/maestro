@@ -345,7 +345,7 @@ MaestroPipelineList <- R6::R6Class(
         do.call(pipe$run, append(dots, list(.input = .input, ...)))
         .input <- pipe$get_artifacts()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
-        if (pipe$get_status_chr() == "Error") return(invisible())
+        if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)

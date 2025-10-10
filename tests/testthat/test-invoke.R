@@ -137,4 +137,3 @@ test_that("invoke only runs the pipeline selected", {
     expect_equal(sum(schedule$get_status()$invoked), 1)
   })
 })
-

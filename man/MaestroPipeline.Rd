@@ -57,7 +57,8 @@ Create a new Pipeline object
   inputs = NULL,
   outputs = NULL,
   priority = Inf,
-  flags = c()
+  flags = c(),
+  run_if = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -91,6 +92,8 @@ Create a new Pipeline object
 \item{\code{priority}}{priority of the pipeline}
 
 \item{\code{flags}}{arbitrary pipelines flags}
+
+\item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
 }
 \if{html}{\out{</div>}}
 }

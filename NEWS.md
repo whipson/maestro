@@ -1,3 +1,13 @@
+# maestro 0.7.0.9000
+
+### New features
+
+- Conditional pipelines: A new `maestroRunIf` tag that takes an R expression returning a boolean and conditionally runs a pipeline. These can use inputs from upstream DAG pipelines, values from the orchestrator, or any arbitrary TRUE/FALSE expression.
+
+### Minor changes
+
+- `maestro::invoke()` gains argument `log_to_console` allowing it to print messages, warnings, and errors to the console.
+
 # maestro 0.6.3
 
 ### Bug fixes
