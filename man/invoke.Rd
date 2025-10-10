@@ -4,7 +4,14 @@
 \alias{invoke}
 \title{Manually run a pipeline regardless of schedule}
 \usage{
-invoke(schedule, pipe_name, resources = list(), ...)
+invoke(
+  schedule,
+  pipe_name,
+  resources = list(),
+  ...,
+  quiet = TRUE,
+  log_to_console = FALSE
+)
 }
 \arguments{
 \item{schedule}{object of type MaestroSchedule created using \code{build_schedule()}}
@@ -14,6 +21,10 @@ invoke(schedule, pipe_name, resources = list(), ...)
 \item{resources}{named list of shared resources made available to pipelines as needed}
 
 \item{...}{other arguments passed to \code{run_schedule()}}
+
+\item{quiet}{silence metrics to the console (default = \code{FALSE}). Note this does not affect messages generated from pipelines when \code{log_to_console = TRUE}.}
+
+\item{log_to_console}{whether or not to include pipeline messages, warnings, errors to the console (default = \code{FALSE}) (see Logging & Console Output section)}
 }
 \value{
 invisible

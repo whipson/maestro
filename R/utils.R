@@ -299,8 +299,6 @@ validate_orch_frequency <- function(orch_frequency) {
   orch_nunits
 }
 
-#' @keywords internal
-#' @return evaluated expression
 eval_code_str <- function(code, vars = list(), inherit = rlang::caller_env()) {
 
   env <- rlang::env(inherit, !!!vars)
