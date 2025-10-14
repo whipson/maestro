@@ -137,6 +137,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return list
     get_errors = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_errors()) |>
+        purrr::set_names(self$get_pipe_names()) |> 
         purrr::discard(is.null)
     },
 
@@ -145,6 +146,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return list
     get_warnings = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_warnings()) |>
+        purrr::set_names(self$get_pipe_names()) |> 
         purrr::discard(is.null)
     },
 
@@ -153,6 +155,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return list
     get_messages = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_messages()) |>
+        purrr::set_names(self$get_pipe_names()) |> 
         purrr::discard(is.null)
     },
 

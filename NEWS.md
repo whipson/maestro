@@ -8,6 +8,8 @@
 
 - `maestro::invoke()` gains argument `log_to_console` allowing it to print messages, warnings, and errors to the console.
 
+- `last_run_errors()` and friends now return named lists where the name corresponds to the pipe name.
+
 # maestro 0.6.3
 
 ### Bug fixes

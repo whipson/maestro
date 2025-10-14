@@ -21,11 +21,9 @@ test_that("Conditional pipes work with DAG pipelines via .input", {
     run_schedule(
       schedule,
       orch_frequency = "1 day",
-      quiet = TRUE
+      quiet = FALSE
     )
     status <- get_status(schedule)
-
-    expect_snapshot(status$invoked)
   })
 
   expect_snapshot(status$invoked)
@@ -162,3 +160,85 @@ test_that("Conditional pipes work using resources", {
   expect_snapshot(status$invoked)
 })
 
+test_that("Conditions with errors are handled", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroRunIf stop('oh no')
+      p1 <- function() {
+        TRUE
+      }
+      ",
+      con = "pipelines/conditionals.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_snapshot(status$success)
+  expect_snapshot(status$invoked)
+  expect_snapshot(last_run_errors())
+})
+
+test_that("Conditions that don't return a single boolean are handled", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroRunIf c(1, 2)
+      p1 <- function() {
+        TRUE
+      }
+      ",
+      con = "pipelines/conditionals.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_snapshot(status$success)
+  expect_snapshot(status$invoked)
+  expect_snapshot(last_run_errors())
+})
+
+test_that("Empty maestroRunIf is ignored", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroRunIf
+      p1 <- function() {
+        TRUE
+      }
+      ",
+      con = "pipelines/conditionals.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      quiet = FALSE
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_snapshot(status$success)
+  expect_snapshot(status$invoked)
+})
