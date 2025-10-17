@@ -28,7 +28,7 @@ run_schedule(
 \item{resources}{named list of shared resources made available to pipelines as needed}
 
 \item{run_all}{run all pipelines regardless of the schedule (default is \code{FALSE}) - useful for testing.
-Does not apply to pipes with a \code{maestroSkip} tag.}
+Does not apply to pipes with a \code{maestroSkip} tag. Conditional pipelines using \code{maestroRunIf} still behave according to their condition.}
 
 \item{n_show_next}{show the next n scheduled pipes}
 

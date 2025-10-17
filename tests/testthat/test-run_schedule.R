@@ -51,6 +51,7 @@ test_that("run_schedule with quiet=TRUE prints no messages", {
   })
 
   expect_type(last_run_messages(), "list")
+  expect_true(rlang::is_named(last_run_messages()))
   expect_gt(length(last_run_messages()), 0)
 })
 
