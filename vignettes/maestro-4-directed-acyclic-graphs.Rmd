@@ -33,7 +33,7 @@ A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 You can create DAG pipelines in maestro using the `maestroInputs` and/or `maestroOutputs` tags. Let's see this in action.
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-dir.create("pipelines")
+invisible(dir.create("pipelines"))
 writeLines(
   "
   #' @maestroOutputs high_road low_road
@@ -122,8 +122,8 @@ my_etl <- function() {
 It's pretty concise, so we probably wouldn't bother breaking it apart in practice, but let's do it for illustrative purposes (and also get rid of the messaging).
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-file.remove("pipelines/dags.R")
-dir.create("pipelines")
+invisible(file.remove("pipelines/dags.R"))
+invisible(dir.create("pipelines"))
 writeLines(
   "
   #' @maestroFrequency 1 day
@@ -191,6 +191,6 @@ show_network(schedule)
 ```
 
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
-unlink("pipelines", recursive = TRUE)
-unlink("transformed_mtcars.csv")
+invisible(unlink("pipelines", recursive = TRUE))
+invisible(unlink("transformed_mtcars.csv"))
 ```

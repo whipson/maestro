@@ -93,3 +93,10 @@
     Output
       [1] TRUE
 
+# Branching pipelines execute with conditionals
+
+    Code
+      status$invoked
+    Output
+      [1]  TRUE  TRUE FALSE
+

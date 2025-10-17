@@ -2,7 +2,7 @@
 
 ### New features
 
-- Conditional pipelines: A new `maestroRunIf` tag that takes an R expression returning a boolean and conditionally runs a pipeline. These can use inputs from upstream DAG pipelines, values from the orchestrator, or any arbitrary TRUE/FALSE expression.
+- Conditional pipelines: A new `maestroRunIf` tag that takes an R expression returning a boolean and conditionally runs a pipeline. These can use inputs from upstream DAG pipelines, values from the orchestrator via `run_schedule(..., resources = list())`, or any arbitrary TRUE/FALSE expression.
 
 ### Minor changes
 

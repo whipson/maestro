@@ -52,7 +52,7 @@
 #' @param orch_frequency of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.
 #' @param resources named list of shared resources made available to pipelines as needed
 #' @param run_all run all pipelines regardless of the schedule (default is `FALSE`) - useful for testing.
-#' Does not apply to pipes with a `maestroSkip` tag.
+#' Does not apply to pipes with a `maestroSkip` tag. Conditional pipelines using `maestroRunIf` still behave according to their condition.
 #' @param n_show_next show the next n scheduled pipes
 #' @param cores number of cpu cores to run if running in parallel. If > 1, `furrr` is used and a multisession plan must be executed in the orchestrator (see details)
 #' @param log_file_max_bytes numeric specifying the maximum number of bytes allowed in the log file before purging the log (within a margin of error)

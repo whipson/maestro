@@ -122,9 +122,9 @@ test_that("DAGs with a conditional pipe in the middle by default halt further ex
       quiet = TRUE
     )
     status <- get_status(schedule)
-
-    expect_snapshot(status$invoked)
   })
+
+  expect_snapshot(status$invoked)
 })
 
 test_that("Conditional pipes work using resources", {
@@ -240,5 +240,43 @@ test_that("Empty maestroRunIf is ignored", {
   })
 
   expect_snapshot(status$success)
+  expect_snapshot(status$invoked)
+})
+
+test_that("Branching pipelines execute with conditionals", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      a <- function() {
+        'b'
+      }
+
+      #' @maestroInputs a
+      #' @maestroRunIf .input == 'b'
+      b <- function(.input) {
+        TRUE
+      }
+
+      #' @maestroInputs a
+      #' @maestroRunIf .input == 'c'
+      c <- function(.input) {
+        TRUE
+      }
+      ",
+      con = "pipelines/conditionals.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      quiet = FALSE
+    )
+    status <- get_status(schedule)
+  })
+
   expect_snapshot(status$invoked)
 })
