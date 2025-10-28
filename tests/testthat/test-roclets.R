@@ -511,3 +511,55 @@ test_that("parse maestroLabel works", {
     expect_equal(length(res$val), 2)
   })
 })
+
+test_that("parse maestroRunIf works by creating evaluable R code", {
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroRunIf 
+      #' # some logic that will evaluate to TRUE/FALSE
+      #' x <- TRUE
+      #' x
+      conditional <- function() {
+
+      }
+      ",
+      con = "conditional.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroRunIf_roclet(),
+      readLines("conditional.R")
+    )
+
+    expect_true(eval_code_str(res$val[[1]]))
+  })
+
+  withr::with_tempdir({
+    writeLines(
+      "
+      #' @maestroRunIf 
+      #' test_fun <- function(x = 1) {
+      #'   if(x == 1) {
+      #'     return(TRUE)
+      #'   } else {
+      #'     return(FALSE)
+      #'   }
+      #' }
+      #' test_fun()
+      conditional <- function() {
+
+      }
+      ",
+      con = "conditional.R"
+    )
+
+    res <- roxygen2::roc_proc_text(
+      maestroRunIf_roclet(),
+      readLines("conditional.R")
+    )
+
+    expect_true(eval_code_str(res$val[[1]]))
+  })
+})

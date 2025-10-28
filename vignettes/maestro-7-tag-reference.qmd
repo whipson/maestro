@@ -187,6 +187,27 @@ Examples:
 -   `#' @maestroPriority 1`
 -   `#' @maestroPriority 3`
 
+## maestroRunIf
+
+Sets the pipeline to be conditional based on a TRUE/FALSE value returned from an R expression. R code following the tag
+must evaluate to a single TRUE or FALSE, where TRUE causes the pipeline to run (assuming it meets scheduling criteria). If 
+the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the `resources` argument of `run_schedule()` are also accessible in expression following the tag.
+
+Default:
+
+Examples
+
+-   `#' @maestroRunIf sample(c(TRUE, FALSE), 1)`
+-   ```
+    #' @maestroRunIf
+    #' rand_bool <- sample(c(TRUE, FALSE), 1)
+    #' !rand_bool
+    ```
+-   ```
+    #' @maestroInputs init_pipeline
+    #' @maestroRunIf .input
+    ```
+
 ## maestro
 
 Generic tag for identifying a maestro pipeline with all the defaults. Useful when you want a pipeline to be scheduled via maestro that accepts all default tag values. Only use this tag if you have no other maestro tags. The tag takes no value.

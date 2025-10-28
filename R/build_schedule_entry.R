@@ -21,7 +21,8 @@ build_schedule_entry <- function(script_path) {
     outputs = "maestroOutputs",
     maestro = "maestro",
     priority = "maestroPriority",
-    flags = "maestroFlags"
+    flags = "maestroFlags",
+    run_if = "maestroRunIf"
   )
 
   # Initial Validation ------------------------------------------------------
@@ -228,7 +229,8 @@ build_schedule_entry <- function(script_path) {
         inputs = .y$inputs %n% NULL,
         outputs = .y$outputs %n% NULL,
         priority = as.numeric(.y$priority %n% Inf),
-        flags = .y$flags %n% character()
+        flags = .y$flags %n% character(),
+        run_if = .y$run_if %n% NULL
       )
 
       # Append to the list of pipelines

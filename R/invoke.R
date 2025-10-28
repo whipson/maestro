@@ -10,6 +10,8 @@
 #' @inheritParams run_schedule
 #' @param pipe_name name of a single pipe name from the schedule
 #' @param ... other arguments passed to `run_schedule()`
+#' @param quiet silence metrics to the console (default = `FALSE`). Note this does not affect messages generated from pipelines when `log_to_console = TRUE`.
+#' @param log_to_console whether or not to include pipeline messages, warnings, errors to the console (default = `FALSE`) (see Logging & Console Output section)
 #'
 #' @return invisible
 #' @export
@@ -22,7 +24,7 @@
 #'
 #'   invoke(schedule, "my_new_pipeline")
 #' }
-invoke <- function(schedule, pipe_name, resources = list(), ...) {
+invoke <- function(schedule, pipe_name, resources = list(), ..., quiet = TRUE, log_to_console = FALSE) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -70,7 +72,13 @@ invoke <- function(schedule, pipe_name, resources = list(), ...) {
   }
 
   tryCatch({
-    schedule$PipelineList$run(..., resources = resources, pipes_to_run = pipe_name)
+    schedule$PipelineList$run(
+      ..., 
+      resources = resources, 
+      pipes_to_run = pipe_name,
+      quiet = quiet,
+      log_to_console = log_to_console
+    )
   }, error = function(e) {
 
     if (e$message == "unused argument (`NA` = NULL)") {

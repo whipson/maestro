@@ -600,3 +600,27 @@ roclet_process.roclet_maestroLabel <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
+
+
+# maestroRunIf -----------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroRunIf <- function(x) {
+  x$val <- x$raw
+  x
+}
+
+maestroRunIf_roclet <- function() {
+  roxygen2::roclet("maestroRunIf")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroRunIf <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tags(blocks[[1]], "maestroRunIf")
+  list(
+    val = purrr::map(tags, ~{
+      .x$val
+    }),
+    node = blocks[[1]]$object$topic
+  )
+}

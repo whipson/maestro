@@ -298,3 +298,16 @@ validate_orch_frequency <- function(orch_frequency) {
 
   orch_nunits
 }
+
+eval_code_str <- function(code, vars = list(), inherit = rlang::caller_env()) {
+
+  env <- rlang::env(inherit, !!!vars)
+
+  exprs <- if (is.character(code)) rlang::parse_exprs(code) else {
+    if (is.list(code)) code else list(code)
+  }
+
+  out <- NULL
+  for (e in exprs) out <- rlang::eval_bare(e, env)
+  invisible(out)
+}

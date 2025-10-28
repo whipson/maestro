@@ -23,6 +23,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param outputs names of pipelines for which this pipeline is a dependency
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
+    #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -39,7 +40,8 @@ MaestroPipeline <- R6::R6Class(
       inputs = NULL,
       outputs = NULL,
       priority = Inf,
-      flags = c()
+      flags = c(),
+      run_if = NULL
     ) {
 
       # Update the private attributes
@@ -51,6 +53,7 @@ MaestroPipeline <- R6::R6Class(
       private$outputs <- outputs
       private$priority <- priority
       private$flags <- flags
+      private$run_if <- if (!is.null(run_if) && trimws(run_if) == "") NULL else run_if
 
       if (is.null(inputs)) {
 
@@ -188,15 +191,9 @@ MaestroPipeline <- R6::R6Class(
       ...
     ) {
 
-      private$run_time_start <- lubridate::now()
-      private$status <- "Success"
       pipe_name <- private$pipe_name
       script_path <- private$script_path
       log_level <- private$log_level
-
-      if (!quiet) {
-        cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
-      }
 
       if (log_to_console) {
         logger_fun <- logger::appender_tee
@@ -225,6 +222,44 @@ MaestroPipeline <- R6::R6Class(
 
       resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
+
+      do_run <- TRUE
+      if (!is.null(private$run_if)) {
+
+        if (!quiet) {
+          cli::cli_progress_step("? {cli::col_blue(pipe_name)}")
+        }
+
+        cond <- withCallingHandlers(
+          eval_code_str(
+            private$run_if,
+            vars = resources,
+            inherit = maestro_context
+          ),
+          error = private$cond_error_handler,
+          warning = private$cond_warning_handler,
+          message = private$cond_message_handler
+        )
+
+        if (!rlang::is_scalar_logical(cond)) {
+          withCallingHandlers(
+            stop(glue::glue("`{private$run_if}` did not return a single boolean."), call. = FALSE),
+            error = private$cond_error_handler
+          )
+        }
+
+        do_run <- cond
+      }
+
+      if (!do_run) return(invisible())
+
+      private$run_time_start <- lubridate::now()
+
+      if (!quiet) {
+        cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
+      }
+
+      private$status <- "Success"
 
       results <- withCallingHandlers(
         do.call(pipe_name, args = resources[names(args)], envir = maestro_context),
@@ -431,6 +466,7 @@ MaestroPipeline <- R6::R6Class(
     outputs = NULL,
     priority = Inf,
     flags = c(),
+    run_if = NULL,
 
     # Transformed attributes
     start_time_utc = lubridate::NA_POSIXct_,
@@ -465,6 +501,29 @@ MaestroPipeline <- R6::R6Class(
     },
 
     message_handler = function(m) {
+      message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
+      private$messages <- c(private$messages, m$message)
+      invokeRestart("muffleMessage")
+    },
+
+    # Handlers for conditionals
+    cond_error_handler = function(e) {
+      e$message <- paste("Error evaluating condition:", e$message)
+      private$errors <- e
+      private$status <- "Error"
+      logger::log_error("Error evaluating condition: {conditionMessage(e)}", namespace = private$pipe_name)
+      private$run_time_end <- lubridate::now()
+    },
+
+    cond_warning_handler = function(w) {
+      warning_log <- logger::log_warn("Warning evaluating condition: {conditionMessage(w)}", namespace = private$pipe_name)
+      w$message <- paste("Warned while evaluating condition:", w$message)
+      private$warnings <- c(private$warnings, w$message)
+      private$status <- "Warning"
+      invokeRestart("muffleWarning")
+    },
+
+    cond_message_handler = function(m) {
       message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
       private$messages <- c(private$messages, m$message)
       invokeRestart("muffleMessage")
