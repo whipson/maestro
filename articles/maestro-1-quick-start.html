@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -81,7 +82,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Quick Start</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.6.3/vignettes/maestro-1-quick-start.Rmd" class="external-link"><code>vignettes/maestro-1-quick-start.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-1-quick-start.Rmd" class="external-link"><code>vignettes/maestro-1-quick-start.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-1-quick-start.Rmd</code></div>
     </div>
 
@@ -222,17 +223,17 @@ we’ll use a regular R script. Here is where you’ll run
 <pre>
 <span style="color: #2AA198;">ℹ</span> 1 script successfully parsed                                                  
                                                                                 
-── [2025-10-06 12:41:10]                                                        
+── [2025-10-28 18:23:56]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
                                                                                 
-── [2025-10-06 12:41:10]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.021 sec elapsed                              
+── [2025-10-28 18:23:56]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.019 sec elapsed                              
 <span style="color: #859900;">✔</span> 0 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 0 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• my_pipe | 2025-10-07                                                          
+• my_pipe | 2025-10-29                                                          
 </pre>
 </div>
 <p>Building the schedule gets <code>maestro</code> to look through the

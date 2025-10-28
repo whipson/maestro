@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,6 +48,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -82,7 +83,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.6.3/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -212,6 +213,15 @@
 <ul>
 <li><code>#' @maestroPriority 1</code></li>
 <li><code>#' @maestroPriority 3</code></li>
+</ul></section><section class="level2"><h3 id="maestrorunif">maestroRunIf<a class="anchor" aria-label="anchor" href="#maestrorunif"></a>
+</h3>
+<p>Sets the pipeline to be conditional based on a TRUE/FALSE value returned from an R expression. R code following the tag must evaluate to a single TRUE or FALSE, where TRUE causes the pipeline to run (assuming it meets scheduling criteria). If the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the <code>resources</code> argument of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> are also accessible in expression following the tag.</p>
+<p>Default:</p>
+<p>Examples</p>
+<ul>
+<li><code>#' @maestroRunIf sample(c(TRUE, FALSE), 1)</code></li>
+<li><code>#' @maestroRunIf     #' rand_bool &lt;- sample(c(TRUE, FALSE), 1)     #' !rand_bool</code></li>
+<li><code>#' @maestroInputs init_pipeline     #' @maestroRunIf .input</code></li>
 </ul></section><section class="level2"><h3 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a>
 </h3>
 <p>Generic tag for identifying a maestro pipeline with all the defaults. Useful when you want a pipeline to be scheduled via maestro that accepts all default tag values. Only use this tag if you have no other maestro tags. The tag takes no value.</p>

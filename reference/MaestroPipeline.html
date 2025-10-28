@@ -13,7 +13,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -54,7 +55,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for an individual maestro pipeline A pipeline is defined as a single R script with a schedule or input</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.6.3/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
       <div class="d-none name"><code>MaestroPipeline.Rd</code></div>
     </div>
 
@@ -110,7 +111,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  inputs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  outputs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  priority <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  run_if <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -170,6 +172,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 
 <dt><code>flags</code></dt>
 <dd><p>arbitrary pipelines flags</p></dd>
+
+
+<dt><code>run_if</code></dt>
+<dd><p>string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL</p></dd>
 
 
 </dl><p></p></div>
