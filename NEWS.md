@@ -1,4 +1,4 @@
-# maestro 0.7.0.9000
+# maestro 0.7.0
 
 ### New features
 
