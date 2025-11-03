@@ -52,11 +52,9 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/hello-maestro/hello-maestro.html">Hello maestro</a></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-2-0/maestro-0-2-0.html">0.2.0</a></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-3-0/maestro-0-3-0.html">0.3.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html">0.4.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html">0.6.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-7-0/maestro-0-7-0-release.html">0.7.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -83,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Directed Acyclic Graphs (DAGs)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.7.0/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-4-directed-acyclic-graphs.Rmd</code></div>
     </div>
 
@@ -147,14 +145,14 @@ console will reflect the network structure of the DAG.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2025-10-31 15:54:12]                                                        
+── [2025-11-03 13:22:32]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[11ms]</span>                                                                  
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[26ms]</span>                                                            
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[11ms]</span>                                                             
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[12ms]</span>                                                                  
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[27ms]</span>                                                            
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[12ms]</span>                                                             
                                                                                 
-── [2025-10-31 15:54:12]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.1 sec elapsed                                
+── [2025-11-03 13:22:32]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.107 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 $start                                                                          
@@ -227,14 +225,14 @@ of the messaging).</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2025-10-31 15:54:12]                                                        
+── [2025-11-03 13:22:32]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract</span> <span style="color: #b8b8b8;">[9ms]</span>                                                                 
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[13ms]</span>                                                            
-<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[9ms]</span>                                                                
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[14ms]</span>                                                            
+<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[10ms]</span>                                                               
                                                                                 
-── [2025-10-31 15:54:12]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.06 sec elapsed                               
+── [2025-11-03 13:22:32]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.065 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 </pre>

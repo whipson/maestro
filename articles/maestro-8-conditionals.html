@@ -52,11 +52,9 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/hello-maestro/hello-maestro.html">Hello maestro</a></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-2-0/maestro-0-2-0.html">0.2.0</a></li>
-    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-3-0/maestro-0-3-0.html">0.3.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html">0.4.0</a></li>
     <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html">0.6.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://whipson.github.io/data-in-flight/posts/maestro-0-7-0/maestro-0-7-0-release.html">0.7.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
   </ul>
@@ -82,7 +80,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Conditional Pipelines</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.7.0/vignettes/maestro-8-conditionals.Rmd" class="external-link"><code>vignettes/maestro-8-conditionals.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-8-conditionals.Rmd" class="external-link"><code>vignettes/maestro-8-conditionals.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-8-conditionals.Rmd</code></div>
     </div>
 
@@ -124,20 +122,20 @@ will only execute if a <code>TRUE</code> is randomly sampled.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2025-10-31 15:54:16]                                                        
+── [2025-11-03 13:22:35]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[10ms]</span>                                                     
-[random_execution] [INFO] [2025-10-31 15:54:16.407876]: Maybe, maybe not        
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[31ms]</span>                                                       
+<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[11ms]</span>                                                     
+[random_execution] [INFO] [2025-11-03 13:22:36.022154]: Maybe, maybe not        
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[34ms]</span>                                                       
                                                                                 
-── [2025-10-31 15:54:16]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.08 sec elapsed                               
+── [2025-11-03 13:22:36]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.085 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• random_execution | 2025-11-02                                                 
+• random_execution | 2025-11-05                                                 
 </pre>
 </div>
 </div>
@@ -203,21 +201,21 @@ dataframe and its row count is greater than 0.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2025-10-31 15:54:16]                                                        
+── [2025-11-03 13:22:36]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract_flights</span> <span style="color: #b8b8b8;">[11ms]</span>                                                        
-<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[7ms]</span>                                                     
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[18ms]</span>                                                    
-<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">load_flights</span> <span style="color: #b8b8b8;">[7ms]</span>                                                          
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract_flights</span> <span style="color: #b8b8b8;">[13ms]</span>                                                        
+<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[8ms]</span>                                                     
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[20ms]</span>                                                    
+<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">load_flights</span> <span style="color: #b8b8b8;">[8ms]</span>                                                          
                                                                                 
-── [2025-10-31 15:54:16]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.078 sec elapsed                              
+── [2025-11-03 13:22:36]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.087 sec elapsed                              
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 2 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• extract_flights | 2025-10-31 17:00:00                                         
+• extract_flights | 2025-11-03 14:00:00                                         
 </pre>
 </div>
 </div>
@@ -259,20 +257,20 @@ orchestator:</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2025-10-31 15:54:17]                                                        
+── [2025-11-03 13:22:36]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[7ms]</span>                                                      
-[process_payments] [INFO] [2025-10-31 15:54:17.095736]: Payments processed      
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[20ms]</span>                                                       
+<span style="color: #859900;">✔</span> ? <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[8ms]</span>                                                      
+[process_payments] [INFO] [2025-11-03 13:22:36.674933]: Payments processed      
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[18ms]</span>                                                       
                                                                                 
-── [2025-10-31 15:54:17]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.038 sec elapsed                              
+── [2025-11-03 13:22:36]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.037 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• process_payments | 2025-11-02                                                 
+• process_payments | 2025-11-05                                                 
 </pre>
 </div>
 </div>
