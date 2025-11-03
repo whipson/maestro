@@ -6,13 +6,9 @@ template:
 
 news:
   releases:
-  - text: "Hello maestro"
-    href: https://whipson.github.io/data-in-flight/posts/hello-maestro/hello-maestro.html
-  - text: "0.2.0"
-    href: https://whipson.github.io/data-in-flight/posts/maestro-0-2-0/maestro-0-2-0.html
-  - text: "0.3.0"
-    href: https://whipson.github.io/data-in-flight/posts/maestro-0-3-0/maestro-0-3-0.html
   - text: "0.4.0"
     href: https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html
   - text: "0.6.0"
     href: https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html
+  - text: "0.7.0"
+    href: https://whipson.github.io/data-in-flight/posts/maestro-0-7-0/maestro-0-7-0-release.html
