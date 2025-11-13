@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   maestro-1-quick-start: maestro-1-quick-start.html
@@ -10,7 +10,7 @@ articles:
   maestro-6-deployment: maestro-6-deployment.html
   maestro-7-tag-reference: maestro-7-tag-reference.html
   maestro-8-conditionals: maestro-8-conditionals.html
-last_built: 2025-11-03T13:22Z
+last_built: 2025-11-13T12:31Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles

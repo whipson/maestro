@@ -1,0 +1,195 @@
+# maestro
+
+`maestro` is a lightweight framework for creating and orchestrating data
+pipelines in R. At its core, maestro is an R script scheduler that is
+unique in two ways:
+
+1.  Stateless: It does not need to be continuously running - it can be
+    run in a serverless architecture
+2.  Use of *rounded scheduling*: The timeliness of pipeline executions
+    depends on how often you run your orchestrator
+
+In `maestro` you create **pipelines** (functions) and schedule them
+using `roxygen2` tags - these are special comments (decorators) above
+each function. Then you create an **orchestrator** containing `maestro`
+functions for scheduling and invoking the pipelines.
+
+## Installation
+
+`maestro` is available on CRAN and can be installed via:
+
+``` r
+install.packages("maestro")
+```
+
+Or, try out the development version via:
+
+``` r
+devtools::install_github("https://github.com/whipson/maestro")
+```
+
+## Project Setup
+
+A `maestro` project needs at least two components:
+
+1.  A collection of R pipelines (functions) that you want to schedule
+2.  A single orchestrator script that kicks off the scripts when they’re
+    scheduled to run
+
+The project file structure will look like this:
+
+``` R
+sample_project
+├── orchestrator.R
+└── pipelines
+    ├── my_etl.R
+    ├── pipe1.R
+    └── pipe2.R
+```
+
+Use
+[`maestro::create_maestro()`](https://whipson.github.io/maestro/reference/create_maestro.md)
+to easily create this project structure in a blank R project.
+
+Let’s look at each of these in more detail.
+
+### Pipelines
+
+A pipeline is task we want to run. This task may involve retrieving data
+from a source, performing cleaning and computation on the data, then
+sending it to a destination. `maestro` is not concerned with what your
+pipeline does, but rather *when* you want to run it. Here’s a simple
+pipeline in `maestro`:
+
+``` r
+#' Example ETL pipeline
+#' @maestroFrequency 1 day
+#' @maestroStartTime 2024-03-25 12:30:00
+my_etl <- function() {
+  
+  # Pretend we're getting data from a source
+  message("Get data")
+  extracted <- mtcars
+  
+  # Transform
+  message("Transforming")
+  transformed <- extracted |> 
+    dplyr::mutate(hp_deviation = hp - mean(hp))
+  
+  # Load - write to a location
+  message("Writing")
+  # write.csv(transformed, file = paste0("transformed_mtcars_", Sys.Date(), ".csv"))
+}
+```
+
+What makes this a `maestro` pipeline is the use of special
+*roxygen*-style comments above the function definition:
+
+- `#' @maestroFrequency 1 day` indicates that this function should
+  execute at a daily frequency.
+
+- `#' @maestroStartTime 2024-03-25 12:30:00` denotes the first time it
+  should run.
+
+In other words, we’d expect it to run every day at 12:30 starting the
+25th of March 2024. There are more `maestro` tags than these ones and
+all follow the camelCase convention established by `roxygen2`.
+
+### Orchestrator
+
+The orchestrator is a script that checks the schedules of all the
+pipelines in a `maestro` project and executes them. The orchestrator
+also handles global execution tasks such as collecting logs and managing
+shared resources like global objects and custom functions.
+
+You have the option of using Quarto, RMarkdown, or a straight-up R
+script for the orchestrator, but the former two have some advantages
+with respect to deployment on Posit Connect.
+
+A simple orchestrator looks like this:
+
+``` r
+library(maestro)
+
+# Look through the pipelines directory for maestro pipelines to create a schedule
+schedule <- build_schedule(pipeline_dir = "pipelines")
+
+# Checks which pipelines are due to run and then executes them
+output <- run_schedule(
+  schedule, 
+  orch_frequency = "1 day"
+)
+```
+
+![](reference/figures/README-/unnamed-chunk-3.svg)
+
+The function
+[`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+scours through all the pipelines in the project and builds a schedule.
+Then
+[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
+checks each pipeline’s scheduled time against the system time within
+some margin of rounding and calls those pipelines to run.
+
+# Package index
+
+## All functions
+
+- [`MaestroSchedule`](https://whipson.github.io/maestro/reference/MaestroSchedule.md)
+  : Class for a schedule of pipelines
+- [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+  : Build a schedule table
+- [`create_maestro()`](https://whipson.github.io/maestro/reference/create_maestro.md)
+  : Creates a new maestro project
+- [`create_orchestrator()`](https://whipson.github.io/maestro/reference/create_orchestrator.md)
+  : Create a new orchestrator
+- [`create_pipeline()`](https://whipson.github.io/maestro/reference/create_pipeline.md)
+  : Create a new pipeline in a pipelines directory
+- [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+  : Get the artifacts (return values) of the pipelines in a
+  MaestroSchedule object.
+- [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md)
+  : Get the flags of pipelines in a MaestroSchedule object
+- [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
+  : Get the schedule from a MaestroSchedule object
+- [`get_slot_usage()`](https://whipson.github.io/maestro/reference/get_slot_usage.md)
+  : Get time slot usage of a schedule
+- [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  : Get the statuses of the pipelines in a MaestroSchedule object
+- [`invoke()`](https://whipson.github.io/maestro/reference/invoke.md) :
+  Manually run a pipeline regardless of schedule
+- [`last_build_errors()`](https://whipson.github.io/maestro/reference/last_build_errors.md)
+  : Retrieve latest maestro build errors
+- [`last_run_errors()`](https://whipson.github.io/maestro/reference/last_run_errors.md)
+  : Retrieve latest maestro pipeline errors
+- [`last_run_messages()`](https://whipson.github.io/maestro/reference/last_run_messages.md)
+  : Retrieve latest maestro pipeline messages
+- [`last_run_warnings()`](https://whipson.github.io/maestro/reference/last_run_warnings.md)
+  : Retrieve latest maestro pipeline warnings
+- [`maestro_tags`](https://whipson.github.io/maestro/reference/maestro_tags.md)
+  : Maestro Tags
+- [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
+  : Run a schedule
+- [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
+  : Visualize the schedule as a DAG
+- [`suggest_orch_frequency()`](https://whipson.github.io/maestro/reference/suggest_orch_frequency.md)
+  : Suggest orchestrator frequency based on a schedule
+
+# Articles
+
+### All vignettes
+
+- [Quick
+  Start](https://whipson.github.io/maestro/articles/maestro-1-quick-start.md):
+- [Motivation and
+  Concepts](https://whipson.github.io/maestro/articles/maestro-2-motivation-concepts.md):
+- [Advanced
+  Scheduling](https://whipson.github.io/maestro/articles/maestro-3-advanced-scheduling.md):
+- [Directed Acyclic Graphs
+  (DAGs)](https://whipson.github.io/maestro/articles/maestro-4-directed-acyclic-graphs.md):
+- [Logging](https://whipson.github.io/maestro/articles/maestro-5-logging.md):
+- [Deployment](https://whipson.github.io/maestro/articles/maestro-6-deployment.md):
+- [Maestro Tag
+  Reference](https://whipson.github.io/maestro/articles/maestro-7-tag-reference.md):
+- [Conditional
+  Pipelines](https://whipson.github.io/maestro/articles/maestro-8-conditionals.md):

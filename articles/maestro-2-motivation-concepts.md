@@ -1,0 +1,181 @@
+# Motivation and Concepts
+
+## What is maestro?
+
+`maestro` is an R package for creating and orchestrating many data
+pipelines in R. If you have several batch jobs/pipelines that you want
+to schedule and monitor from within a single R project, then `maestro`
+is for you. All you do is *decorate* R functions with special `roxygen2`
+tags and then execute an orchestrator script:
+
+## Why do I need maestro?
+
+Running data pipelines is an essential component of data engineering. It
+is not unusual to have dozens of pipelines that need to run at different
+frequencies, and when you go to deploy these pipelines scheduling and
+monitoring them quickly becomes unwieldy. Perhaps you’ve considered
+moving to heftier orchestration suites such as Airflow, Dagster, and
+others which require learning entirely new skills and pose their own
+challenges with deployment. `maestro` allows you to orchestrate your
+pipelines entirely in R. All you then need is an environment to deploy
+your `maestro` project.
+
+## Pipelines
+
+A pipeline is some process that takes raw data (often from an external
+source) and moves it somewhere else often transforming it along the way.
+Think of a pipeline as a factory assembly line where data is the raw
+material. As this data travels along the pipeline, it undergoes various
+transformations—such as cleaning, aggregation, and analysis—making it
+increasingly refined and valuable. The refined product is then stored in
+a new location where it can be used either by an end consumer or another
+pipeline. The prototypical type of pipeline in data engineering is ETL
+(**E**xtract, **T**ransform, **L**oad), where data is extracted from a
+source, transformed, then loaded into storage.
+
+### Scheduled Batch Processing
+
+The pipeline needs to run regularly and automatically to process new
+data. Most analytic workloads undergo batch processing - the processing
+of data in discrete timed batches. In scheduled batch processing, you as
+the engineer decide how often you want your pipeline to run (every day
+at 12:00?, every hour on the 15th minute?).
+
+In `maestro` a pipeline is an R function with `roxygen2` comments for
+scheduling and configuration:
+
+``` r
+#' my_pipe maestro pipeline
+#'
+#' @maestroFrequency 1 day
+#' @maestroStartTime 2024-05-24
+
+my_pipe <- function() {
+
+  random_data <- data.frame(
+    letters = sample(letters, 10),
+    numbers = sample.int(10)
+  )
+  
+  write.csv(random_data, file = tempfile())
+}
+```
+
+## Orchestrator
+
+An orchestrator is a process that triggers pipelines to run. Think of it
+as the factory manager who turns on various assembly lines as needed. It
+also monitors all the pipelines to ensure smooth operation. Just like
+the factory manager, the orchestrator operates in “shifts” and so needs
+to be scheduled to perform it’s job too.
+
+### Rounded Scheduling
+
+Importantly, `maestro` needs to know how often you’re going to run the
+orchestrator. Unlike most orchestration tools out there, `maestro` isn’t
+intended to be continuously running, which saves you on compute
+resources. But this means that pipelines won’t necessarily run *exactly*
+when they’re scheduled to. This is a concept we call *rounded
+scheduling.*
+
+Let’s say we have a pipeline scheduled to run hourly on the 02 minute
+mark (e.g., 01:02, 02:02, etc.), and our orchestrator runs every hour on
+the 00 minute. When the orchestrator runs, it’ll be slightly before the
+pipeline scheduled time, but it’ll trigger the pipeline anyway because
+it’s close enough within the frequency of the orchestrator. If instead
+our orchestrator ran every 15 minutes, it’d still only execute the
+pipeline once in the hour. But if we underprovisioned the orchestrator
+and ran it only every day, then the pipeline would only execute once a
+day. So an important guideline is that the orchestrator needs to run at
+least as frequency as your highest frequency pipeline.
+
+In `maestro` an orchestrator is an R script or Quarto like this:
+
+``` r
+library(maestro)
+
+schedule <- build_schedule()
+
+run_schedule(
+  schedule,
+  orch_frequency = "1 hour"
+)
+```
+
+By passing the `orch_frequency = "1 hour"` to
+[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md),
+we’re saying that we intend to run the orchestrator every 1 hour.
+
+## Comparison with other packages
+
+### {R} targets
+
+[targets](https://docs.ropensci.org/targets/index.html) is a “pipeline
+tool for statistics and data science in R”. If you have multiple
+connected components of a pipeline, `targets` skips computation of tasks
+that are up-to-date. `targets` seems to be primarily used for projects
+with a single output (e.g., model, document) where there are multiple
+steps that cumulatively take a long time to complete. In contrast,
+`maestro` is focused on projects with multiple *independent* pipelines.
+Moreover, `maestro` pipelines are primarily used when the
+*up-to-dateness* of the source data is unknown (e.g., coming from an API
+or database), unlike in `targets` where it determines the
+*up-to-dateness* based on the contents of a file.
+
+### {Python} dagster
+
+[Dagster](https://dagster.io/) is an “open source orchestration platform
+for the development, production, and observation of data assets”. Like
+`maestro`, dagster uses decorators (special comments) to configure *data
+assets* (functions). Unlike `maestro`, dagster is primarily for chaining
+together dependent components of a multi-step pipeline - a DAG. It also
+supports a developer UI and is more fully developed than `maestro` at
+the current time.
+
+DAGs are supported in `maestro` by defining `maestroInputs` and
+`maestroOutputs` tags, but `maestro` is still predominately geared
+toward projects with multiple pipelines running simultaneously or on
+different schedules.
+
+## When to not use maestro?
+
+While `maestro` can be used for almost any data engineering task that
+can be performed in R, there are cases where it is less appropriate to
+use it.
+
+### Streaming and Event-driven
+
+`maestro` does not support streaming (i.e., continuous) or event-driven
+pipelines. Only batch processes can be run in `maestro`.
+
+### Hundreds of pipelines
+
+Although there is no hard limit to the number of pipelines you can run
+in `maestro` (and there are ways of maximizing its efficiency as the
+number of pipelines increases, such as using multiple cores), we advise
+against using `maestro` to run *this* many pipelines - at least not in a
+single project. There are several reasons for this: (1) the orchestrator
+execution time will be become a problem even with multiple cores; (2)
+organizing and keeping track of this many pipelines in a single R
+project becomes difficult; (3) the number of dependencies to manage in
+the project will likely balloon.
+
+If you wish to continue using `maestro` in this scenario, then our
+recommendation is to split the jobs into multiple projects all running
+on `maestro`.
+
+Nevertheless, if you have hundreds of jobs to run it’s likely an
+indicator that your enterprise has matured out of `maestro` into
+something a bit more sophisticated.
+
+### High frequency jobs
+
+If you have pipelines that need to run every minute or less you may want
+to look for a solution that supports near real time or real time data
+processing. The orchestrator may have trouble keeping up if it’s
+scheduled to run this often.
+
+### Multiple languages (R + Python)
+
+`maestro` is for R pipelines only. Using `reticulate` may help with
+Python in a pinch though.

@@ -1,0 +1,265 @@
+# Deployment
+
+Maestro is only of practical use if it’s deployed. It doesn’t matter if
+this deployment is cloud or on a local server, but the goal is to have
+it run automatically on a regular cadence. In this way, maestro can be
+the backbone of a small-moderate enterprise’s data orchestration.
+
+Maestro deployment is not all that different from deploying any R
+script. The main difference is that you need to deploy the entire
+project (pipelines + orchestrator) and then target specifically the
+orchestrator script to execute repeatedly.
+
+There are numerous avenues for deploying a maestro project, so here
+we’ll just look a handful of options. Here we will only focus on the
+execution of maestro and not on side effects like storage and networking
+(in practice, you’d probably have your pipelines do something like read
+from an external source and load to a data warehouse).
+
+Our example to deploy will be as simple as it gets - just the bare bones
+skeleton generated from
+[`maestro::create_maestro()`](https://whipson.github.io/maestro/reference/create_maestro.md).
+This builds an empty maestro project with a single pipeline and an
+orchestrator script. It is sufficient for testing but does nothing of
+interest.
+
+## Local Deployment using Cron/Task Manager
+
+The easiest way to deploy maestro is to have it run on your own local
+machine and triggered on a schedule using Cron (Mac/Linux)/Task
+Scheduler (Windows).
+
+### Cron
+
+If your OS is Linux or Mac you can use Cron scheduling. The
+[cronR](https://github.com/bnosac/cronR) package allows you to create
+and manage cron scheduled tasks from within R. Create a new script at
+the root level of the project:
+
+``` r
+library(cronR)
+library(here) # makes it easier to deal with path issues
+
+cmd <- cron_rscript(
+  here("orchestrator.R"), 
+  workdir = here()
+)
+
+cron_add(
+  cmd, 
+  frequency = "daily",
+  id = "maestro",
+  ask = FALSE
+)
+```
+
+### Task Scheduler
+
+If your OS is Windows you can leverage Task Scheduler. The
+[taskscheduleR](https://github.com/bnosac/taskscheduleR) package allows
+you to create and manage scheduled tasks from within R. Create a new R
+script at the root level of the project:
+
+``` r
+library(taskscheduleR)
+library(here) # makes it easier to deal with path issues
+
+taskscheduler_create(
+  taskname = "maestro", 
+  rscript = here("orchestrator.R"), 
+  schedule = "DAILY",
+  exec_path = here(),
+  startdate = format(Sys.Date() - 1, "%m/%d/%Y")
+)
+```
+
+### Limitations
+
+While this is the easiest approach it has a number of limitations.
+First, these will only run if the machine is constantly running (i.e.,
+not in hibernation or sleep mode); so if you’re doing this on a desktop
+or laptop you’ll probably need to go through some extra steps to allow
+it to run even when closed.
+
+Second, even if you have continuous availability, it is hard to monitor
+the success of the deployment. There are GUI-based managers for Cron and
+Task Scheduler, but they’re a far cry from true observability.
+
+Third, it is difficult to version this kind of deployment. If you need
+to make changes or reversions you can quickly get lost in a swamp of
+stale and aborted deployments.
+
+All said, this kind of deployment is probably only advisable for testing
+and proof-of-concept. There are probably more sophisticated Cron
+wrappers or substitutes that make local deployment more feasible (i.e.,
+include monitoring, CI/CD, etc.), but we won’t focus on those here.
+
+## Posit Connect
+
+Seasoned R users will likely be familiar with [Posit](https://posit.co/)
+and its hosting platform [Posit
+Connect](https://posit.co/products/enterprise/connect/). While
+traditionally seen as a hosting environment for dashboards, APIs, and
+reports, it is actually perfectly capable of data orchestration with
+maestro.
+
+> **Note**
+>
+> A Posit Connect license and instance is required for this type of
+> deployment. User must also have Publisher privileges to deploy to
+> Connect.
+
+The key difference for a Posit Connect deployment is the use of
+[Quarto](https://quarto.org/) for the orchestrator.[¹](#fn1) There’s no
+need for any visual embellishments in this Quarto doc (but, hey, here’s
+a pretty good place for some observability metrics and graphics!), all
+you need is at least one R chunk containing the orchestrator code.
+
+Here’s a basic .qmd script that could be deployed on Posit Connect.
+
+```` markdown
+---
+title: "Maestro"
+format: html
+resources:
+  - pipelines/*
+  - renv.lock
+---
+
+```{r}
+library(maestro)
+
+schedule <- build_schedule()
+
+run_schedule(
+  schedule,
+  orch_frequency = "1 hour"
+)
+```
+````
+
+You can then use the push deployment via RStudio or Positron. In RStudio
+it looks like this:
+
+![](images/maestro-publish.png)
+
+Make sure you select **Publish with source code** so that you can
+trigger the orchestrator to run on a schedule in Connect.
+
+Once it has been published you can set the schedule using the Schedule
+tab. Be sure to use the same schedule frequency as your orchestration
+frequency:
+
+![](images/maestro-posit-scheduled.png)
+
+This is a relatively easy way to deploy a maestro project assuming you
+have a Posit Connect license.
+
+> **Note**
+>
+> [Posit Connect Cloud](https://connect.posit.cloud/), a managed
+> instance of Posit Connect, may be another option for deploying maestro
+> projects, although currently this has not be tested.
+
+### Limitations
+
+While a more robust deployment compared to local Cron/TaskManager,
+observability is still *initially* limited to manually viewing the
+rendered Quarto doc. With a bit of extra tinkering, however, you can
+trigger some side effects in the orchestration script such as sending
+the [pipeline statuses to a database for display in a
+dashboard](https://whipson.github.io/data-in-flight/posts/you-dont-need-airflow/main.html#monitoring),
+or [triggering an
+email](https://docs.posit.co/connect/user/quarto/#email-customization)
+to be sent if any pipelines fail.
+
+On the other hand, you may not appreciate the additional overhead that
+comes with needing to execute the orchestrator as a Quarto doc.
+Personally, I don’t think this creates a meaningful cost in terms of run
+time or compute (assuming you’re not triggering too many side effects
+after the orchestration), but it does require a Quarto installation on
+the Posit Connect instance, which could be a non-starter in some cases.
+
+Finally, if your Posit Connect instance is deployed on a server managed
+by someone other than yourself you may run into issues if the server
+becomes unavailable or you cannot debug problems at the server level. In
+particular, viewing pipeline logs can be difficult since the logs get
+stored at the project level and are thus not accessible in Connect.
+These instead will need to be sent somewhere they can be inspected.
+
+## Cloud
+
+There are virtually limitless options for deploying in the cloud. In
+fact, the options described above can also be applied to a cloud-based
+server (e.g., spin up a Linux server and use Cron to run the schedule
+and just keep the server running indefinitely).
+
+Here we’ll focus on a specific pattern of maestro deployment that works
+well in the cloud both in terms of cost and ease of deployment. We’ll
+avoid tutorials with specific cloud providers and instead generalize the
+types of services needed while providing examples of popular specific
+services. If you’re looking for a walk through for a cloud-based
+deployment, check out this [blog
+post](https://whipson.github.io/data-in-flight/posts/maestro-gcp-deployment/maestro-gcp-deployment.html)
+using Google Cloud Platform (GCP).
+
+### Serverless Cloud
+
+The advantage of maestro is its serverless design. This means that for
+virtually all use cases you don’t need to have a server running
+continuously. Instead, you can only run the server *when the
+orchestrator needs to run*. This usually results in cost savings.
+
+For a basic maestro cloud deployment, you need two services:
+
+1.  Serverless execution environment (i.e., something to run the code)
+2.  Scheduler (i.e., something to tell the code when to run)
+
+Some cloud providers may bundle these services together, others may
+offer them as separate services.
+
+For example, in Amazon Web Services (AWS), the serverless execution
+environment would be a Lambda function and the scheduler could be
+EventBridge. In GCP it would be Cloud Run scheduled via Cloud Scheduler.
+In Azure it would be Azure Functions configured with a Timer Trigger,
+and so on.
+
+As usual, be sure to use the same scheduling frequency as the
+orchestrator frequency.
+
+### Limitations
+
+The only limitation in the cloud is your skill/time and your budget.
+Often these two limitations are inversely correlated: managed cloud
+services like Digital Ocean ease the pain of deployment at the cost of
+taking more of your money. Availability is not likely to be an issue,
+but custom tinkering will be needed to set up observability. Finally, it
+is worth considering best practices such as CI/CD to make it easier to
+update the maestro project. This will also require additional cloud
+services and therefore cost.
+
+## Final Considerations
+
+It’s important to remember that deploying a maestro project is not all
+that different from deploying a single R script. It just has a few extra
+files that need to go with it. One recommendation for deployment is to
+take advantage of maestro’s serverless nature. If you only need to run
+your orchestrator daily, don’t deploy it where you are charged for
+something that runs continuously (that’s 23 hours a day you’re paying
+for nothing).
+
+It’s also important to consider that deployment *for you* likely means
+more than just maestro running in isolation. Maestro really only makes
+sense if it’s doing something like extracting data from a source and
+inserting it into a database, or generating and storing predictions from
+a model. All of this lies outside maestro’s functionality but is
+nevertheless part of the entire deployment stack.
+
+------------------------------------------------------------------------
+
+1.  This feels a bit odd given that Quarto is conventionally used for
+    publishing reports, presentations, and dashboards. That said,
+    there’s nothing stopping you from executing whatever R code you want
+    in a Quarto document, and Posit Connect won’t let you “deploy” a
+    stand-alone R script anyway. RMarkdown is also a valid option
+    although we’ll stick with Quarto here.

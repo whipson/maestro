@@ -1,0 +1,286 @@
+# Advanced Scheduling
+
+This vignette covers more advanced concepts and examples related to
+scheduling. At it’s core, maestro adheres to two keys principles:
+
+1.  Stateless: It does not need to be continuously running - it can be
+    run in a serverless architecture
+2.  Use of *rounded scheduling*: The timeliness of pipeline executions
+    depends on how often you run your orchestrator
+
+Here, we’ll explain these concepts more deeply in the context of maestro
+and give some concrete examples.
+
+## Stateless Execution
+
+Maestro takes a unique approach to scheduling compared to other
+orchestration tools. Whereas most schedulers involve a continuously
+running program to monitor the time and execute jobs when the current
+time is right, maestro is designed to run intermittently. It also
+doesn’t need to save or cache data between executions - in other words,
+it’s *stateless*.
+
+This design has several benefits; namely, you can run it in a serverless
+way which saves on compute resources. However, to achieve this it takes
+some shortcuts which may mean that precise timeliness is lost. This will
+become clearer in our examples.
+
+## Rounded Scheduling
+
+The timeliness of a pipeline is measured in how close the scheduled
+execution time is to the actual execution time. **Maestro is only as
+timely as it needs to be relative to the unit of time you are interested
+in**. This is the concept of *rounded scheduling*. If you run your
+orchestrator once daily, then the timeliness of the pipelines will be
+within the nearest day - it doesn’t care that you specified a pipeline
+to run at exactly 09:21:20 each day. If you run it every 10 minutes,
+then the timeliness of the pipelines will be within the nearest 10
+minute interval.
+
+Let’s look at some examples:
+
+First, we’ll consider one pipeline that is scheduled to run daily at
+09:20:00 and we’ll configure the orchestrator to run daily.
+
+``` r
+# ./pipelines/daily_example.R
+#' daily_example maestro pipeline
+#'
+#' @maestroFrequency 1 day
+#' @maestroStartTime 2024-06-20 09:20:00
+daily_example <- function() {
+
+  # Pipeline code
+}
+```
+
+For demonstration purposes, I’ll manually set the check time to be
+08:00:00 UTC (this is the time maestro will use to compare against the
+scheduled time). In practice, you almost always want this to be the
+system time using either
+[`Sys.time()`](https://rdrr.io/r/base/Sys.time.html) or
+[`lubridate::now()`](https://lubridate.tidyverse.org/reference/now.html).
+
+``` r
+# ./orchestrator.R
+
+library(maestro)
+
+schedule <- build_schedule()
+
+status <- run_schedule(
+  schedule,
+  orch_frequency = "1 day",
+  check_datetime = as.POSIXct("2024-06-20 08:00:00", tz = "UTC")
+)
+```
+
+    ℹ 1 script successfully parsed
+
+    ── [2025-11-13 12:31:42]
+    Running pipelines ▶
+    ✔ daily_example [28ms]
+
+    ── [2025-11-13 12:31:42]
+    Pipeline execution completed ■ | 0.058 sec elapsed
+    ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
+    ────────────────────────────────────────────────────────────────────────────────
+
+    ── Next scheduled pipelines ❯
+    Pipe name | Next scheduled run
+    • daily_example | 2024-06-21
+
+We can see that the pipeline executed even though the current time was
+not 09:20:00. This is because we set the orchestrator to run daily and
+so it considers it close enough to within a day.
+
+Let’s see what happens if we up the frequency of the orchestrator:
+
+``` r
+# ./orchestrator.R
+status <- run_schedule(
+  schedule,
+  orch_frequency = "15 minutes",
+  check_datetime = as.POSIXct("2024-06-20 08:00:00", tz = "UTC")
+)
+```
+
+    ── [2025-11-13 12:31:42]
+    Running pipelines ▶
+
+    ── [2025-11-13 12:31:42]
+    Pipeline execution completed ■ | 0 sec elapsed
+    ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
+    ────────────────────────────────────────────────────────────────────────────────
+
+    ── Next scheduled pipelines ❯
+    Pipe name | Next scheduled run
+    • daily_example | 2024-06-20 09:15:00
+
+It was skipped because it wasn’t within a 15 minute degree of difference
+but the output tells us that will next run at `2024-06-20 09:15:00`.  
+  
+The takeaway message is that the timeliness of the pipeline depends on
+how frequently the orchestrator runs. Remember that when you declare the
+`orch_frequency = "15 minutes"` that is essentially a contract stating
+that you *will* run it every 15 minutes - maestro does not do this for
+you. If you run the orchestrator more or less frequently than you said
+you would unexpected things will happen. Specifically, if you run it
+more frequently than stated, your pipelines will run more often than
+expected, likewise less frequently than stated means that pipelines
+won’t run as often.
+
+## *How often should I schedule my orchestrator?*
+
+If you have a single pipeline or even multiple pipelines that all run at
+the same time this is an easy question to answer. In practice (and in
+our experience using maestro in production) you have multiple pipelines
+that run at different intervals and different times. Maybe some run
+hourly, some run daily, and others run monthly.
+
+### Example 1
+
+Let’s say we have three pipelines with the following frequencies and
+start times:
+
+       name frequency          start_time
+    1 pipe1    1 hour 2024-06-18 12:30:00
+    2 pipe2    2 days 2024-06-18 06:00:00
+    3 pipe3  4 months 2024-06-20 00:00:00
+
+A good starting point is to schedule it as often as the highest
+frequency pipeline in the project - so `1 hour` in the above example. If
+you run it on \*:30:00 minute each day, pipe1 will execute nearly
+exactly at the scheduled time and the other pipelines will be executed
+30 minutes early. If you’re comfortable with this margin of error then
+it’s no big deal, but if not then an orchestrator frequency of
+`30 minutes` will ensure all pipelines run as scheduled exactly.
+
+Let’s see another example:
+
+### Example 2
+
+       name frequency          start_time
+    1 pipe4    1 hour 2024-06-18 00:00:00
+    2 pipe5    1 hour 2024-06-18 00:10:00
+    3 pipe6    1 hour 2024-06-18 00:20:00
+
+All three pipelines are hourly but they start on different 10-minute
+intervals. If we run the orchestrator at `1 hour` they’ll all execute at
+the same time. If it is important that they execute at different times,
+we should set it to `10 minutes`.
+
+So a good heuristic is to run it as often as the smallest interval of
+time difference between any pipeline. This is pretty good so long as we
+don’t run it so often that the pipelines can’t complete before the next
+execution time. We don’t recommend running the orchestrator more
+frequently than every 5 minutes unless you’re confident that your
+pipelines are fast to execute.[¹](#fn1)
+
+Maestro has a function for determining the ideal orchestrator frequency
+based on the pipeline frequencies in the project called
+[`suggest_orch_frequency()`](https://whipson.github.io/maestro/reference/suggest_orch_frequency.md).
+It looks for the shortest interval of time between any future pipeline
+executions and suggests that for the frequency.
+
+## Irregular Schedules
+
+It is also possible to run pipelines on an irregular schedule by
+specifying hours, days of week, days of month, or months of the year:
+
+### Hours of the day
+
+If your pipeline runs hourly at a minimum, you can run it on specific
+hours. This could be useful, for example, if you have pipelines you only
+want to run during business hours. Use the `maestroHours` tag with
+integers corresponding to hours \[0-23\] separated by white space. Be
+sure to use the corresponding `maestroFrequency`.
+
+``` r
+#' specific_hours maestro pipeline
+#'
+#' @maestroFrequency hourly
+#' @maestroHours 6 9 12 15 18
+some_hours_example <- function() {
+
+  # Pipeline code
+}
+```
+
+### Days of week/days of month
+
+If your pipeline runs at least daily, you can run it on specific days of
+week or days of month. If doing days of week use strings like Mon, Tue,
+Wed, etc. If using days of month use integers \[1-31\]. You cannot
+specify both days of week and days of month.
+
+``` r
+#' specific_days_of_week maestro pipeline
+#'
+#' @maestroFrequency daily
+#' @maestroDays Mon Tue Wed Thu Fri
+some_dow_example <- function() {
+
+  # Pipeline code
+}
+
+#' specific_days_of_week maestro pipeline
+#'
+#' @maestroFrequency daily
+#' @maestroDays 1 14 28
+some_dom_example <- function() {
+
+  # Pipeline code
+}
+```
+
+### Months of year
+
+If your pipeline runs at least monthly, you can run it on specific
+months. Use integers \[1-12\] to specify the months.
+
+``` r
+#' specific_months maestro pipeline
+#'
+#' @maestroFrequency months
+#' @maestroMonths 1 7 10
+some_months <- function() {
+
+  # Pipeline code
+}
+```
+
+Note that you can use combinations of these specifiers depending on the
+minimum frequency of the pipeline. For example, an hourly pipeline can
+run on specific hours and days. If you wanted a pipeline to only run on
+business hours including not on weekends. It could look like this:
+
+``` r
+#' business_hours maestro pipeline
+#'
+#' @maestroFrequency hourly
+#' @maestroHours 9 10 11 12 13 14 15 16 17
+#' @maestroDays Mon Tue Wed Thu Fri
+during_work_hours_example <- function() {
+
+  # Pipeline code
+}
+```
+
+## Final Remarks
+
+When it comes time to deploy your project make sure that whatever you
+use to actually run your project (e.g., cron, TaskScheduler, Google
+Cloud Scheduler, etc.) is indeed running it at the same frequency as you
+have in the orchestrator. It’s best to stick to using whole units of
+time rather than fractional units - if my orchestrator runs every 15
+minutes I like to have it run on the 00:00, 15:00, 30:00, and 45:00
+minutes. It makes reasoning about the scheduling simpler.
+
+------------------------------------------------------------------------
+
+1.  Make sure you consider the amount of time it takes to execute
+    [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+    and that you account for the additional work done in
+    [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
+    not related to your actual pipeline logic.
