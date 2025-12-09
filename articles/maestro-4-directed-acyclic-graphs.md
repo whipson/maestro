@@ -59,13 +59,13 @@ get_artifacts(schedule)
 ```
 
                                                                                     
-    ── [2025-11-13 12:31:34]                                                        
+    ── [2025-12-09 16:54:28]                                                        
     Running pipelines ▶                                                             
-    ✔ start [12ms]                                                                  
-    ✔ |-high_road [26ms]                                                            
+    ✔ start [11ms]                                                                  
+    ✔ |-high_road [27ms]                                                            
     ✔ |-low_road [11ms]                                                             
                                                                                     
-    ── [2025-11-13 12:31:34]                                                        
+    ── [2025-12-09 16:54:28]                                                        
     Pipeline execution completed ■ | 0.101 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
@@ -143,14 +143,14 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2025-11-13 12:31:34]                                                        
+    ── [2025-12-09 16:54:29]                                                        
     Running pipelines ▶                                                             
     ✔ extract [9ms]                                                                 
-    ✔ |-transform [12ms]                                                            
+    ✔ |-transform [13ms]                                                            
     ✔   |-load [9ms]                                                                
                                                                                     
-    ── [2025-11-13 12:31:34]                                                        
-    Pipeline execution completed ■ | 0.058 sec elapsed                              
+    ── [2025-12-09 16:54:29]                                                        
+    Pipeline execution completed ■ | 0.059 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
 

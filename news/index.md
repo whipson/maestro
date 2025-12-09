@@ -1,5 +1,12 @@
 # Changelog
 
+## maestro 0.7.1
+
+#### Bug fixes
+
+- Fixed issue where info messages with curly brackets interrupted
+  pipeline execution.
+
 ## maestro 0.7.0
 
 CRAN release: 2025-10-31
