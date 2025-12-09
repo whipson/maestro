@@ -343,6 +343,7 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
+      lineage <- NULL
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
         depth <- min(depth + 1, 6)
         do.call(pipe$run, append(dots, list(.input = .input, ...)))
@@ -350,6 +351,8 @@ MaestroPipelineList <- R6::R6Class(
         out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())
+        
+        lineage <<- append(lineage, pipe$get_pipe_name())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
           prepend <- paste0(rep("  ", times = depth), "|-")
@@ -357,7 +360,8 @@ MaestroPipelineList <- R6::R6Class(
             pipe,
             .input = .input,
             depth = depth,
-            cli_prepend = cli::format_inline(prepend)
+            cli_prepend = cli::format_inline(prepend),
+            lineage = lineage
           )
         }
       }
