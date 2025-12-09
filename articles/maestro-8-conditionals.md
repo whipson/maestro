@@ -39,15 +39,15 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2025-12-09 16:54:32]                                                        
+    ── [2025-12-09 16:59:36]                                                        
     Running pipelines ▶                                                             
-    ✔ ? random_execution [16ms]                                                     
-    [random_execution] [INFO] [2025-12-09 16:54:32.54778]: Maybe, maybe not         
+    ✔ ? random_execution [18ms]                                                     
+    [random_execution] [INFO] [2025-12-09 16:59:36.988207]: Maybe, maybe not        
                                                                                     
-    ✔ random_execution [32ms]                                                       
+    ✔ random_execution [34ms]                                                       
                                                                                     
-    ── [2025-12-09 16:54:32]                                                        
-    Pipeline execution completed ■ | 0.084 sec elapsed                              
+    ── [2025-12-09 16:59:37]                                                        
+    Pipeline execution completed ■ | 0.09 sec elapsed                               
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -121,15 +121,15 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2025-12-09 16:54:32]                                                        
+    ── [2025-12-09 16:59:37]                                                        
     Running pipelines ▶                                                             
-    ✔ extract_flights [9ms]                                                         
-    ✔ ? transform_flights [7ms]                                                     
-    ✔ |-transform_flights [18ms]                                                    
-    ✔ ? load_flights [7ms]                                                          
+    ✔ extract_flights [10ms]                                                        
+    ✔ ? transform_flights [8ms]                                                     
+    ✔ |-transform_flights [19ms]                                                    
+    ✔ ? load_flights [8ms]                                                          
                                                                                     
-    ── [2025-12-09 16:54:32]                                                        
-    Pipeline execution completed ■ | 0.079 sec elapsed                              
+    ── [2025-12-09 16:59:37]                                                        
+    Pipeline execution completed ■ | 0.088 sec elapsed                              
     ✔ 2 successes | ! 0 warnings | ✖ 0 errors | ◼ 2 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -177,15 +177,15 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2025-12-09 16:54:33]                                                        
+    ── [2025-12-09 16:59:37]                                                        
     Running pipelines ▶                                                             
     ✔ ? process_payments [7ms]                                                      
-    [process_payments] [INFO] [2025-12-09 16:54:33.22296]: Payments processed       
+    [process_payments] [INFO] [2025-12-09 16:59:37.706173]: Payments processed      
                                                                                     
     ✔ process_payments [17ms]                                                       
                                                                                     
-    ── [2025-12-09 16:54:33]                                                        
-    Pipeline execution completed ■ | 0.032 sec elapsed                              
+    ── [2025-12-09 16:59:37]                                                        
+    Pipeline execution completed ■ | 0.033 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     

@@ -67,14 +67,14 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:54:40]
+    ── [2025-12-09 16:59:45]
     Running pipelines ▶
-    ✔ hello [17ms]
-    ✔ uhh [96ms]
-    ✖ oh_no [13ms]
+    ✔ hello [19ms]
+    ✔ uhh [120ms]
+    ✖ oh_no [14ms]
 
-    ── [2025-12-09 16:54:40]
-    Pipeline execution completed ■ | 0.172 sec elapsed
+    ── [2025-12-09 16:59:45]
+    Pipeline execution completed ■ | 0.203 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -88,10 +88,10 @@ log (INFO, WARN, or ERROR), the timestamp, and the message itself.
 readLines("maestro.log")
 ```
 
-    [1] "[hello] [INFO] [2025-12-09 16:54:40.584985]: hello"
+    [1] "[hello] [INFO] [2025-12-09 16:59:45.740235]: hello"
     [2] ""
-    [3] "[uhh] [WARN] [2025-12-09 16:54:40.627952]: this could be a problem"
-    [4] "[oh_no] [ERROR] [2025-12-09 16:54:40.725676]: this is bad"
+    [3] "[uhh] [WARN] [2025-12-09 16:59:45.788203]: this could be a problem"
+    [4] "[oh_no] [ERROR] [2025-12-09 16:59:45.908682]: this is bad"
 
 ## Log to Console
 
@@ -109,18 +109,18 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:54:40]
+    ── [2025-12-09 16:59:46]
     Running pipelines ▶
-    [hello] [INFO] [2025-12-09 16:54:40.953258]: hello
+    [hello] [INFO] [2025-12-09 16:59:46.151254]: hello
 
-    ✔ hello [9ms]
-    [uhh] [WARN] [2025-12-09 16:54:40.970356]: this could be a problem
-    ✔ uhh [11ms]
-    [oh_no] [ERROR] [2025-12-09 16:54:40.98924]: this is bad
-    ✖ oh_no [12ms]
+    ✔ hello [10ms]
+    [uhh] [WARN] [2025-12-09 16:59:46.170122]: this could be a problem
+    ✔ uhh [13ms]
+    [oh_no] [ERROR] [2025-12-09 16:59:46.191933]: this is bad
+    ✖ oh_no [15ms]
 
-    ── [2025-12-09 16:54:41]
-    Pipeline execution completed ■ | 0.056 sec elapsed
+    ── [2025-12-09 16:59:46]
+    Pipeline execution completed ■ | 0.064 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -172,15 +172,15 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:54:41]
+    ── [2025-12-09 16:59:46]
     Running pipelines ▶
-    ✔ hello [8ms]
-    ✔ uhh [8ms]
-    [oh_no] [ERROR] [2025-12-09 16:54:41.212208]: this is bad
-    ✖ oh_no [10ms]
+    ✔ hello [9ms]
+    ✔ uhh [9ms]
+    [oh_no] [ERROR] [2025-12-09 16:59:46.437606]: this is bad
+    ✖ oh_no [11ms]
 
-    ── [2025-12-09 16:54:41]
-    Pipeline execution completed ■ | 0.052 sec elapsed
+    ── [2025-12-09 16:59:46]
+    Pipeline execution completed ■ | 0.058 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -226,17 +226,17 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:54:41]
+    ── [2025-12-09 16:59:46]
     Running pipelines ▶
-    [hello] [INFO] [2025-12-09 16:54:41.390485]: hi
-    ✔ hello [9ms]
-    [uhh] [WARN] [2025-12-09 16:54:41.409907]: this could be a problem
-    ✔ uhh [12ms]
-    [oh_no] [ERROR] [2025-12-09 16:54:41.427973]: this is bad
-    ✔ oh_no [11ms]
+    [hello] [INFO] [2025-12-09 16:59:46.631182]: hi
+    ✔ hello [10ms]
+    [uhh] [WARN] [2025-12-09 16:59:46.653017]: this could be a problem
+    ✔ uhh [15ms]
+    [oh_no] [ERROR] [2025-12-09 16:59:46.674285]: this is bad
+    ✔ oh_no [15ms]
 
-    ── [2025-12-09 16:54:41]
-    Pipeline execution completed ■ | 0.057 sec elapsed
+    ── [2025-12-09 16:59:46]
+    Pipeline execution completed ■ | 0.067 sec elapsed
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total
     ────────────────────────────────────────────────────────────────────────────────
 

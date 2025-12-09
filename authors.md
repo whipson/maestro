@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/whipson/maestro/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/whipson/maestro/blob/0.7.1/DESCRIPTION)
 
 Hipson W, Garnett R (2025). *maestro: Orchestration of Data Pipelines*.
 R package version 0.7.1, <https://github.com/whipson/maestro>.
