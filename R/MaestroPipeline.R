@@ -486,45 +486,48 @@ MaestroPipeline <- R6::R6Class(
     warnings = NULL,
     messages = NULL,
 
+    escape_for_glue = function(msg) {
+      logger::skip_formatter(msg)
+    },
+    
     error_handler = function(e) {
       private$errors <- e
       private$status <- "Error"
-      logger::log_error(conditionMessage(e), namespace = private$pipe_name)
+      logger::log_error(private$escape_for_glue(conditionMessage(e)), namespace = private$pipe_name)
       private$run_time_end <- lubridate::now()
     },
-
+    
     warning_handler = function(w) {
-      warning_log <- logger::log_warn(conditionMessage(w), namespace = private$pipe_name)
+      logger::log_warn(private$escape_for_glue(conditionMessage(w)), namespace = private$pipe_name)
       private$warnings <- c(private$warnings, w$message)
       private$status <- "Warning"
       invokeRestart("muffleWarning")
     },
-
+    
     message_handler = function(m) {
-      message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
+      logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
       private$messages <- c(private$messages, m$message)
       invokeRestart("muffleMessage")
     },
-
-    # Handlers for conditionals
+    
     cond_error_handler = function(e) {
       e$message <- paste("Error evaluating condition:", e$message)
       private$errors <- e
       private$status <- "Error"
-      logger::log_error("Error evaluating condition: {conditionMessage(e)}", namespace = private$pipe_name)
+      logger::log_error(private$escape_for_glue(paste("Error evaluating condition:", conditionMessage(e))), namespace = private$pipe_name)
       private$run_time_end <- lubridate::now()
     },
-
+    
     cond_warning_handler = function(w) {
-      warning_log <- logger::log_warn("Warning evaluating condition: {conditionMessage(w)}", namespace = private$pipe_name)
+      logger::log_warn(private$escape_for_glue(paste("Warning evaluating condition:", conditionMessage(w))), namespace = private$pipe_name)
       w$message <- paste("Warned while evaluating condition:", w$message)
       private$warnings <- c(private$warnings, w$message)
       private$status <- "Warning"
       invokeRestart("muffleWarning")
     },
-
+    
     cond_message_handler = function(m) {
-      message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
+      logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
       private$messages <- c(private$messages, m$message)
       invokeRestart("muffleMessage")
     }
