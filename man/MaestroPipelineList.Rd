@@ -48,6 +48,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
+\item \href{#method-MaestroPipelineList-get_lineage_by_pipe}{\code{MaestroPipelineList$get_lineage_by_pipe()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
 }
@@ -377,6 +378,26 @@ Runs all the pipelines in the list
 }
 \subsection{Returns}{
 invisible
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_lineage_by_pipe"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_lineage_by_pipe}{}}}
+\subsection{Method \code{get_lineage_by_pipe()}}{
+Get all lineage paths (sequences of pipeline names) leading to a specified pipeline
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_lineage_by_pipe(pipe_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{pipe_name}}{name of the target pipeline}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+list of character vectors, each representing a path from root to target
 }
 }
 \if{html}{\out{<hr>}}
