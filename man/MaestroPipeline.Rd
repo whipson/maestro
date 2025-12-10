@@ -26,6 +26,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
 \item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
 \item \href{#method-MaestroPipeline-get_priority}{\code{MaestroPipeline$get_priority()}}
+\item \href{#method-MaestroPipeline-get_returns}{\code{MaestroPipeline$get_returns()}}
 \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
 \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
 \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
@@ -128,6 +129,7 @@ Runs the pipeline
   .input = NULL,
   cli_prepend = "",
   log_to_console = FALSE,
+  lineage = c(),
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -148,6 +150,8 @@ Runs the pipeline
 \item{\code{cli_prepend}}{text to prepend to cli output}
 
 \item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
+
+\item{\code{lineage}}{character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)}
 
 \item{\code{...}}{additional arguments (unused)}
 }
@@ -277,6 +281,19 @@ Get priority of the pipeline
 
 \subsection{Returns}{
 numeric
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_returns"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_returns}{}}}
+\subsection{Method \code{get_returns()}}{
+Get immediate return values from the pipeline for downstream pipelines
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_returns()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+list
 }
 }
 \if{html}{\out{<hr>}}

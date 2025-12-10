@@ -539,11 +539,6 @@ MaestroPipeline <- R6::R6Class(
 
     run_time_artifacts = list(),
 
-    #' @description 
-    #' Insert attributes during run time
-    #' @param lineage key for the lineage
-    #' @param attributes named list corresponding to attribute names and values
-    #' @return invisible
     insert_run_time_attributes = function(lineage, attributes) {
       row_idx <- which(private$run_time_attributes$lineage == lineage)
       
