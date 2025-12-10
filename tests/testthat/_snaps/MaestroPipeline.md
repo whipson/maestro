@@ -3,11 +3,12 @@
     Code
       pipeline$get_status()
     Output
-      # A tibble: 1 x 9
+      # A tibble: 1 x 10
         pipe_name  script_path invoked success pipeline_started pipeline_ended
         <chr>      <chr>       <lgl>   <lgl>   <dttm>           <dttm>        
-      1 get_mtcars test_pipel~ FALSE   FALSE   NA               NA            
-      # i 3 more variables: errors <int>, warnings <int>, messages <int>
+      1 get_mtcars test_pipel~ FALSE   NA      NA               NA            
+      # i 4 more variables: errors <int>, warnings <int>, messages <int>,
+      #   lineage <chr>
 
 ---
 
@@ -24,11 +25,12 @@
     Code
       pipeline$get_status()
     Output
-      # A tibble: 1 x 9
+      # A tibble: 1 x 10
         pipe_name script_path  invoked success pipeline_started pipeline_ended
         <chr>     <chr>        <lgl>   <lgl>   <dttm>           <dttm>        
-      1 pipe3     test_pipeli~ FALSE   FALSE   NA               NA            
-      # i 3 more variables: errors <int>, warnings <int>, messages <int>
+      1 pipe3     test_pipeli~ FALSE   NA      NA               NA            
+      # i 4 more variables: errors <int>, warnings <int>, messages <int>,
+      #   lineage <chr>
 
 ---
 
@@ -58,7 +60,7 @@
       # A tibble: 1 x 5
         invoked success errors warnings messages
         <lgl>   <lgl>    <int>    <int>    <int>
-      1 FALSE   FALSE        0        0        0
+      1 FALSE   NA           0        0        0
 
 ---
 

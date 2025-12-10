@@ -373,41 +373,6 @@ MaestroPipelineList <- R6::R6Class(
       )
 
       invisible()
-    },
-
-    #' @description
-    #' Get all lineage paths (sequences of pipeline names) leading to a specified pipeline
-    #' @param pipe_name name of the target pipeline
-    #' @return list of character vectors, each representing a path from root to target
-    get_lineage_by_pipe = function(pipe_name) {
-      network <- self$get_network()
-      
-      all_pipes <- unique(c(network$from, network$to))
-      if (!pipe_name %in% all_pipes && nrow(network) > 0) {
-        cli::cli_abort("Pipeline {.pkg {pipe_name}} not found in network.")
-      }
-      
-      find_all_paths <- function(current_pipe, visited = character()) {
-        if (current_pipe %in% visited) {
-          return(list())
-        }
-        
-        parents <- network$from[network$to == current_pipe]
-        
-        if (length(parents) == 0) {
-          return(list(c(visited, current_pipe)))
-        }
-        
-        all_paths <- purrr::map(
-          parents,
-          ~find_all_paths(.x, c(visited, current_pipe))
-        ) |>
-          purrr::flatten()
-        
-        all_paths
-      }
-      
-      find_all_paths(pipe_name)
     }
   ),
 

@@ -360,13 +360,19 @@ test_that("DAG pipelines give full lineage in their status", {
         4
       }
 
-      #' @maestroOutputs end
+      #' @maestroOutputs end1 end2
       mid <- function(.input) {
         .input * 3
       }
 
       #' @maestro
-      end <- function(.input) {
+      end1 <- function(.input) {
+        stop()
+        .input * 2
+      }
+        
+      #' @maestro
+      end2 <- function(.input) {
         stop()
         .input * 2
       }",
