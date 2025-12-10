@@ -165,7 +165,8 @@ MaestroPipelineList <- R6::R6Class(
     get_artifacts = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_artifacts()) |>
         stats::setNames(self$get_pipe_names()) |>
-        purrr::discard(is.null)
+        purrr::discard(is.null) |> 
+        purrr::discard(~length(.x) == 0)
     },
 
     #' @description
@@ -346,8 +347,8 @@ MaestroPipelineList <- R6::R6Class(
       lineage <- NULL
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
         depth <- min(depth + 1, 6)
-        do.call(pipe$run, append(dots, list(.input = .input, ...)))
-        .input <- pipe$get_artifacts()
+        tryCatch(do.call(pipe$run, append(dots, list(.input = .input, ...))), error = \(e) invisible())
+        .input <- pipe$get_returns()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())

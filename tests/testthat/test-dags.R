@@ -349,7 +349,7 @@ test_that("Even if a downstream pipeline is 'scheduled' it runs if the upstream 
 }) |>
   suppressMessages()
 
-test_that("DAG pipelines give full lineage in their status", {
+test_that("Branching DAG pipelines with an error in one branch continue on second branch", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -373,7 +373,6 @@ test_that("DAG pipelines give full lineage in their status", {
         
       #' @maestro
       end2 <- function(.input) {
-        stop()
         .input * 2
       }",
       con = "pipelines/dags.R"
@@ -384,5 +383,123 @@ test_that("DAG pipelines give full lineage in their status", {
       schedule
     )
     status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success")])
+  })
+})
+
+test_that("Branching DAG pipelines both ending in errors accurately outputs errors", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs mid
+      start <- function() {
+        4
+      }
+
+      #' @maestroOutputs end1 end2
+      mid <- function(.input) {
+        .input * 3
+      }
+
+      #' @maestro
+      end1 <- function(.input) {
+        stop('oops')
+        .input * 2
+      }
+        
+      #' @maestro
+      end2 <- function(.input) {
+        stop('oh dear')
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success")])
+    expect_snapshot(last_run_errors())
+  })
+})
+
+test_that("Branching and merging DAG pipelines have separate status entries for each lineage", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs mid1 mid2
+      start <- function() {
+        4
+      }
+
+      #' @maestroOutputs end
+      mid1 <- function(.input) {
+        .input * 3
+      }
+
+      #' @maestroOutputs end
+      mid2 <- function(.input) {
+        .input * 2
+      }
+        
+      #' @maestro
+      end <- function(.input) {
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success", "lineage")])
+    expect_snapshot(get_artifacts(schedule))
+  })
+})
+
+test_that("Branching and merging DAG pipelines use vectors for multiple errors", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs mid1 mid2
+      start <- function() {
+        4
+      }
+
+      #' @maestroOutputs end
+      mid1 <- function(.input) {
+        .input * 3
+      }
+
+      #' @maestroOutputs end
+      mid2 <- function(.input) {
+        .input * 2
+      }
+        
+      #' @maestro
+      end <- function(.input) {
+        stop('oops')
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success", "lineage")])
+    expect_snapshot(get_artifacts(schedule))
+    expect_snapshot(last_run_errors())
   })
 })

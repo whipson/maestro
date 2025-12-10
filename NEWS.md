@@ -8,6 +8,10 @@
 
 - `get_status()` column `success` is initialized to be `NA` if the pipeline has not been invoked. This better characterizes the unknown success of a pipeline that has not yet run.
 
+- `get_artifacts()` now returns artifacts for each unique lineage - allowing for potentially multiple sets of artifacts from one pipeline if it's executed multiple times in a single orchestration run.
+
+- `last_run_errors()` and friends now output vectors for pipelines that are executed multiple times in a single orchestration run.
+
 # maestro 0.7.1
 
 ### Bug fixes

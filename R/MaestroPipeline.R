@@ -291,7 +291,7 @@ MaestroPipeline <- R6::R6Class(
         message = private$message_handler(lineage = lineage)
       )
 
-      private$artifacts <- results
+      private$returns <- results
 
       run_time_end <- lubridate::now()
       private$run_time_end <- run_time_end
@@ -381,24 +381,6 @@ MaestroPipeline <- R6::R6Class(
     #' @description
     #' Get status of the pipeline as a data.frame
     #' @return data.frame
-    get_status_old = function() {
-      dplyr::tibble(
-        pipe_name = private$pipe_name,
-        script_path = private$script_path,
-        invoked = private$status != "Not Run",
-        success = invoked && private$status != "Error",
-        pipeline_started = private$run_time_start,
-        pipeline_ended = private$run_time_end,
-        errors = length(private$errors),
-        warnings = length(private$warnings),
-        messages = length(private$messages),
-        next_run = private$next_run
-      )
-    },
-
-    #' @description
-    #' Get status of the pipeline as a data.frame
-    #' @return data.frame
     get_status = function() {
       dplyr::tibble(
         pipe_name = private$pipe_name,
@@ -413,13 +395,6 @@ MaestroPipeline <- R6::R6Class(
     #' @return character
     get_status_chr = function() {
       private$status
-    },
-
-    #' @description
-    #' Get status of the pipeline as a character vector
-    #' @return character
-    get_status_chr2 = function() {
-      private$status2
     },
 
     #' @description
@@ -444,10 +419,18 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get immediate return values from the pipeline for downstream pipelines
+    #' @return list
+    get_returns = function() {
+      private$returns
+    },
+
+    #' @description
     #' Get artifacts (return values) from the pipeline
     #' @return list
     get_artifacts = function() {
-      private$artifacts
+      if (length(private$run_time_artifacts) == 1) return(private$run_time_artifacts[[1]])
+      private$run_time_artifacts
     },
 
     #' @description
@@ -532,7 +515,7 @@ MaestroPipeline <- R6::R6Class(
     status = "Not Run",
     run_time_start = lubridate::NA_POSIXct_,
     run_time_end = lubridate::NA_POSIXct_,
-    artifacts = NULL,
+    returns = NULL,
     next_run = NULL,
     errors = NULL,
     warnings = NULL,
