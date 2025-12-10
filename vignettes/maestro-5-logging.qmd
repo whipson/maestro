@@ -255,7 +255,7 @@ status <- run_schedule(
 )
 ```
 
-Note that logger just creates messages and does not actually trigger conditions. This impacts how the statuses of pipelines appear. It is important to use match the namespace with the name of your pipeline (i.e., the function name) for the logs to appear in a log file.
+Note that logger just creates messages and does not actually trigger conditions. This impacts how the statuses of pipelines appear. It is important to use match namespace with the name of your pipeline (i.e., the function name) for the logs to appear in a log file.
 
 ```{r cleanup}
 #| echo: false

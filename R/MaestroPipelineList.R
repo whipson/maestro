@@ -378,28 +378,22 @@ MaestroPipelineList <- R6::R6Class(
     get_lineage_by_pipe = function(pipe_name) {
       network <- self$get_network()
       
-      # Validate that the pipe exists
       all_pipes <- unique(c(network$from, network$to))
       if (!pipe_name %in% all_pipes && nrow(network) > 0) {
         cli::cli_abort("Pipeline {.pkg {pipe_name}} not found in network.")
       }
       
-      # Recursive function to find all paths back to roots
       find_all_paths <- function(current_pipe, visited = character()) {
-        # Prevent infinite loops
         if (current_pipe %in% visited) {
           return(list())
         }
         
-        # Find all pipelines that feed into current_pipe
         parents <- network$from[network$to == current_pipe]
         
         if (length(parents) == 0) {
-          # This is a root node - we've found a complete path
           return(list(c(visited, current_pipe)))
         }
         
-        # Recursively trace each parent and collect all paths
         all_paths <- purrr::map(
           parents,
           ~find_all_paths(.x, c(visited, current_pipe))
