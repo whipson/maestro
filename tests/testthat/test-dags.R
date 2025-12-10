@@ -348,3 +348,35 @@ test_that("Even if a downstream pipeline is 'scheduled' it runs if the upstream 
   })
 }) |>
   suppressMessages()
+
+test_that("DAG pipelines give full lineage in their status", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroOutputs mid
+      start <- function() {
+        4
+      }
+
+      #' @maestroOutputs end
+      mid <- function(.input) {
+        .input * 3
+      }
+
+      #' @maestro
+      end <- function(.input) {
+        stop()
+        .input * 2
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+  })
+})

@@ -177,6 +177,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param .input input values from upstream pipelines
     #' @param cli_prepend text to prepend to cli output
     #' @param log_to_console whether or not to output statements in the console (FALSE is to suppress and append to log)
+    #' @param lineage character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -188,12 +189,25 @@ MaestroPipeline <- R6::R6Class(
       .input = NULL,
       cli_prepend = "",
       log_to_console = FALSE,
+      lineage = c(),
       ...
     ) {
 
       pipe_name <- private$pipe_name
       script_path <- private$script_path
       log_level <- private$log_level
+      lineage <- paste0(c(lineage, pipe_name), collapse = "->")
+
+      private$insert_run_time_attributes(
+        lineage,
+        list(
+          invoked = FALSE,
+          success = FALSE,
+          errors = 0L,
+          warnings = 0L,
+          messages = 0L
+        )
+      )
 
       if (log_to_console) {
         logger_fun <- logger::appender_tee
@@ -236,15 +250,15 @@ MaestroPipeline <- R6::R6Class(
             vars = resources,
             inherit = maestro_context
           ),
-          error = private$cond_error_handler,
-          warning = private$cond_warning_handler,
-          message = private$cond_message_handler
+          error = private$cond_error_handler(lineage = lineage),
+          warning = private$cond_warning_handler(lineage = lineage),
+          message = private$cond_message_handler(lineage = lineage)
         )
 
         if (!rlang::is_scalar_logical(cond)) {
           withCallingHandlers(
             stop(glue::glue("`{private$run_if}` did not return a single boolean."), call. = FALSE),
-            error = private$cond_error_handler
+            error = private$cond_error_handler(lineage = lineage)
           )
         }
 
@@ -252,25 +266,44 @@ MaestroPipeline <- R6::R6Class(
       }
 
       if (!do_run) return(invisible())
+      
+      private$status <- "Success"
 
-      private$run_time_start <- lubridate::now()
+      run_time_start <- lubridate::now()
+      private$run_time_start <- run_time_start
 
       if (!quiet) {
         cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
       }
 
-      private$status <- "Success"
+      private$insert_run_time_attributes(
+        lineage, 
+        list(
+          invoked = TRUE,
+          pipeline_started = run_time_start
+        )
+      )
 
       results <- withCallingHandlers(
         do.call(pipe_name, args = resources[names(args)], envir = maestro_context),
-        error = private$error_handler,
-        warning = private$warning_handler,
-        message = private$message_handler
+        error = private$error_handler(lineage = lineage),
+        warning = private$warning_handler(lineage = lineage),
+        message = private$message_handler(lineage = lineage)
       )
 
       private$artifacts <- results
 
-      private$run_time_end <- lubridate::now()
+      run_time_end <- lubridate::now()
+      private$run_time_end <- run_time_end
+
+      private$run_time_artifacts[[lineage]] <- results
+      private$insert_run_time_attributes(
+        lineage, 
+        list(
+          success = TRUE,
+          pipeline_ended = run_time_end
+        )
+      )
 
       invisible()
     },
@@ -348,7 +381,7 @@ MaestroPipeline <- R6::R6Class(
     #' @description
     #' Get status of the pipeline as a data.frame
     #' @return data.frame
-    get_status = function() {
+    get_status_old = function() {
       dplyr::tibble(
         pipe_name = private$pipe_name,
         script_path = private$script_path,
@@ -356,9 +389,21 @@ MaestroPipeline <- R6::R6Class(
         success = invoked && private$status != "Error",
         pipeline_started = private$run_time_start,
         pipeline_ended = private$run_time_end,
-        errors = length(private$errors$message),
+        errors = length(private$errors),
         warnings = length(private$warnings),
         messages = length(private$messages),
+        next_run = private$next_run
+      )
+    },
+
+    #' @description
+    #' Get status of the pipeline as a data.frame
+    #' @return data.frame
+    get_status = function() {
+      dplyr::tibble(
+        pipe_name = private$pipe_name,
+        script_path = private$script_path,
+        private$run_time_attributes,
         next_run = private$next_run
       )
     },
@@ -368,6 +413,13 @@ MaestroPipeline <- R6::R6Class(
     #' @return character
     get_status_chr = function() {
       private$status
+    },
+
+    #' @description
+    #' Get status of the pipeline as a character vector
+    #' @return character
+    get_status_chr2 = function() {
+      private$status2
     },
 
     #' @description
@@ -490,46 +542,140 @@ MaestroPipeline <- R6::R6Class(
       logger::skip_formatter(msg)
     },
     
-    error_handler = function(e) {
-      private$errors <- e
-      private$status <- "Error"
-      logger::log_error(private$escape_for_glue(conditionMessage(e)), namespace = private$pipe_name)
-      private$run_time_end <- lubridate::now()
+    # In development
+    run_time_attributes = dplyr::tibble(
+      invoked = logical(),
+      success = logical(),
+      pipeline_started = lubridate::POSIXct(),
+      pipeline_ended = lubridate::POSIXct(),
+      errors = integer(),
+      warnings = integer(),
+      messages = integer(),
+      lineage = character()
+    ),
+
+    run_time_artifacts = list(),
+
+    #' @description 
+    #' Insert attributes during run time
+    #' @param lineage key for the lineage
+    #' @param attributes named list corresponding to attribute names and values
+    #' @return invisible
+    insert_run_time_attributes = function(lineage, attributes) {
+      row_idx <- which(private$run_time_attributes$lineage == lineage)
+      
+      if (length(row_idx) == 0) {
+        new_row <- dplyr::tibble(lineage = lineage)
+        for (attr_name in names(attributes)) {
+          new_row[[attr_name]] <- NA
+        }
+        private$run_time_attributes <- dplyr::bind_rows(private$run_time_attributes, new_row)
+        row_idx <- nrow(private$run_time_attributes)
+      }
+      
+      for (i in seq_along(attributes)) {
+        private$run_time_attributes[[names(attributes)[i]]][row_idx] <- attributes[[i]]
+      }
     },
-    
-    warning_handler = function(w) {
-      logger::log_warn(private$escape_for_glue(conditionMessage(w)), namespace = private$pipe_name)
-      private$warnings <- c(private$warnings, w$message)
-      private$status <- "Warning"
-      invokeRestart("muffleWarning")
+
+    error_handler = function(lineage = NULL) {
+      function(e) {
+        private$errors <- c(private$errors, e$message)
+        private$status <- "Error"
+        logger::log_error(private$escape_for_glue(conditionMessage(e)), namespace = private$pipe_name)
+        run_time_end <- lubridate::now()
+        private$run_time_end <- run_time_end
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            pipeline_ended = run_time_end, 
+            success = FALSE,
+            errors = 1L
+          )
+        )
+      }
     },
-    
-    message_handler = function(m) {
-      logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
-      private$messages <- c(private$messages, m$message)
-      invokeRestart("muffleMessage")
+
+    warning_handler = function(lineage = NULL) {
+      function(w) {
+        warning_log <- logger::log_warn(conditionMessage(w), namespace = private$pipe_name)
+        private$warnings <- c(private$warnings, w$message)
+        private$status <- "Warning"
+        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$lineage == lineage] %n% 0L
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            warnings = cur_n_warnings + 1L
+          )
+        )
+        invokeRestart("muffleWarning")
+      }
     },
-    
-    cond_error_handler = function(e) {
-      e$message <- paste("Error evaluating condition:", e$message)
-      private$errors <- e
-      private$status <- "Error"
-      logger::log_error(private$escape_for_glue(paste("Error evaluating condition:", conditionMessage(e))), namespace = private$pipe_name)
-      private$run_time_end <- lubridate::now()
+
+    message_handler = function(lineage = NULL) {
+      function(m) {
+        message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
+        private$messages <- c(private$messages, m$message)
+        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$lineage == lineage] %n% 0L
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            messages = cur_n_messages + 1L
+          )
+        )
+        invokeRestart("muffleMessage")
+      }
     },
-    
-    cond_warning_handler = function(w) {
-      logger::log_warn(private$escape_for_glue(paste("Warning evaluating condition:", conditionMessage(w))), namespace = private$pipe_name)
-      w$message <- paste("Warned while evaluating condition:", w$message)
-      private$warnings <- c(private$warnings, w$message)
-      private$status <- "Warning"
-      invokeRestart("muffleWarning")
+
+    cond_error_handler = function(lineage) {
+      function(e) {
+        e$message <- paste("Error evaluating condition:", e$message)
+        private$errors <- e
+        private$status <- "Error"
+        logger::log_error("Error evaluating condition: {conditionMessage(e)}", namespace = private$pipe_name)
+        run_time_end <- lubridate::now()
+        private$run_time_end <- run_time_end
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            pipeline_ended = run_time_end, 
+            errors = 1L
+          )
+        )
+      }
     },
-    
-    cond_message_handler = function(m) {
-      logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
-      private$messages <- c(private$messages, m$message)
-      invokeRestart("muffleMessage")
+
+    cond_warning_handler = function(lineage) {
+      function(w) {
+        warning_log <- logger::log_warn("Warning evaluating condition: {conditionMessage(w)}", namespace = private$pipe_name)
+        w$message <- paste("Warned while evaluating condition:", w$message)
+        private$warnings <- c(private$warnings, w$message)
+        private$status <- "Warning"
+        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$lineage == lineage] %n% 0L
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            warnings = cur_n_warnings + 1L
+          )
+        )
+        invokeRestart("muffleWarning")
+      }
+    },
+
+    cond_message_handler = function(lineage) {
+      function(m) {
+        message_log <- logger::log_info(conditionMessage(m), namespace = private$pipe_name)
+        private$messages <- c(private$messages, m$message)
+        private$run_time_attributes[[lineage]]$messages <- c(private$run_time_attributes[[lineage]]$messages, m$message)
+        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$lineage == lineage] %n% 0L
+        private$insert_run_time_attributes(
+          lineage,
+          list(
+            messages = cur_n_messages + 1L
+          )
+        )
+        invokeRestart("muffleMessage")
+      }
     }
   )
 )

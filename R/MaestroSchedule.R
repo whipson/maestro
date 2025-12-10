@@ -147,7 +147,7 @@ MaestroSchedule <- R6::R6Class(
       }, error = function(e) {
         private$sch_status <- "Error"
         cli::cli_abort(
-          "Failed to execute orchestrator with error {e}"
+          "Failed to execute orchestrator with error: {e}"
         )
       }, warning = function(w) {
         private$sch_status <- "Warning"
