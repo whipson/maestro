@@ -156,34 +156,41 @@ build_schedule_entry <- function(script_path) {
   withCallingHandlers({
     purrr::walk2(pipe_names, maestro_tag_vals, ~{
 
-      # Validate hours
-      if (!all(is.na(maestro_tag_vals[[1]]$hours)) && !maestro_tag_vals[[1]]$frequency %in% c("hourly", "1 hour")) {
-        cli::cli_abort(
-          c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of 'hourly'.",
-            "i" = "Issue is with pipeline named {.x}."),
-          call = NULL
-        )
-      }
+      if (!is.na(.y$frequency)) {
+        
+        freq_unit <- parse_rounding_unit(.y$frequency)$unit
 
-      # Validate days
-      if (!all(is.na(maestro_tag_vals[[1]]$days)) &&
-          !maestro_tag_vals[[1]]$frequency %in% c("daily", "hourly", "1 day", "1 hour")) {
-        cli::cli_abort(
-          c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of 'daily' or 'hourly'.",
-            "i" = "Issue is with pipeline named {.x}."),
-          call = NULL
-        )
-      }
+        # Validate hours
+        if (
+          !all(is.na(.y$hours)) && !freq_unit %in% c("second", "minute", "hour")
+        ) {
+          cli::cli_abort(
+            c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of at least 'hourly'.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
 
-      # Validate months
-      if (!all(is.na(maestro_tag_vals[[1]]$months)) && !maestro_tag_vals[[1]]$frequency %in%
-          c("monthly", "biweekly", "weekly", "daily", "hourly", "1 month", "1 week", "1 day", "1 hour")) {
-        cli::cli_abort(
-          c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
-          'monthly', 'biweekly', 'weekly', 'daily', or 'hourly'.",
-            "i" = "Issue is with pipeline named {.x}."),
-          call = NULL
-        )
+        # Validate days
+        if (!all(is.na(.y$days)) &&
+            !freq_unit %in% c("second", "minute", "hour", "day")) {
+          cli::cli_abort(
+            c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of at least 'daily'.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+
+        # Validate months
+        if (!all(is.na(.y$months)) && !freq_unit %in%
+            c("second", "minute", "hour", "day", "week", "month")) {
+          cli::cli_abort(
+            c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
+            at least 'monthly'.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
       }
 
       tz <- .y$tz %n% "UTC"

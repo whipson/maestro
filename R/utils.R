@@ -311,3 +311,18 @@ eval_code_str <- function(code, vars = list(), inherit = rlang::caller_env()) {
   for (e in exprs) out <- rlang::eval_bare(e, env)
   invisible(out)
 }
+
+find_roots <- function(from, to, values = to) {
+
+  parent_lookup <- from
+  names(parent_lookup) <- to
+
+  get_root <- function(node) {
+    if (!node %in% names(parent_lookup)) {
+      return(node)
+    }
+    Recall(parent_lookup[[node]])
+  }
+
+  purrr::map_chr(values, get_root)
+}

@@ -183,3 +183,22 @@ test_that("Pipelines with maestroStartTime in HH:MM:SS and a multi-unit frequenc
     }, regexp = "`@maestroStartTime`")
   })
 })
+
+test_that("Minutely frequency can be combined with maestroHours and other specifiers", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 10 minutes
+      #' @maestroHours 5
+      minutely <- function() {
+
+      }
+      ",
+      con = "pipelines/minutely.R"
+    )
+
+    expect_no_error(build_schedule_entry("pipelines/minutely.R"))
+  })
+})
