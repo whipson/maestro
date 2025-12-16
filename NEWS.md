@@ -1,6 +1,8 @@
-# maestro 0.8.0
+# maestro 1.0.0
 
 ### Breaking changes
+
+This release brings a handful of breaking changes to functions for getting statuses and pipeline artifacts. Core scheduling and orchestrating functions remain largely unchanged with the exception of some bug fixes - meaning that pipelines should continue to run normally. However, users who rely on `get_status()`, `get_artifacts()`, and `last_run_errors()` should carefully inspect their code for breaking changes prior to upgrading in production. 
 
 - `get_status()` better reflects statuses of pipelines executed multiple times in a single run due to DAG structures where branches converge on a single downstream pipeline. As a result, pipelines executed multiple times now have multiple rows in the status table corresponding to each distinct DAG lineage. Specific changes to output of `get_status()` are described below.
 
@@ -11,6 +13,14 @@
 - `get_artifacts()` now returns artifacts for each unique lineage - allowing for potentially multiple sets of artifacts from one pipeline if it's executed multiple times in a single orchestration run.
 
 - `last_run_errors()` and friends now output vectors for pipelines that are executed multiple times in a single orchestration run.
+
+### Minor changes
+
+- Pipelines with `@maestroFrequency` of minutely or secondly can now be run with specific hours, days, etc. In general, time specifiers like `@maestroHours`, `@maestroDays`, etc. are less restrictive about the base frequency of the pipeline.
+
+### Bug fixes
+
+- Fixed issue where a pipeline error on one branch of a branching DAG interrupted execution on subsequent independent branches.
 
 # maestro 0.7.1
 
