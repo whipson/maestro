@@ -14,6 +14,10 @@ This release brings a handful of breaking changes to functions for getting statu
 
 - `last_run_errors()` and friends now output vectors for pipelines that are executed multiple times in a single orchestration run.
 
+### New features
+
+- New `get_run_sequence()` function for getting a data.frame of scheduled run times for all pipelines in a `MaestroSchedule` optionally including DAGs. 
+
 ### Minor changes
 
 - Pipelines with `@maestroFrequency` of minutely or secondly can now be run with specific hours, days, etc. In general, time specifiers like `@maestroHours`, `@maestroDays`, etc. are less restrictive about the base frequency of the pipeline.
