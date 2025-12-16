@@ -171,9 +171,12 @@ MaestroPipelineList <- R6::R6Class(
 
     #' @description
     #' Get run sequences from the pipelines
+    #' @param n optional sequence limit
+    #' @param min_datetime optional minimum datetime
+    #' @param max_datetime optional maximum datetime
     #' @return list
-    get_run_sequences = function() {
-      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence()) |>
+    get_run_sequences = function(n = NULL, min_datetime = NULL, max_datetime = NULL) {
+      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence(n = n, min_datetime = min_datetime, max_datetime = max_datetime)) |>
         stats::setNames(self$get_pipe_names()) |>
         purrr::discard(is.null)
     },

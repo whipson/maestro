@@ -407,13 +407,21 @@ vector
 \subsection{Method \code{get_run_sequence()}}{
 Get the run sequence of a pipeline
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_run_sequence()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_run_sequence(
+  n = NULL,
+  min_datetime = NULL,
+  max_datetime = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{outputs}}{character vector of times}
+\item{\code{n}}{optional sequence limit}
+
+\item{\code{min_datetime}}{optional minimum datetime}
+
+\item{\code{max_datetime}}{optional maximum datetime}
 }
 \if{html}{\out{</div>}}
 }

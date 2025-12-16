@@ -230,6 +230,48 @@ MaestroSchedule <- R6::R6Class(
       edge <- DiagrammeR::create_edge_df(from = edges_df$from, to = edges_df$to)
       g <- DiagrammeR::create_graph(node, edge)
       DiagrammeR::render_graph(g, "tree")
+    },
+
+    #' @description
+    #' Get full sequence of scheduled executions for all pipelines
+    #' @param n optional sequence limit
+    #' @param min_datetime optional minimum datetime
+    #' @param max_datetime optional maximum datetime
+    #' @param include_only_primary only primary pipelines are included 
+    #'   (this are pipelines that are scheduled and not downstream nodes in a DAG)
+    #' @return data.frame
+    get_run_sequence = function(n = NULL, min_datetime = NULL, max_datetime = NULL, include_only_primary = FALSE) {
+      run_sequence <- self$PipelineList$get_run_sequences(n = n, min_datetime = min_datetime, max_datetime = max_datetime) |> 
+        purrr::imap(
+          ~dplyr::tibble(
+            pipe_name = .y,
+            scheduled_time = .x
+          )
+        ) |> 
+        purrr::list_rbind() |> 
+        dplyr::filter(!is.na(scheduled_time))
+
+      if (!include_only_primary) {
+        network <- self$get_network()
+
+        network$root <- find_roots(network$from, network$to)
+        
+        run_sequence_dags <- NULL
+        if (nrow(network) > 0) {
+          run_sequence_dags <- purrr::map2(network$to, network$root, ~{
+            run_sequence |> 
+              dplyr::filter(pipe_name == .y) |> 
+              dplyr::mutate(pipe_name = .x)
+          }) |> 
+            purrr::list_rbind()
+        }
+
+        run_sequence <- run_sequence |> 
+          dplyr::bind_rows(run_sequence_dags) |> 
+          dplyr::arrange(scheduled_time)
+      }
+
+      run_sequence
     }
   ),
 

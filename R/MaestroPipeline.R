@@ -479,10 +479,28 @@ MaestroPipeline <- R6::R6Class(
 
     #' @description
     #' Get the run sequence of a pipeline
-    #' @param outputs character vector of times
+    #' @param n optional sequence limit
+    #' @param min_datetime optional minimum datetime
+    #' @param max_datetime optional maximum datetime
     #' @return vector
-    get_run_sequence = function() {
-      private$run_sequence
+    get_run_sequence = function(n = NULL, min_datetime = NULL, max_datetime = NULL) {
+      seq <- private$run_sequence
+
+      if (!is.null(n)) {
+        seq <- seq[seq_len(min(length(seq), as.integer(n)))]
+      }
+
+      if (!is.null(min_datetime)) {
+        min_datetime <- lubridate::as_datetime(min_datetime)
+        seq <- seq[seq >= min_datetime]
+      }
+
+      if (!is.null(max_datetime)) {
+        max_datetime <- lubridate::as_datetime(max_datetime)
+        seq <- seq[seq <= max_datetime]
+      }
+
+      seq
     }
   ),
 

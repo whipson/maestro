@@ -309,9 +309,24 @@ list
 \subsection{Method \code{get_run_sequences()}}{
 Get run sequences from the pipelines
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences(
+  n = NULL,
+  min_datetime = NULL,
+  max_datetime = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{optional sequence limit}
+
+\item{\code{min_datetime}}{optional minimum datetime}
+
+\item{\code{max_datetime}}{optional maximum datetime}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 list
 }
