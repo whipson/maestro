@@ -503,3 +503,42 @@ test_that("Branching and merging DAG pipelines use vectors for multiple errors",
     expect_snapshot(last_run_errors())
   })
 })
+
+test_that("Two separate DAGs have separate lineages", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      #' @maestroOutputs end
+      start <- function() {
+        4
+      }
+
+      #' @maestro
+      end <- function(.input) {
+        .input * 3
+      }
+
+      #' @maestroFrequency daily
+      #' @maestroPriority 1
+      start2 <- function() {
+        3
+      }
+      
+      #' @maestroInputs start2
+      end2 <- function(.input) {
+        .input * 5
+      }",
+      con = "pipelines/dags.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success", "lineage")])
+  })
+})

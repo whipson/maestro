@@ -157,3 +157,16 @@
       [1] "oops" "oops"
       
 
+# Two separate DAGs have separate lineages
+
+    Code
+      status[, c("invoked", "success", "lineage")]
+    Output
+      # A tibble: 4 x 3
+        invoked success lineage     
+        <lgl>   <lgl>   <chr>       
+      1 TRUE    TRUE    start2      
+      2 TRUE    TRUE    start       
+      3 TRUE    TRUE    start->end  
+      4 TRUE    TRUE    start2->end2
+

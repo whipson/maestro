@@ -347,8 +347,8 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
-      lineage <- NULL
       run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
+
         depth <- min(depth + 1, 6)
         tryCatch(do.call(pipe$run, append(dots, list(.input = .input, ...))), error = \(e) invisible())
         .input <- pipe$get_returns()
@@ -371,9 +371,13 @@ MaestroPipelineList <- R6::R6Class(
       }
 
       # Run the pipelines
+      lineage <- NULL
       mapper_fun(
         pipes_to_run,
-        purrr::safely(run_pipe, quiet = TRUE)
+        purrr::safely(~{
+          run_pipe(.x)
+          lineage <<- NULL
+        }, quiet = TRUE)
       )
 
       invisible()
