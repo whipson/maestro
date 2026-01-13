@@ -502,18 +502,10 @@ test_that("Branching and merging DAG pipelines use vectors for multiple errors",
     expect_snapshot(unname(unlist(get_artifacts(schedule))))
     expect_snapshot(last_run_errors())
 
-    network <- schedule$get_network()
-    run_ids <- status[, c("pipe_name", "run_id")]
-    input_ids <- status[!is.na(status$input_run_id), c("pipe_name", "input_run_id")] |> 
-      dplyr::rename(to = pipe_name)
-
-    run_network <- run_ids |> 
-      dplyr::rename(from = pipe_name) |> 
-      dplyr::left_join(input_ids, by = c("run_id" = "input_run_id")) |> 
-      dplyr::select(from, to) |> 
-      dplyr::filter(!is.na(to))
-
-    expect_snapshot(run_network)
+    lineage <- get_lineage(schedule) |> 
+      dplyr::select(from_name, to_name)
+    
+    expect_snapshot(lineage)
   })
 })
 
@@ -553,18 +545,10 @@ test_that("Two separate DAGs have separate lineages", {
     )
     status <- get_status(schedule)
     expect_snapshot(status[, c("invoked", "success")])
+
+    lineage <- get_lineage(schedule) |> 
+      dplyr::select(from_name, to_name)
     
-    network <- schedule$get_network()
-    run_ids <- status[, c("pipe_name", "run_id")]
-    input_ids <- status[!is.na(status$input_run_id), c("pipe_name", "input_run_id")] |> 
-      dplyr::rename(to = pipe_name)
-
-    run_network <- run_ids |> 
-      dplyr::rename(from = pipe_name) |> 
-      dplyr::left_join(input_ids, by = c("run_id" = "input_run_id")) |> 
-      dplyr::select(from, to) |> 
-      dplyr::filter(!is.na(to))
-
-    expect_snapshot(run_network)
+    expect_snapshot(lineage)
   })
 })

@@ -195,19 +195,20 @@ MaestroPipeline <- R6::R6Class(
       ...
     ) {
 
+      internal_run_id <- make_id()
+
       pipe_name <- private$pipe_name
       script_path <- private$script_path
       log_level <- private$log_level
 
       private$insert_run_time_attributes(
-        run_id,
+        internal_run_id,
         list(
           invoked = FALSE,
-          success = FALSE,
+          success = NA,
           errors = 0L,
           warnings = 0L,
-          messages = 0L,
-          input_run_id = input_run_id
+          messages = 0L
         )
       )
 
@@ -252,15 +253,15 @@ MaestroPipeline <- R6::R6Class(
             vars = resources,
             inherit = maestro_context
           ),
-          error = private$cond_error_handler(run_id = run_id),
-          warning = private$cond_warning_handler(run_id = run_id),
-          message = private$cond_message_handler(run_id = run_id)
+          error = private$cond_error_handler(internal_run_id = internal_run_id),
+          warning = private$cond_warning_handler(internal_run_id = internal_run_id),
+          message = private$cond_message_handler(internal_run_id = internal_run_id)
         )
 
         if (!rlang::is_scalar_logical(cond)) {
           withCallingHandlers(
             stop(glue::glue("`{private$run_if}` did not return a single boolean."), call. = FALSE),
-            error = private$cond_error_handler(run_id = run_id)
+            error = private$cond_error_handler(internal_run_id = internal_run_id)
           )
         }
 
@@ -279,18 +280,20 @@ MaestroPipeline <- R6::R6Class(
       }
 
       private$insert_run_time_attributes(
-        run_id, 
+        internal_run_id, 
         list(
+          run_id = run_id,
           invoked = TRUE,
-          pipeline_started = run_time_start
+          pipeline_started = run_time_start,
+          input_run_id = input_run_id
         )
       )
 
       results <- withCallingHandlers(
         do.call(pipe_name, args = resources[names(args)], envir = maestro_context),
-        error = private$error_handler(run_id = run_id),
-        warning = private$warning_handler(run_id = run_id),
-        message = private$message_handler(run_id = run_id)
+        error = private$error_handler(internal_run_id = internal_run_id),
+        warning = private$warning_handler(internal_run_id = internal_run_id),
+        message = private$message_handler(internal_run_id = internal_run_id)
       )
 
       private$returns <- results
@@ -298,9 +301,9 @@ MaestroPipeline <- R6::R6Class(
       run_time_end <- lubridate::now()
       private$run_time_end <- run_time_end
 
-      private$run_time_artifacts[[run_id]] <- results
+      private$run_time_artifacts[[internal_run_id]] <- results
       private$insert_run_time_attributes(
-        run_id, 
+        internal_run_id, 
         list(
           success = TRUE,
           pipeline_ended = run_time_end
@@ -547,6 +550,7 @@ MaestroPipeline <- R6::R6Class(
     
     # In development
     run_time_attributes = dplyr::tibble(
+      internal_run_id = NA_character_,
       invoked = FALSE,
       success = NA,
       pipeline_started = lubridate::NA_POSIXct_,
@@ -560,17 +564,17 @@ MaestroPipeline <- R6::R6Class(
 
     run_time_artifacts = list(),
 
-    insert_run_time_attributes = function(run_id, attributes) {
-      row_idx <- which(private$run_time_attributes$run_id == run_id)
+    insert_run_time_attributes = function(internal_run_id, attributes) {
+      row_idx <- which(private$run_time_attributes$internal_run_id == internal_run_id)
       
       if (length(row_idx) == 0) {
-        placeholder_idx <- which(is.na(private$run_time_attributes$run_id))
+        placeholder_idx <- which(is.na(private$run_time_attributes$internal_run_id))
         
         if (length(placeholder_idx) > 0) {
           row_idx <- placeholder_idx[1]
-          private$run_time_attributes$run_id[row_idx] <- run_id
+          private$run_time_attributes$internal_run_id[row_idx] <- internal_run_id
         } else {
-          new_row <- dplyr::tibble(run_id = run_id)
+          new_row <- dplyr::tibble(internal_run_id = internal_run_id)
           for (attr_name in names(attributes)) {
             new_row[[attr_name]] <- NA
           }
@@ -584,7 +588,7 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    error_handler = function(run_id = NULL) {
+    error_handler = function(internal_run_id = NULL) {
       function(e) {
         private$errors <- c(private$errors, e$message)
         private$status <- "Error"
@@ -592,7 +596,7 @@ MaestroPipeline <- R6::R6Class(
         run_time_end <- lubridate::now()
         private$run_time_end <- run_time_end
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             pipeline_ended = run_time_end, 
             success = FALSE,
@@ -602,14 +606,14 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    warning_handler = function(run_id = NULL) {
+    warning_handler = function(internal_run_id = NULL) {
       function(w) {
         warning_log <- logger::log_warn(private$escape_for_glue(conditionMessage(w)), namespace = private$pipe_name)
         private$warnings <- c(private$warnings, w$message)
         private$status <- "Warning"
-        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$run_id == run_id] %n% 0L
+        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$internal_run_id == internal_run_id] %n% 0L
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             warnings = cur_n_warnings + 1L
           )
@@ -618,13 +622,13 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    message_handler = function(run_id = NULL) {
+    message_handler = function(internal_run_id = NULL) {
       function(m) {
         message_log <- logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
         private$messages <- c(private$messages, m$message)
-        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$run_id == run_id] %n% 0L
+        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$internal_run_id == internal_run_id] %n% 0L
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             messages = cur_n_messages + 1L
           )
@@ -633,7 +637,7 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    cond_error_handler = function(run_id) {
+    cond_error_handler = function(internal_run_id) {
       function(e) {
         e$message <- paste("Error evaluating condition:", e$message)
         private$errors <- e
@@ -642,7 +646,7 @@ MaestroPipeline <- R6::R6Class(
         run_time_end <- lubridate::now()
         private$run_time_end <- run_time_end
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             invoked = TRUE,
             pipeline_ended = run_time_end, 
@@ -652,15 +656,15 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    cond_warning_handler = function(run_id) {
+    cond_warning_handler = function(internal_run_id) {
       function(w) {
         warning_log <- logger::log_warn(private$escape_for_glue("Warning evaluating condition: {conditionMessage(w)}"), namespace = private$pipe_name)
         w$message <- paste("Warned while evaluating condition:", w$message)
         private$warnings <- c(private$warnings, w$message)
         private$status <- "Warning"
-        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$run_id == run_id] %n% 0L
+        cur_n_warnings <- private$run_time_attributes$warnings[private$run_time_attributes$internal_run_id == internal_run_id] %n% 0L
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             warnings = cur_n_warnings + 1L
           )
@@ -669,14 +673,14 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    cond_message_handler = function(run_id) {
+    cond_message_handler = function(internal_run_id) {
       function(m) {
         message_log <- logger::log_info(private$escape_for_glue(conditionMessage(m)), namespace = private$pipe_name)
         private$messages <- c(private$messages, m$message)
-        private$run_time_attributes[[run_id]]$messages <- c(private$run_time_attributes[[run_id]]$messages, m$message)
-        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$run_id == run_id] %n% 0L
+        private$run_time_attributes[[internal_run_id]]$messages <- c(private$run_time_attributes[[internal_run_id]]$messages, m$message)
+        cur_n_messages <- private$run_time_attributes$messages[private$run_time_attributes$internal_run_id == internal_run_id] %n% 0L
         private$insert_run_time_attributes(
-          run_id,
+          internal_run_id,
           list(
             messages = cur_n_messages + 1L
           )

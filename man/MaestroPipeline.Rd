@@ -129,7 +129,8 @@ Runs the pipeline
   .input = NULL,
   cli_prepend = "",
   log_to_console = FALSE,
-  lineage = c(),
+  run_id = NA_character_,
+  input_run_id = NA_character_,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -151,7 +152,9 @@ Runs the pipeline
 
 \item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
 
-\item{\code{lineage}}{character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)}
+\item{\code{run_id}}{unique id for the run}
+
+\item{\code{input_run_id}}{unique id of the run that inputted into the current run (NA if there is no input)}
 
 \item{\code{...}}{additional arguments (unused)}
 }

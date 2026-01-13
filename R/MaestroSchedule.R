@@ -171,7 +171,8 @@ MaestroSchedule <- R6::R6Class(
     #' Get status of the pipelines as a data.frame
     #' @return data.frame
     get_status = function() {
-      self$PipelineList$get_status()
+      self$PipelineList$get_status() |> 
+        dplyr::select(-internal_run_id)
     },
 
     #' @description
@@ -272,6 +273,41 @@ MaestroSchedule <- R6::R6Class(
       }
 
       run_sequence
+    },
+
+    #' @description
+    #' Get network data.frame of runs and their inputting pipelines
+    #' @return data.frame
+    get_lineage = function() {
+
+      status <- self$get_status() |> 
+        dplyr::filter(!is.na(run_id))
+
+      if (nrow(status) == 0) {
+        dplyr::tibble(
+          from_id = character(),
+          to_id = character(),
+          from_name = character(),
+          to_name = character()
+        )
+      }
+      
+      network <- self$get_network()
+      run_ids <- status[, c("pipe_name", "run_id")]
+      input_ids <- status[!is.na(status$input_run_id), c("pipe_name", "run_id", "input_run_id")] |> 
+        dplyr::rename(to = pipe_name, to_id = run_id)
+
+      lineage <- run_ids |> 
+        dplyr::rename(from = pipe_name) |> 
+        dplyr::left_join(input_ids, by = c("run_id" = "input_run_id")) |> 
+        dplyr::select(
+          from_id = run_id,
+          to_id,
+          from_name = from,
+          to_name = to
+        )
+
+      lineage
     }
   ),
 
