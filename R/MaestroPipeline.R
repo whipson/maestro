@@ -179,6 +179,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param log_to_console whether or not to output statements in the console (FALSE is to suppress and append to log)
     #' @param run_id unique id for the run
     #' @param input_run_id unique id of the run that inputted into the current run (NA if there is no input)
+    #' @param lineage character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -192,6 +193,7 @@ MaestroPipeline <- R6::R6Class(
       log_to_console = FALSE,
       run_id = NA_character_,
       input_run_id = NA_character_,
+      lineage = c(),
       ...
     ) {
 
@@ -200,6 +202,7 @@ MaestroPipeline <- R6::R6Class(
       pipe_name <- private$pipe_name
       script_path <- private$script_path
       log_level <- private$log_level
+      lineage <- paste0(c(lineage, pipe_name), collapse = "->")
 
       private$insert_run_time_attributes(
         internal_run_id,
@@ -285,7 +288,8 @@ MaestroPipeline <- R6::R6Class(
           run_id = run_id,
           invoked = TRUE,
           pipeline_started = run_time_start,
-          input_run_id = input_run_id
+          input_run_id = input_run_id,
+          lineage = lineage
         )
       )
 
@@ -548,7 +552,6 @@ MaestroPipeline <- R6::R6Class(
       logger::skip_formatter(msg)
     },
     
-    # In development
     run_time_attributes = dplyr::tibble(
       internal_run_id = NA_character_,
       invoked = FALSE,
@@ -559,7 +562,8 @@ MaestroPipeline <- R6::R6Class(
       warnings = 0L,
       messages = 0L,
       run_id = NA_character_,
-      input_run_id = NA_character_
+      input_run_id = NA_character_,
+      lineage = NA_character_
     ),
 
     run_time_artifacts = list(),

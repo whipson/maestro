@@ -6,7 +6,10 @@ This release brings a handful of breaking changes to functions for getting statu
 
 - `get_status()` better reflects statuses of pipelines executed multiple times in a single run due to DAG structures where branches converge on a single downstream pipeline. As a result, pipelines executed multiple times now have multiple rows in the status table corresponding to each distinct DAG lineage. Specific changes to output of `get_status()` are described below.
 
-- in `get_status()` each pipeline execution has its own `run_id` which is a random 6-char string. A column `input_run_id` also is added to include the run_id that inputted into that pipeline if it is part of a DAG. This way, distinct lineages of pipeline runs can be more easily tracked.
+- in `get_status()` each pipeline execution has its own `run_id` which is a random 6-char string. Columns added to the output of `get_status()` include: 
+  - run_id: the unique id of the run
+  - input_run_id: the unique id of the run that inputted into the pipeline (NA if root pipeline)
+  - lineage: string representing the full lineage of pipelines leading to the current execution
 
 - `get_status()` column `success` is initialized to be `NA` if the pipeline has not been invoked. This better characterizes the unknown success of a pipeline that has not yet run.
 

@@ -359,7 +359,8 @@ MaestroPipelineList <- R6::R6Class(
               list(
                 .input = .input, 
                 run_id = run_id, 
-                input_run_id = input_run_id
+                input_run_id = input_run_id,
+                lineage = lineage
               )
             )
           )
@@ -370,6 +371,7 @@ MaestroPipelineList <- R6::R6Class(
         out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())
+        lineage <<- append(lineage, pipe$get_pipe_name())
         
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
@@ -380,16 +382,19 @@ MaestroPipelineList <- R6::R6Class(
             depth = depth,
             cli_prepend = cli::format_inline(prepend),
             run_id = run_id,
-            input_run_id = run_id
+            input_run_id = run_id,
+            lineage = lineage
           )
         }
       }
 
       # Run the pipelines
+      lineage <- NULL
       mapper_fun(
         pipes_to_run,
         purrr::safely(~{
           run_pipe(.x)
+          lineage <<- NULL
         }, quiet = TRUE)
       )
 
