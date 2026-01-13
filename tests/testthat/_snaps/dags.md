@@ -85,68 +85,44 @@
 # Branching and merging DAG pipelines have separate status entries for each lineage
 
     Code
-      status[, c("invoked", "success", "lineage")]
+      status[, c("invoked", "success")]
     Output
-      # A tibble: 5 x 3
-        invoked success lineage               
-        <lgl>   <lgl>   <chr>                 
-      1 TRUE    TRUE    start                 
-      2 TRUE    TRUE    start->mid1           
-      3 TRUE    TRUE    start->mid1->mid2     
-      4 TRUE    TRUE    start->mid1->end      
-      5 TRUE    TRUE    start->mid1->mid2->end
+      # A tibble: 5 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+      5 TRUE    TRUE   
 
 ---
 
     Code
-      get_artifacts(schedule)
+      unname(unlist(get_artifacts(schedule)))
     Output
-      $start
-      [1] 4
-      
-      $mid1
-      [1] 12
-      
-      $mid2
-      [1] 8
-      
-      $end
-      $end$`start->mid1->end`
-      [1] 24
-      
-      $end$`start->mid1->mid2->end`
-      [1] 16
-      
-      
+      [1]  4 12  8 24 16
 
 # Branching and merging DAG pipelines use vectors for multiple errors
 
     Code
-      status[, c("invoked", "success", "lineage")]
+      status[, c("invoked", "success")]
     Output
-      # A tibble: 5 x 3
-        invoked success lineage               
-        <lgl>   <lgl>   <chr>                 
-      1 TRUE    TRUE    start                 
-      2 TRUE    TRUE    start->mid1           
-      3 TRUE    TRUE    start->mid1->mid2     
-      4 TRUE    FALSE   start->mid1->end      
-      5 TRUE    FALSE   start->mid1->mid2->end
+      # A tibble: 5 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    FALSE  
+      5 TRUE    FALSE  
 
 ---
 
     Code
-      get_artifacts(schedule)
+      unname(unlist(get_artifacts(schedule)))
     Output
-      $start
-      [1] 4
-      
-      $mid1
-      [1] 12
-      
-      $mid2
-      [1] 8
-      
+      [1]  4 12  8
 
 ---
 
@@ -157,16 +133,40 @@
       [1] "oops" "oops"
       
 
+---
+
+    Code
+      run_network
+    Output
+      # A tibble: 4 x 2
+        from  to   
+        <chr> <chr>
+      1 start mid1 
+      2 start mid2 
+      3 mid1  end  
+      4 mid2  end  
+
 # Two separate DAGs have separate lineages
 
     Code
-      status[, c("invoked", "success", "lineage")]
+      status[, c("invoked", "success")]
     Output
-      # A tibble: 4 x 3
-        invoked success lineage     
-        <lgl>   <lgl>   <chr>       
-      1 TRUE    TRUE    start2      
-      2 TRUE    TRUE    start       
-      3 TRUE    TRUE    start->end  
-      4 TRUE    TRUE    start2->end2
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+
+---
+
+    Code
+      run_network
+    Output
+      # A tibble: 2 x 2
+        from   to   
+        <chr>  <chr>
+      1 start2 end2 
+      2 start  end  
 

@@ -7,7 +7,6 @@ test_that("Simple pipeline, no errors", {
   pipeline <- pipeline_list$MaestroPipelines[[1]]
   expect_s3_class(pipeline, "MaestroPipeline")
 
-  expect_snapshot(pipeline$get_status())
   expect_null(pipeline$get_outputs())
   expect_null(pipeline$get_inputs())
 
@@ -22,8 +21,6 @@ test_that("Pipeline with warnings", {
     test_path("test_pipelines_run_two_warnings/pipe_warning.R")
   )
   pipeline <- pipeline_list$MaestroPipelines[[1]]
-
-  expect_snapshot(pipeline$get_status())
 
   pipeline$run(quiet = TRUE)
 

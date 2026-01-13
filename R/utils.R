@@ -326,3 +326,10 @@ find_roots <- function(from, to, values = to) {
 
   purrr::map_chr(values, get_root)
 }
+
+make_id <- function(n = 6) {
+  first <- sample(c(letters, LETTERS), 1)
+  rest  <- sample(c(letters, LETTERS, 0:9), n - 1, replace = TRUE)
+
+  paste0(c(first, rest), collapse = "")
+}

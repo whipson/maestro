@@ -347,16 +347,30 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
-      run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
+      run_pipe <- function(pipe, .input = NULL, depth = -1, input_run_id = NA_character_, ...) {
 
+        run_id <- make_id()
         depth <- min(depth + 1, 6)
-        tryCatch(do.call(pipe$run, append(dots, list(.input = .input, ...))), error = \(e) invisible())
+        tryCatch({
+          do.call(
+            pipe$run, 
+            append(
+              dots, 
+              list(
+                .input = .input, 
+                run_id = run_id, 
+                input_run_id = input_run_id
+              )
+            )
+          )
+        }, error = \(e) {
+          invisible()
+        })
         .input <- pipe$get_returns()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())
         
-        lineage <<- append(lineage, pipe$get_pipe_name())
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
           prepend <- paste0(rep("  ", times = depth), "|-")
@@ -365,18 +379,17 @@ MaestroPipelineList <- R6::R6Class(
             .input = .input,
             depth = depth,
             cli_prepend = cli::format_inline(prepend),
-            lineage = lineage
+            run_id = run_id,
+            input_run_id = run_id
           )
         }
       }
 
       # Run the pipelines
-      lineage <- NULL
       mapper_fun(
         pipes_to_run,
         purrr::safely(~{
           run_pipe(.x)
-          lineage <<- NULL
         }, quiet = TRUE)
       )
 

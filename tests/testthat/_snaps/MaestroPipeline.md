@@ -1,18 +1,6 @@
 # Simple pipeline, no errors
 
     Code
-      pipeline$get_status()
-    Output
-      # A tibble: 1 x 10
-        pipe_name  script_path invoked success pipeline_started pipeline_ended
-        <chr>      <chr>       <lgl>   <lgl>   <dttm>           <dttm>        
-      1 get_mtcars test_pipel~ FALSE   NA      NA               NA            
-      # i 4 more variables: errors <int>, warnings <int>, messages <int>,
-      #   lineage <chr>
-
----
-
-    Code
       pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")]
     Output
       # A tibble: 1 x 5
@@ -21,18 +9,6 @@
       1 TRUE    TRUE         0        0        0
 
 # Pipeline with warnings
-
-    Code
-      pipeline$get_status()
-    Output
-      # A tibble: 1 x 10
-        pipe_name script_path  invoked success pipeline_started pipeline_ended
-        <chr>     <chr>        <lgl>   <lgl>   <dttm>           <dttm>        
-      1 pipe3     test_pipeli~ FALSE   NA      NA               NA            
-      # i 4 more variables: errors <int>, warnings <int>, messages <int>,
-      #   lineage <chr>
-
----
 
     Code
       pipeline$get_status()[c("invoked", "success", "errors", "warnings", "messages")]
