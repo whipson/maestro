@@ -31,6 +31,8 @@ This release brings a handful of breaking changes to functions for getting statu
 
 - Fixed issue where a pipeline error on one branch of a branching DAG interrupted execution on subsequent independent branches.
 
+- Fixed bug where if `check_datetime` argument to `run_schedule` was a Date it caused a mismatch in the sequence checking (#173). 
+
 # maestro 0.7.1
 
 ### Bug fixes

@@ -520,3 +520,43 @@ test_that("maestroPriority works as expected", {
 
   expect_snapshot(status$pipe_name)
 })
+
+test_that("maestroDays works on expected dlays", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' test maestro pipeline
+      #'
+      #' @maestroFrequency daily
+      #' @maestroDays Tue Thu
+      #' @maestroStartTime 2026-01-19
+      #' @maestroLogLevel INFO
+
+      test <- function() {
+      }
+      ",
+      con = "pipelines/test.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      check_datetime = as.Date("2026-01-22"), # this is Thursday - it should run
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_true(status$invoked)
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      check_datetime = as.Date("2026-01-23"), # this is Friday - it shouldn't run
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_false(status$invoked)
+  })
+})

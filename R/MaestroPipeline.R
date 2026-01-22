@@ -360,6 +360,10 @@ MaestroPipeline <- R6::R6Class(
 
       pipeline_sequence <- private$run_sequence
 
+      if (inherits(check_datetime_round, "Date")) {
+        pipeline_sequence <- lubridate::as_date(pipeline_sequence)
+      }
+
       pipeline_sequence_round <- unique(timechange::time_round(pipeline_sequence, unit = orch_string))
 
       check_datetime_int <- as.integer(check_datetime_round)
