@@ -133,21 +133,6 @@
       [1] "oops" "oops"
       
 
----
-
-    Code
-      lineage
-    Output
-      # A tibble: 6 x 2
-        from_name to_name
-        <chr>     <chr>  
-      1 start     mid1   
-      2 start     mid2   
-      3 mid1      end    
-      4 mid2      end    
-      5 end       <NA>   
-      6 end       <NA>   
-
 # Two separate DAGs have separate lineages
 
     Code
@@ -160,17 +145,4 @@
       2 TRUE    TRUE   
       3 TRUE    TRUE   
       4 TRUE    TRUE   
-
----
-
-    Code
-      lineage
-    Output
-      # A tibble: 4 x 2
-        from_name to_name
-        <chr>     <chr>  
-      1 start2    end2   
-      2 start     end    
-      3 end       <NA>   
-      4 end2      <NA>   
 

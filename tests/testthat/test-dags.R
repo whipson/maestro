@@ -501,11 +501,6 @@ test_that("Branching and merging DAG pipelines use vectors for multiple errors",
     expect_snapshot(status[, c("invoked", "success")])
     expect_snapshot(unname(unlist(get_artifacts(schedule))))
     expect_snapshot(last_run_errors())
-
-    lineage <- get_lineage(schedule) |> 
-      dplyr::select(from_name, to_name)
-    
-    expect_snapshot(lineage)
   })
 })
 
@@ -545,10 +540,5 @@ test_that("Two separate DAGs have separate lineages", {
     )
     status <- get_status(schedule)
     expect_snapshot(status[, c("invoked", "success")])
-
-    lineage <- get_lineage(schedule) |> 
-      dplyr::select(from_name, to_name)
-    
-    expect_snapshot(lineage)
   })
 })

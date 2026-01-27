@@ -19,8 +19,6 @@ This release brings a handful of breaking changes to functions for getting statu
 
 ### New features
 
-- New `get_lineage()` function for getting a data.frame of the lineage network for executed DAG pipelines (i.e., which pipeline run inputted into a subsequent pipeline run). This is particularly useful when paired with `get_status()`.
-
 - New `get_run_sequence()` function for getting a data.frame of scheduled run times for all pipelines in a `MaestroSchedule` optionally including DAGs. 
 
 ### Minor changes

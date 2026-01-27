@@ -53,12 +53,9 @@ test_that("Conditional pipes work with DAG pipelines via .input", {
       quiet = TRUE
     )
     status <- get_status(schedule)
-
-    lineage <- get_lineage(schedule)
   })
 
   expect_snapshot(status$invoked)
-  expect_snapshot(lineage[, c("from_name", "to_name")])
 
   # More complex multiline eval
   withr::with_tempdir({

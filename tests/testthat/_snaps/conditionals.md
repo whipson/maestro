@@ -15,16 +15,6 @@
 ---
 
     Code
-      lineage[, c("from_name", "to_name")]
-    Output
-      # A tibble: 1 x 2
-        from_name to_name
-        <chr>     <chr>  
-      1 p1        <NA>   
-
----
-
-    Code
       status$invoked
     Output
       [1]  TRUE FALSE

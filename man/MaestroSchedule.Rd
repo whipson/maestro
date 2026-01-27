@@ -35,7 +35,6 @@ if (interactive()) {
 \item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
 \item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
 \item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
-\item \href{#method-MaestroSchedule-get_lineage}{\code{MaestroSchedule$get_lineage()}}
 \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
 }
 }
@@ -204,19 +203,6 @@ Get full sequence of scheduled executions for all pipelines
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Returns}{
-data.frame
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroSchedule-get_lineage"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroSchedule-get_lineage}{}}}
-\subsection{Method \code{get_lineage()}}{
-Get network data.frame of runs and their inputting pipelines
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_lineage()}\if{html}{\out{</div>}}
-}
-
 \subsection{Returns}{
 data.frame
 }
