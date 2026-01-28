@@ -2,6 +2,8 @@
 
 ## maestro 1.0.0
 
+CRAN release: 2026-01-28
+
 #### Breaking changes
 
 This release brings a handful of breaking changes to functions for
