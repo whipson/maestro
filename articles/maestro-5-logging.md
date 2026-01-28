@@ -67,14 +67,14 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:59:45]
+    ── [2026-01-28 13:20:16]
     Running pipelines ▶
-    ✔ hello [19ms]
-    ✔ uhh [120ms]
-    ✖ oh_no [14ms]
+    ✔ hello [29ms]
+    ✔ uhh [46ms]
+    ✖ oh_no [68ms]
 
-    ── [2025-12-09 16:59:45]
-    Pipeline execution completed ■ | 0.203 sec elapsed
+    ── [2026-01-28 13:20:16]
+    Pipeline execution completed ■ | 0.194 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -88,10 +88,10 @@ log (INFO, WARN, or ERROR), the timestamp, and the message itself.
 readLines("maestro.log")
 ```
 
-    [1] "[hello] [INFO] [2025-12-09 16:59:45.740235]: hello"
+    [1] "[hello] [INFO] [2026-01-28 13:20:16.500453]: hello"
     [2] ""
-    [3] "[uhh] [WARN] [2025-12-09 16:59:45.788203]: this could be a problem"
-    [4] "[oh_no] [ERROR] [2025-12-09 16:59:45.908682]: this is bad"
+    [3] "[uhh] [WARN] [2026-01-28 13:20:16.547652]: this could be a problem"
+    [4] "[oh_no] [ERROR] [2026-01-28 13:20:16.596625]: this is bad"
 
 ## Log to Console
 
@@ -109,18 +109,18 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:59:46]
+    ── [2026-01-28 13:20:16]
     Running pipelines ▶
-    [hello] [INFO] [2025-12-09 16:59:46.151254]: hello
+    [hello] [INFO] [2026-01-28 13:20:16.911879]: hello
 
     ✔ hello [10ms]
-    [uhh] [WARN] [2025-12-09 16:59:46.170122]: this could be a problem
-    ✔ uhh [13ms]
-    [oh_no] [ERROR] [2025-12-09 16:59:46.191933]: this is bad
-    ✖ oh_no [15ms]
+    [uhh] [WARN] [2026-01-28 13:20:16.932376]: this could be a problem
+    ✔ uhh [11ms]
+    [oh_no] [ERROR] [2026-01-28 13:20:16.951483]: this is bad
+    ✖ oh_no [12ms]
 
-    ── [2025-12-09 16:59:46]
-    Pipeline execution completed ■ | 0.064 sec elapsed
+    ── [2026-01-28 13:20:16]
+    Pipeline execution completed ■ | 0.06 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -172,15 +172,15 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:59:46]
+    ── [2026-01-28 13:20:17]
     Running pipelines ▶
     ✔ hello [9ms]
-    ✔ uhh [9ms]
-    [oh_no] [ERROR] [2025-12-09 16:59:46.437606]: this is bad
-    ✖ oh_no [11ms]
+    ✔ uhh [12ms]
+    [oh_no] [ERROR] [2026-01-28 13:20:17.19177]: this is bad
+    ✖ oh_no [10ms]
 
-    ── [2025-12-09 16:59:46]
-    Pipeline execution completed ■ | 0.058 sec elapsed
+    ── [2026-01-28 13:20:17]
+    Pipeline execution completed ■ | 0.056 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -226,21 +226,21 @@ status <- run_schedule(
 )
 ```
 
-    ── [2025-12-09 16:59:46]
+    ── [2026-01-28 13:20:17]
     Running pipelines ▶
-    [hello] [INFO] [2025-12-09 16:59:46.631182]: hi
-    ✔ hello [10ms]
-    [uhh] [WARN] [2025-12-09 16:59:46.653017]: this could be a problem
-    ✔ uhh [15ms]
-    [oh_no] [ERROR] [2025-12-09 16:59:46.674285]: this is bad
-    ✔ oh_no [15ms]
+    [hello] [INFO] [2026-01-28 13:20:17.379712]: hi
+    ✔ hello [12ms]
+    [uhh] [WARN] [2026-01-28 13:20:17.399807]: this could be a problem
+    ✔ uhh [11ms]
+    [oh_no] [ERROR] [2026-01-28 13:20:17.418711]: this is bad
+    ✔ oh_no [11ms]
 
-    ── [2025-12-09 16:59:46]
-    Pipeline execution completed ■ | 0.067 sec elapsed
+    ── [2026-01-28 13:20:17]
+    Pipeline execution completed ■ | 0.059 sec elapsed
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total
     ────────────────────────────────────────────────────────────────────────────────
 
 Note that logger just creates messages and does not actually trigger
 conditions. This impacts how the statuses of pipelines appear. It is
-important to use match the namespace with the name of your pipeline
-(i.e., the function name) for the logs to appear in a log file.
+important to use match namespace with the name of your pipeline (i.e.,
+the function name) for the logs to appear in a log file.

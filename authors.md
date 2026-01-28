@@ -10,15 +10,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/whipson/maestro/blob/0.7.1/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/whipson/maestro/blob/main/DESCRIPTION)
 
-Hipson W, Garnett R (2025). *maestro: Orchestration of Data Pipelines*.
-R package version 0.7.1, <https://github.com/whipson/maestro>.
+Hipson W, Garnett R (2026). *maestro: Orchestration of Data Pipelines*.
+R package version 1.0.0, <https://github.com/whipson/maestro>.
 
     @Manual{,
       title = {maestro: Orchestration of Data Pipelines},
       author = {Will Hipson and Ryan Garnett},
-      year = {2025},
-      note = {R package version 0.7.1},
+      year = {2026},
+      note = {R package version 1.0.0},
       url = {https://github.com/whipson/maestro},
     }

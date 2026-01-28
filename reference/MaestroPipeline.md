@@ -32,6 +32,8 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$get_priority()`](#method-MaestroPipeline-get_priority)
 
+- [`MaestroPipeline$get_returns()`](#method-MaestroPipeline-get_returns)
+
 - [`MaestroPipeline$get_artifacts()`](#method-MaestroPipeline-get_artifacts)
 
 - [`MaestroPipeline$get_errors()`](#method-MaestroPipeline-get_errors)
@@ -173,6 +175,9 @@ Runs the pipeline
       .input = NULL,
       cli_prepend = "",
       log_to_console = FALSE,
+      run_id = NA_character_,
+      input_run_id = NA_character_,
+      lineage = c(),
       ...
     )
 
@@ -206,6 +211,20 @@ Runs the pipeline
 
   whether or not to output statements in the console (FALSE is to
   suppress and append to log)
+
+- `run_id`:
+
+  unique id for the run
+
+- `input_run_id`:
+
+  unique id of the run that inputted into the current run (NA if there
+  is no input)
+
+- `lineage`:
+
+  character vector of upstream pipeline names ordered from first to
+  latest (or empty if no upstream pipes)
 
 - `...`:
 
@@ -354,6 +373,20 @@ numeric
 
 ------------------------------------------------------------------------
 
+### Method `get_returns()`
+
+Get immediate return values from the pipeline for downstream pipelines
+
+#### Usage
+
+    MaestroPipeline$get_returns()
+
+#### Returns
+
+list
+
+------------------------------------------------------------------------
+
 ### Method [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
 
 Get artifacts (return values) from the pipeline
@@ -464,19 +497,31 @@ vector
 
 ------------------------------------------------------------------------
 
-### Method `get_run_sequence()`
+### Method [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
 
 Get the run sequence of a pipeline
 
 #### Usage
 
-    MaestroPipeline$get_run_sequence()
+    MaestroPipeline$get_run_sequence(
+      n = NULL,
+      min_datetime = NULL,
+      max_datetime = NULL
+    )
 
 #### Arguments
 
-- `outputs`:
+- `n`:
 
-  character vector of times
+  optional sequence limit
+
+- `min_datetime`:
+
+  optional minimum datetime
+
+- `max_datetime`:
+
+  optional maximum datetime
 
 #### Returns
 

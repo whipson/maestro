@@ -1,6 +1,83 @@
 # Changelog
 
+## maestro 1.0.0
+
+#### Breaking changes
+
+This release brings a handful of breaking changes to functions for
+getting statuses and pipeline artifacts. Core scheduling and
+orchestrating functions remain largely unchanged with the exception of
+some bug fixes - meaning that pipelines should continue to run normally.
+However, users who rely on
+[`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
+[`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md),
+and
+[`last_run_errors()`](https://whipson.github.io/maestro/reference/last_run_errors.md)
+should carefully inspect their code for breaking changes prior to
+upgrading in production.
+
+- [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  better reflects statuses of pipelines executed multiple times in a
+  single run due to DAG structures where branches converge on a single
+  downstream pipeline. As a result, pipelines executed multiple times
+  now have multiple rows in the status table corresponding to each
+  distinct DAG lineage. Specific changes to output of
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  are described below.
+
+- in
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  each pipeline execution has its own `run_id` which is a random 6-char
+  string. Columns added to the output of
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  include:
+
+  - run_id: the unique id of the run
+  - input_run_id: the unique id of the run that inputted into the
+    pipeline (NA if root pipeline)
+  - lineage: string representing the full lineage of pipelines leading
+    to the current execution
+
+- [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  column `success` is initialized to be `NA` if the pipeline has not
+  been invoked. This better characterizes the unknown success of a
+  pipeline that has not yet run.
+
+- [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+  now returns artifacts for each unique run_id - allowing for
+  potentially multiple sets of artifacts from one pipeline if it’s
+  executed multiple times in a single orchestration run.
+
+- [`last_run_errors()`](https://whipson.github.io/maestro/reference/last_run_errors.md)
+  and friends now output vectors for pipelines that are executed
+  multiple times in a single orchestration run.
+
+#### New features
+
+- New
+  [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+  function for getting a data.frame of scheduled run times for all
+  pipelines in a `MaestroSchedule` optionally including DAGs.
+
+#### Minor changes
+
+- Pipelines with `@maestroFrequency` of minutely or secondly can now be
+  run with specific hours, days, etc. In general, time specifiers like
+  `@maestroHours`, `@maestroDays`, etc. are less restrictive about the
+  base frequency of the pipeline.
+
+#### Bug fixes
+
+- Fixed issue where a pipeline error on one branch of a branching DAG
+  interrupted execution on subsequent independent branches.
+
+- Fixed bug where if `check_datetime` argument to `run_schedule` was a
+  Date it caused a mismatch in the sequence checking
+  ([\#173](https://github.com/whipson/maestro/issues/173)).
+
 ## maestro 0.7.1
+
+CRAN release: 2025-12-09
 
 #### Bug fixes
 

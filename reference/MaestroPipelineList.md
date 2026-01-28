@@ -62,8 +62,6 @@ when there are multiple maestro pipelines in a single script
 
 - [`MaestroPipelineList$run()`](#method-MaestroPipelineList-run)
 
-- [`MaestroPipelineList$get_lineage_by_pipe()`](#method-MaestroPipelineList-get_lineage_by_pipe)
-
 - [`MaestroPipelineList$clone()`](#method-MaestroPipelineList-clone)
 
 ------------------------------------------------------------------------
@@ -340,7 +338,25 @@ Get run sequences from the pipelines
 
 #### Usage
 
-    MaestroPipelineList$get_run_sequences()
+    MaestroPipelineList$get_run_sequences(
+      n = NULL,
+      min_datetime = NULL,
+      max_datetime = NULL
+    )
+
+#### Arguments
+
+- `n`:
+
+  optional sequence limit
+
+- `min_datetime`:
+
+  optional minimum datetime
+
+- `max_datetime`:
+
+  optional maximum datetime
 
 #### Returns
 
@@ -417,27 +433,6 @@ Runs all the pipelines in the list
 #### Returns
 
 invisible
-
-------------------------------------------------------------------------
-
-### Method `get_lineage_by_pipe()`
-
-Get all lineage paths (sequences of pipeline names) leading to a
-specified pipeline
-
-#### Usage
-
-    MaestroPipelineList$get_lineage_by_pipe(pipe_name)
-
-#### Arguments
-
-- `pipe_name`:
-
-  name of the target pipeline
-
-#### Returns
-
-list of character vectors, each representing a path from root to target
 
 ------------------------------------------------------------------------
 

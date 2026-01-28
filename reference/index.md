@@ -17,6 +17,8 @@
   MaestroSchedule object.
 - [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md)
   : Get the flags of pipelines in a MaestroSchedule object
+- [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+  : Get the run sequence of a schedule
 - [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
   : Get the schedule from a MaestroSchedule object
 - [`get_slot_usage()`](https://whipson.github.io/maestro/reference/get_slot_usage.md)

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,11 +47,41 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/whipson/maestro/blob/0.7.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/whipson/maestro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.7.1" id="maestro-071">maestro 0.7.1<a class="anchor" aria-label="anchor" href="#maestro-071"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="maestro-100">maestro 1.0.0<a class="anchor" aria-label="anchor" href="#maestro-100"></a></h2>
+<div class="section level4">
+<h4 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h4>
+<p>This release brings a handful of breaking changes to functions for getting statuses and pipeline artifacts. Core scheduling and orchestrating functions remain largely unchanged with the exception of some bug fixes - meaning that pipelines should continue to run normally. However, users who rely on <code><a href="../reference/get_status.html">get_status()</a></code>, <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code>, and <code><a href="../reference/last_run_errors.html">last_run_errors()</a></code> should carefully inspect their code for breaking changes prior to upgrading in production.</p>
+<ul><li><p><code><a href="../reference/get_status.html">get_status()</a></code> better reflects statuses of pipelines executed multiple times in a single run due to DAG structures where branches converge on a single downstream pipeline. As a result, pipelines executed multiple times now have multiple rows in the status table corresponding to each distinct DAG lineage. Specific changes to output of <code><a href="../reference/get_status.html">get_status()</a></code> are described below.</p></li>
+<li>
+<p>in <code><a href="../reference/get_status.html">get_status()</a></code> each pipeline execution has its own <code>run_id</code> which is a random 6-char string. Columns added to the output of <code><a href="../reference/get_status.html">get_status()</a></code> include:</p>
+<ul><li>run_id: the unique id of the run</li>
+<li>input_run_id: the unique id of the run that inputted into the pipeline (NA if root pipeline)</li>
+<li>lineage: string representing the full lineage of pipelines leading to the current execution</li>
+</ul></li>
+<li><p><code><a href="../reference/get_status.html">get_status()</a></code> column <code>success</code> is initialized to be <code>NA</code> if the pipeline has not been invoked. This better characterizes the unknown success of a pipeline that has not yet run.</p></li>
+<li><p><code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> now returns artifacts for each unique run_id - allowing for potentially multiple sets of artifacts from one pipeline if it’s executed multiple times in a single orchestration run.</p></li>
+<li><p><code><a href="../reference/last_run_errors.html">last_run_errors()</a></code> and friends now output vectors for pipelines that are executed multiple times in a single orchestration run.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h4>
+<ul><li>New <code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> function for getting a data.frame of scheduled run times for all pipelines in a <code>MaestroSchedule</code> optionally including DAGs.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="minor-changes-1-0-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-0-0"></a></h4>
+<ul><li>Pipelines with <code>@maestroFrequency</code> of minutely or secondly can now be run with specific hours, days, etc. In general, time specifiers like <code>@maestroHours</code>, <code>@maestroDays</code>, etc. are less restrictive about the base frequency of the pipeline.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h4>
+<ul><li><p>Fixed issue where a pipeline error on one branch of a branching DAG interrupted execution on subsequent independent branches.</p></li>
+<li><p>Fixed bug where if <code>check_datetime</code> argument to <code>run_schedule</code> was a Date it caused a mismatch in the sequence checking (<a href="https://github.com/whipson/maestro/issues/173" class="external-link">#173</a>).</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.1" id="maestro-071">maestro 0.7.1<a class="anchor" aria-label="anchor" href="#maestro-071"></a></h2><p class="text-muted">CRAN release: 2025-12-09</p>
 <div class="section level4">
 <h4 id="bug-fixes-0-7-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-7-1"></a></h4>
 <ul><li>Fixed issue where info messages with curly brackets interrupted pipeline execution.</li>

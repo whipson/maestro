@@ -9,7 +9,7 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for a schedule of pipelines</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/0.7.1/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
       <div class="d-none name"><code>MaestroSchedule.Rd</code></div>
     </div>
 
@@ -82,6 +82,7 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <li><p><a href="#method-MaestroSchedule-get_network"><code>MaestroSchedule$get_network()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_flags"><code>MaestroSchedule$get_flags()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-show_network"><code>MaestroSchedule$show_network()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-get_run_sequence"><code>MaestroSchedule$get_run_sequence()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-clone"><code>MaestroSchedule$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroSchedule-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -219,15 +220,53 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <p>interactive visualization</p>
 </div>
 
-</div><p></p><hr><a id="method-MaestroSchedule-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-MaestroSchedule-get_run_sequence"></a><div class="section">
+<h3 id="method-get-run-sequence-">Method <code><a href="get_run_sequence.html">get_run_sequence()</a></code><a class="anchor" aria-label="anchor" href="#method-get-run-sequence-"></a></h3>
+<p>Get full sequence of scheduled executions for all pipelines</p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
+<span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include_only_primary <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>n</code></dt>
+<dd><p>optional sequence limit</p></dd>
+
+
+<dt><code>min_datetime</code></dt>
+<dd><p>optional minimum datetime</p></dd>
+
+
+<dt><code>max_datetime</code></dt>
+<dd><p>optional maximum datetime</p></dd>
+
+
+<dt><code>include_only_primary</code></dt>
+<dd><p>only primary pipelines are included
+(this are pipelines that are scheduled and not downstream nodes in a DAG)</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div><p></p><hr><a id="method-MaestroSchedule-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

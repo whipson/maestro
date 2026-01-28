@@ -32,6 +32,8 @@ Class for a schedule of pipelines
 
 - [`MaestroSchedule$show_network()`](#method-MaestroSchedule-show_network)
 
+- [`MaestroSchedule$get_run_sequence()`](#method-MaestroSchedule-get_run_sequence)
+
 - [`MaestroSchedule$clone()`](#method-MaestroSchedule-clone)
 
 ------------------------------------------------------------------------
@@ -185,6 +187,44 @@ Visualize the DAG relationships between pipelines in the schedule
 #### Returns
 
 interactive visualization
+
+------------------------------------------------------------------------
+
+### Method [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+
+Get full sequence of scheduled executions for all pipelines
+
+#### Usage
+
+    MaestroSchedule$get_run_sequence(
+      n = NULL,
+      min_datetime = NULL,
+      max_datetime = NULL,
+      include_only_primary = FALSE
+    )
+
+#### Arguments
+
+- `n`:
+
+  optional sequence limit
+
+- `min_datetime`:
+
+  optional minimum datetime
+
+- `max_datetime`:
+
+  optional maximum datetime
+
+- `include_only_primary`:
+
+  only primary pipelines are included (this are pipelines that are
+  scheduled and not downstream nodes in a DAG)
+
+#### Returns
+
+data.frame
 
 ------------------------------------------------------------------------
 
