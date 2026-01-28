@@ -1,4 +1,4 @@
-# maestro 1.0.0.9001
+# maestro 1.0.0
 
 ### Breaking changes
 
