@@ -48,7 +48,6 @@ single script
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
-\item \href{#method-MaestroPipelineList-get_lineage_by_pipe}{\code{MaestroPipelineList$get_lineage_by_pipe()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
 }
@@ -310,9 +309,24 @@ list
 \subsection{Method \code{get_run_sequences()}}{
 Get run sequences from the pipelines
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_run_sequences(
+  n = NULL,
+  min_datetime = NULL,
+  max_datetime = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{optional sequence limit}
+
+\item{\code{min_datetime}}{optional minimum datetime}
+
+\item{\code{max_datetime}}{optional maximum datetime}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 list
 }
@@ -378,26 +392,6 @@ Runs all the pipelines in the list
 }
 \subsection{Returns}{
 invisible
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroPipelineList-get_lineage_by_pipe"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_lineage_by_pipe}{}}}
-\subsection{Method \code{get_lineage_by_pipe()}}{
-Get all lineage paths (sequences of pipeline names) leading to a specified pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$get_lineage_by_pipe(pipe_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{pipe_name}}{name of the target pipeline}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-list of character vectors, each representing a path from root to target
 }
 }
 \if{html}{\out{<hr>}}

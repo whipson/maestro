@@ -38,7 +38,7 @@
     Code
       status$success
     Output
-      [1] FALSE
+      [1] NA
 
 ---
 
@@ -61,7 +61,7 @@
     Code
       status$success
     Output
-      [1] FALSE
+      [1] NA
 
 ---
 

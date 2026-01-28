@@ -165,14 +165,18 @@ MaestroPipelineList <- R6::R6Class(
     get_artifacts = function() {
       purrr::map(self$MaestroPipelines, ~.x$get_artifacts()) |>
         stats::setNames(self$get_pipe_names()) |>
-        purrr::discard(is.null)
+        purrr::discard(is.null) |> 
+        purrr::discard(~length(.x) == 0)
     },
 
     #' @description
     #' Get run sequences from the pipelines
+    #' @param n optional sequence limit
+    #' @param min_datetime optional minimum datetime
+    #' @param max_datetime optional maximum datetime
     #' @return list
-    get_run_sequences = function() {
-      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence()) |>
+    get_run_sequences = function(n = NULL, min_datetime = NULL, max_datetime = NULL) {
+      purrr::map(self$MaestroPipelines, ~.x$get_run_sequence(n = n, min_datetime = min_datetime, max_datetime = max_datetime)) |>
         stats::setNames(self$get_pipe_names()) |>
         purrr::discard(is.null)
     },
@@ -343,13 +347,32 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
-      run_pipe <- function(pipe, .input = NULL, depth = -1, ...) {
+      run_pipe <- function(pipe, .input = NULL, depth = -1, input_run_id = NA_character_, ...) {
+
+        run_id <- make_id()
         depth <- min(depth + 1, 6)
-        do.call(pipe$run, append(dots, list(.input = .input, ...)))
-        .input <- pipe$get_artifacts()
+        tryCatch({
+          do.call(
+            pipe$run, 
+            append(
+              dots, 
+              list(
+                .input = .input, 
+                run_id = run_id, 
+                input_run_id = input_run_id,
+                lineage = lineage
+              )
+            )
+          )
+        }, error = \(e) {
+          invisible()
+        })
+        .input <- pipe$get_returns()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
         if (length(out_names) == 0) return(invisible())
+        lineage <<- append(lineage, pipe$get_pipe_name())
+        
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
           prepend <- paste0(rep("  ", times = depth), "|-")
@@ -357,59 +380,25 @@ MaestroPipelineList <- R6::R6Class(
             pipe,
             .input = .input,
             depth = depth,
-            cli_prepend = cli::format_inline(prepend)
+            cli_prepend = cli::format_inline(prepend),
+            run_id = run_id,
+            input_run_id = run_id,
+            lineage = lineage
           )
         }
       }
 
       # Run the pipelines
+      lineage <- NULL
       mapper_fun(
         pipes_to_run,
-        purrr::safely(run_pipe, quiet = TRUE)
+        purrr::safely(~{
+          run_pipe(.x)
+          lineage <<- NULL
+        }, quiet = TRUE)
       )
 
       invisible()
-    },
-
-    #' @description
-    #' Get all lineage paths (sequences of pipeline names) leading to a specified pipeline
-    #' @param pipe_name name of the target pipeline
-    #' @return list of character vectors, each representing a path from root to target
-    get_lineage_by_pipe = function(pipe_name) {
-      network <- self$get_network()
-      
-      # Validate that the pipe exists
-      all_pipes <- unique(c(network$from, network$to))
-      if (!pipe_name %in% all_pipes && nrow(network) > 0) {
-        cli::cli_abort("Pipeline {.pkg {pipe_name}} not found in network.")
-      }
-      
-      # Recursive function to find all paths back to roots
-      find_all_paths <- function(current_pipe, visited = character()) {
-        # Prevent infinite loops
-        if (current_pipe %in% visited) {
-          return(list())
-        }
-        
-        # Find all pipelines that feed into current_pipe
-        parents <- network$from[network$to == current_pipe]
-        
-        if (length(parents) == 0) {
-          # This is a root node - we've found a complete path
-          return(list(c(visited, current_pipe)))
-        }
-        
-        # Recursively trace each parent and collect all paths
-        all_paths <- purrr::map(
-          parents,
-          ~find_all_paths(.x, c(visited, current_pipe))
-        ) |>
-          purrr::flatten()
-        
-        all_paths
-      }
-      
-      find_all_paths(pipe_name)
     }
   ),
 

@@ -44,3 +44,105 @@
     Output
       [1] TRUE TRUE TRUE
 
+# Branching DAG pipelines with an error in one branch continue on second branch
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    FALSE  
+      4 TRUE    TRUE   
+
+# Branching DAG pipelines both ending in errors accurately outputs errors
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    FALSE  
+      4 TRUE    FALSE  
+
+---
+
+    Code
+      last_run_errors()
+    Output
+      $end1
+      [1] "oops"
+      
+      $end2
+      [1] "oh dear"
+      
+
+# Branching and merging DAG pipelines have separate status entries for each lineage
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 5 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+      5 TRUE    TRUE   
+
+---
+
+    Code
+      unname(unlist(get_artifacts(schedule)))
+    Output
+      [1]  4 12  8 24 16
+
+# Branching and merging DAG pipelines use vectors for multiple errors
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 5 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    FALSE  
+      5 TRUE    FALSE  
+
+---
+
+    Code
+      unname(unlist(get_artifacts(schedule)))
+    Output
+      [1]  4 12  8
+
+---
+
+    Code
+      last_run_errors()
+    Output
+      $end
+      [1] "oops" "oops"
+      
+
+# Two separate DAGs have separate lineages
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+

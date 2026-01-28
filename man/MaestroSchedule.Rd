@@ -34,6 +34,7 @@ if (interactive()) {
 \item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
 \item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
 \item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
+\item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
 \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
 }
 }
@@ -172,6 +173,38 @@ Visualize the DAG relationships between pipelines in the schedule
 
 \subsection{Returns}{
 interactive visualization
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroSchedule-get_run_sequence"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-get_run_sequence}{}}}
+\subsection{Method \code{get_run_sequence()}}{
+Get full sequence of scheduled executions for all pipelines
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_run_sequence(
+  n = NULL,
+  min_datetime = NULL,
+  max_datetime = NULL,
+  include_only_primary = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{optional sequence limit}
+
+\item{\code{min_datetime}}{optional minimum datetime}
+
+\item{\code{max_datetime}}{optional maximum datetime}
+
+\item{\code{include_only_primary}}{only primary pipelines are included
+(this are pipelines that are scheduled and not downstream nodes in a DAG)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+data.frame
 }
 }
 \if{html}{\out{<hr>}}

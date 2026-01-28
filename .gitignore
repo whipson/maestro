@@ -11,3 +11,6 @@ inst/doc
 .Rprofile
 .dockerignore
 .Rbuildignore
+
+/.quarto/
+**/*.quarto_ipynb
