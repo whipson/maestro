@@ -553,6 +553,7 @@ MaestroPipeline <- R6::R6Class(
     messages = NULL,
 
     escape_for_glue = function(msg) {
+      msg <- trimws(msg)
       logger::skip_formatter(msg)
     },
     
