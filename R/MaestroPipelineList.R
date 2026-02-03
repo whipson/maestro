@@ -332,7 +332,7 @@ MaestroPipelineList <- R6::R6Class(
           tryCatch({
             rlang::check_installed("furrr")
             mapper_fun <- function(...) {
-              furrr::future_map(..., .options = furrr::furrr_options(stdout = FALSE))
+              furrr::future_map(..., .options = furrr::furrr_options(stdout = TRUE, seed = NULL))
             }
           }, error = \(e) {
             cli::cli_warn("{.pkg furrr} is required for running on multiple cores.")

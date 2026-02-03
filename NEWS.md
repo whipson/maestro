@@ -1,3 +1,13 @@
+# maestro 1.0.1
+
+### Minor changes
+
+- Running in multicore (i.e., specifying `cores > 1` in `run_schedule()`) is more stable, particularly around console messages.
+
+### Bug fixes
+
+- Logging no longer adds unnecessary new lines in between log statements.
+
 # maestro 1.0.0
 
 ### Breaking changes
