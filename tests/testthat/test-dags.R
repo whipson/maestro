@@ -8,6 +8,14 @@ test_that("DAGs work as expected", {
   expect_equal(artifacts$branch2, 2)
   expect_equal(artifacts$subbranch1, 2)
   expect_equal(artifacts$subbranch2, 6)
+
+  dag <- build_schedule(test_path("test_pipelines_dags_good"))
+  future::plan(future::multisession(workers = 2))
+  run_schedule(
+    dag,
+    cores = 2L
+  )
+  expect_true(all(dag$get_status()$success))
 }) |>
   suppressMessages()
 

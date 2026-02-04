@@ -566,14 +566,20 @@ test_that("Multicore works", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   expect_no_error({
+
+    future::plan(future::multisession(workers = 2))
+
     run_schedule(
       schedule,
-      orch_frequency = "1 day",
+      orch_frequency = "1 hour",
       cores = 2,
-      run_all = TRUE,
       log_to_console = TRUE
     )
   })
+
+  status <- get_status(schedule)
+
+  expect_snapshot(status[, c("invoked", "success")])
 }) |>
   suppressMessages()
 

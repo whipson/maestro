@@ -60,6 +60,21 @@ MaestroSchedule <- R6::R6Class(
 
       dots <- rlang::list2(..., quiet = quiet)
 
+      is_multicore <- FALSE
+      cores <- dots$cores
+      if (!is.null(cores)) {
+        if (cores < 1 || (cores %% 1) != 0) cli::cli_abort("`cores` must be a positive integer")
+        if (cores > 1) {
+          tryCatch({
+            rlang::check_installed("furrr")
+            is_multicore <- TRUE
+          }, error = \(e) {
+            cli::cli_warn("{.pkg furrr} is required for running on multiple cores.")
+            cores <- 1
+          })
+        }
+      }
+
       if (self$PipelineList$n_pipelines == 0) {
         cli::cli_inform("No pipelines in the schedule. Nothing to do.")
         return(invisible())
@@ -80,7 +95,8 @@ MaestroSchedule <- R6::R6Class(
         }
 
         tictoc::tic(quiet = quiet)
-        do.call(pipes_to_run$run, dots)
+        pipes_that_ran <- do.call(pipes_to_run$run, dots)
+        if (is_multicore) self$PipelineList$update_pipelines(pipes_that_ran)
         elapsed <- tictoc::toc(quiet = TRUE)
 
         if (!quiet) {

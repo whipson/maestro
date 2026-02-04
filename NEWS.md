@@ -8,6 +8,10 @@
 
 - Logging no longer adds unnecessary new lines in between log statements.
 
+- `get_schedule()` is no longer missing pipelines with inputs.
+
+- Fixed regression where cli output was not representing DAG structure.
+
 # maestro 1.0.0
 
 ### Breaking changes

@@ -114,3 +114,19 @@
     Output
       [1] "q1" "p2"
 
+# Multicore works
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 7 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+      5 TRUE    TRUE   
+      6 TRUE    TRUE   
+      7 TRUE    TRUE   
+

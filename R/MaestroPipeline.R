@@ -175,7 +175,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param quiet whether to silence console output
     #' @param log_file_max_bytes maximum bytes of the log file before trimming
     #' @param .input input values from upstream pipelines
-    #' @param cli_prepend text to prepend to cli output
+    #' @param depth number of inputting pipelines above the current
     #' @param log_to_console whether or not to output statements in the console (FALSE is to suppress and append to log)
     #' @param run_id unique id for the run
     #' @param input_run_id unique id of the run that inputted into the current run (NA if there is no input)
@@ -189,7 +189,7 @@ MaestroPipeline <- R6::R6Class(
       quiet = FALSE,
       log_file_max_bytes = 1e6,
       .input = NULL,
-      cli_prepend = "",
+      depth = 0,
       log_to_console = FALSE,
       run_id = NA_character_,
       input_run_id = NA_character_,
@@ -279,7 +279,11 @@ MaestroPipeline <- R6::R6Class(
       private$run_time_start <- run_time_start
 
       if (!quiet) {
-        cli::cli_progress_step("{cli_prepend}{cli::col_blue(pipe_name)}")
+        prepend <- ""
+        if (depth != 0) {
+          prepend <- cli::format_inline(rep("  ", times = depth), "|-")
+        }
+        cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}")
       }
 
       private$insert_run_time_attributes(
@@ -329,16 +333,16 @@ MaestroPipeline <- R6::R6Class(
     #' @return data.frame
     get_schedule = function() {
       dplyr::tibble(
-        script_path = private$script_path %n% character(),
-        pipe_name = private$pipe_name %n% character(),
-        frequency = private$frequency %n% character(),
-        start_time = private$start_time %n% lubridate::POSIXct(),
-        tz = private$tz %n% character(),
-        skip = private$skip %n% logical(),
-        log_level = private$log_level %n% character(),
-        frequency_n = private$frequency_n %n% integer(),
-        frequency_unit = private$frequency_unit %n% character(),
-        priority = private$priority
+        script_path = private$script_path %n% NA_character_,
+        pipe_name = private$pipe_name %n% NA_character_,
+        frequency = private$frequency %n% NA_character_,
+        start_time = private$start_time %n% lubridate::NA_POSIXct_,
+        tz = private$tz %n% NA_character_,
+        skip = private$skip %n% NA,
+        log_level = private$log_level %n% NA_character_,
+        frequency_n = private$frequency_n %n% NA_integer_,
+        frequency_unit = private$frequency_unit %n% NA_character_,
+        priority = private$priority %n% NA_integer_ 
       )
     },
 
