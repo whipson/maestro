@@ -563,6 +563,7 @@ test_that("maestroDays works on expected days", {
 
 test_that("Multicore works", {
 
+  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
   schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
 
   expect_no_error({

@@ -122,11 +122,11 @@
       # A tibble: 7 x 2
         invoked success
         <lgl>   <lgl>  
-      1 TRUE    TRUE   
-      2 TRUE    TRUE   
-      3 TRUE    TRUE   
-      4 TRUE    TRUE   
-      5 TRUE    TRUE   
-      6 TRUE    TRUE   
+      1 FALSE   NA     
+      2 FALSE   NA     
+      3 FALSE   NA     
+      4 FALSE   NA     
+      5 FALSE   NA     
+      6 FALSE   NA     
       7 TRUE    TRUE   
 

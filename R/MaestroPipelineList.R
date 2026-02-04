@@ -367,10 +367,19 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
-      run_pipe <- function(pipe, .input = NULL, depth = -1, input_run_id = NA_character_, ...) {
+      run_pipe <- function(
+        pipe, 
+        .input = NULL, 
+        depth = -1, 
+        input_run_id = NA_character_, 
+        run_results = list(),
+        lineage = character(),
+        ...
+      ) {
 
         run_id <- make_id()
         depth <- min(depth + 1, 6)
+        
         tryCatch({
           do.call(
             pipe$run, 
@@ -380,45 +389,52 @@ MaestroPipelineList <- R6::R6Class(
                 .input = .input, 
                 run_id = run_id, 
                 input_run_id = input_run_id,
-                lineage = lineage,
-                depth = depth
+                depth = depth,
+                lineage = lineage
               )
             )
           )
         }, error = \(e) {
           return(pipe)
         })
+        
+        lineage <- append(lineage, pipe$get_pipe_name())
+        run_results <- append(run_results, pipe)
+        
         .input <- pipe$get_returns()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
+        
         if (pipe$get_status_chr() %in% c("Error", "Not Run")) {
-          return(pipe)
+          return(run_results)
         }
-        if (length(out_names) == 0) return(pipe)
-        lineage <<- append(lineage, pipe$get_pipe_name())
+        
+        if (length(out_names) == 0) return(run_results)
         
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
-          run_pipe(
+          run_results <- run_pipe(
             pipe,
             .input = .input,
             depth = depth,
             run_id = run_id,
             input_run_id = run_id,
+            run_results = run_results,
             lineage = lineage
           )
         }
 
-        pipe
+        run_results
       }
       
       # Run the pipelines
-      lineage <- NULL
       run_res <- mapper_fun(
         pipes_to_run,
         purrr::safely(~{
-          pipe <- run_pipe(.x)
-          lineage <<- NULL
-          pipe
+          run_pipe(
+            .x, 
+            run_results = list(),
+            lineage = character()
+          )
         }, quiet = TRUE)
       )
       
