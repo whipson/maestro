@@ -90,6 +90,9 @@ due to the nature of how those functions operate with standard output.
 Users are advised to make use of R's \code{message()}, \code{warning()}, and \code{stop()} functions in their pipelines
 for managing conditions. Use \code{log_to_console = TRUE} to print these to the console.
 
+Note that \code{log_to_console} does not work when running multicore. In the case of multicore, it is recommended to use
+\code{log_to_file}.
+
 Maestro can generate a log file that is appended to each time the orchestrator is run. Use \code{log_to_file = TRUE} or \code{log_to_file = '[path-to-file]'} and
 maestro will create/append to a file in the project directory.
 This log file will be appended to until it exceeds the byte size defined in \code{log_file_max_bytes} argument after which

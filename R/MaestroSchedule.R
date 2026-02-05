@@ -81,9 +81,13 @@ MaestroSchedule <- R6::R6Class(
       }
 
       tryCatch({
-
-        # Check the timeliness of the pipelines
+        
         pipes_to_run <- self$PipelineList
+
+        if (private$sch_status != "Not Run") {
+          self$PipelineList$reset_pipelines()
+        }
+
         if (!run_all) {
           pipes_to_run <- do.call(pipes_to_run$get_timely_pipelines, dots)
         }
@@ -102,7 +106,8 @@ MaestroSchedule <- R6::R6Class(
         if (!quiet) {
           cli::cli_h3(
             "[{format(lubridate::now(), '%Y-%m-%d %H:%M:%S')}]
-          Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}")
+            Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}"
+          )
         }
 
         run_errors <- self$PipelineList$get_errors()

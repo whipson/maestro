@@ -352,7 +352,7 @@ MaestroPipelineList <- R6::R6Class(
           furrr::future_map(
             ..., 
             .options = furrr::furrr_options(
-              packages = "maestro",
+              packages = c("maestro", "logger"),
               stdout = FALSE, 
               seed = NULL
             )
@@ -440,6 +440,12 @@ MaestroPipelineList <- R6::R6Class(
       
       purrr::map(run_res, "result") |> 
         purrr::list_flatten()
+    },
+    
+    #' @description
+    #' Resets the run time attributes
+    reset_pipelines = function() {
+      purrr::walk(self$MaestroPipelines, ~.x$reset_run_time_attributes())
     }
   ),
 

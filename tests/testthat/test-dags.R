@@ -23,7 +23,6 @@ test_that("DAGs work as expected", {
   expect_equal(artifacts$branch2, 2)
   expect_equal(artifacts$subbranch1, 2)
   expect_equal(artifacts$subbranch2, 6)
-
 }) |>
   suppressMessages()
 

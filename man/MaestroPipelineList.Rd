@@ -30,6 +30,7 @@ single script
 \item \href{#method-MaestroPipelineList-new}{\code{MaestroPipelineList$new()}}
 \item \href{#method-MaestroPipelineList-print}{\code{MaestroPipelineList$print()}}
 \item \href{#method-MaestroPipelineList-add_pipelines}{\code{MaestroPipelineList$add_pipelines()}}
+\item \href{#method-MaestroPipelineList-update_pipelines}{\code{MaestroPipelineList$update_pipelines()}}
 \item \href{#method-MaestroPipelineList-get_pipe_names}{\code{MaestroPipelineList$get_pipe_names()}}
 \item \href{#method-MaestroPipelineList-get_pipe_by_name}{\code{MaestroPipelineList$get_pipe_by_name()}}
 \item \href{#method-MaestroPipelineList-get_pipes_by_name}{\code{MaestroPipelineList$get_pipes_by_name()}}
@@ -48,6 +49,7 @@ single script
 \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
 \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
 \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
+\item \href{#method-MaestroPipelineList-reset_pipelines}{\code{MaestroPipelineList$reset_pipelines()}}
 \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
 }
 }
@@ -93,6 +95,26 @@ print
 Add pipelines to the list
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$add_pipelines(MaestroPipelines = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{MaestroPipelines}}{list of MaestroPipelines}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+invisible
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-update_pipelines"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-update_pipelines}{}}}
+\subsection{Method \code{update_pipelines()}}{
+Update pipelines in a list
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$update_pipelines(MaestroPipelines = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -393,6 +415,16 @@ Runs all the pipelines in the list
 \subsection{Returns}{
 invisible
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-reset_pipelines"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-reset_pipelines}{}}}
+\subsection{Method \code{reset_pipelines()}}{
+Resets the run time attributes
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipelineList$reset_pipelines()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipelineList-clone"></a>}}

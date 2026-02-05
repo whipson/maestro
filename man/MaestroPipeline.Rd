@@ -34,6 +34,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
 \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
 \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
+\item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
 \item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
 \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
 }
@@ -127,7 +128,7 @@ Runs the pipeline
   quiet = FALSE,
   log_file_max_bytes = 1e+06,
   .input = NULL,
-  cli_prepend = "",
+  depth = 0,
   log_to_console = FALSE,
   run_id = NA_character_,
   input_run_id = NA_character_,
@@ -149,7 +150,7 @@ Runs the pipeline
 
 \item{\code{.input}}{input values from upstream pipelines}
 
-\item{\code{cli_prepend}}{text to prepend to cli output}
+\item{\code{depth}}{number of inputting pipelines above the current}
 
 \item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
 
@@ -405,6 +406,19 @@ Update the outputs of a pipeline
 }
 \subsection{Returns}{
 vector
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-reset_run_time_attributes"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-reset_run_time_attributes}{}}}
+\subsection{Method \code{reset_run_time_attributes()}}{
+Resets run time attributes
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$reset_run_time_attributes()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+invisible
 }
 }
 \if{html}{\out{<hr>}}

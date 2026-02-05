@@ -495,6 +495,32 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Resets run time attributes
+    #' @return invisible
+    reset_run_time_attributes = function() {
+      private$run_time_attributes <- dplyr::tibble(
+        internal_run_id = NA_character_,
+        invoked = FALSE,
+        success = NA,
+        pipeline_started = lubridate::NA_POSIXct_,
+        pipeline_ended = lubridate::NA_POSIXct_,
+        errors = 0L,
+        warnings = 0L,
+        messages = 0L,
+        run_id = NA_character_,
+        input_run_id = NA_character_,
+        lineage = NA_character_
+      )
+      private$status <- "Not Run"
+      private$errors <- NULL
+      private$warnings <- NULL
+      private$messages <- NULL
+      private$returns <- NULL
+      private$run_time_start <- lubridate::NA_POSIXct_
+      private$run_time_end <- lubridate::NA_POSIXct_
+    },
+
+    #' @description
     #' Get the run sequence of a pipeline
     #' @param n optional sequence limit
     #' @param min_datetime optional minimum datetime

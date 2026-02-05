@@ -41,6 +41,9 @@
 #'
 #' Users are advised to make use of R's `message()`, `warning()`, and `stop()` functions in their pipelines
 #' for managing conditions. Use `log_to_console = TRUE` to print these to the console.
+#' 
+#' Note that `log_to_console` does not work when running multicore. In the case of multicore, it is recommended to use
+#' `log_to_file`.
 #'
 #' Maestro can generate a log file that is appended to each time the orchestrator is run. Use `log_to_file = TRUE` or `log_to_file = '[path-to-file]'` and
 #' maestro will create/append to a file in the project directory.
