@@ -1,5 +1,9 @@
 # maestro 1.0.1
 
+### Minor changes
+
+- Log timestamps now use a %Y-%m-%d %H:%M:%S format.
+
 ### Bug fixes
 
 - Running in multicore (i.e., specifying `cores > 1` in `run_schedule()`) is more stable.
