@@ -1,5 +1,25 @@
 # Changelog
 
+## maestro 1.0.1
+
+#### Minor changes
+
+- Log timestamps now use a %Y-%m-%d %H:%M:%S format.
+
+#### Bug fixes
+
+- Running in multicore (i.e., specifying `cores > 1` in
+  [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md))
+  is more stable.
+
+- Logging no longer adds unnecessary new lines in between log
+  statements.
+
+- [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
+  is no longer missing pipelines with inputs.
+
+- Fixed regression where cli output was not representing DAG structure.
+
 ## maestro 1.0.0
 
 CRAN release: 2026-01-28

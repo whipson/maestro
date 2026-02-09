@@ -48,6 +48,8 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$update_outputs()`](#method-MaestroPipeline-update_outputs)
 
+- [`MaestroPipeline$reset_run_time_attributes()`](#method-MaestroPipeline-reset_run_time_attributes)
+
 - [`MaestroPipeline$get_run_sequence()`](#method-MaestroPipeline-get_run_sequence)
 
 - [`MaestroPipeline$clone()`](#method-MaestroPipeline-clone)
@@ -173,7 +175,7 @@ Runs the pipeline
       quiet = FALSE,
       log_file_max_bytes = 1e+06,
       .input = NULL,
-      cli_prepend = "",
+      depth = 0,
       log_to_console = FALSE,
       run_id = NA_character_,
       input_run_id = NA_character_,
@@ -203,9 +205,9 @@ Runs the pipeline
 
   input values from upstream pipelines
 
-- `cli_prepend`:
+- `depth`:
 
-  text to prepend to cli output
+  number of inputting pipelines above the current
 
 - `log_to_console`:
 
@@ -494,6 +496,20 @@ Update the outputs of a pipeline
 #### Returns
 
 vector
+
+------------------------------------------------------------------------
+
+### Method `reset_run_time_attributes()`
+
+Resets run time attributes
+
+#### Usage
+
+    MaestroPipeline$reset_run_time_attributes()
+
+#### Returns
+
+invisible
 
 ------------------------------------------------------------------------
 

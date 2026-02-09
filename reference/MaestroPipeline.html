@@ -13,7 +13,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for an individual maestro pipeline A pipeline is defined as a single R script with a schedule or input</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.0.0/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
       <div class="d-none name"><code>MaestroPipeline.Rd</code></div>
     </div>
 
@@ -90,6 +90,7 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <li><p><a href="#method-MaestroPipeline-get_flags"><code>MaestroPipeline$get_flags()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_inputs"><code>MaestroPipeline$update_inputs()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_outputs"><code>MaestroPipeline$update_outputs()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-reset_run_time_attributes"><code>MaestroPipeline$reset_run_time_attributes()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_run_sequence"><code>MaestroPipeline$get_run_sequence()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-clone"><code>MaestroPipeline$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroPipeline-new"></a><div class="section">
@@ -206,7 +207,7 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  log_file_max_bytes <span class="op">=</span> <span class="fl">1e+06</span>,</span>
 <span>  .input <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  cli_prepend <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  depth <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  log_to_console <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  run_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  input_run_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
@@ -237,8 +238,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <dd><p>input values from upstream pipelines</p></dd>
 
 
-<dt><code>cli_prepend</code></dt>
-<dd><p>text to prepend to cli output</p></dd>
+<dt><code>depth</code></dt>
+<dd><p>number of inputting pipelines above the current</p></dd>
 
 
 <dt><code>log_to_console</code></dt>
@@ -501,10 +502,22 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p>vector</p>
 </div>
 
+</div><p></p><hr><a id="method-MaestroPipeline-reset_run_time_attributes"></a><div class="section">
+<h3 id="method-reset-run-time-attributes-">Method <code>reset_run_time_attributes()</code><a class="anchor" aria-label="anchor" href="#method-reset-run-time-attributes-"></a></h3>
+<p>Resets run time attributes</p><div class="section">
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">reset_run_time_attributes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<p>invisible</p>
+</div>
+
 </div><p></p><hr><a id="method-MaestroPipeline-get_run_sequence"></a><div class="section">
 <h3 id="method-get-run-sequence-">Method <code><a href="get_run_sequence.html">get_run_sequence()</a></code><a class="anchor" aria-label="anchor" href="#method-get-run-sequence-"></a></h3>
 <p>Get the run sequence of a pipeline</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -529,14 +542,14 @@ A pipeline is defined as a single R script with a schedule or input</p>
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
 <p>vector</p>
 </div>
 
 </div><p></p><hr><a id="method-MaestroPipeline-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 

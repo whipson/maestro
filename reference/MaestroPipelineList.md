@@ -26,6 +26,8 @@ when there are multiple maestro pipelines in a single script
 
 - [`MaestroPipelineList$add_pipelines()`](#method-MaestroPipelineList-add_pipelines)
 
+- [`MaestroPipelineList$update_pipelines()`](#method-MaestroPipelineList-update_pipelines)
+
 - [`MaestroPipelineList$get_pipe_names()`](#method-MaestroPipelineList-get_pipe_names)
 
 - [`MaestroPipelineList$get_pipe_by_name()`](#method-MaestroPipelineList-get_pipe_by_name)
@@ -61,6 +63,8 @@ when there are multiple maestro pipelines in a single script
 - [`MaestroPipelineList$validate_network()`](#method-MaestroPipelineList-validate_network)
 
 - [`MaestroPipelineList$run()`](#method-MaestroPipelineList-run)
+
+- [`MaestroPipelineList$reset_pipelines()`](#method-MaestroPipelineList-reset_pipelines)
 
 - [`MaestroPipelineList$clone()`](#method-MaestroPipelineList-clone)
 
@@ -111,6 +115,26 @@ Add pipelines to the list
 #### Usage
 
     MaestroPipelineList$add_pipelines(MaestroPipelines = NULL)
+
+#### Arguments
+
+- `MaestroPipelines`:
+
+  list of MaestroPipelines
+
+#### Returns
+
+invisible
+
+------------------------------------------------------------------------
+
+### Method `update_pipelines()`
+
+Update pipelines in a list
+
+#### Usage
+
+    MaestroPipelineList$update_pipelines(MaestroPipelines = NULL)
 
 #### Arguments
 
@@ -433,6 +457,16 @@ Runs all the pipelines in the list
 #### Returns
 
 invisible
+
+------------------------------------------------------------------------
+
+### Method `reset_pipelines()`
+
+Resets the run time attributes
+
+#### Usage
+
+    MaestroPipelineList$reset_pipelines()
 
 ------------------------------------------------------------------------
 
