@@ -1,5 +1,5 @@
 maestro_logger <- logger::layout_glue_generator(
-  format = "[{namespace}] [{level}] [{time}]: {msg}"
+  format = "[{namespace}] [{level}] [{format(time, \"%Y-%m-%d %H:%M:%S\")}]: {msg}"
 )
 
 #' Convert a duration string to number of seconds

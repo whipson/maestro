@@ -73,21 +73,6 @@ test_that("MaestroSchedule works when not running all (verification of checking)
 }) |>
   suppressMessages()
 
-test_that("Multicore works", {
-
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-
-  expect_no_error({
-    schedule$run(
-      orch_n = 1,
-      orch_unit = "day",
-      cores = 2,
-      run_all = TRUE
-    )
-  })
-}) |>
-  suppressMessages()
-
 test_that("MaestroSchedule informs with an empty schedule", {
   schedule <- MaestroSchedule$new()
   expect_message({

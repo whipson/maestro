@@ -45,8 +45,29 @@ MaestroPipelineList <- R6::R6Class(
           self$MaestroPipelines <- append(self$MaestroPipelines, .x)
         })
       }
+      invisible()
     },
 
+    #' @description
+    #' Update pipelines in a list
+    #' @param MaestroPipelines list of MaestroPipelines
+    #' @return invisible
+    update_pipelines = function(MaestroPipelines = NULL) {
+      pipe_names <- self$get_pipe_names()
+      if ("MaestroPipeline" %in% class(MaestroPipelines)) {
+        pipe_to_update_name <- MaestroPipelines$get_pipe_name()
+        idx_to_update <- which(pipe_names == pipe_to_update_name)
+        self$MaestroPipelines[[idx_to_update]] <- MaestroPipelines
+      } else {
+        purrr::walk(MaestroPipelines, ~{
+          pipe_to_update_name <- .x$get_pipe_name()
+          idx_to_update <- which(pipe_names == pipe_to_update_name)
+          self$MaestroPipelines[[idx_to_update]] <- .x
+        })
+      }
+      invisible()
+    },
+    
     #' @description
     #' Get names of the pipelines in the list arranged by priority
     #' @return character
@@ -326,17 +347,16 @@ MaestroPipelineList <- R6::R6Class(
         purrr::map(...)
       }
 
-      if (!is.null(cores)) {
-        if (cores < 1 || (cores %% 1) != 0) cli::cli_abort("`cores` must be a positive integer")
-        if (cores > 1) {
-          tryCatch({
-            rlang::check_installed("furrr")
-            mapper_fun <- function(...) {
-              furrr::future_map(..., .options = furrr::furrr_options(stdout = FALSE))
-            }
-          }, error = \(e) {
-            cli::cli_warn("{.pkg furrr} is required for running on multiple cores.")
-          })
+      if (cores > 1) {
+        mapper_fun <- function(...) {
+          furrr::future_map(
+            ..., 
+            .options = furrr::furrr_options(
+              packages = c("maestro", "logger"),
+              stdout = FALSE, 
+              seed = NULL
+            )
+          )
         }
       }
 
@@ -347,10 +367,19 @@ MaestroPipelineList <- R6::R6Class(
       }
       network <- self$get_network()
 
-      run_pipe <- function(pipe, .input = NULL, depth = -1, input_run_id = NA_character_, ...) {
+      run_pipe <- function(
+        pipe, 
+        .input = NULL, 
+        depth = -1, 
+        input_run_id = NA_character_, 
+        run_results = list(),
+        lineage = character(),
+        ...
+      ) {
 
         run_id <- make_id()
         depth <- min(depth + 1, 6)
+        
         tryCatch({
           do.call(
             pipe$run, 
@@ -360,45 +389,63 @@ MaestroPipelineList <- R6::R6Class(
                 .input = .input, 
                 run_id = run_id, 
                 input_run_id = input_run_id,
+                depth = depth,
                 lineage = lineage
               )
             )
           )
         }, error = \(e) {
-          invisible()
+          return(pipe)
         })
+        
+        lineage <- append(lineage, pipe$get_pipe_name())
+        run_results <- append(run_results, pipe)
+        
         .input <- pipe$get_returns()
         out_names <- network$to[network$from == pipe$get_pipe_name()]
-        if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(invisible())
-        if (length(out_names) == 0) return(invisible())
-        lineage <<- append(lineage, pipe$get_pipe_name())
+        
+        if (pipe$get_status_chr() %in% c("Error", "Not Run")) {
+          return(run_results)
+        }
+        
+        if (length(out_names) == 0) return(run_results)
         
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
-          prepend <- paste0(rep("  ", times = depth), "|-")
-          run_pipe(
+          run_results <- run_pipe(
             pipe,
             .input = .input,
             depth = depth,
-            cli_prepend = cli::format_inline(prepend),
             run_id = run_id,
             input_run_id = run_id,
+            run_results = run_results,
             lineage = lineage
           )
         }
-      }
 
+        run_results
+      }
+      
       # Run the pipelines
-      lineage <- NULL
-      mapper_fun(
+      run_res <- mapper_fun(
         pipes_to_run,
         purrr::safely(~{
-          run_pipe(.x)
-          lineage <<- NULL
+          run_pipe(
+            .x, 
+            run_results = list(),
+            lineage = character()
+          )
         }, quiet = TRUE)
       )
-
-      invisible()
+      
+      purrr::map(run_res, "result") |> 
+        purrr::list_flatten()
+    },
+    
+    #' @description
+    #' Resets the run time attributes
+    reset_pipelines = function() {
+      purrr::walk(self$MaestroPipelines, ~.x$reset_run_time_attributes())
     }
   ),
 
