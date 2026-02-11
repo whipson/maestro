@@ -247,7 +247,11 @@ MaestroPipeline <- R6::R6Class(
       if (!is.null(private$run_if)) {
 
         if (!quiet) {
-          cli::cli_progress_step("? {cli::col_blue(pipe_name)}")
+          prepend <- ""
+          if (depth != 0) {
+            prepend <- cli::format_inline(rep("  ", times = depth), "|-")
+          }
+          cli::cli_progress_step("? {prepend}{cli::col_blue(pipe_name)}")
         }
 
         cond <- withCallingHandlers(
