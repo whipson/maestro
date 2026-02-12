@@ -110,11 +110,22 @@ MaestroPipeline <- R6::R6Class(
           )
         }
 
+        check_dt_days_out <- switch(
+          private$frequency_unit,
+          second = 3,
+          minute = 7,
+          hour = 60,
+          day = 120,
+          week = 240,
+          month = 365,
+          year = 730
+        )
+
         private$run_sequence <- get_pipeline_run_sequence(
           pipeline_n = private$frequency_n,
           pipeline_unit = private$frequency_unit,
           pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(365 * 2),
+          check_datetime = start_time_adj + lubridate::days(check_dt_days_out),
           pipeline_hours = private$hours,
           pipeline_days_of_week = private$days_of_week,
           pipeline_days_of_month = private$days_of_month,
