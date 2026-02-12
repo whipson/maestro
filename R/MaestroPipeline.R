@@ -83,49 +83,39 @@ MaestroPipeline <- R6::R6Class(
 
         # Update the transformed private attributes
         private$start_time_utc <- lubridate::with_tz(private$start_time, tz = "UTC")
-        private$frequency_n <- purrr::map_int(nunits, ~.x$n)
-        private$frequency_unit <- purrr::map_chr(nunits, ~.x$unit)
+        private$frequency_n <- purrr::map_int(nunits, "n")
+        private$frequency_unit <- purrr::map_chr(nunits, "unit")
         private$days_of_week <- days_of_week %n% 1:7
         private$days_of_month <- days_of_month %n% 1:31
 
-        # Create the run sequence
-        start_time_adj <- private$start_time
+        start_time_adj <- .prev_on_cycle(
+          private$start_time,
+          current = lubridate::now(), 
+          amount = private$frequency_n,
+          unit = private$frequency_unit
+        )
 
-        is_start_time_old <- tryCatch({
-          start_time_adj < (lubridate::now() - lubridate::days(365))
-        }, error = function(e) {
-          TRUE
-        })
-
-        if (is_start_time_old) {
-          floor_year <- lubridate::year(lubridate::now())
-          start_time_adj <- lubridate::make_datetime(
-            year = floor_year,
-            month = lubridate::month(private$start_time),
-            day = lubridate::day(private$start_time),
-            hour = lubridate::hour(private$start_time),
-            min = lubridate::minute(private$start_time),
-            sec = lubridate::second(private$start_time),
-            tz = private$tz
-          )
+        if (is.na(start_time_adj)) {
+          start_time_adj <- private$start_time
         }
 
-        # check_dt_days_out <- switch(
-        #   private$frequency_unit,
-        #   second = 3,
-        #   minute = 7,
-        #   hour = 60,
-        #   day = 120,
-        #   week = 240,
-        #   month = 365,
-        #   year = 730
-        # )
+        check_dt_days_out <- switch(
+          private$frequency_unit,
+          second = 3,
+          minute = 7,
+          hour = 60,
+          day = 120,
+          week = 240,
+          month = 365 * 2,
+          quarter = 365 * 4,
+          year = 365 * 10
+        )
 
         private$run_sequence <- get_pipeline_run_sequence(
           pipeline_n = private$frequency_n,
           pipeline_unit = private$frequency_unit,
           pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(2 * 365),
+          check_datetime = start_time_adj + lubridate::days(check_dt_days_out),
           pipeline_hours = private$hours,
           pipeline_days_of_week = private$days_of_week,
           pipeline_days_of_month = private$days_of_month,

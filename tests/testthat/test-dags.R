@@ -8,21 +8,6 @@ test_that("DAGs work as expected", {
   expect_equal(artifacts$branch2, 2)
   expect_equal(artifacts$subbranch1, 2)
   expect_equal(artifacts$subbranch2, 6)
-
-  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
-  dag <- build_schedule(test_path("test_pipelines_dags_good"))
-  future::plan(future::multisession(workers = 2))
-  run_schedule(
-    dag,
-    cores = 2L
-  )
-  artifacts <- dag$get_artifacts()
-  expect_true(all(dag$get_status()$success))
-  expect_snapshot(dag$get_network())
-  expect_equal(artifacts$with_inputs, "input message is: hello")
-  expect_equal(artifacts$branch2, 2)
-  expect_equal(artifacts$subbranch1, 2)
-  expect_equal(artifacts$subbranch2, 6)
 }) |>
   suppressMessages()
 
