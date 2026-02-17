@@ -333,3 +333,225 @@ make_id <- function(n = 6) {
 
   paste0(c(first, rest), collapse = "")
 }
+
+.prev_on_cycle <- function(start,
+                           current = Sys.time(),
+                           amount = 1L,
+                           unit = c(
+                             "second", "minute", "hour",
+                             "day", "week",
+                             "month", "year"
+                           )) {
+  unit <- match.arg(unit)
+
+  amount <- as.integer(amount)
+  if (is.na(amount) || amount <= 0L) {
+    stop("Internal error: `amount` must be a positive integer.")
+  }
+
+  start_is_date <- inherits(start, "Date")
+  start_is_time <- inherits(start, "POSIXct")
+
+  if (!start_is_date && !start_is_time) {
+    stop("Internal error: `start` must be Date or POSIXct.")
+  }
+
+  # Coerce `current` to match `start` type
+  if (start_is_date) {
+    current <- as.Date(current)
+    start   <- as.Date(start)
+  } else {
+    tz <- attr(start, "tzone")
+    if (is.null(tz) || !nzchar(tz)) tz <- ""
+
+    current <- as.POSIXct(current, tz = tz)
+    start   <- as.POSIXct(start, tz = tz)
+  }
+
+  na_out <- function() {
+    if (start_is_date) as.Date(NA) else as.POSIXct(NA)
+  }
+
+  if (is.na(start) || is.na(current)) return(na_out())
+
+  if (current <= start) return(na_out())
+
+  .days_in_month <- function(year, month) {
+    y2 <- year + (month == 12L)
+    m2 <- if (month == 12L) 1L else month + 1L
+
+    first_this <- as.Date(sprintf("%04d-%02d-01", year, month))
+    first_next <- as.Date(sprintf("%04d-%02d-01", y2, m2))
+
+    as.integer(first_next - first_this)
+  }
+
+  .add_months_clamp_date <- function(date, n_months) {
+    y <- as.integer(format(date, "%Y"))
+    m <- as.integer(format(date, "%m"))
+    d <- as.integer(format(date, "%d"))
+
+    idx <- y * 12L + (m - 1L) + n_months
+    y2 <- idx %/% 12L
+    m2 <- idx %% 12L + 1L
+
+    dim <- .days_in_month(y2, m2)
+    d2 <- if (d > dim) dim else d
+
+    as.Date(sprintf("%04d-%02d-%02d", y2, m2, d2))
+  }
+
+  .add_years_clamp_date <- function(date, n_years) {
+    y <- as.integer(format(date, "%Y"))
+    m <- as.integer(format(date, "%m"))
+    d <- as.integer(format(date, "%d"))
+
+    y2 <- y + n_years
+    dim <- .days_in_month(y2, m)
+    d2 <- if (d > dim) dim else d
+
+    as.Date(sprintf("%04d-%02d-%02d", y2, m, d2))
+  }
+
+  .add_months_clamp_time <- function(ts, n_months) {
+    tz <- attr(ts, "tzone")
+    if (is.null(tz) || !nzchar(tz)) tz <- ""
+
+    lt <- as.POSIXlt(ts, tz = tz)
+
+    y <- lt$year + 1900L
+    m <- lt$mon + 1L
+    d <- lt$mday
+
+    idx <- y * 12L + (m - 1L) + n_months
+    y2 <- idx %/% 12L
+    m2 <- idx %% 12L + 1L
+
+    dim <- .days_in_month(y2, m2)
+    d2 <- if (d > dim) dim else d
+
+    ISOdatetime(y2, m2, d2, lt$hour, lt$min, lt$sec, tz = tz)
+  }
+
+  .add_years_clamp_time <- function(ts, n_years) {
+    tz <- attr(ts, "tzone")
+    if (is.null(tz) || !nzchar(tz)) tz <- ""
+
+    lt <- as.POSIXlt(ts, tz = tz)
+
+    y2 <- (lt$year + 1900L) + n_years
+    m  <- lt$mon + 1L
+    d  <- lt$mday
+
+    dim <- .days_in_month(y2, m)
+    d2 <- if (d > dim) dim else d
+
+    ISOdatetime(y2, m, d2, lt$hour, lt$min, lt$sec, tz = tz)
+  }
+
+  if (start_is_date) {
+    if (unit %in% c("second", "minute", "hour")) {
+      stop("Internal error: sub-day units are not supported for Date inputs.")
+    }
+
+    if (unit %in% c("day", "week")) {
+      step_days <- if (unit == "week") amount * 7L else amount
+      delta_days <- as.integer(current - start)
+      k <- (delta_days - 1L) %/% step_days
+      if (k < 0L) return(na_out())
+      return(start + k * step_days)
+    }
+
+    sy <- as.integer(format(start, "%Y"))
+    sm <- as.integer(format(start, "%m"))
+    cy <- as.integer(format(current, "%Y"))
+    cm <- as.integer(format(current, "%m"))
+
+    if (unit == "month") {
+      start_idx <- sy * 12L + (sm - 1L)
+      curr_idx  <- cy * 12L + (cm - 1L)
+
+      delta_months <- curr_idx - start_idx
+      n <- (delta_months %/% amount) * amount
+
+      cand <- .add_months_clamp_date(start, n)
+
+      if (cand >= current) {
+        n2 <- n - amount
+        if (n2 < 0L) return(na_out())
+        cand <- .add_months_clamp_date(start, n2)
+      }
+
+      return(cand)
+    }
+
+    delta_years <- cy - sy
+    n <- (delta_years %/% amount) * amount
+
+    cand <- .add_years_clamp_date(start, n)
+
+    if (cand >= current) {
+      n2 <- n - amount
+      if (n2 < 0L) return(na_out())
+      cand <- .add_years_clamp_date(start, n2)
+    }
+
+    return(cand)
+  }
+
+  # POSIXct branch
+  if (unit %in% c("second", "minute", "hour", "day", "week")) {
+    step_secs <- switch(
+      unit,
+      second = amount,
+      minute = amount * 60,
+      hour   = amount * 3600,
+      day    = amount * 86400,
+      week   = amount * 7 * 86400
+    )
+
+    delta_secs <- as.numeric(difftime(current, start, units = "secs"))
+
+    # epsilon avoids returning `current` if it lies exactly on the cycle
+    k <- floor((delta_secs - 1e-9) / step_secs)
+    if (is.na(k) || k < 0) return(na_out())
+
+    return(start + k * step_secs)
+  }
+
+  sy <- as.integer(format(start, "%Y"))
+  sm <- as.integer(format(start, "%m"))
+  cy <- as.integer(format(current, "%Y"))
+  cm <- as.integer(format(current, "%m"))
+
+  if (unit == "month") {
+    start_idx <- sy * 12L + (sm - 1L)
+    curr_idx  <- cy * 12L + (cm - 1L)
+
+    delta_months <- curr_idx - start_idx
+    n <- (delta_months %/% amount) * amount
+
+    cand <- .add_months_clamp_time(start, n)
+
+    if (cand >= current) {
+      n2 <- n - amount
+      if (n2 < 0L) return(na_out())
+      cand <- .add_months_clamp_time(start, n2)
+    }
+
+    return(cand)
+  }
+
+  delta_years <- cy - sy
+  n <- (delta_years %/% amount) * amount
+
+  cand <- .add_years_clamp_time(start, n)
+
+  if (cand >= current) {
+    n2 <- n - amount
+    if (n2 < 0L) return(na_out())
+    cand <- .add_years_clamp_time(start, n2)
+  }
+
+  cand
+}

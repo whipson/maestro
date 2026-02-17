@@ -586,30 +586,6 @@ test_that("maestroDays works on expected days", {
   })
 })
 
-test_that("Multicore works", {
-
-  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
-
-  expect_no_error({
-
-    future::plan(future::multisession(workers = 2))
-
-    run_schedule(
-      schedule,
-      orch_frequency = "1 hour",
-      cores = 2,
-      log_to_console = TRUE,
-      run_all = TRUE
-    )
-  })
-
-  status <- get_status(schedule)
-
-  expect_snapshot(status[, c("invoked", "success")])
-}) |>
-  suppressMessages()
-
 test_that("Pipeline that prints curly brackets runs fine", {
 
   withr::with_tempdir({

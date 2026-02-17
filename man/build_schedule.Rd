@@ -25,6 +25,11 @@ is a pipeline name and its scheduling parameters such as its frequency.
 
 The schedule table is mostly intended to be used by \code{run_schedule()} immediately.
 In other words, it is not recommended to make changes to it.
+
+It is recommended to build the schedule from scratch on each run of the orchestrator
+script rather than reusing or caching the schedule object. This is because the
+schedule object precomputes and stores a limited set of future run times for each
+pipeline.
 }
 \examples{
 
