@@ -84,6 +84,10 @@ to determine which pipelines are to run and when. Each row in a schedule table
 is a pipeline name and its scheduling parameters such as its frequency.</p>
 <p>The schedule table is mostly intended to be used by <code><a href="run_schedule.html">run_schedule()</a></code> immediately.
 In other words, it is not recommended to make changes to it.</p>
+<p>It is recommended to build the schedule from scratch on each run of the orchestrator
+script rather than reusing or caching the schedule object. This is because the
+schedule object precomputes and stores a limited set of future run times for each
+pipeline.</p>
     </div>
 
     <div class="section level2">

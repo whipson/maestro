@@ -6,6 +6,14 @@
 
 - Log timestamps now use a %Y-%m-%d %H:%M:%S format.
 
+- Some efficiency improvements to
+  [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+  particularly for high frequency pipelines.
+
+- Console output for conditional pipelines now uses the `(?)` symbol
+  after the pipeline name instead of before it to help with alignment of
+  DAG tree representation.
+
 #### Bug fixes
 
 - Running in multicore (i.e., specifying `cores > 1` in
