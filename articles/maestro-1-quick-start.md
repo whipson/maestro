@@ -148,11 +148,11 @@ output <- run_schedule(
 
     ℹ 1 script successfully parsed                                                  
                                                                                     
-    ── [2026-02-18 15:21:23]                                                        
+    ── [2026-02-18 15:24:12]                                                        
     Running pipelines ▶                                                             
                                                                                     
-    ── [2026-02-18 15:21:23]                                                        
-    Pipeline execution completed ■ | 0.022 sec elapsed                              
+    ── [2026-02-18 15:24:12]                                                        
+    Pipeline execution completed ■ | 0.02 sec elapsed                               
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     

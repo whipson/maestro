@@ -77,12 +77,12 @@ status <- run_schedule(
 
     ℹ 1 script successfully parsed
 
-    ── [2026-02-18 15:21:36]
+    ── [2026-02-18 15:24:23]
     Running pipelines ▶
-    ✔ daily_example [41ms]
+    ✔ daily_example [37ms]
 
-    ── [2026-02-18 15:21:36]
-    Pipeline execution completed ■ | 0.083 sec elapsed
+    ── [2026-02-18 15:24:23]
+    Pipeline execution completed ■ | 0.073 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -105,10 +105,10 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-02-18 15:21:37]
+    ── [2026-02-18 15:24:23]
     Running pipelines ▶
 
-    ── [2026-02-18 15:21:37]
+    ── [2026-02-18 15:24:23]
     Pipeline execution completed ■ | 0.001 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
