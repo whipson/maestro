@@ -4,22 +4,18 @@
 \alias{cache_schedule}
 \title{Save a schedule to a cache file}
 \usage{
-cache_schedule(schedule, path = ".maestro/schedule.rds")
+cache_schedule(schedule)
 }
 \arguments{
 \item{schedule}{object of type \code{MaestroSchedule}}
-
-\item{path}{file path for the \code{.rds} cache. Defaults to
-\code{.maestro/schedule.rds} in the current working directory. The directory
-will be created if it does not already exist.}
 }
 \value{
-\code{path} (invisibly)
+path to the cache file (invisibly)
 }
 \description{
 Serializes a \code{MaestroSchedule} object to an \code{.rds} file so it can be
-reloaded quickly by \code{build_schedule(from_cache = ...)} without re-parsing
-pipeline scripts.
+reloaded quickly by
+\code{build_schedule(from_cache = TRUE)} without re-parsing pipeline scripts.
 }
 \details{
 The intended workflow is:
@@ -27,7 +23,7 @@ The intended workflow is:
 \item On first run (or after any pipeline configuration change), call
 \code{build_schedule()} followed by \code{cache_schedule()}.
 \item On subsequent runs with no configuration changes, call
-\code{build_schedule(from_cache = "<path>")} to skip tag parsing and only
+\code{build_schedule(from_cache = TRUE)} to skip tag parsing and only
 refresh the run sequences.
 }
 
@@ -51,6 +47,6 @@ if (interactive()) {
   cache_schedule(schedule)
 
   # Later, load the cached schedule (only safe if no pipeline config has changed)
-  schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+  schedule <- build_schedule(from_cache = TRUE)
 }
 }

@@ -6,11 +6,11 @@
 
 ### New features
 
-- New `cache_schedule()` function to persist a `MaestroSchedule` to an `.rds` file on disk.
+- New `cache_schedule()` function to persist a `MaestroSchedule` to `.maestro/schedule.rds`.
 
 - New `refresh_schedule()` function to update the run sequences of all pipelines in an existing schedule without re-parsing pipeline scripts. Useful for long-running processes that hold a schedule object over extended periods.
 
-- `build_schedule()` gains a `from_cache` argument. When supplied a path to a cached schedule (created by `cache_schedule()`), tag parsing is skipped entirely and the schedule is loaded directly from the `.rds` file with run sequences refreshed automatically. This can significantly reduce startup time for projects with many pipelines.
+- `build_schedule()` gains a `from_cache` argument. When `TRUE`, the schedule is loaded from `.maestro/schedule.rds` (written by `cache_schedule()`) instead of parsing pipeline scripts, with run sequences refreshed automatically. This can significantly reduce startup time for projects with many pipelines.
 
   ```r
   # First run: build from scripts and cache
@@ -18,7 +18,7 @@
   cache_schedule(schedule)
 
   # Subsequent runs: load from cache (fast)
-  schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+  schedule <- build_schedule(from_cache = TRUE)
   ```
 
 ### Minor changes

@@ -4,16 +4,15 @@
 \alias{build_schedule}
 \title{Build a schedule table}
 \usage{
-build_schedule(pipeline_dir = "./pipelines", from_cache = NULL, quiet = FALSE)
+build_schedule(pipeline_dir = "./pipelines", from_cache = FALSE, quiet = FALSE)
 }
 \arguments{
 \item{pipeline_dir}{path to directory containing the pipeline scripts}
 
-\item{from_cache}{path to a cached schedule \code{.rds} file created by
-\code{cache_schedule()}. When supplied, \code{pipeline_dir} is ignored and the
-schedule is loaded from the cache with run sequences refreshed automatically.
-The cache must be regenerated whenever pipeline scripts or tags change.
-Set to \code{NULL} (default) to build from scripts as usual.}
+\item{from_cache}{if \code{TRUE}, load the schedule from \code{.maestro/schedule.rds}
+instead of parsing pipeline scripts. Run sequences are refreshed automatically.
+The cache must be regenerated (via \code{build_schedule()} + \code{cache_schedule()})
+whenever pipeline scripts or tags change. Default is \code{FALSE}.}
 
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
@@ -34,16 +33,17 @@ In other words, it is not recommended to make changes to it.
 \subsection{Caching}{
 
 For large projects, parsing pipeline scripts on every orchestrator run can be slow.
-Use \code{cache_schedule()} to persist a built schedule to disk and \code{from_cache} to reload
-it on subsequent runs. The run sequences are automatically refreshed when loading from
-cache—tag parsing is skipped entirely.
+Use \code{cache_schedule()} to persist a built schedule to disk and \code{from_cache = TRUE}
+to reload it on subsequent runs. The cache is always read from and written to
+\code{.maestro/schedule.rds} in the current working directory. Run sequences are
+automatically refreshed when loading from cache - tag parsing is skipped entirely.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# First run: build from scripts and cache the result
 schedule <- build_schedule("pipelines/")
 cache_schedule(schedule)
 
 # Subsequent runs: load from cache (fast)
-schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+schedule <- build_schedule(from_cache = TRUE)
 }\if{html}{\out{</div>}}
 
 \strong{Important:} the cache is a snapshot of the schedule at the time it was built.
@@ -55,7 +55,7 @@ the following change:
 \item A pipeline script is \strong{moved} to a different location
 }
 
-Only the run sequences (future scheduled datetimes) are refreshed from cache—all
+Only the run sequences (future scheduled datetimes) are refreshed from cache - all
 pipeline configuration comes from the cached snapshot. If the cache is stale,
 those changes will be silently ignored.
 }

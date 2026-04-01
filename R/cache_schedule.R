@@ -1,14 +1,14 @@
 #' Save a schedule to a cache file
 #'
 #' Serializes a `MaestroSchedule` object to an `.rds` file so it can be
-#' reloaded quickly by `build_schedule(from_cache = ...)` without re-parsing
-#' pipeline scripts.
+#' reloaded quickly by
+#' `build_schedule(from_cache = TRUE)` without re-parsing pipeline scripts.
 #'
 #' The intended workflow is:
 #' 1. On first run (or after any pipeline configuration change), call
 #'    `build_schedule()` followed by `cache_schedule()`.
 #' 2. On subsequent runs with no configuration changes, call
-#'    `build_schedule(from_cache = "<path>")` to skip tag parsing and only
+#'    `build_schedule(from_cache = TRUE)` to skip tag parsing and only
 #'    refresh the run sequences.
 #'
 #' **The cache must be regenerated** (by calling `build_schedule()` +
@@ -22,11 +22,8 @@
 #' track changes to pipeline scripts automatically.
 #'
 #' @param schedule object of type `MaestroSchedule`
-#' @param path file path for the `.rds` cache. Defaults to
-#'   `.maestro/schedule.rds` in the current working directory. The directory
-#'   will be created if it does not already exist.
 #'
-#' @return `path` (invisibly)
+#' @return path to the cache file (invisibly)
 #' @export
 #' @examples
 #' if (interactive()) {
@@ -37,9 +34,9 @@
 #'   cache_schedule(schedule)
 #'
 #'   # Later, load the cached schedule (only safe if no pipeline config has changed)
-#'   schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+#'   schedule <- build_schedule(from_cache = TRUE)
 #' }
-cache_schedule <- function(schedule, path = ".maestro/schedule.rds") {
+cache_schedule <- function(schedule) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -51,9 +48,7 @@ cache_schedule <- function(schedule, path = ".maestro/schedule.rds") {
     )
   }
 
-  if (!rlang::is_scalar_character(path)) {
-    cli::cli_abort("`path` must be a single character string.", call = rlang::caller_env())
-  }
+  path <- ".maestro/schedule.rds"
 
   dir <- dirname(path)
   if (!dir.exists(dir)) {

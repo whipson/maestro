@@ -13,9 +13,10 @@
 #' ## Caching
 #'
 #' For large projects, parsing pipeline scripts on every orchestrator run can be slow.
-#' Use `cache_schedule()` to persist a built schedule to disk and `from_cache` to reload
-#' it on subsequent runs. The run sequences are automatically refreshed when loading from
-#' cache—tag parsing is skipped entirely.
+#' Use `cache_schedule()` to persist a built schedule to disk and `from_cache = TRUE`
+#' to reload it on subsequent runs. The cache is always read from and written to
+#' `.maestro/schedule.rds` in the current working directory. Run sequences are
+#' automatically refreshed when loading from cache - tag parsing is skipped entirely.
 #'
 #' ```r
 #' # First run: build from scripts and cache the result
@@ -23,7 +24,7 @@
 #' cache_schedule(schedule)
 #'
 #' # Subsequent runs: load from cache (fast)
-#' schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+#' schedule <- build_schedule(from_cache = TRUE)
 #' ```
 #'
 #' **Important:** the cache is a snapshot of the schedule at the time it was built.
@@ -34,16 +35,15 @@
 #' - Any `@maestro*` tag is **modified** (frequency, start time, inputs, flags, etc.)
 #' - A pipeline script is **moved** to a different location
 #'
-#' Only the run sequences (future scheduled datetimes) are refreshed from cache—all
+#' Only the run sequences (future scheduled datetimes) are refreshed from cache - all
 #' pipeline configuration comes from the cached snapshot. If the cache is stale,
 #' those changes will be silently ignored.
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
-#' @param from_cache path to a cached schedule `.rds` file created by
-#'   `cache_schedule()`. When supplied, `pipeline_dir` is ignored and the
-#'   schedule is loaded from the cache with run sequences refreshed automatically.
-#'   The cache must be regenerated whenever pipeline scripts or tags change.
-#'   Set to `NULL` (default) to build from scripts as usual.
+#' @param from_cache if `TRUE`, load the schedule from `.maestro/schedule.rds`
+#'   instead of parsing pipeline scripts. Run sequences are refreshed automatically.
+#'   The cache must be regenerated (via `build_schedule()` + `cache_schedule()`)
+#'   whenever pipeline scripts or tags change. Default is `FALSE`.
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return MaestroSchedule
@@ -58,30 +58,28 @@
 #'   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #'   build_schedule(pipeline_dir = pipeline_dir)
 #' }
-build_schedule <- function(pipeline_dir = "./pipelines", from_cache = NULL, quiet = FALSE) {
+build_schedule <- function(pipeline_dir = "./pipelines", from_cache = FALSE, quiet = FALSE) {
+
+  cache_path <- ".maestro/schedule.rds"
 
   # --- Cache path: skip parsing entirely ---
-  if (!is.null(from_cache)) {
+  if (isTRUE(from_cache)) {
 
-    if (!rlang::is_scalar_character(from_cache)) {
+    if (!file.exists(cache_path)) {
       cli::cli_abort(
-        "`from_cache` must be a single character string (a path to an `.rds` file).",
-        call = rlang::caller_env()
-      )
-    }
-
-    if (!file.exists(from_cache)) {
-      cli::cli_abort(
-        "Cache file {.file {from_cache}} does not exist.",
+        c(
+          "Cache file {.file {cache_path}} does not exist.",
+          "i" = "Run {.fn build_schedule} + {.fn cache_schedule} first to create it."
+        ),
         call = rlang::caller_env()
       )
     }
 
     schedule <- tryCatch(
-      readRDS(from_cache),
+      readRDS(cache_path),
       error = function(e) {
         cli::cli_abort(
-          "Could not read cache file {.file {from_cache}}: {e$message}",
+          "Could not read cache file {.file {cache_path}}: {e$message}",
           call = rlang::caller_env()
         )
       }
@@ -90,7 +88,7 @@ build_schedule <- function(pipeline_dir = "./pipelines", from_cache = NULL, quie
     if (!"MaestroSchedule" %in% class(schedule)) {
       cli::cli_abort(
         c(
-          "The object at {.file {from_cache}} is not a {.cls MaestroSchedule}.",
+          "The object at {.file {cache_path}} is not a {.cls MaestroSchedule}.",
           "i" = "Use {.fn cache_schedule} to create a valid cache file."
         ),
         call = rlang::caller_env()
@@ -116,7 +114,7 @@ build_schedule <- function(pipeline_dir = "./pipelines", from_cache = NULL, quie
   )
 
   # Error if the directory has no .R scripts
-  if(length(pipelines) == 0) {
+  if (length(pipelines) == 0) {
     cli::cli_inform(
       "No R scripts in {pipeline_dir}."
     )

@@ -54,12 +54,11 @@ test_that("cache_schedule writes an rds and build_schedule from_cache round-trip
   good_pipelines <- normalizePath(test_path("test_pipelines_parse_all_good"))
   withr::with_tempdir({
     schedule <- build_schedule(good_pipelines, quiet = TRUE)
-    cache_path <- file.path(tempdir(), "schedule.rds")
-    cache_schedule(schedule, path = cache_path) |> suppressMessages()
+    cache_schedule(schedule) |> suppressMessages()
 
-    expect_true(file.exists(cache_path))
+    expect_true(file.exists(".maestro/schedule.rds"))
 
-    cached <- build_schedule(from_cache = cache_path, quiet = TRUE)
+    cached <- build_schedule(from_cache = TRUE, quiet = TRUE)
     expect_s3_class(cached, "MaestroSchedule")
     expect_equal(
       cached$PipelineList$get_pipe_names(),
@@ -69,19 +68,21 @@ test_that("cache_schedule writes an rds and build_schedule from_cache round-trip
 }) |>
   suppressMessages()
 
-test_that("build_schedule from_cache errors when file does not exist", {
-  expect_error(
-    build_schedule(from_cache = tempfile(fileext = ".rds")),
-    regexp = "does not exist"
-  )
+test_that("build_schedule from_cache errors when cache file does not exist", {
+  withr::with_tempdir({
+    expect_error(
+      build_schedule(from_cache = TRUE),
+      regexp = "does not exist"
+    )
+  })
 })
 
 test_that("build_schedule from_cache errors when rds is not a MaestroSchedule", {
   withr::with_tempdir({
-    bad_path <- file.path(tempdir(), "bad.rds")
-    saveRDS(list(a = 1), bad_path)
+    dir.create(".maestro", recursive = TRUE)
+    saveRDS(list(a = 1), ".maestro/schedule.rds")
     expect_error(
-      build_schedule(from_cache = bad_path),
+      build_schedule(from_cache = TRUE),
       regexp = "MaestroSchedule"
     )
   })
@@ -108,13 +109,12 @@ test_that("refresh_schedule errors on non-MaestroSchedule input", {
   )
 })
 
-test_that("cache_schedule creates parent directory if needed", {
+test_that("cache_schedule creates .maestro directory if needed", {
   good_pipelines <- normalizePath(test_path("test_pipelines_parse_all_good"))
   withr::with_tempdir({
     schedule <- build_schedule(good_pipelines, quiet = TRUE)
-    nested_path <- file.path(tempdir(), "subdir", "nested", "schedule.rds")
-    cache_schedule(schedule, path = nested_path) |> suppressMessages()
-    expect_true(file.exists(nested_path))
+    cache_schedule(schedule) |> suppressMessages()
+    expect_true(file.exists(".maestro/schedule.rds"))
   })
 }) |>
   suppressMessages()
