@@ -1,3 +1,9 @@
+# maestro 1.1.0.9000
+
+### Deprecated functionality
+
+- `suggest_orch_frequency()` is deprecated with no replacement.
+
 # maestro 1.0.1
 
 ### Minor changes
