@@ -11,43 +11,25 @@ convert_to_seconds <- function(time_string) {
 
   stopifnot("Must be a single string" = length(time_string) == 1)
 
-  # Extract the number and the unit from the time string
-  matches <- regmatches(time_string, regexec("([0-9]+)\\s*(\\w+)", time_string))
-  number <- as.numeric(matches[[1]][2])
-  unit <- matches[[1]][3]
+  nunits <- parse_rounding_unit(time_string)
 
   # Define the conversion factors to seconds for each unit
-  conversion_factors <- list(
-    "sec" = 1,
-    "secs" = 1,
-    "second" = 1,
-    "seconds" = 1,
-    "min" = 60,
-    "mins" = 60,
-    "minute" = 60,
-    "minutes" = 60,
-    "hour" = 3600,
-    "hours" = 3600,
-    "day" = 86400,
-    "days" = 86400,
-    "week" = 604800,
-    "weeks" = 604800,
-    "month" = 2629800,
-    "months" = 2629800,
-    "quarter" = 7884000,
-    "quarters" = 7884000,
-    "year" = 31557600,
-    "years" = 31557600
+  conversion_factors <- c(
+    sec = 1, second = 1,
+    min = 60, minute = 60,
+    hour = 3600,
+    day = 86400,
+    week = 604800,
+    month = 2629800,
+    quarter = 7884000,
+    year = 31557600
   )
 
-  # Convert the time to seconds
-  if (!is.null(conversion_factors[[unit]])) {
-    seconds <- number * conversion_factors[[unit]]
-  } else {
+  if (!nunits$unit %in% names(conversion_factors)) {
     stop("Unknown time unit")
   }
 
-  seconds
+  nunits$n * conversion_factors[[nunits$unit]]
 }
 
 valid_units <- c(
@@ -226,24 +208,25 @@ is_valid_dag <- function(edges) {
   is_dag
 }
 
+.unit_order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
+
 standardize_units <- function(unit) {
   dplyr::case_match(
     unit,
-    c("second", "seconds", "sec", "secs") ~ "second",
-    c("minute", "minutes", "min", "mins") ~ "minute",
-    c("hour", "hours") ~ "hour",
-    c("day", "days") ~ "day",
-    c("week", "weeks") ~ "week",
-    c("month", "months") ~ "month",
-    c("quarter", "quarters") ~ "quarter",
-    c("year", "years") ~ "year"
+    c("second", "seconds", "sec", "secs") ~ .unit_order[1],
+    c("minute", "minutes", "min", "mins") ~ .unit_order[2],
+    c("hour", "hours")                    ~ .unit_order[3],
+    c("day", "days")                      ~ .unit_order[4],
+    c("week", "weeks")                    ~ .unit_order[5],
+    c("month", "months")                  ~ .unit_order[6],
+    c("quarter", "quarters")              ~ .unit_order[7],
+    c("year", "years")                    ~ .unit_order[8]
   )
 }
 
 units_lt_units <- function(u1, u2) {
-  order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
-  u1_ord <- factor(u1, levels = order, ordered = TRUE)
-  u2_ord <- factor(u2, levels = order, ordered = TRUE)
+  u1_ord <- factor(u1, levels = .unit_order, ordered = TRUE)
+  u2_ord <- factor(u2, levels = .unit_order, ordered = TRUE)
   u1_ord < u2_ord
 }
 
