@@ -261,26 +261,28 @@ MaestroPipeline <- R6::R6Class(
       logger::log_layout(maestro_logger, namespace = pipe_name)
 
       # Create a context (environment) for running the pipeline
-      maestro_context <- new.env()
-
-      # Source the script
-      withCallingHandlers(
-        source(script_path, local = maestro_context),
-        error = private$error_handler,
-        warning = private$warning_handler,
-        message = private$message_handler
-      )
+      if (is.null(private$sourced_context)) {
+        maestro_context <- new.env()
+        # Source the script
+        withCallingHandlers(
+          source(script_path, local = maestro_context),
+          error = private$error_handler,
+          warning = private$warning_handler,
+          message = private$message_handler
+        )
+        private$sourced_context <- maestro_context
+      } else {
+        maestro_context <- private$sourced_context
+      }
 
       resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
 
+      prepend <- if (depth != 0) cli::format_inline(rep("  ", times = depth), "|-") else ""
+
       do_run <- TRUE
       if (!is.null(private$run_if)) {
         if (!quiet) {
-          prepend <- ""
-          if (depth != 0) {
-            prepend <- cli::format_inline(rep("  ", times = depth), "|-")
-          }
           cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)} (?)")
         }
 
@@ -324,10 +326,6 @@ MaestroPipeline <- R6::R6Class(
       private$run_time_start <- run_time_start
 
       if (!quiet) {
-        prepend <- ""
-        if (depth != 0) {
-          prepend <- cli::format_inline(rep("  ", times = depth), "|-")
-        }
         cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}")
       }
 
@@ -663,6 +661,7 @@ MaestroPipeline <- R6::R6Class(
     errors = NULL,
     warnings = NULL,
     messages = NULL,
+    sourced_context = NULL,
 
     escape_for_glue = function(msg) {
       msg <- trimws(msg)
