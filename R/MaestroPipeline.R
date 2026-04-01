@@ -378,6 +378,13 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the frequency n and unit as a list
+    #' @return list with n and unit
+    get_frequency_nunits = function() {
+      list(n = private$frequency_n, unit = private$frequency_unit)
+    },
+
+    #' @description
     #' Get the schedule as a data.frame
     #' @return data.frame
     get_schedule = function() {

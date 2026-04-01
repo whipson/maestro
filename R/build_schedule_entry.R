@@ -77,55 +77,6 @@ build_schedule_entry <- function(script_path) {
     )
   }
 
-  # Checks on pipelines with maestroInput
-  withCallingHandlers({
-    purrr::walk2(tag_list, maestro_tag_vals, ~{
-      if (!all(is.na(.y$inputs))) {
-
-        pipe_name <- .x$object$topic
-        inputs <- roxygen2::block_get_tag_value(.x, "maestroInputs")
-        if (pipe_name %in% inputs) {
-          cli::cli_abort(
-            c("`@maestroInput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
-              contains an input with the same name."),
-            call = NULL
-          )
-        }
-
-        params <- roxygen2::block_get_tag_value(.x, ".formals")
-        if (!".input" %in% params) {
-          cli::cli_abort(
-            c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
-              "i" = "Example: {.code pipeline <- function(.input) ...}"),
-            call = NULL
-          )
-        }
-      }
-    })
-  }, purrr_error_indexed = function(err) {
-    rlang::cnd_signal(err$parent)
-  })
-
-  # Checks on pipelines with maestroOutput
-  withCallingHandlers({
-    purrr::walk2(tag_list, maestro_tag_vals, ~{
-      if (!all(is.na(.y$outputs))) {
-
-        pipe_name <- .x$object$topic
-        outputs <- roxygen2::block_get_tag_value(.x, "maestroOutputs")
-        if (pipe_name %in% outputs) {
-          cli::cli_abort(
-            c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
-              contains an output with the same name."),
-            call = NULL
-          )
-        }
-      }
-    })
-  }, purrr_error_indexed = function(err) {
-    rlang::cnd_signal(err$parent)
-  })
-
   # Get pipe names from the function name and check
   withCallingHandlers({
     pipe_names <- purrr::imap(tag_list, ~{
@@ -154,7 +105,40 @@ build_schedule_entry <- function(script_path) {
   maestro_pipeline_list <- MaestroPipelineList$new()
 
   withCallingHandlers({
-    pipelines <- purrr::map2(pipe_names, maestro_tag_vals, ~{
+    pipelines <- purrr::pmap(list(tag_list, pipe_names, maestro_tag_vals), ~{
+      block  <- ..1
+      .x <- ..2
+      .y <- ..3
+
+      # Validate inputs
+      if (!all(is.na(.y$inputs))) {
+        if (.x %in% .y$inputs) {
+          cli::cli_abort(
+            c("`@maestroInput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
+              contains an input with the same name."),
+            call = NULL
+          )
+        }
+        params <- roxygen2::block_get_tag_value(block, ".formals")
+        if (!".input" %in% params) {
+          cli::cli_abort(
+            c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
+              "i" = "Example: {.code pipeline <- function(.input) ...}"),
+            call = NULL
+          )
+        }
+      }
+
+      # Validate outputs
+      if (!all(is.na(.y$outputs))) {
+        if (.x %in% .y$outputs) {
+          cli::cli_abort(
+            c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
+              contains an output with the same name."),
+            call = NULL
+          )
+        }
+      }
 
       freq_nunits <- if (!is.na(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
 
@@ -197,10 +181,8 @@ build_schedule_entry <- function(script_path) {
 
       tz <- .y$tz %n% "UTC"
 
-      # Find the format for the start time
-      start_time_fmt <- lubridate::guess_formats(.y$start_time, c("%Y-%m-%d %H:%M:%S", "%H:%M:%S"))
-
-      if ("HMS" %in% names(start_time_fmt)) {
+      # Find the format for the start time using nchar instead of guess_formats
+      if (!is.na(.y$start_time) && nchar(.y$start_time) == 8) {
         if (!is.null(freq_nunits)) {
           if (freq_nunits$n > 1 && freq_nunits$unit == "day") {
             cli::cli_abort(

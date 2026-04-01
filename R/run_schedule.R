@@ -117,24 +117,26 @@ run_schedule <- function(
   orch_nunits <- validate_orch_frequency(orch_frequency)
 
   # Warn if running the orchestrator less frequent than the highest frequency pipeline
-  sch <- get_schedule(schedule)
-
-  if (nrow(sch) > 0 && !run_all) {
-    sch_nunits <- sch |>
-      dplyr::select(pipe_name, frequency_n, frequency_unit) |>
-      dplyr::filter(!is.na(frequency_n))
-    sch_units_lt_orch_unit <- units_lt_units(sch_nunits$frequency_unit, standardize_units(orch_nunits$unit))
-    if (any(sch_units_lt_orch_unit)) {
-      which_sch_nunits_lt_orch_unit <- sch_nunits[sch_units_lt_orch_unit,]
-      offending_pipe_names <- which_sch_nunits_lt_orch_unit$pipe_name
-      offending_pipe_units <- which_sch_nunits_lt_orch_unit$frequency_unit
-      cli::cli_warn(
-        c(
-          "Pipeline{?s} {.pkg {offending_pipe_names}} {?has/have} {? a frequency/frequencies} higher (i.e., more often)
+  pipelines <- schedule$PipelineList$MaestroPipelines
+  if (length(pipelines) > 0 && !run_all) {
+    pipe_names <- purrr::map_chr(pipelines, ~.x$get_pipe_name())
+    freq_nunits <- purrr::map(pipelines, ~.x$get_frequency_nunits())
+    frequency_n <- purrr::map_int(freq_nunits, "n")
+    frequency_unit <- purrr::map_chr(freq_nunits, "unit")
+    not_na <- !is.na(frequency_n)
+    if (any(not_na)) {
+      sch_units_lt_orch_unit <- units_lt_units(frequency_unit[not_na], standardize_units(orch_nunits$unit))
+      if (any(sch_units_lt_orch_unit)) {
+        offending_pipe_names <- pipe_names[not_na][sch_units_lt_orch_unit]
+        offending_pipe_units <- frequency_unit[not_na][sch_units_lt_orch_unit]
+        cli::cli_warn(
+          c(
+            "Pipeline{?s} {.pkg {offending_pipe_names}} {?has/have} {? a frequency/frequencies} higher (i.e., more often)
         than the frequency of the orchestrator. This means the pipeline{?s} will not run as frequently as specified.",
-          "i" = "Consider increasing the frequency of the orchestrator or decreasing the pipeline frequency."
+            "i" = "Consider increasing the frequency of the orchestrator or decreasing the pipeline frequency."
+          )
         )
-      )
+      }
     }
   }
 
