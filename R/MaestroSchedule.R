@@ -29,9 +29,8 @@ MaestroSchedule <- R6::R6Class(
         purrr::list_c()
       if (length(priorities) == 0) priorities <- list()
       pipeline_list <- pipeline_list[order(priorities)]
-      for (pipeline in pipeline_list) {
-        self$PipelineList$add_pipelines(pipeline)
-      }
+      self$PipelineList$MaestroPipelines <- pipeline_list
+      self$PipelineList$n_pipelines <- length(pipeline_list)
     },
 
     #' @description
