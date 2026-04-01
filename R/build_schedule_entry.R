@@ -154,7 +154,7 @@ build_schedule_entry <- function(script_path) {
   maestro_pipeline_list <- MaestroPipelineList$new()
 
   withCallingHandlers({
-    purrr::walk2(pipe_names, maestro_tag_vals, ~{
+    pipelines <- purrr::map2(pipe_names, maestro_tag_vals, ~{
 
       freq_nunits <- if (!is.na(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
 
@@ -223,7 +223,7 @@ build_schedule_entry <- function(script_path) {
       }
 
       # Create the new pipeline
-      pipeline <- MaestroPipeline$new(
+      MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
@@ -240,13 +240,13 @@ build_schedule_entry <- function(script_path) {
         flags = .y$flags %n% character(),
         run_if = .y$run_if %n% NULL
       )
-
-      # Append to the list of pipelines
-      maestro_pipeline_list$add_pipelines(pipeline)
     })
   }, purrr_error_indexed = function(err) {
     rlang::cnd_signal(err$parent)
   })
+
+  maestro_pipeline_list$MaestroPipelines <- pipelines
+  maestro_pipeline_list$n_pipelines <- length(pipelines)
 
   maestro_pipeline_list
 }
