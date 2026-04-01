@@ -210,18 +210,19 @@ is_valid_dag <- function(edges) {
 
 .unit_order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
 
+.unit_aliases <- c(
+  seconds = "second", sec = "second", secs = "second",
+  minutes = "minute", min = "minute", mins = "minute",
+  hours = "hour",
+  days = "day",
+  weeks = "week",
+  months = "month",
+  quarters = "quarter",
+  years = "year"
+)
+
 standardize_units <- function(unit) {
-  dplyr::case_match(
-    unit,
-    c("second", "seconds", "sec", "secs") ~ .unit_order[1],
-    c("minute", "minutes", "min", "mins") ~ .unit_order[2],
-    c("hour", "hours")                    ~ .unit_order[3],
-    c("day", "days")                      ~ .unit_order[4],
-    c("week", "weeks")                    ~ .unit_order[5],
-    c("month", "months")                  ~ .unit_order[6],
-    c("quarter", "quarters")              ~ .unit_order[7],
-    c("year", "years")                    ~ .unit_order[8]
-  )
+  .unit_aliases[unit] %n% unit
 }
 
 units_lt_units <- function(u1, u2) {

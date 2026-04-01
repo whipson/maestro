@@ -39,8 +39,11 @@ MaestroPipeline <- R6::R6Class(
       outputs = NULL,
       priority = Inf,
       flags = c(),
-      run_if = NULL
+      run_if = NULL,
+      nunits = NULL
     ) {
+      # ...existing code...
+
       # Update the private attributes
       private$script_path <- script_path
       private$pipe_name <- pipe_name
@@ -63,24 +66,29 @@ MaestroPipeline <- R6::R6Class(
         private$hours <- hours
         private$months <- months
 
-        # Create transformed private attributes
         # Create units and n
-        withCallingHandlers(
-          {
-            nunits <- purrr::map(
-              frequency,
-              purrr::possibly(
-                ~ {
-                  parse_rounding_unit(.x)
-                },
-                otherwise = list(n = NA, unit = NA)
+        if (is.null(nunits)) {
+          withCallingHandlers(
+            {
+              nunits <- purrr::map(
+                frequency,
+                purrr::possibly(
+                  ~ {
+                    parse_rounding_unit(.x)
+                  },
+                  otherwise = list(n = NA, unit = NA)
+                )
               )
-            )
-          },
-          purrr_error_indexed = function(err) {
-            rlang::cnd_signal(err$parent)
-          }
-        )
+            },
+            purrr_error_indexed = function(err) {
+              rlang::cnd_signal(err$parent)
+            }
+          )
+        } else {
+          nunits <- list(nunits)
+        }
+
+        # ...existing code...
 
         # Create days_of_week and days_of_month from days
         days_of_week <- purrr::map_if(
