@@ -15,6 +15,10 @@
 #' @return frequency string
 #' @export
 #'
+#' @keywords internal
+#'
+#' @deprecated
+#'
 #' @examples
 #'
 #' if (interactive()) {
@@ -24,6 +28,8 @@
 #'   suggest_orch_frequency(schedule)
 #' }
 suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzone = "UTC")) {
+
+  lifecycle::deprecate_warn("1.1.0", "suggest_orch_frequency()")
 
   # Check that schedule is a MaestroSchedule
   if (!"MaestroSchedule" %in% class(schedule)) {
@@ -52,7 +58,6 @@ suggest_orch_frequency <- function(schedule, check_datetime = lubridate::now(tzo
     purrr::possibly(convert_to_seconds, otherwise = NA, quiet = TRUE)
   )
 
-  # If the minimum schedule seconds is lte 15 minutes, return the corresponding frequency
   if (min(sch_secs, na.rm = TRUE) <= (60 * 15)) {
     return(schedule$frequency[[which.min(sch_secs)]])
   }
