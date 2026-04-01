@@ -156,9 +156,11 @@ build_schedule_entry <- function(script_path) {
   withCallingHandlers({
     purrr::walk2(pipe_names, maestro_tag_vals, ~{
 
-      if (!is.na(.y$frequency)) {
-        
-        freq_unit <- parse_rounding_unit(.y$frequency)$unit
+      freq_nunits <- if (!is.na(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
+
+      if (!is.null(freq_nunits)) {
+
+        freq_unit <- freq_nunits$unit
 
         # Validate hours
         if (
@@ -199,9 +201,8 @@ build_schedule_entry <- function(script_path) {
       start_time_fmt <- lubridate::guess_formats(.y$start_time, c("%Y-%m-%d %H:%M:%S", "%H:%M:%S"))
 
       if ("HMS" %in% names(start_time_fmt)) {
-        if (!is.null(.y$frequency)) {
-          nunits <- parse_rounding_unit(.y$frequency)
-          if (nunits$n > 1 && nunits$unit == "day") {
+        if (!is.null(freq_nunits)) {
+          if (freq_nunits$n > 1 && freq_nunits$unit == "day") {
             cli::cli_abort(
               c("Cannot use a `@maestroStartTime` with format %H:%M:%S in combination with
                 a multi-unit daily `@maestroFrequency`.",
@@ -209,7 +210,7 @@ build_schedule_entry <- function(script_path) {
               call = NULL
             )
           }
-          if (nunits$unit %in% c("week", "month", "year")) {
+          if (freq_nunits$unit %in% c("week", "month", "year")) {
             cli::cli_abort(
               c("`@maestroStartTime` with format %H:%M:%S is only valid for `@maestroFrequency` of minute, hour, or day."),
               call = NULL
