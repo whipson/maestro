@@ -4,6 +4,27 @@
 
 - `suggest_orch_frequency()` is deprecated with no replacement.
 
+### New features
+
+- New `cache_schedule()` function to persist a `MaestroSchedule` to an `.rds` file on disk.
+
+- New `refresh_schedule()` function to update the run sequences of all pipelines in an existing schedule without re-parsing pipeline scripts. Useful for long-running processes that hold a schedule object over extended periods.
+
+- `build_schedule()` gains a `from_cache` argument. When supplied a path to a cached schedule (created by `cache_schedule()`), tag parsing is skipped entirely and the schedule is loaded directly from the `.rds` file with run sequences refreshed automatically. This can significantly reduce startup time for projects with many pipelines.
+
+  ```r
+  # First run: build from scripts and cache
+  schedule <- build_schedule("pipelines/")
+  cache_schedule(schedule)
+
+  # Subsequent runs: load from cache (fast)
+  schedule <- build_schedule(from_cache = ".maestro/schedule.rds")
+  ```
+
+### Minor changes
+
+- Some optimizations in schedule building and running.
+
 # maestro 1.0.1
 
 ### Minor changes

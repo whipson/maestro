@@ -32,6 +32,24 @@ convert_to_seconds <- function(time_string) {
   nunits$n * conversion_factors[[nunits$unit]]
 }
 
+#' Number of days ahead to pre-compute run sequences for a given frequency unit
+#' @param unit character frequency unit
+#' @keywords internal
+#' @return integer
+.run_sequence_days_out <- function(unit) {
+  switch(
+    unit,
+    second = 3L,
+    minute = 7L,
+    hour   = 60L,
+    day    = 120L,
+    week   = 240L,
+    month  = 365L * 2L,
+    quarter = 365L * 4L,
+    year   = 365L * 10L
+  )
+}
+
 valid_units <- c(
   "sec", "second", "min", "minute", "hour",
   "day", "week", "month", "quarter", "year"

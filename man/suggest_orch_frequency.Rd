@@ -27,6 +27,9 @@ If the smallest interval is less than 15 minutes, it just uses the smallest inte
 
 Note this function is intended to be used interactively when deciding how often to
 schedule the orchestrator. Programmatic use is not recommended.
+
+\strong{Deprecated.} This function is no longer actively maintained and may be removed
+in a future release.
 }
 \examples{
 
@@ -37,3 +40,4 @@ if (interactive()) {
   suggest_orch_frequency(schedule)
 }
 }
+\keyword{internal}

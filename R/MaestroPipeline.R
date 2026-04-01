@@ -22,6 +22,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
+    #' @param nunits number of units for the run sequence (internal use)
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -42,7 +43,6 @@ MaestroPipeline <- R6::R6Class(
       run_if = NULL,
       nunits = NULL
     ) {
-      # ...existing code...
 
       # Update the private attributes
       private$script_path <- script_path
@@ -88,8 +88,6 @@ MaestroPipeline <- R6::R6Class(
           nunits <- list(nunits)
         }
 
-        # ...existing code...
-
         # Create days_of_week and days_of_month from days
         days_of_week <- purrr::map_if(
           days,
@@ -129,23 +127,11 @@ MaestroPipeline <- R6::R6Class(
           start_time_adj <- private$start_time
         }
 
-        check_dt_days_out <- switch(
-          private$frequency_unit,
-          second = 3,
-          minute = 7,
-          hour = 60,
-          day = 120,
-          week = 240,
-          month = 365 * 2,
-          quarter = 365 * 4,
-          year = 365 * 10
-        )
-
         private$run_sequence <- get_pipeline_run_sequence(
           pipeline_n = private$frequency_n,
           pipeline_unit = private$frequency_unit,
           pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(check_dt_days_out),
+          check_datetime = start_time_adj + lubridate::days(.run_sequence_days_out(private$frequency_unit)),
           pipeline_hours = private$hours,
           pipeline_days_of_week = private$days_of_week,
           pipeline_days_of_month = private$days_of_month,
@@ -625,6 +611,39 @@ MaestroPipeline <- R6::R6Class(
       }
 
       seq
+    },
+
+    #' @description
+    #' Refreshes the run sequence of a pipeline using the existing scheduling parameters.
+    #' This is used when loading a cached schedule to update run times without re-parsing tags.
+    #' Has no effect on DAG child pipelines (those with inputs).
+    #' @return invisible
+    refresh_run_sequence = function() {
+      if (!is.null(private$inputs)) return(invisible())
+
+      start_time_adj <- .prev_on_cycle(
+        private$start_time,
+        current = lubridate::now(),
+        amount = private$frequency_n,
+        unit = private$frequency_unit
+      )
+
+      if (is.na(start_time_adj)) {
+        start_time_adj <- private$start_time
+      }
+
+      private$run_sequence <- get_pipeline_run_sequence(
+        pipeline_n = private$frequency_n,
+        pipeline_unit = private$frequency_unit,
+        pipeline_datetime = private$start_time,
+        check_datetime = start_time_adj + lubridate::days(.run_sequence_days_out(private$frequency_unit)),
+        pipeline_hours = private$hours,
+        pipeline_days_of_week = private$days_of_week,
+        pipeline_days_of_month = private$days_of_month,
+        pipeline_months = private$months
+      )
+
+      invisible()
     }
   ),
 
