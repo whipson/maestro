@@ -4,6 +4,11 @@
 
 - `suggest_orch_frequency()` is deprecated with no replacement.
 
+- `show_network()` (and `MaestroSchedule$show_network()`) is deprecated due to
+  its reliance on `DiagrammeR`, which brings in a large number of little-used
+  dependencies. Use `get_network()` to retrieve the pipeline dependency edge
+  list directly.
+
 ### New features
 
 - New `cache_schedule()` function to persist a `MaestroSchedule` to `.maestro/schedule.rds`.

@@ -228,6 +228,12 @@ MaestroSchedule <- R6::R6Class(
     #' @return interactive visualization
     show_network = function() {
 
+      lifecycle::deprecate_warn(
+        "1.1.0",
+        "MaestroSchedule$show_network()",
+        details = "It will be removed entirely in 1.2.0."
+      )
+
       pipe_names <- self$PipelineList$get_pipe_names()
 
       if (length(pipe_names) == 0) cli::cli_abort("No pipelines in schedule.", call = NULL)

@@ -1,5 +1,8 @@
 #' Visualize the schedule as a DAG
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
 #' Create an interactive network visualization to show the dependency structure
 #' of pipelines in the schedule. This is only useful if there are pipelines in
 #' the schedule that take inputs/outputs from other pipelines.
@@ -14,6 +17,7 @@
 #'
 #' @return DiagrammeR visualization
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' if (interactive()) {
@@ -30,6 +34,12 @@
 #'   show_network(schedule)
 #' }
 show_network <- function(schedule) {
+
+  lifecycle::deprecate_warn(
+    "1.1.0",
+    "show_network()",
+    details = "It will be removed entirely in 1.2.0."
+  )
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(

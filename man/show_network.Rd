@@ -13,11 +13,12 @@ show_network(schedule)
 DiagrammeR visualization
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Create an interactive network visualization to show the dependency structure
 of pipelines in the schedule. This is only useful if there are pipelines in
 the schedule that take inputs/outputs from other pipelines.
-}
-\details{
+
 Note that running this function on a schedule with all independent pipelines
 will produce a network visual with no connections.
 
@@ -39,3 +40,4 @@ if (interactive()) {
   show_network(schedule)
 }
 }
+\keyword{internal}
