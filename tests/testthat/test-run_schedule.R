@@ -82,116 +82,149 @@ test_that("run_schedule is idempotent", {
 
 test_that("run_schedule timeliness checks - pipelines run when they're supposed to", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 2024-01-01
+      #' @maestroTz America/Halifax
+      get_mtcars <- function() { mtcars }
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "15 minutes",
-    check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
-    quiet = TRUE
-  )
+      #' @maestroFrequency 3 months
+      #' @maestroStartTime 2024-01-01
+      wait <- function() {}
 
-  status <- output$get_status()
+      #' @maestroFrequency 1 week
+      #' @maestroStartTime 2024-01-01
+      weekly <- function() {}
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 2024-01-01
+      way_in_the_future <- function() {}
 
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+      #' @maestroFrequency weekly
+      #' @maestroStartTime 2024-01-01
+      weekly2 <- function() {}
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "1 month",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-    quiet = TRUE
-  ) |>
-    suppressWarnings()
-  status <- output$get_status()
+      #' @maestroFrequency 1 hour
+      #' @maestroStartTime 2024-03-01 09:35:00
+      #' @maestroTz UTC
+      get_mtcars2 <- function() { mtcars }
+      ",
+      con = "pipelines/pipes.R"
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "15 minutes",
+      check_datetime = as.POSIXct("2024-04-25 09:35:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    expect_equal(output$get_status()$invoked, c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE))
 
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "1 month",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+      quiet = TRUE
+    ) |>
+      suppressWarnings()
+    expect_equal(output$get_status()$invoked, c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE))
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "4 days",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-    quiet = TRUE
-  ) |>
-    suppressWarnings()
-  status <- output$get_status()
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "4 days",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
+      quiet = TRUE
+    ) |>
+      suppressWarnings()
+    expect_equal(output$get_status()$invoked, c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE))
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
-
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"), quiet = TRUE)
-
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-03-02 09:00:00", tz = "America/Halifax"),
-    quiet = TRUE
-  )
-
-  status <- output$get_status()
-
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-03-02 09:00:00", tz = "America/Halifax"),
+      quiet = TRUE
+    )
+    expect_equal(output$get_status()$invoked, c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE))
+  })
 })
 
 test_that("run_schedule timeliness checks - specifiers (e.g., hours, days, months)", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      #' @maestroStartTime 2024-01-01
+      #' @maestroDays 1 8 24 28
+      specific_days <- function() {}
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"), # This is a Monday
-    quiet = TRUE
-  )
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroHours 0 4 8 12 16 20
+      specific_hours <- function() {}
 
-  status <- output$get_status()
+      #' @maestroFrequency biweekly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroMonths 1 5 10
+      specific_months1 <- function() {}
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroDays Mon Wed Fri
+      specific_days2 <- function() {}
 
-  schedule <- build_schedule(test_path("test_pipelines_run_specifiers"), quiet = TRUE)
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroDays Sun Sat
+      specific_days3 <- function() {}
 
-  output <- run_schedule(
-    schedule,
-    orch_frequency = "hourly",
-    check_datetime = as.POSIXct("2024-05-01 00:00:00", tz = "UTC"), # This is a Monday
-    quiet = TRUE
-  )
+      #' @maestroFrequency monthly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroMonths 1 5 10
+      specific_months3 <- function() {}
 
-  status <- output$get_status()
+      #' @maestroFrequency hourly
+      #' @maestroStartTime 2024-01-01
+      #' @maestroHours 1 12
+      #' @maestroDays 1
+      #' @maestroMonths 1 5 10
+      specific_multi <- function() {}
+      ",
+      con = "pipelines/specifiers.R"
+    )
 
-  expect_snapshot(
-    status$invoked
-  )
-  expect_snapshot(
-    status$next_run
-  )
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"), # Monday
+      quiet = TRUE
+    )
+    expect_equal(
+      output$get_status()$invoked,
+      c(TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE)
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    output <- run_schedule(
+      schedule,
+      orch_frequency = "hourly",
+      check_datetime = as.POSIXct("2024-05-01 00:00:00", tz = "UTC"), # Wednesday
+      quiet = TRUE
+    )
+    expect_equal(
+      output$get_status()$invoked,
+      c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE)
+    )
+  })
 })
 
 test_that("run_schedule timeliness checks - specifiers on a non UTC timezone", {

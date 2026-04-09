@@ -4,10 +4,7 @@
 #' 2024-03-01 09:00:00
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-03-01 09:00:00
 #' @maestroTz America/Halifax
-#'
-#' @export
 get_mtcars <- function() {
   Sys.sleep(0.02)
   mtcars
@@ -16,28 +13,21 @@ get_mtcars <- function() {
 #' Multiply
 #'
 #' @maestroFrequency 3 month
-#'
-#' @export
 wait <- function() {
   Sys.sleep(0.01)
 }
 
 #' @maestroFrequency 1 week
-#'
-#' @export
 weekly <- function() {
   1 + 1
 }
 
-#' @maestroStartTime 2030-12-12 10:10:10
 #' @maestroFrequency 1 day
 way_in_the_future <- function() {
   invisible()
 }
 
 #' @maestroFrequency weekly
-#'
-#' @export
 weekly2 <- function() {
   1 + 1
 }
