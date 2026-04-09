@@ -151,11 +151,13 @@ get_pipeline_run_sequence <- function(
     )
   })
 
-  pipeline_unit <- dplyr::case_match(
+  pipeline_unit <- switch(
     pipeline_unit,
-    c("minutes", "minute") ~ "min",
-    c("seconds", "second") ~ "sec",
-    .default = pipeline_unit
+    minutes = ,
+    minute  = "min",
+    seconds = ,
+    second  = "sec",
+    pipeline_unit
   )
 
   if (pipeline_datetime > check_datetime) {
