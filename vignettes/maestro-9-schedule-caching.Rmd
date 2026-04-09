@@ -1,0 +1,70 @@
+---
+title: "Schedule Caching"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Schedule Caching}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE
+)
+```
+
+Building a schedule can be slow, especially if your project has a large number of pipelines. Caching a schedule avoids recomputing scheduling parameters while still keeping timeliness checks up-to-date.
+
+## Why not just save and reuse the schedule object as an .rds?
+
+This gets a bit technical, so skip if you want to get straight to implementation.
+
+When you run `build_schedule()`, maestro parses all the tags and builds a time sequence of desired pipeline execution times. This is essentially a snapshot of future times each pipeline should run. Naturally, we wouldn't want to store all possible future times, as this would be an infinite list; so the snapshot captures a minimal useful sequence of future times. If you just save and reuse this object you would eventually reach a point where the time sequences in the schedule no longer correspond to future times - in other words, the schedule has become stale.
+
+In contrast, maestro's built-in caching mechanism reuses the stable elements pertaining to the scheduling configuration (i.e., the tags) but allows for the automatic refreshing of the time sequences. In the end, it still stores an .rds of the schedule but there are bespoke mechanisms for using this so that the time sequences are refreshed.
+
+## How Caching Works
+
+There are two steps to the cached schedule workflow:
+
+**Step 1** - Cache the schedule once
+
+Caching works by first building a schedule like normal and then saving the schedule object to a specific file in your project (`./.maestro/schedule.rds` to be exact). This caching step would operate outside your repeated orchestrator script.
+
+```{r, eval=FALSE}
+library(maestro)
+
+schedule <- build_schedule()
+cache_schedule(schedule)
+```
+
+**Step 2** - Use the cached schedule
+
+The orchestrator script brings in the cached schedule, automatically refreshes the time sequences, and runs as normal.
+
+```{r, eval=FALSE}
+library(maestro)
+
+schedule <- build_schedule(from_cache = TRUE)
+
+run_schedule(schedule, orch_frequency = "1 hour")
+```
+
+## When to Use
+
+You should use caching to save time on parsing tags for a large number of pipelines. Typically this is only useful if you have a lot of pipelines (e.g., > 30) and/or your orchestrator runs on a tight cadence (< 5 minutes). It is not recommended to use caching in smaller projects as this adds unnecessary overhead.
+
+## When to Rebuild the Schedule
+
+A cached schedule is a snapshot of the scheduling configuration. You should rebuild the schedule in the following cases:
+- Added/removed pipelines
+- Renamed a pipeline function or file
+- Changed, added, removed pipeline tags
+
+You do not need to rebuild if the code inside the pipeline function changes.
+
+It is recommended to make schedule rebuilding a part of your continuous deployment process. We recommend implementing a CI/CD process where the schedule is rebuilt and recached on any change to the project ahead of deployment.
+
