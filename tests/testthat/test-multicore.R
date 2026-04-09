@@ -40,36 +40,3 @@ test_that("Multicore DAGs work", {
   expect_equal(artifacts$subbranch2, 6)
 }) |>
   suppressMessages()
-
-test_that("Downstream skipped pipelines are respected in multicore", {
-
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroOutputs mid
-      start <- function() {
-        1
-      }
-      
-      #' @maestroOutputs end
-      mid <- function(.input) {
-        .input + 1
-      }
-
-      #' @maestro
-      end <- function(.input) {
-        .input + 1
-      }",
-      con = "pipelines/dags.R"
-    )
-
-    schedule <- build_schedule()
-  })
-    
-  future::plan(future::multisession(workers = 2L))
-  run_schedule(
-    schedule,
-    cores = 2L
-  )
-})

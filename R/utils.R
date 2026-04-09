@@ -9,8 +9,6 @@ maestro_logger <- logger::layout_glue_generator(
 #' @return number of seconds
 convert_to_seconds <- function(time_string) {
 
-  stopifnot("Must be a single string" = length(time_string) == 1)
-
   nunits <- parse_rounding_unit(time_string)
 
   # Define the conversion factors to seconds for each unit
@@ -41,12 +39,12 @@ convert_to_seconds <- function(time_string) {
     unit,
     second = 3L,
     minute = 7L,
-    hour   = 60L,
-    day    = 120L,
-    week   = 240L,
-    month  = 365L * 2L,
+    hour = 60L,
+    day = 120L,
+    week = 240L,
+    month = 365L * 2L,
     quarter = 365L * 4L,
-    year   = 365L * 10L
+    year = 365L * 10L
   )
 }
 
@@ -59,9 +57,9 @@ convert_to_seconds <- function(time_string) {
 .run_sequence_min_days_out <- function(unit) {
   switch(
     unit,
-    second  = 2L,
-    minute  = 4L,
-    30L
+    second = 1L,
+    minute = 2L,
+    7L
   )
 }
 
@@ -77,8 +75,6 @@ valid_units <- c(
 #' @keywords internal
 #' @return nunit list
 parse_rounding_unit <- function(time_string) {
-
-  stopifnot("Must be a single string" = length(time_string) == 1)
 
   # Extract the number and the unit from the time string
   if (!grepl("^[0-9]", time_string)) {
@@ -139,17 +135,7 @@ get_pipeline_run_sequence <- function(
     pipeline_months = 1:12
   ) {
 
-  check_datetime <- tryCatch({
-    lubridate::as_datetime(check_datetime)
-  }, error = function(e) {
-    cli::cli_abort(
-      "{.code check_datetime} must be a POSIXt object."
-    )
-  }, warning = function(w) {
-    cli::cli_abort(
-      "{.code check_datetime} must be a POSIXt object."
-    )
-  })
+  check_datetime <- lubridate::as_datetime(check_datetime)
 
   pipeline_unit <- switch(
     pipeline_unit,
@@ -364,10 +350,6 @@ make_id <- function(n = 6) {
   unit <- match.arg(unit)
 
   amount <- as.integer(amount)
-  if (is.na(amount) || amount <= 0L) {
-    stop("Internal error: `amount` must be a positive integer.")
-  }
-
   start_is_date <- inherits(start, "Date")
   start_is_time <- inherits(start, "POSIXct")
 
