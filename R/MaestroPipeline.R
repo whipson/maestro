@@ -131,7 +131,7 @@ MaestroPipeline <- R6::R6Class(
           pipeline_n = private$frequency_n,
           pipeline_unit = private$frequency_unit,
           pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(.run_sequence_days_out(private$frequency_unit)),
+          check_datetime = start_time_adj + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
           pipeline_hours = private$hours,
           pipeline_days_of_week = private$days_of_week,
           pipeline_days_of_month = private$days_of_month,
@@ -439,16 +439,21 @@ MaestroPipeline <- R6::R6Class(
         next_run <- tryCatch(
           {
             next_idx <- is_scheduled_now_idx + 1
-            pipeline_sequence_round[[next_idx]]
+            if (next_idx <= length(pipeline_sequence_round)) {
+              pipeline_sequence_round[[next_idx]]
+            } else {
+              NULL
+            }
           },
           error = function(e) {
             NULL
           }
         )
       } else {
-        next_run <- pipeline_sequence_round[
+        future_entries <- pipeline_sequence_round[
           pipeline_sequence_round > check_datetime_round
-        ][[1]]
+        ]
+        next_run <- if (length(future_entries) > 0) future_entries[[1]] else NULL
       }
 
       private$next_run <- next_run
@@ -594,6 +599,17 @@ MaestroPipeline <- R6::R6Class(
       min_datetime = NULL,
       max_datetime = NULL
     ) {
+      # Lazily extend the sequence to cover the requested window.
+      # Only applicable for primary (non-DAG-child) pipelines.
+      if (is.null(private$inputs)) {
+        extend_to <- if (!is.null(max_datetime)) {
+          lubridate::as_datetime(max_datetime)
+        } else {
+          lubridate::now() + lubridate::days(.run_sequence_days_out(private$frequency_unit))
+        }
+        private$extend_run_sequence(extend_to)
+      }
+
       seq <- private$run_sequence
 
       if (!is.null(n)) {
@@ -636,12 +652,14 @@ MaestroPipeline <- R6::R6Class(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
         pipeline_datetime = private$start_time,
-        check_datetime = start_time_adj + lubridate::days(.run_sequence_days_out(private$frequency_unit)),
+        check_datetime = start_time_adj + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
         pipeline_months = private$months
       )
+
+      private$run_sequence_extended <- FALSE
 
       invisible()
     }
@@ -670,6 +688,7 @@ MaestroPipeline <- R6::R6Class(
     frequency_n = NA_integer_,
     frequency_unit = NA_character_,
     run_sequence = lubridate::NA_POSIXct_,
+    run_sequence_extended = FALSE,
 
     # Dynamic attributes
     status = "Not Run",
@@ -849,6 +868,33 @@ MaestroPipeline <- R6::R6Class(
         )
         invokeRestart("muffleWarning")
       }
+    },
+
+    extend_run_sequence = function(to_datetime) {
+      if (is.null(private$inputs)) {
+        current_end <- max(private$run_sequence, na.rm = TRUE)
+        to_datetime <- lubridate::as_datetime(to_datetime)
+        if (to_datetime <= current_end) return(invisible())
+
+        extension <- get_pipeline_run_sequence(
+          pipeline_n = private$frequency_n,
+          pipeline_unit = private$frequency_unit,
+          pipeline_datetime = current_end,
+          check_datetime = to_datetime,
+          pipeline_hours = private$hours,
+          pipeline_days_of_week = private$days_of_week,
+          pipeline_days_of_month = private$days_of_month,
+          pipeline_months = private$months
+        )
+
+        # Drop the first element — it duplicates current_end
+        if (length(extension) > 1) {
+          private$run_sequence <- c(private$run_sequence, extension[-1])
+        }
+
+        private$run_sequence_extended <- TRUE
+      }
+      invisible()
     },
 
     cond_message_handler = function(internal_run_id) {

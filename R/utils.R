@@ -50,6 +50,21 @@ convert_to_seconds <- function(time_string) {
   )
 }
 
+#' Minimum days ahead to pre-compute run sequences on initialization
+#' This small window is used at parse time; the full window is built lazily
+#' when observability functions (get_run_sequence, get_slot_usage) are called.
+#' @param unit character frequency unit
+#' @keywords internal
+#' @return integer
+.run_sequence_min_days_out <- function(unit) {
+  switch(
+    unit,
+    second  = 2L,
+    minute  = 4L,
+    30L
+  )
+}
+
 valid_units <- c(
   "sec", "second", "min", "minute", "hour",
   "day", "week", "month", "quarter", "year"
