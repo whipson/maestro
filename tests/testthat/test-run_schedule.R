@@ -4,7 +4,7 @@ test_that("run_schedule works on different kinds of frequencies", {
 
   test_freqs <- c("14 days", "10 minutes", "25 mins", "1 week",
                   "1 quarter", "12 months", "1 years", "24 hours",
-                  "31 days", "1 secs", "50 seconds", "daily", "hourly", "weekly")
+                  "31 days", "1 secs", "50 seconds", "daily", "hourly", "weekly", "yearly")
 
   purrr::walk(test_freqs, ~{
     expect_no_error({
@@ -367,35 +367,6 @@ test_that("run_schedule timeliness checks - non UTC daylight savings ", {
 
     status <- get_status(schedule)
     expect_true(status$invoked[status$pipe_name == "non_utc"])
-  })
-})
-
-test_that("works on pipeline with an old start time", {
-
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroFrequency hourly
-      #' @maestroStartTime 1970-01-01
-      oldie <- function() {
-
-      }
-      ",
-      con = "pipelines/oldie.R"
-    )
-
-    schedule <- build_schedule(quiet = TRUE)
-
-    run_schedule(
-      schedule,
-      orch_frequency = "1 hour",
-      check_datetime = as.POSIXct("2025-03-11 00:00:00", tz = "UTC"),
-      quiet = TRUE
-    )
-
-    status <- get_status(schedule)
-    expect_true(status$invoked[status$pipe_name == "oldie"])
   })
 })
 

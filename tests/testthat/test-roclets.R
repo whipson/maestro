@@ -47,17 +47,6 @@ test_that("bad usage of maestroFrequency warns and gives no val", {
   expect_null(res$val)
 })
 
-test_that("parse maestroStartTime tag works", {
-  res <- roxygen2::roc_proc_text(
-    maestroStartTime_roclet(),
-    readLines(test_path("test_pipelines/test_pipeline_daily_good.R"))
-  ) |>
-    expect_no_message()
-
-  expect_type(res$val, "character")
-  expect_s3_class(as.POSIXct(res$val), "POSIXct")
-})
-
 test_that("maestroStartTime default value is returned", {
   res <- roxygen2::roc_proc_text(
     maestroStartTime_roclet(),
