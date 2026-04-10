@@ -339,6 +339,24 @@ make_id <- function(n = 6) {
   paste0(c(first, rest), collapse = "")
 }
 
+#' Find the most recent cycle point before a given time
+#'
+#' Given a repeating cycle anchored at \code{start} and stepping every
+#' \code{amount} \code{unit}s, returns the latest cycle point strictly before
+#' \code{current}.
+#'
+#' @param start \code{Date} or \code{POSIXct} defining the cycle origin.
+#' @param current \code{Date} or \code{POSIXct} (coerced to match \code{start})
+#'   used as the reference point. Defaults to \code{Sys.time()}.
+#' @param amount Positive integer; number of \code{unit}s per cycle step.
+#' @param unit Character; one of \code{"second"}, \code{"minute"},
+#'   \code{"hour"}, \code{"day"}, \code{"week"}, \code{"month"},
+#'   \code{"year"}. Sub-day units are not supported when \code{start} is a
+#'   \code{Date}.
+#'
+#' @return A \code{Date} or \code{POSIXct} of the same class and timezone as
+#'   \code{start}, or \code{NA} if \code{current <= start}.
+#' @keywords internal
 .prev_on_cycle <- function(start,
                            current = Sys.time(),
                            amount = 1L,
