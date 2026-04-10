@@ -209,7 +209,17 @@ build_schedule_entry <- function(script_path) {
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
-        start_time = start_time %n% lubridate::floor_date(lubridate::now(tzone = tz), "day"),
+        start_time = start_time %n% lubridate::floor_date(
+          lubridate::now(tzone = tz),
+          unit = switch(
+            freq_nunits$unit %n% "day",
+            "year" = , 
+            "quarter" = "year",
+            "month" = "month",
+            "week" = "week",
+            "day"
+          )
+        ),
         tz = tz,
         skip = .y$skip %n% FALSE,
         log_level = .y$log_level %n% "INFO",

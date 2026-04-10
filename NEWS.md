@@ -1,5 +1,9 @@
 # maestro 1.1.0.9000
 
+### Breaking changes
+
+- The default value for `maestroStartTime` is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.
+
 ### Deprecated functionality
 
 - `suggest_orch_frequency()` is deprecated with no replacement.
