@@ -458,23 +458,22 @@ MaestroPipeline <- R6::R6Class(
 
       is_scheduled_now <- !is.null(matched_slot) && .passes_filters(matched_slot)
 
-      # Find next_run: scan forward from current_cycle until a filter-passing
-      # cycle point is found, bounded to avoid infinite loops.
-      max_steps <- max(
-        365L,
-        as.integer(.run_sequence_days_out(private$frequency_unit)) * 2L
+      next_seq <- get_pipeline_run_sequence(
+        pipeline_n = private$frequency_n,
+        pipeline_unit = private$frequency_unit,
+        pipeline_datetime = current_cycle,
+        check_datetime = current_cycle + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
+        pipeline_hours = private$hours,
+        pipeline_days_of_week = private$days_of_week,
+        pipeline_days_of_month = private$days_of_month,
+        pipeline_months = private$months
       )
-      next_candidate <- lubridate::as_datetime(current_cycle + .one_freq_step())
-      found_next <- NULL
-      for (i in seq_len(max_steps)) {
-        if (.passes_filters(next_candidate)) {
-          found_next <- timechange::time_round(next_candidate, unit = orch_string)
-          break
-        }
-        next_candidate <- lubridate::as_datetime(next_candidate + .one_freq_step())
-      }
 
-      private$next_run <- found_next
+      private$next_run <- if (length(next_seq) > 0) {
+        timechange::time_round(next_seq[[1]], unit = orch_string)
+      } else {
+        NULL
+      }
 
       return(is_scheduled_now)
     },

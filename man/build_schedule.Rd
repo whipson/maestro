@@ -2,17 +2,12 @@
 % Please edit documentation in R/build_schedule.R
 \name{build_schedule}
 \alias{build_schedule}
-\title{Build a schedule table}
+\title{Build a schedule}
 \usage{
-build_schedule(pipeline_dir = "./pipelines", from_cache = FALSE, quiet = FALSE)
+build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
 }
 \arguments{
 \item{pipeline_dir}{path to directory containing the pipeline scripts}
-
-\item{from_cache}{if \code{TRUE}, load the schedule from \code{.maestro/schedule.rds}
-instead of parsing pipeline scripts. Run sequences are refreshed automatically.
-The cache must be regenerated (via \code{build_schedule()} + \code{cache_schedule()})
-whenever pipeline scripts or tags change. Default is \code{FALSE}.}
 
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }
@@ -20,45 +15,16 @@ whenever pipeline scripts or tags change. Default is \code{FALSE}.}
 MaestroSchedule
 }
 \description{
-Builds a schedule data.frame for scheduling pipelines in \code{run_schedule()}.
+Builds a \code{MaestroSchedule} object for use in \code{run_schedule()}.
 }
 \details{
 This function parses the maestro tags of functions located in \code{pipeline_dir} which is
-conventionally called 'pipelines'. An orchestrator requires a schedule table
-to determine which pipelines are to run and when. Each row in a schedule table
-is a pipeline name and its scheduling parameters such as its frequency.
+conventionally called 'pipelines'. An orchestrator requires a \code{MaestroSchedule}
+to determine which pipelines are to run and when. Each pipeline in the schedule
+is a parsed function and its scheduling parameters such as its frequency.
 
-The schedule table is mostly intended to be used by \code{run_schedule()} immediately.
+The \code{MaestroSchedule} is mostly intended to be passed directly to \code{run_schedule()}.
 In other words, it is not recommended to make changes to it.
-\subsection{Caching}{
-
-For large projects, parsing pipeline scripts on every orchestrator run can be slow.
-Use \code{cache_schedule()} to persist a built schedule to disk and \code{from_cache = TRUE}
-to reload it on subsequent runs. The cache is always read from and written to
-\code{.maestro/schedule.rds} in the current working directory. Run sequences are
-automatically refreshed when loading from cache - tag parsing is skipped entirely.
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{# First run: build from scripts and cache the result
-schedule <- build_schedule("pipelines/")
-cache_schedule(schedule)
-
-# Subsequent runs: load from cache (fast)
-schedule <- build_schedule(from_cache = TRUE)
-}\if{html}{\out{</div>}}
-
-\strong{Important:} the cache is a snapshot of the schedule at the time it was built.
-You must rebuild from scripts and call \code{cache_schedule()} again whenever any of
-the following change:
-\itemize{
-\item A pipeline is \strong{added}, \strong{removed}, or \strong{renamed}
-\item Any \verb{@maestro*} tag is \strong{modified} (frequency, start time, inputs, flags, etc.)
-\item A pipeline script is \strong{moved} to a different location
-}
-
-Only the run sequences (future scheduled datetimes) are refreshed from cache - all
-pipeline configuration comes from the cached snapshot. If the cache is stale,
-those changes will be silently ignored.
-}
 }
 \examples{
 

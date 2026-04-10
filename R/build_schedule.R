@@ -1,49 +1,16 @@
-#' Build a schedule table
+#' Build a schedule
 #'
-#' Builds a schedule data.frame for scheduling pipelines in `run_schedule()`.
+#' Builds a `MaestroSchedule` object for use in `run_schedule()`.
 #'
 #' This function parses the maestro tags of functions located in `pipeline_dir` which is
-#' conventionally called 'pipelines'. An orchestrator requires a schedule table
-#' to determine which pipelines are to run and when. Each row in a schedule table
-#' is a pipeline name and its scheduling parameters such as its frequency.
+#' conventionally called 'pipelines'. An orchestrator requires a `MaestroSchedule`
+#' to determine which pipelines are to run and when. Each pipeline in the schedule
+#' is a parsed function and its scheduling parameters such as its frequency.
 #'
-#' The schedule table is mostly intended to be used by `run_schedule()` immediately.
+#' The `MaestroSchedule` is mostly intended to be passed directly to `run_schedule()`.
 #' In other words, it is not recommended to make changes to it.
 #'
-#' ## Caching
-#'
-#' For large projects, parsing pipeline scripts on every orchestrator run can be slow.
-#' Use `cache_schedule()` to persist a built schedule to disk and `from_cache = TRUE`
-#' to reload it on subsequent runs. The cache is always read from and written to
-#' `.maestro/schedule.rds` in the current working directory. Run sequences are
-#' automatically refreshed when loading from cache - tag parsing is skipped entirely.
-#'
-#' ```r
-#' # First run: build from scripts and cache the result
-#' schedule <- build_schedule("pipelines/")
-#' cache_schedule(schedule)
-#'
-#' # Subsequent runs: load from cache (fast)
-#' schedule <- build_schedule(from_cache = TRUE)
-#' ```
-#'
-#' **Important:** the cache is a snapshot of the schedule at the time it was built.
-#' You must rebuild from scripts and call `cache_schedule()` again whenever any of
-#' the following change:
-#'
-#' - A pipeline is **added**, **removed**, or **renamed**
-#' - Any `@maestro*` tag is **modified** (frequency, start time, inputs, flags, etc.)
-#' - A pipeline script is **moved** to a different location
-#'
-#' Only the run sequences (future scheduled datetimes) are refreshed from cache - all
-#' pipeline configuration comes from the cached snapshot. If the cache is stale,
-#' those changes will be silently ignored.
-#'
 #' @param pipeline_dir path to directory containing the pipeline scripts
-#' @param from_cache if `TRUE`, load the schedule from `.maestro/schedule.rds`
-#'   instead of parsing pipeline scripts. Run sequences are refreshed automatically.
-#'   The cache must be regenerated (via `build_schedule()` + `cache_schedule()`)
-#'   whenever pipeline scripts or tags change. Default is `FALSE`.
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return MaestroSchedule
@@ -58,49 +25,7 @@
 #'   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #'   build_schedule(pipeline_dir = pipeline_dir)
 #' }
-build_schedule <- function(pipeline_dir = "./pipelines", from_cache = FALSE, quiet = FALSE) {
-
-  cache_path <- ".maestro/schedule.rds"
-
-  # --- Cache path: skip parsing entirely ---
-  if (isTRUE(from_cache)) {
-
-    if (!file.exists(cache_path)) {
-      cli::cli_abort(
-        c(
-          "Cache file {.file {cache_path}} does not exist.",
-          "i" = "Run {.fn build_schedule} + {.fn cache_schedule} first to create it."
-        ),
-        call = rlang::caller_env()
-      )
-    }
-
-    schedule <- tryCatch(
-      readRDS(cache_path),
-      error = function(e) {
-        cli::cli_abort(
-          "Could not read cache file {.file {cache_path}}: {e$message}",
-          call = rlang::caller_env()
-        )
-      }
-    )
-
-    if (!"MaestroSchedule" %in% class(schedule)) {
-      cli::cli_abort(
-        c(
-          "The object at {.file {cache_path}} is not a {.cls MaestroSchedule}.",
-          "i" = "Use {.fn cache_schedule} to create a valid cache file."
-        ),
-        call = rlang::caller_env()
-      )
-    }
-
-    refresh_schedule(schedule, quiet = quiet)
-
-    return(schedule)
-  }
-
-  # --- Normal path: parse pipeline scripts ---
+build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
 
   if (!dir.exists(pipeline_dir)) {
     cli::cli_abort("No directory called {.emph {pipeline_dir}}")

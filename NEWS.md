@@ -13,23 +13,6 @@
   dependencies. Use `get_network()` to retrieve the pipeline dependency edge
   list directly.
 
-### New features
-
-- New `cache_schedule()` function to persist a `MaestroSchedule` to `.maestro/schedule.rds`.
-
-- New `refresh_schedule()` function to update the run sequences of all pipelines in an existing schedule without re-parsing pipeline scripts. Useful for long-running processes that hold a schedule object over extended periods.
-
-- `build_schedule()` gains a `from_cache` argument. When `TRUE`, the schedule is loaded from `.maestro/schedule.rds` (written by `cache_schedule()`) instead of parsing pipeline scripts, with run sequences refreshed automatically. This can significantly reduce startup time for projects with many pipelines.
-
-  ```r
-  # First run: build from scripts and cache
-  schedule <- build_schedule("pipelines/")
-  cache_schedule(schedule)
-
-  # Subsequent runs: load from cache (fast)
-  schedule <- build_schedule(from_cache = TRUE)
-  ```
-
 ### Minor changes
 
 - Some optimizations in schedule building and running.
