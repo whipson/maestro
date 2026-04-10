@@ -2,7 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{.run_sequence_days_out}
 \alias{.run_sequence_days_out}
-\title{Number of days ahead to pre-compute run sequences for a given frequency unit}
+\title{Number of days ahead to generate run sequences for a given frequency unit
+Used by the observable get_run_sequence path.}
 \usage{
 .run_sequence_days_out(unit)
 }
@@ -13,6 +14,7 @@
 integer
 }
 \description{
-Number of days ahead to pre-compute run sequences for a given frequency unit
+Number of days ahead to generate run sequences for a given frequency unit
+Used by the observable get_run_sequence path.
 }
 \keyword{internal}

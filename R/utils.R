@@ -30,7 +30,8 @@ convert_to_seconds <- function(time_string) {
   nunits$n * conversion_factors[[nunits$unit]]
 }
 
-#' Number of days ahead to pre-compute run sequences for a given frequency unit
+#' Number of days ahead to generate run sequences for a given frequency unit
+#' Used by the observable get_run_sequence path.
 #' @param unit character frequency unit
 #' @keywords internal
 #' @return integer

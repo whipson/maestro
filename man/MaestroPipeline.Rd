@@ -37,7 +37,6 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
 \item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
 \item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
-\item \href{#method-MaestroPipeline-refresh_run_sequence}{\code{MaestroPipeline$refresh_run_sequence()}}
 \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
 }
 }
@@ -62,8 +61,7 @@ Create a new Pipeline object
   outputs = NULL,
   priority = Inf,
   flags = c(),
-  run_if = NULL,
-  nunits = NULL
+  run_if = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -99,8 +97,6 @@ Create a new Pipeline object
 \item{\code{flags}}{arbitrary pipelines flags}
 
 \item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
-
-\item{\code{nunits}}{number of units for the run sequence (internal use)}
 }
 \if{html}{\out{</div>}}
 }
@@ -117,9 +113,6 @@ Prints the pipeline
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-print
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-run"></a>}}
@@ -465,21 +458,6 @@ Get the run sequence of a pipeline
 }
 \subsection{Returns}{
 vector
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroPipeline-refresh_run_sequence"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroPipeline-refresh_run_sequence}{}}}
-\subsection{Method \code{refresh_run_sequence()}}{
-Refreshes the run sequence of a pipeline using the existing scheduling parameters.
-This is used when loading a cached schedule to update run times without re-parsing tags.
-Has no effect on DAG child pipelines (those with inputs).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$refresh_run_sequence()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-invisible
 }
 }
 \if{html}{\out{<hr>}}

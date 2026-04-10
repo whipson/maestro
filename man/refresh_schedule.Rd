@@ -2,28 +2,28 @@
 % Please edit documentation in R/refresh_schedule.R
 \name{refresh_schedule}
 \alias{refresh_schedule}
-\title{Refresh the run sequences of a cached schedule}
+\title{Refresh a cached schedule}
 \usage{
 refresh_schedule(schedule, quiet = FALSE)
 }
 \arguments{
 \item{schedule}{object of type \code{MaestroSchedule}}
 
-\item{quiet}{silence console messages (default \code{FALSE})}
+\item{quiet}{silence console messages (default `FALSE``)}
 }
 \value{
 \code{MaestroSchedule} (invisibly)
 }
 \description{
-Updates the internally precomputed run sequences for all pipelines in a
-\code{MaestroSchedule} object without re-parsing any pipeline scripts or tags.
-This is called automatically when using \code{build_schedule(from_cache = ...)},
-but can also be called directly when you hold a long-lived schedule object
-and want to freshen its future run times.
+Validates a cached \code{MaestroSchedule} object. Previously this function
+refreshed internally stored run sequences; run sequences are now generated
+on demand, so this function is a lightweight validation step kept for
+backward compatibility with workflows that call it after loading a cached
+schedule.
 }
 \details{
-\strong{This function only refreshes run sequences.} It does not detect or apply
-any changes to pipeline scripts or \verb{@maestro*} tags. If pipelines have been
+\strong{This function does not detect or apply changes to pipeline scripts or
+\verb{@maestro*} tags.} If pipelines have been
 added, removed, renamed, or had their tags modified since the schedule was
 last built, those changes will not be reflected. Use \code{build_schedule()} +
 \code{cache_schedule()} to rebuild and re-cache after any configuration change.
@@ -34,8 +34,7 @@ if (interactive()) {
   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
   schedule <- build_schedule(pipeline_dir = pipeline_dir)
 
-  # Refresh run sequences without re-parsing scripts.
-  # Only safe if no pipeline configuration has changed.
+  # Validate a cached schedule object.
   refresh_schedule(schedule)
 }
 }

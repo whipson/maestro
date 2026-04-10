@@ -22,7 +22,6 @@ MaestroPipeline <- R6::R6Class(
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
-    #' @param nunits number of units for the run sequence (internal use)
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -40,8 +39,7 @@ MaestroPipeline <- R6::R6Class(
       outputs = NULL,
       priority = Inf,
       flags = c(),
-      run_if = NULL,
-      nunits = NULL
+      run_if = NULL
     ) {
 
       # Update the private attributes
@@ -67,26 +65,22 @@ MaestroPipeline <- R6::R6Class(
         private$months <- months
 
         # Create units and n
-        if (is.null(nunits)) {
-          withCallingHandlers(
-            {
-              nunits <- purrr::map(
-                frequency,
-                purrr::possibly(
-                  ~ {
-                    parse_rounding_unit(.x)
-                  },
-                  otherwise = list(n = NA, unit = NA)
-                )
+        withCallingHandlers(
+          {
+            nunits <- purrr::map(
+              frequency,
+              purrr::possibly(
+                ~ {
+                  parse_rounding_unit(.x)
+                },
+                otherwise = list(n = NA, unit = NA)
               )
-            },
-            purrr_error_indexed = function(err) {
-              rlang::cnd_signal(err$parent)
-            }
-          )
-        } else {
-          nunits <- list(nunits)
-        }
+            )
+          },
+          purrr_error_indexed = function(err) {
+            rlang::cnd_signal(err$parent)
+          }
+        )
 
         # Create days_of_week and days_of_month from days
         days_of_week <- purrr::map_if(
@@ -107,42 +101,15 @@ MaestroPipeline <- R6::R6Class(
           purrr::list_c()
 
         # Update the transformed private attributes
-        private$start_time_utc <- lubridate::with_tz(
-          private$start_time,
-          tz = "UTC"
-        )
         private$frequency_n <- purrr::map_int(nunits, "n")
         private$frequency_unit <- purrr::map_chr(nunits, "unit")
         private$days_of_week <- days_of_week %n% 1:7
         private$days_of_month <- days_of_month %n% 1:31
-
-        start_time_adj <- .prev_on_cycle(
-          private$start_time,
-          current = lubridate::now(),
-          amount = private$frequency_n,
-          unit = private$frequency_unit
-        )
-
-        if (is.na(start_time_adj)) {
-          start_time_adj <- private$start_time
-        }
-
-        private$run_sequence <- get_pipeline_run_sequence(
-          pipeline_n = private$frequency_n,
-          pipeline_unit = private$frequency_unit,
-          pipeline_datetime = private$start_time,
-          check_datetime = start_time_adj + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
-          pipeline_hours = private$hours,
-          pipeline_days_of_week = private$days_of_week,
-          pipeline_days_of_month = private$days_of_month,
-          pipeline_months = private$months
-        )
       }
     },
 
     #' @description
     #' Prints the pipeline
-    #' @return print
     print = function() {
       cli::cli_h3("Maestro Pipeline: {.emph {private$pipe_name}}")
       cli::cli_text("{.file {private$script_path}}")
@@ -340,7 +307,6 @@ MaestroPipeline <- R6::R6Class(
       private$returns <- results
 
       run_time_end <- lubridate::now()
-      private$run_time_end <- run_time_end
 
       private$run_time_artifacts[[internal_run_id]] <- results
       private$insert_run_time_attributes(
@@ -407,56 +373,108 @@ MaestroPipeline <- R6::R6Class(
       } # pipes with a dependency are always timely
 
       orch_string <- paste(orch_n, orch_unit)
-      orch_frequency_seconds <- convert_to_seconds(orch_string)
       check_datetime_round <- timechange::time_round(
         check_datetime,
         unit = orch_string
       )
 
-      pipeline_sequence <- private$run_sequence
-
-      if (inherits(check_datetime_round, "Date")) {
-        pipeline_sequence <- lubridate::as_date(pipeline_sequence)
-      }
-
-      pipeline_sequence_round <- unique(timechange::time_round(
-        pipeline_sequence,
-        unit = orch_string
-      ))
-
-      check_datetime_int <- as.integer(check_datetime_round)
-      pipeline_seq_round_int <- as.integer(pipeline_sequence_round)
-      is_scheduled_now_idx <- which(
-        pipeline_seq_round_int %in% check_datetime_int
-      )
-      if (length(is_scheduled_now_idx) == 0) {
-        is_scheduled_now <- FALSE
-      } else {
-        is_scheduled_now <- TRUE
-      }
-
-      if (is_scheduled_now) {
-        next_run <- tryCatch(
-          {
-            next_idx <- is_scheduled_now_idx + 1
-            if (next_idx <= length(pipeline_sequence_round)) {
-              pipeline_sequence_round[[next_idx]]
-            } else {
-              NULL
-            }
-          },
-          error = function(e) {
-            NULL
-          }
+      # One step in pipeline frequency as a difftime/duration
+      .one_freq_step <- function() {
+        unit <- private$frequency_unit
+        n <- private$frequency_n
+        switch(
+          unit,
+          second = lubridate::seconds(n),
+          minute = lubridate::minutes(n),
+          hour = lubridate::hours(n),
+          day = lubridate::days(n),
+          week = lubridate::weeks(n),
+          month = months(n),
+          year = lubridate::years(n)
         )
-      } else {
-        future_entries <- pipeline_sequence_round[
-          pipeline_sequence_round > check_datetime_round
-        ]
-        next_run <- if (length(future_entries) > 0) future_entries[[1]] else NULL
       }
 
-      private$next_run <- next_run
+      # Check if a datetime passes all sub-day/calendar filters
+      .passes_filters <- function(dt) {
+        if (!all(0:23 %in% private$hours) && !lubridate::hour(dt) %in% private$hours) return(FALSE)
+        if (!all(1:7 %in% private$days_of_week) && !lubridate::wday(dt, week_start = 1) %in% private$days_of_week) return(FALSE)
+        if (!all(1:31 %in% private$days_of_month) && !lubridate::mday(dt) %in% private$days_of_month) return(FALSE)
+        if (!all(1:12 %in% private$months) && !lubridate::month(dt) %in% private$months) return(FALSE)
+        TRUE
+      }
+
+      prev <- .prev_on_cycle(
+        private$start_time,
+        current = check_datetime,
+        amount = private$frequency_n,
+        unit = private$frequency_unit
+      )
+
+      if (is.na(prev)) {
+        # Could be: (a) pipeline hasn't started yet, or (b) check_datetime is
+        # exactly on a cycle point (epsilon in .prev_on_cycle pushes it to NA).
+        # Detect case (b) by nudging forward 1 second.
+        prev_eps <- .prev_on_cycle(
+          private$start_time,
+          current = check_datetime + lubridate::seconds(1),
+          amount = private$frequency_n,
+          unit = private$frequency_unit
+        )
+        if (!is.na(prev_eps) && as.integer(prev_eps) == as.integer(check_datetime)) {
+          # check_datetime is exactly on a cycle point — treat it as prev
+          prev <- prev_eps
+        } else {
+          # Pipeline truly hasn't started yet
+          private$next_run <- private$start_time
+          return(FALSE)
+        }
+      }
+
+      # .prev_on_cycle returns strictly before check_datetime.
+      # The current cycle slot could be either prev (when the orch frequency is
+      # finer than the pipeline frequency and prev rounds into the current slot)
+      # or prev + one_step (when the pipeline runs exactly at check_datetime).
+      # Check both candidates and use whichever matches.
+      current_cycle <- lubridate::as_datetime(prev + .one_freq_step())
+
+      # Normalise to the same type as check_datetime_round before comparing
+      is_date_check <- inherits(check_datetime_round, "Date")
+      check_int <- as.integer(check_datetime_round)
+
+      as_comparable <- function(dt) {
+        if (is_date_check) as.integer(as.Date(dt)) else as.integer(dt)
+      }
+
+      prev_round <- timechange::time_round(prev, unit = orch_string)
+      current_cycle_round <- timechange::time_round(current_cycle, unit = orch_string)
+
+      matched_slot <- if (as_comparable(prev_round) == check_int) {
+        prev
+      } else if (as_comparable(current_cycle_round) == check_int) {
+        current_cycle
+      } else {
+        NULL
+      }
+
+      is_scheduled_now <- !is.null(matched_slot) && .passes_filters(matched_slot)
+
+      # Find next_run: scan forward from current_cycle until a filter-passing
+      # cycle point is found, bounded to avoid infinite loops.
+      max_steps <- max(
+        365L,
+        as.integer(.run_sequence_days_out(private$frequency_unit)) * 2L
+      )
+      next_candidate <- lubridate::as_datetime(current_cycle + .one_freq_step())
+      found_next <- NULL
+      for (i in seq_len(max_steps)) {
+        if (.passes_filters(next_candidate)) {
+          found_next <- timechange::time_round(next_candidate, unit = orch_string)
+          break
+        }
+        next_candidate <- lubridate::as_datetime(next_candidate + .one_freq_step())
+      }
+
+      private$next_run <- found_next
 
       return(is_scheduled_now)
     },
@@ -585,7 +603,6 @@ MaestroPipeline <- R6::R6Class(
       private$messages <- NULL
       private$returns <- NULL
       private$run_time_start <- lubridate::NA_POSIXct_
-      private$run_time_end <- lubridate::NA_POSIXct_
     },
 
     #' @description
@@ -599,18 +616,32 @@ MaestroPipeline <- R6::R6Class(
       min_datetime = NULL,
       max_datetime = NULL
     ) {
-      # Lazily extend the sequence to cover the requested window.
-      # Only applicable for primary (non-DAG-child) pipelines.
-      if (is.null(private$inputs)) {
-        extend_to <- if (!is.null(max_datetime)) {
-          lubridate::as_datetime(max_datetime)
-        } else {
-          lubridate::now() + lubridate::days(.run_sequence_days_out(private$frequency_unit))
-        }
-        private$extend_run_sequence(extend_to)
+      if (!is.null(private$inputs)) return(NULL)
+
+      extend_to <- if (!is.null(max_datetime)) {
+        lubridate::as_datetime(max_datetime)
+      } else {
+        lubridate::now() + lubridate::days(.run_sequence_days_out(private$frequency_unit))
       }
 
-      seq <- private$run_sequence
+      start_time_adj <- .prev_on_cycle(
+        private$start_time,
+        current = lubridate::now(),
+        amount = private$frequency_n,
+        unit = private$frequency_unit
+      )
+      if (is.na(start_time_adj)) start_time_adj <- private$start_time
+
+      seq <- get_pipeline_run_sequence(
+        pipeline_n = private$frequency_n,
+        pipeline_unit = private$frequency_unit,
+        pipeline_datetime = private$start_time,
+        check_datetime = extend_to,
+        pipeline_hours = private$hours,
+        pipeline_days_of_week = private$days_of_week,
+        pipeline_days_of_month = private$days_of_month,
+        pipeline_months = private$months
+      )
 
       if (!is.null(n)) {
         seq <- seq[seq_len(min(length(seq), as.integer(n)))]
@@ -627,41 +658,6 @@ MaestroPipeline <- R6::R6Class(
       }
 
       seq
-    },
-
-    #' @description
-    #' Refreshes the run sequence of a pipeline using the existing scheduling parameters.
-    #' This is used when loading a cached schedule to update run times without re-parsing tags.
-    #' Has no effect on DAG child pipelines (those with inputs).
-    #' @return invisible
-    refresh_run_sequence = function() {
-      if (!is.null(private$inputs)) return(invisible())
-
-      start_time_adj <- .prev_on_cycle(
-        private$start_time,
-        current = lubridate::now(),
-        amount = private$frequency_n,
-        unit = private$frequency_unit
-      )
-
-      if (is.na(start_time_adj)) {
-        start_time_adj <- private$start_time
-      }
-
-      private$run_sequence <- get_pipeline_run_sequence(
-        pipeline_n = private$frequency_n,
-        pipeline_unit = private$frequency_unit,
-        pipeline_datetime = private$start_time,
-        check_datetime = start_time_adj + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
-        pipeline_hours = private$hours,
-        pipeline_days_of_week = private$days_of_week,
-        pipeline_days_of_month = private$days_of_month,
-        pipeline_months = private$months
-      )
-
-      private$run_sequence_extended <- FALSE
-
-      invisible()
     }
   ),
 
@@ -682,18 +678,14 @@ MaestroPipeline <- R6::R6Class(
     run_if = NULL,
 
     # Transformed attributes
-    start_time_utc = lubridate::NA_POSIXct_,
     days_of_week = NULL,
     days_of_month = NULL,
     frequency_n = NA_integer_,
     frequency_unit = NA_character_,
-    run_sequence = lubridate::NA_POSIXct_,
-    run_sequence_extended = FALSE,
 
     # Dynamic attributes
     status = "Not Run",
     run_time_start = lubridate::NA_POSIXct_,
-    run_time_end = lubridate::NA_POSIXct_,
     returns = NULL,
     next_run = NULL,
     errors = NULL,
@@ -766,7 +758,6 @@ MaestroPipeline <- R6::R6Class(
           namespace = private$pipe_name
         )
         run_time_end <- lubridate::now()
-        private$run_time_end <- run_time_end
         private$insert_run_time_attributes(
           internal_run_id,
           list(
@@ -833,7 +824,6 @@ MaestroPipeline <- R6::R6Class(
           namespace = private$pipe_name
         )
         run_time_end <- lubridate::now()
-        private$run_time_end <- run_time_end
         private$insert_run_time_attributes(
           internal_run_id,
           list(
@@ -870,33 +860,6 @@ MaestroPipeline <- R6::R6Class(
       }
     },
 
-    extend_run_sequence = function(to_datetime) {
-      if (is.null(private$inputs)) {
-        current_end <- max(private$run_sequence, na.rm = TRUE)
-        to_datetime <- lubridate::as_datetime(to_datetime)
-        if (to_datetime <= current_end) return(invisible())
-
-        extension <- get_pipeline_run_sequence(
-          pipeline_n = private$frequency_n,
-          pipeline_unit = private$frequency_unit,
-          pipeline_datetime = current_end,
-          check_datetime = to_datetime,
-          pipeline_hours = private$hours,
-          pipeline_days_of_week = private$days_of_week,
-          pipeline_days_of_month = private$days_of_month,
-          pipeline_months = private$months
-        )
-
-        # Drop the first element — it duplicates current_end
-        if (length(extension) > 1) {
-          private$run_sequence <- c(private$run_sequence, extension[-1])
-        }
-
-        private$run_sequence_extended <- TRUE
-      }
-      invisible()
-    },
-
     cond_message_handler = function(internal_run_id) {
       function(m) {
         message_log <- logger::log_info(
@@ -904,10 +867,6 @@ MaestroPipeline <- R6::R6Class(
           namespace = private$pipe_name
         )
         private$messages <- c(private$messages, m$message)
-        private$run_time_attributes[[internal_run_id]]$messages <- c(
-          private$run_time_attributes[[internal_run_id]]$messages,
-          m$message
-        )
         cur_n_messages <- private$run_time_attributes$messages[
           private$run_time_attributes$internal_run_id == internal_run_id
         ] %n%

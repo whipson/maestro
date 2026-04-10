@@ -230,8 +230,7 @@ build_schedule_entry <- function(script_path) {
         outputs = .y$outputs %n% NULL,
         priority = as.numeric(.y$priority %n% Inf),
         flags = .y$flags %n% character(),
-        run_if = .y$run_if %n% NULL,
-        nunits = freq_nunits
+        run_if = .y$run_if %n% NULL
       )
     })
   }, purrr_error_indexed = function(err) {

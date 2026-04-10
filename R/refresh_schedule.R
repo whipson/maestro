@@ -1,19 +1,19 @@
-#' Refresh the run sequences of a cached schedule
+#' Refresh a cached schedule
 #'
-#' Updates the internally precomputed run sequences for all pipelines in a
-#' `MaestroSchedule` object without re-parsing any pipeline scripts or tags.
-#' This is called automatically when using `build_schedule(from_cache = ...)`,
-#' but can also be called directly when you hold a long-lived schedule object
-#' and want to freshen its future run times.
+#' Validates a cached `MaestroSchedule` object. Previously this function
+#' refreshed internally stored run sequences; run sequences are now generated
+#' on demand, so this function is a lightweight validation step kept for
+#' backward compatibility with workflows that call it after loading a cached
+#' schedule.
 #'
-#' **This function only refreshes run sequences.** It does not detect or apply
-#' any changes to pipeline scripts or `@maestro*` tags. If pipelines have been
+#' **This function does not detect or apply changes to pipeline scripts or
+#' `@maestro*` tags.** If pipelines have been
 #' added, removed, renamed, or had their tags modified since the schedule was
 #' last built, those changes will not be reflected. Use `build_schedule()` +
 #' `cache_schedule()` to rebuild and re-cache after any configuration change.
 #'
 #' @param schedule object of type `MaestroSchedule`
-#' @param quiet silence console messages (default `FALSE`)
+#' @param quiet silence console messages (default `FALSE``)
 #'
 #' @return `MaestroSchedule` (invisibly)
 #' @export
@@ -23,8 +23,7 @@
 #'   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #'   schedule <- build_schedule(pipeline_dir = pipeline_dir)
 #'
-#'   # Refresh run sequences without re-parsing scripts.
-#'   # Only safe if no pipeline configuration has changed.
+#'   # Validate a cached schedule object.
 #'   refresh_schedule(schedule)
 #' }
 refresh_schedule <- function(schedule, quiet = FALSE) {
@@ -46,14 +45,9 @@ refresh_schedule <- function(schedule, quiet = FALSE) {
     return(invisible(schedule))
   }
 
-  purrr::walk(
-    schedule$PipelineList$MaestroPipelines,
-    ~.x$refresh_run_sequence()
-  )
-
   if (!quiet) {
     cli::cli_inform(
-      "Refreshed run sequence{?s} for {n} pipeline{?s}."
+      "Schedule with {n} pipeline{?s} is ready."
     )
   }
 
