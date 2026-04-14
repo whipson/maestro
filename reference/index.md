@@ -5,7 +5,7 @@
 - [`MaestroSchedule`](https://whipson.github.io/maestro/reference/MaestroSchedule.md)
   : Class for a schedule of pipelines
 - [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
-  : Build a schedule table
+  : Build a schedule
 - [`create_maestro()`](https://whipson.github.io/maestro/reference/create_maestro.md)
   : Creates a new maestro project
 - [`create_orchestrator()`](https://whipson.github.io/maestro/reference/create_orchestrator.md)
@@ -39,7 +39,3 @@
   : Maestro Tags
 - [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
   : Run a schedule
-- [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
-  : Visualize the schedule as a DAG
-- [`suggest_orch_frequency()`](https://whipson.github.io/maestro/reference/suggest_orch_frequency.md)
-  : Suggest orchestrator frequency based on a schedule

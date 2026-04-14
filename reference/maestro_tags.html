@@ -9,7 +9,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Maestro Tags</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.0.1/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
       <div class="d-none name"><code>maestro_tags.Rd</code></div>
     </div>
 
@@ -95,10 +95,24 @@ also sets the cadence of the pipeline in some cases. For instance, if the start 
 is <code>2025-03-18 03:00:00</code> and the frequency is daily, the pipeline will run at 03:00
 every day. A value in the future prevents the pipeline from running until that time
 has been reached.</p>
-<p>Default: <code>2024-01-01 00:00:00</code></p>
+<p>For pipelines with a frequency lower than daily, partial anchor formats are supported
+to make it easier to express natural cycle points without choosing a specific date:</p><ul><li><p><strong><code>HH:MM:SS</code></strong> — time-of-day anchor for <code>minute</code>, <code>hour</code>, or <code>day</code> frequencies.
+e.g., <code>08:00:00</code> runs every day at 8am.</p></li>
+<li><p><strong><code>Mon HH:MM:SS</code></strong> (weekday abbreviation + time) — anchor for <code>week</code> or multi-week
+frequencies. Resolved to that weekday of the current ISO week.
+e.g., <code>Mon 04:00:00</code> with <code>@maestroFrequency 1 week</code> runs every Monday at 4am.
+Valid abbreviations: <code>Mon</code>, <code>Tue</code>, <code>Wed</code>, <code>Thu</code>, <code>Fri</code>, <code>Sat</code>, <code>Sun</code>.</p></li>
+<li><p><strong><code>DD HH:MM:SS</code></strong> or <strong><code>DD</code></strong> (month-day + optional time) — anchor for <code>month</code>
+frequencies. Resolved to that day of the current month.
+e.g., <code>15 04:00:00</code> with <code>@maestroFrequency 1 month</code> runs on the 15th of every month at 4am.</p></li>
+</ul><p>Default: <code>2024-01-01 00:00:00</code></p>
 <p>Examples:</p><ul><li><p><code>#' @maestroStartTime 2025-02-05 12:00:00</code></p></li>
 <li><p><code>#' @maestroStartTime 2025-01-01</code></p></li>
 <li><p><code>#' @maestroStartTime 08:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime Mon 04:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime Wed 09:30:00</code></p></li>
+<li><p><code>#' @maestroStartTime 15 04:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime 1</code></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="maestrotz">maestroTz<a class="anchor" aria-label="anchor" href="#maestrotz"></a></h2>

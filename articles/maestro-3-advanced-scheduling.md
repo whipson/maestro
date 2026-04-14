@@ -77,18 +77,17 @@ status <- run_schedule(
 
     ℹ 1 script successfully parsed
 
-    ── [2026-02-18 15:24:23]
+    ── [2026-04-14 15:13:26]
     Running pipelines ▶
-    ✔ daily_example [37ms]
 
-    ── [2026-02-18 15:24:23]
-    Pipeline execution completed ■ | 0.073 sec elapsed
-    ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
+    ── [2026-04-14 15:13:26]
+    Pipeline execution completed ■ | 0.018 sec elapsed
+    ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2024-06-21
+    • daily_example | 2024-06-20 09:20:00
 
 We can see that the pipeline executed even though the current time was
 not 09:20:00. This is because we set the orchestrator to run daily and
@@ -105,17 +104,17 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-02-18 15:24:23]
+    ── [2026-04-14 15:13:26]
     Running pipelines ▶
 
-    ── [2026-02-18 15:24:23]
+    ── [2026-04-14 15:13:26]
     Pipeline execution completed ■ | 0.001 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2024-06-20 09:15:00
+    • daily_example | 2024-06-20 09:20:00
 
 It was skipped because it wasn’t within a 15 minute degree of difference
 but the output tells us that will next run at `2024-06-20 09:15:00`.  
@@ -176,12 +175,6 @@ don’t run it so often that the pipelines can’t complete before the next
 execution time. We don’t recommend running the orchestrator more
 frequently than every 5 minutes unless you’re confident that your
 pipelines are fast to execute.[¹](#fn1)
-
-Maestro has a function for determining the ideal orchestrator frequency
-based on the pipeline frequencies in the project called
-[`suggest_orch_frequency()`](https://whipson.github.io/maestro/reference/suggest_orch_frequency.md).
-It looks for the shortest interval of time between any future pipeline
-executions and suggests that for the frequency.
 
 ## Irregular Schedules
 

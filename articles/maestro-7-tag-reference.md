@@ -55,7 +55,18 @@ is daily, the pipeline will run at 03:00 every day. A value in the
 future prevents the pipeline from running until that time has been
 reached.
 
-Default: `2024-01-01 00:00:00`
+For pipelines running less frequently than daily, partial anchor formats
+are supported to make it easier to express natural cycle points:
+
+- **`HH:MM:SS`** — time of day, for `minute`, `hour`, or `day`
+  frequencies.
+- **`Mon HH:MM:SS`** — weekday abbreviation + time, for `week`
+  frequencies. Valid abbreviations: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`,
+  `Sat`, `Sun`.
+- **`DD HH:MM:SS`** or **`DD`** — month-day (+ optional time), for
+  `month` frequencies.
+
+Default: Current date-time floored to the pipeline’s frequency unit.
 
 Examples:
 
@@ -64,6 +75,14 @@ Examples:
 - `#' @maestroStartTime 2025-01-01`
 
 - `#' @maestroStartTime 08:00:00`
+
+- `#' @maestroStartTime Mon 04:00:00`
+
+- `#' @maestroStartTime Wed 09:30:00`
+
+- `#' @maestroStartTime 15 04:00:00`
+
+- `#' @maestroStartTime 1`
 
 ### maestroTz
 
@@ -249,8 +268,13 @@ Default:
 Examples
 
 - `#' @maestroRunIf sample(c(TRUE, FALSE), 1)`
-- `#' @maestroRunIf #' rand_bool <- sample(c(TRUE, FALSE), 1) #' !rand_bool`
-- `#' @maestroInputs init_pipeline #' @maestroRunIf .input`
+
+- #' @maestroRunIf
+      #' rand_bool <- sample(c(TRUE, FALSE), 1)
+      #' !rand_bool
+
+- #' @maestroInputs init_pipeline
+      #' @maestroRunIf .input
 
 ### maestro
 

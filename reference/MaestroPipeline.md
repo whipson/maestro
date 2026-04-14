@@ -18,6 +18,8 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$get_pipe_name()`](#method-MaestroPipeline-get_pipe_name)
 
+- [`MaestroPipeline$get_frequency_nunits()`](#method-MaestroPipeline-get_frequency_nunits)
+
 - [`MaestroPipeline$get_schedule()`](#method-MaestroPipeline-get_schedule)
 
 - [`MaestroPipeline$check_timeliness()`](#method-MaestroPipeline-check_timeliness)
@@ -157,10 +159,6 @@ Prints the pipeline
 
     MaestroPipeline$print()
 
-#### Returns
-
-print
-
 ------------------------------------------------------------------------
 
 ### Method `run()`
@@ -249,6 +247,20 @@ Get the pipeline name
 #### Returns
 
 pipeline_name
+
+------------------------------------------------------------------------
+
+### Method `get_frequency_nunits()`
+
+Get the frequency n and unit as a list
+
+#### Usage
+
+    MaestroPipeline$get_frequency_nunits()
+
+#### Returns
+
+list with n and unit
 
 ------------------------------------------------------------------------
 

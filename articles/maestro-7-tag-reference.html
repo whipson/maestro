@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.0.1/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -118,12 +118,25 @@
 </ul></section><section class="level2"><h3 id="maestrostarttime">maestroStartTime<a class="anchor" aria-label="anchor" href="#maestrostarttime"></a>
 </h3>
 <p>Timestamp, date, or time corresponding to the start time of the pipeline. This also sets the cadence of the pipeline in some cases. For instance, if the start time is <code>2025-03-18 03:00:00</code> and the frequency is daily, the pipeline will run at 03:00 every day. A value in the future prevents the pipeline from running until that time has been reached.</p>
-<p>Default: <code>2024-01-01 00:00:00</code></p>
+<p>For pipelines running less frequently than daily, partial anchor formats are supported to make it easier to express natural cycle points:</p>
+<ul>
+<li>
+<strong><code>HH:MM:SS</code></strong> — time of day, for <code>minute</code>, <code>hour</code>, or <code>day</code> frequencies.</li>
+<li>
+<strong><code>Mon HH:MM:SS</code></strong> — weekday abbreviation + time, for <code>week</code> frequencies. Valid abbreviations: <code>Mon</code>, <code>Tue</code>, <code>Wed</code>, <code>Thu</code>, <code>Fri</code>, <code>Sat</code>, <code>Sun</code>.</li>
+<li>
+<strong><code>DD HH:MM:SS</code></strong> or <strong><code>DD</code></strong> — month-day (+ optional time), for <code>month</code> frequencies.</li>
+</ul>
+<p>Default: Current date-time floored to the pipeline’s frequency unit.</p>
 <p>Examples:</p>
 <ul>
 <li><p><code>#' @maestroStartTime 2025-02-05 12:00:00</code></p></li>
 <li><p><code>#' @maestroStartTime 2025-01-01</code></p></li>
 <li><p><code>#' @maestroStartTime 08:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime Mon 04:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime Wed 09:30:00</code></p></li>
+<li><p><code>#' @maestroStartTime 15 04:00:00</code></p></li>
+<li><p><code>#' @maestroStartTime 1</code></p></li>
 </ul></section><section class="level2"><h3 id="maestrotz">maestroTz<a class="anchor" aria-label="anchor" href="#maestrotz"></a>
 </h3>
 <p>Timezone in which the maestroStartTime is to be considered. Takes any valid timezone string that can be found in <code><a href="https://rdrr.io/r/base/timezones.html" class="external-link">OlsonNames()</a></code>.</p>
@@ -218,8 +231,11 @@
 <p>Examples</p>
 <ul>
 <li><code>#' @maestroRunIf sample(c(TRUE, FALSE), 1)</code></li>
-<li><code>#' @maestroRunIf     #' rand_bool &lt;- sample(c(TRUE, FALSE), 1)     #' !rand_bool</code></li>
-<li><code>#' @maestroInputs init_pipeline     #' @maestroRunIf .input</code></li>
+<li><pre><code><span><span class="co">#' @maestroRunIf</span></span>
+<span><span class="co">#' rand_bool &lt;- sample(c(TRUE, FALSE), 1)</span></span>
+<span><span class="co">#' !rand_bool</span></span></code></pre></li>
+<li><pre><code><span><span class="co">#' @maestroInputs init_pipeline</span></span>
+<span><span class="co">#' @maestroRunIf .input</span></span></code></pre></li>
 </ul></section><section class="level2"><h3 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a>
 </h3>
 <p>Generic tag for identifying a maestro pipeline with all the defaults. Useful when you want a pipeline to be scheduled via maestro that accepts all default tag values. Only use this tag if you have no other maestro tags. The tag takes no value.</p>

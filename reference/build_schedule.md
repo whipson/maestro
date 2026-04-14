@@ -1,6 +1,6 @@
-# Build a schedule table
+# Build a schedule
 
-Builds a schedule data.frame for scheduling pipelines in
+Builds a `MaestroSchedule` object for use in
 [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md).
 
 ## Usage
@@ -27,19 +27,13 @@ MaestroSchedule
 
 This function parses the maestro tags of functions located in
 `pipeline_dir` which is conventionally called 'pipelines'. An
-orchestrator requires a schedule table to determine which pipelines are
-to run and when. Each row in a schedule table is a pipeline name and its
-scheduling parameters such as its frequency.
+orchestrator requires a `MaestroSchedule` to determine which pipelines
+are to run and when. Each pipeline in the schedule is a parsed function
+and its scheduling parameters such as its frequency.
 
-The schedule table is mostly intended to be used by
-[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
-immediately. In other words, it is not recommended to make changes to
-it.
-
-It is recommended to build the schedule from scratch on each run of the
-orchestrator script rather than reusing or caching the schedule object.
-This is because the schedule object precomputes and stores a limited set
-of future run times for each pipeline.
+The `MaestroSchedule` is mostly intended to be passed directly to
+[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md).
+In other words, it is not recommended to make changes to it.
 
 ## Examples
 

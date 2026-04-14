@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,11 +47,38 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/whipson/maestro/blob/1.0.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/whipson/maestro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.1" id="maestro-101">maestro 1.0.1<a class="anchor" aria-label="anchor" href="#maestro-101"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0.9001" id="maestro-1109001">maestro 1.1.0.9001<a class="anchor" aria-label="anchor" href="#maestro-1109001"></a></h2>
+<div class="section level4">
+<h4 id="breaking-changes-1-1-0-9001">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-1-0-9001"></a></h4>
+<ul><li>The default value for <code>maestroStartTime</code> is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-features-1-1-0-9001">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0-9001"></a></h4>
+<ul><li>
+<code>maestroStartTime</code> now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:
+<ul><li>
+<code>Mon HH:MM:SS</code> (weekday + time) — for weekly pipelines, e.g. <code>Mon 04:00:00</code> runs every Monday at 4am.</li>
+<li>
+<code>DD HH:MM:SS</code> or <code>DD</code> (month-day + optional time) — for monthly pipelines, e.g. <code>15 04:00:00</code> runs on the 15th of every month at 4am.</li>
+</ul></li>
+</ul></div>
+<div class="section level4">
+<h4 id="deprecated-functionality-1-1-0-9001">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-1-1-0-9001"></a></h4>
+<ul><li><p><code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code> is deprecated with no replacement.</p></li>
+<li><p><code><a href="../reference/show_network.html">show_network()</a></code> (and <code>MaestroSchedule$show_network()</code>) is deprecated due to its reliance on <code>DiagrammeR</code>, which brings in a large number of little-used dependencies. Use <code>get_network()</code> to retrieve the pipeline dependency edge list directly.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="minor-changes-1-1-0-9001">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-1-0-9001"></a></h4>
+<ul><li><p>Some optimizations in schedule building and running.</p></li>
+<li><p>Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.1" id="maestro-101">maestro 1.0.1<a class="anchor" aria-label="anchor" href="#maestro-101"></a></h2><p class="text-muted">CRAN release: 2026-02-18</p>
 <div class="section level4">
 <h4 id="minor-changes-1-0-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-0-1"></a></h4>
 <ul><li><p>Log timestamps now use a %Y-%m-%d %H:%M:%S format.</p></li>

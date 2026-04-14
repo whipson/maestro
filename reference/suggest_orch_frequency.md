@@ -38,6 +38,9 @@ Note this function is intended to be used interactively when deciding
 how often to schedule the orchestrator. Programmatic use is not
 recommended.
 
+**Deprecated.** This function is no longer actively maintained and may
+be removed in a future release.
+
 ## Examples
 
 ``` r

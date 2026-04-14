@@ -1,8 +1,16 @@
 # Visualize the schedule as a DAG
 
+**\[deprecated\]**
+
 Create an interactive network visualization to show the dependency
 structure of pipelines in the schedule. This is only useful if there are
 pipelines in the schedule that take inputs/outputs from other pipelines.
+
+Note that running this function on a schedule with all independent
+pipelines will produce a network visual with no connections.
+
+This function requires the installation of `DiagrammeR` which is not
+automatically installed with `maestro`.
 
 ## Usage
 
@@ -20,14 +28,6 @@ show_network(schedule)
 ## Value
 
 DiagrammeR visualization
-
-## Details
-
-Note that running this function on a schedule with all independent
-pipelines will produce a network visual with no connections.
-
-This function requires the installation of `DiagrammeR` which is not
-automatically installed with `maestro`.
 
 ## Examples
 

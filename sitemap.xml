@@ -12,6 +12,7 @@
 <url><loc>https://whipson.github.io/maestro/articles/maestro-7-tag-reference.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/articles/maestro-8-conditionals.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/authors.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/copilot-instructions.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/news/index.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/MaestroPipeline.html</loc></url>
@@ -23,6 +24,9 @@
 <url><loc>https://whipson.github.io/maestro/reference/create_maestro.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/create_orchestrator.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/create_pipeline.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/dot-prev_on_cycle.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/dot-run_sequence_days_out.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/dot-run_sequence_min_days_out.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_artifacts.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_flags.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_pipeline_run_sequence.html</loc></url>
@@ -40,6 +44,7 @@
 <url><loc>https://whipson.github.io/maestro/reference/maestro.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/maestro_parse_cli.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/maestro_tags.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/parse_maestro_start_time.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/parse_rounding_unit.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/run_schedule.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/show_network.html</loc></url>

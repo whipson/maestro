@@ -59,14 +59,14 @@ get_artifacts(schedule)
 ```
 
                                                                                     
-    ── [2026-02-18 15:24:14]                                                        
+    ── [2026-04-14 15:13:17]                                                        
     Running pipelines ▶                                                             
-    ✔ start [21ms]                                                                  
-    ✔   |-high_road [26ms]                                                          
-    ✔   |-low_road [8ms]                                                            
+    ✔ start [23ms]                                                                  
+    ✔   |-high_road [27ms]                                                          
+    ✔   |-low_road [9ms]                                                            
                                                                                     
-    ── [2026-02-18 15:24:15]                                                        
-    Pipeline execution completed ■ | 0.115 sec elapsed                              
+    ── [2026-04-14 15:13:17]                                                        
+    Pipeline execution completed ■ | 0.118 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
     $start                                                                          
@@ -143,21 +143,16 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2026-02-18 15:24:15]                                                        
+    ── [2026-04-14 15:13:18]                                                        
     Running pipelines ▶                                                             
-    ✔ extract [12ms]                                                                
-    ✔   |-transform [13ms]                                                          
+    ✔ extract [9ms]                                                                 
+    ✔   |-transform [16ms]                                                          
     ✔     |-load [9ms]                                                              
                                                                                     
-    ── [2026-02-18 15:24:15]                                                        
-    Pipeline execution completed ■ | 0.065 sec elapsed                              
+    ── [2026-04-14 15:13:18]                                                        
+    Pipeline execution completed ■ | 0.064 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
-
-When developing these pipelines, it is helpful to visualize the
-dependency structure. We can do this by calling
-[`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
-on the schedule:
 
 ------------------------------------------------------------------------
 
