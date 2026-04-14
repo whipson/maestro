@@ -229,12 +229,22 @@ test_that("run_schedule timeliness checks - specifiers on a non UTC timezone", {
     run_schedule(
       schedule,
       orch_frequency = "1 hour",
-      check_datetime = as.POSIXct("2025-01-01 04:00:00", tz = "America/Halifax"),
+      check_datetime = as.POSIXct("2025-01-01 07:00:00", tz = "America/Halifax"),
       quiet = TRUE
     )
 
     status <- get_status(schedule)
     expect_true(status$invoked[status$pipe_name == "non_utc_hours"])
+
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2025-01-01 07:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+
+    status <- get_status(schedule)
+    expect_false(status$invoked[status$pipe_name == "non_utc_hours"])
   })
 })
 
