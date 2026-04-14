@@ -6,21 +6,16 @@
 
 ### New features
 
-- `maestroStartTime` now accepts partial anchor formats for sub-daily frequencies,
-  making it easier to express natural cycle points without picking a specific date:
-  - `Mon HH:MM:SS` (weekday + time) — for weekly pipelines, e.g. `Mon 04:00:00`
-    runs every Monday at 4am.
-  - `DD HH:MM:SS` or `DD` (month-day + optional time) — for monthly pipelines,
-    e.g. `15 04:00:00` runs on the 15th of every month at 4am.
+- `maestroStartTime` now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:
+  - `Mon HH:MM:SS` (weekday + time) — for weekly pipelines, e.g. `Mon 04:00:00` runs every Monday at 4am.
+  - `DD HH:MM:SS` or `DD` (month-day + optional time) — for monthly pipelines, e.g. `15 04:00:00` runs on the 15th of every month at 4am.
 
 ### Deprecated functionality
 
 - `suggest_orch_frequency()` is deprecated with no replacement.
 
 - `show_network()` (and `MaestroSchedule$show_network()`) is deprecated due to
-  its reliance on `DiagrammeR`, which brings in a large number of little-used
-  dependencies. Use `get_network()` to retrieve the pipeline dependency edge
-  list directly.
+  its reliance on `DiagrammeR`, which brings in a large number of little-used dependencies. Use `get_network()` to retrieve the pipeline dependency edge list directly.
 
 ### Minor changes
 
