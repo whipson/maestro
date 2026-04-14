@@ -374,7 +374,7 @@ MaestroPipeline <- R6::R6Class(
 
       orch_string <- paste(orch_n, orch_unit)
       check_datetime_round <- timechange::time_round(
-        check_datetime,
+        lubridate::with_tz(check_datetime, private$tz),
         unit = orch_string
       )
 
@@ -437,16 +437,11 @@ MaestroPipeline <- R6::R6Class(
       # Check both candidates and use whichever matches.
       current_cycle <- lubridate::as_datetime(prev + .one_freq_step())
 
-      # Normalise to the same type as check_datetime_round before comparing
-      is_date_check <- inherits(check_datetime_round, "Date")
-      check_int <- as.integer(check_datetime_round)
-
-      as_comparable <- function(dt) {
-        if (is_date_check) as.integer(as.Date(dt)) else as.integer(dt)
-      }
-
       prev_round <- timechange::time_round(prev, unit = orch_string)
       current_cycle_round <- timechange::time_round(current_cycle, unit = orch_string)
+
+      as_comparable <- function(dt) as.integer(dt)
+      check_int <- as_comparable(check_datetime_round)
 
       matched_slot <- if (as_comparable(prev_round) == check_int) {
         prev

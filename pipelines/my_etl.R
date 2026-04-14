@@ -1,6 +1,7 @@
 #' Example ETL pipeline
 #' @maestroFrequency daily
 #' @maestroStartTime 12:30:00
+#' @maestroTz America/Halifax
 my_etl <- function() {
 
   # Pretend we're getting data from a source

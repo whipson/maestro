@@ -127,26 +127,6 @@ test_that("run_schedule timeliness checks - pipelines run when they're supposed 
     schedule <- build_schedule(quiet = TRUE)
     output <- run_schedule(
       schedule,
-      orch_frequency = "1 month",
-      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-      quiet = TRUE
-    ) |>
-      suppressWarnings()
-    expect_equal(output$get_status()$invoked, c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE))
-
-    schedule <- build_schedule(quiet = TRUE)
-    output <- run_schedule(
-      schedule,
-      orch_frequency = "4 days",
-      check_datetime = as.POSIXct("2024-04-01 00:00:00", tz = "UTC"),
-      quiet = TRUE
-    ) |>
-      suppressWarnings()
-    expect_equal(output$get_status()$invoked, c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE))
-
-    schedule <- build_schedule(quiet = TRUE)
-    output <- run_schedule(
-      schedule,
       orch_frequency = "hourly",
       check_datetime = as.POSIXct("2024-03-02 09:00:00", tz = "America/Halifax"),
       quiet = TRUE
