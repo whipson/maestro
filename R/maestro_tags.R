@@ -51,12 +51,29 @@
 #' every day. A value in the future prevents the pipeline from running until that time
 #' has been reached.
 #'
+#' For pipelines with a frequency lower than daily, partial anchor formats are supported
+#' to make it easier to express natural cycle points without choosing a specific date:
+#'
+#' - **`HH:MM:SS`** — time-of-day anchor for `minute`, `hour`, or `day` frequencies.
+#'   e.g., `08:00:00` runs every day at 8am.
+#' - **`Mon HH:MM:SS`** (weekday abbreviation + time) — anchor for `week` or multi-week
+#'   frequencies. Resolved to that weekday of the current ISO week.
+#'   e.g., `Mon 04:00:00` with `@maestroFrequency 1 week` runs every Monday at 4am.
+#'   Valid abbreviations: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`.
+#' - **`DD HH:MM:SS`** or **`DD`** (month-day + optional time) — anchor for `month`
+#'   frequencies. Resolved to that day of the current month.
+#'   e.g., `15 04:00:00` with `@maestroFrequency 1 month` runs on the 15th of every month at 4am.
+#'
 #' Default: `2024-01-01 00:00:00`
 #'
 #' Examples:
 #' - `#' @maestroStartTime 2025-02-05 12:00:00`
 #' - `#' @maestroStartTime 2025-01-01`
 #' - `#' @maestroStartTime 08:00:00`
+#' - `#' @maestroStartTime Mon 04:00:00`
+#' - `#' @maestroStartTime Wed 09:30:00`
+#' - `#' @maestroStartTime 15 04:00:00`
+#' - `#' @maestroStartTime 1`
 #'
 #'
 #' # maestroTz

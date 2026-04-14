@@ -340,6 +340,78 @@ make_id <- function(n = 6) {
   paste0(c(first, rest), collapse = "")
 }
 
+# Weekday abbreviations, ordered Mon–Sun (matches lubridate week_start = 1)
+.weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+#' Resolve a partial \code{@maestroStartTime} string to a concrete POSIXct
+#'
+#' Accepts four formats:
+#' \itemize{
+#'   \item \code{"HH:MM:SS"} — time of day; anchored to today's date.
+#'   \item \code{"Mon HH:MM:SS"} — weekday + time; anchored to that weekday of
+#'     the current ISO week.
+#'   \item \code{"DD HH:MM:SS"} or \code{"DD"} — month-day (+ optional time);
+#'     anchored to that day of the current month.
+#'   \item Full datetime string — passed through to \code{as.POSIXct()}.
+#' }
+#'
+#' Using a recent \code{now} as the reference keeps the anchor close to the
+#' present, so \code{n} in \code{.prev_on_cycle()} stays small.
+#'
+#' @param raw Character string from the tag value.
+#' @param tz  Timezone string.
+#' @param now \code{POSIXct} reference point (default \code{lubridate::now(tz)}).
+#' @return A \code{POSIXct}, or \code{NA} if \code{raw} is \code{NA}/\code{""}.
+#' @keywords internal
+parse_maestro_start_time <- function(raw, tz, now = lubridate::now(tzone = tz)) {
+
+  if (is.na(raw) || raw == "") return(NA)
+
+  # HH:MM:SS
+  if (grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", raw)) {
+    date_part <- format(now, "%Y-%m-%d")
+    return(as.POSIXct(paste(date_part, raw), format = "%Y-%m-%d %H:%M:%S", tz = tz))
+  }
+
+  # Mon HH:MM:SS — weekday + time
+  if (grepl(sprintf("^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
+                    paste(.weekday_abbrs, collapse = "|")), raw)) {
+    parts    <- strsplit(raw, "\\s+")[[1]]
+    day_abbr <- parts[1]
+    time_str <- parts[2]
+
+    # target_dow is an offset from Monday (1 = Mon, 7 = Sun), derived purely
+    # from .weekday_abbrs — not from lubridate.week.start or wday().
+    # floor_date(..., week_start = 1) is also explicit, so this is
+    # session-option-independent.
+    target_dow  <- match(day_abbr, .weekday_abbrs)
+    week_start  <- lubridate::floor_date(now, unit = "week", week_start = 1)
+    anchor_date <- week_start + lubridate::days(target_dow - 1L)
+    return(as.POSIXct(
+      paste(format(anchor_date, "%Y-%m-%d"), time_str),
+      format = "%Y-%m-%d %H:%M:%S",
+      tz = tz
+    ))
+  }
+
+  # DD or DD HH:MM:SS — month-day + optional time
+  if (grepl("^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$", raw)) {
+    parts       <- strsplit(raw, "\\s+")[[1]]
+    mday        <- as.integer(parts[1])
+    time_str    <- if (length(parts) == 2) parts[2] else "00:00:00"
+    month_start <- lubridate::floor_date(now, unit = "month")
+    anchor_date <- month_start + lubridate::days(mday - 1L)
+    return(as.POSIXct(
+      paste(format(anchor_date, "%Y-%m-%d"), time_str),
+      format = "%Y-%m-%d %H:%M:%S",
+      tz = tz
+    ))
+  }
+
+  # Full datetime — delegate to base coercion
+  as.POSIXct(raw, tz = tz)
+}
+
 #' Find the most recent cycle point before a given time
 #'
 #' Given a repeating cycle anchored at \code{start} and stepping every

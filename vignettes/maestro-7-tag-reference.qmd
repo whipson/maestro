@@ -50,7 +50,13 @@ Examples:
 
 Timestamp, date, or time corresponding to the start time of the pipeline. This also sets the cadence of the pipeline in some cases. For instance, if the start time is `2025-03-18 03:00:00` and the frequency is daily, the pipeline will run at 03:00 every day. A value in the future prevents the pipeline from running until that time has been reached.
 
-Default: Current date at midnight
+For pipelines running less frequently than daily, partial anchor formats are supported to make it easier to express natural cycle points:
+
+- **`HH:MM:SS`** — time of day, for `minute`, `hour`, or `day` frequencies.
+- **`Mon HH:MM:SS`** — weekday abbreviation + time, for `week` frequencies. Valid abbreviations: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`.
+- **`DD HH:MM:SS`** or **`DD`** — month-day (+ optional time), for `month` frequencies.
+
+Default: Current date-time floored to the pipeline's frequency unit.
 
 Examples:
 
@@ -59,6 +65,14 @@ Examples:
 -   `#' @maestroStartTime 2025-01-01`
 
 -   `#' @maestroStartTime 08:00:00`
+
+-   `#' @maestroStartTime Mon 04:00:00`
+
+-   `#' @maestroStartTime Wed 09:30:00`
+
+-   `#' @maestroStartTime 15 04:00:00`
+
+-   `#' @maestroStartTime 1`
 
 ## maestroTz
 

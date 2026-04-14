@@ -181,9 +181,24 @@ build_schedule_entry <- function(script_path) {
 
       tz <- .y$tz %n% "UTC"
 
-      # Find the format for the start time using nchar instead of guess_formats
-      if (!is.na(.y$start_time) && nchar(.y$start_time) == 8) {
-        if (!is.null(freq_nunits)) {
+      # Detect partial start_time formats for validation
+      .weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+      is_time_only   <- !is.na(.y$start_time) &&
+        grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", .y$start_time %n% "")
+      is_weekday_fmt <- !is.na(.y$start_time) &&
+        grepl(
+          sprintf("^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
+                  paste(.weekday_abbrs, collapse = "|")),
+          .y$start_time %n% ""
+        )
+      is_monthday_fmt <- !is.na(.y$start_time) &&
+        grepl("^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$",
+              .y$start_time %n% "")
+
+      if (!is.null(freq_nunits)) {
+
+        # Existing validation: HH:MM:SS only valid for minute/hour/day
+        if (is_time_only) {
           if (freq_nunits$n > 1 && freq_nunits$unit == "day") {
             cli::cli_abort(
               c("Cannot use a `@maestroStartTime` with format %H:%M:%S in combination with
@@ -199,9 +214,31 @@ build_schedule_entry <- function(script_path) {
             )
           }
         }
-        start_time <- as.POSIXct(.y$start_time, "%H:%M:%S", tz = tz)
+
+        # New validation: weekday format only valid for week-based frequencies
+        if (is_weekday_fmt && !freq_nunits$unit %in% c("week")) {
+          cli::cli_abort(
+            c("`@maestroStartTime` with weekday format (e.g., `Mon 04:00:00`) is only valid for weekly `@maestroFrequency`.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+
+        # New validation: month-day format only valid for month-based frequencies
+        if (is_monthday_fmt && !freq_nunits$unit %in% c("month")) {
+          cli::cli_abort(
+            c("`@maestroStartTime` with month-day format (e.g., `15 04:00:00`) is only valid for monthly `@maestroFrequency`.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+      }
+
+      # Resolve start_time to a concrete POSIXct
+      start_time <- if (!is.na(.y$start_time %n% NA)) {
+        parse_maestro_start_time(.y$start_time, tz = tz)
       } else {
-        start_time <- as.POSIXct(.y$start_time, tz = tz)
+        NA
       }
 
       # Create the new pipeline

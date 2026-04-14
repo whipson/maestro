@@ -1,8 +1,17 @@
-# maestro 1.1.0.9000
+# maestro 1.1.0.9001
 
 ### Breaking changes
 
 - The default value for `maestroStartTime` is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.
+
+### New features
+
+- `maestroStartTime` now accepts partial anchor formats for sub-daily frequencies,
+  making it easier to express natural cycle points without picking a specific date:
+  - `Mon HH:MM:SS` (weekday + time) — for weekly pipelines, e.g. `Mon 04:00:00`
+    runs every Monday at 4am.
+  - `DD HH:MM:SS` or `DD` (month-day + optional time) — for monthly pipelines,
+    e.g. `15 04:00:00` runs on the 15th of every month at 4am.
 
 ### Deprecated functionality
 

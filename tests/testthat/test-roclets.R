@@ -63,7 +63,7 @@ test_that("integer maestroStartTime fails", {
     maestroStartTime_roclet(),
     readLines(test_path("test_pipelines/test_pipeline_start_time_int.R"))
   ) |>
-    expect_warning(regexp = "Must be a timestamp")
+    expect_warning(regexp = "Invalid maestroStartTime")
 
   expect_null(res$val)
 })
@@ -77,6 +77,68 @@ test_that("partial maestroStartTime works", {
 
   expect_type(res$val, "character")
   expect_s3_class(as.POSIXct(res$val), "POSIXct")
+})
+
+test_that("maestroStartTime accepts weekday format", {
+  res <- roxygen2::roc_proc_text(
+    maestroStartTime_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_weekly_weekday.R"))
+  ) |>
+    expect_no_message()
+
+  expect_type(res$val, "character")
+  expect_equal(res$val, "Mon 04:00:00")
+})
+
+test_that("maestroStartTime accepts month-day format", {
+  res <- roxygen2::roc_proc_text(
+    maestroStartTime_roclet(),
+    readLines(test_path("test_pipelines/test_pipeline_monthly_monthday.R"))
+  ) |>
+    expect_no_message()
+
+  expect_type(res$val, "character")
+  expect_equal(res$val, "15 04:00:00")
+})
+
+test_that("build_schedule_entry errors on weekday format with non-weekly frequency", {
+  expect_error(
+    build_schedule_entry(
+      test_path("test_pipelines/test_pipeline_weekday_wrong_freq.R")
+    ),
+    regexp = "weekday format"
+  )
+})
+
+test_that("build_schedule_entry errors on month-day format with non-monthly frequency", {
+  expect_error(
+    build_schedule_entry(
+      test_path("test_pipelines/test_pipeline_monthday_wrong_freq.R")
+    ),
+    regexp = "month-day format"
+  )
+})
+
+test_that("build_schedule_entry resolves weekday start_time to POSIXct", {
+  res <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_weekly_weekday.R")
+  )
+  pipeline <- res$MaestroPipelines[[1]]
+  expect_s3_class(pipeline$.__enclos_env__$private$start_time, "POSIXct")
+  # Resolved anchor should be a Monday
+  expect_equal(
+    lubridate::wday(pipeline$.__enclos_env__$private$start_time, week_start = 1),
+    1L  # 1 = Monday
+  )
+})
+
+test_that("build_schedule_entry resolves month-day start_time to POSIXct", {
+  res <- build_schedule_entry(
+    test_path("test_pipelines/test_pipeline_monthly_monthday.R")
+  )
+  pipeline <- res$MaestroPipelines[[1]]
+  expect_s3_class(pipeline$.__enclos_env__$private$start_time, "POSIXct")
+  expect_equal(lubridate::mday(pipeline$.__enclos_env__$private$start_time), 15L)
 })
 
 test_that("parse maestroTz tag works", {
