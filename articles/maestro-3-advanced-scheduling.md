@@ -47,7 +47,7 @@ First, we’ll consider one pipeline that is scheduled to run daily at
 #' daily_example maestro pipeline
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-06-20 09:20:00
+#' @maestroStartTime 09:20:00
 daily_example <- function() {
 
   # Pipeline code
@@ -77,17 +77,17 @@ status <- run_schedule(
 
     ℹ 1 script successfully parsed
 
-    ── [2026-04-14 15:13:26]
+    ── [2026-04-14 16:00:12]
     Running pipelines ▶
 
-    ── [2026-04-14 15:13:26]
-    Pipeline execution completed ■ | 0.018 sec elapsed
+    ── [2026-04-14 16:00:12]
+    Pipeline execution completed ■ | 0.024 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2024-06-20 09:20:00
+    • daily_example | 2026-04-14 09:20:00
 
 We can see that the pipeline executed even though the current time was
 not 09:20:00. This is because we set the orchestrator to run daily and
@@ -104,17 +104,17 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-14 15:13:26]
+    ── [2026-04-14 16:00:12]
     Running pipelines ▶
 
-    ── [2026-04-14 15:13:26]
-    Pipeline execution completed ■ | 0.001 sec elapsed
+    ── [2026-04-14 16:00:12]
+    Pipeline execution completed ■ | 0.006 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2024-06-20 09:20:00
+    • daily_example | 2026-04-14 09:20:00
 
 It was skipped because it wasn’t within a 15 minute degree of difference
 but the output tells us that will next run at `2024-06-20 09:15:00`.  

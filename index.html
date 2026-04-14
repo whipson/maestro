@@ -122,8 +122,8 @@
 <p>A pipeline is task we want to run. This task may involve retrieving data from a source, performing cleaning and computation on the data, then sending it to a destination. <code>maestro</code> is not concerned with what your pipeline does, but rather <em>when</em> you want to run it. Here’s a simple pipeline in <code>maestro</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Example ETL pipeline</span></span>
-<span><span class="co">#' @maestroFrequency 1 day</span></span>
-<span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
+<span><span class="co">#' @maestroFrequency daily</span></span>
+<span><span class="co">#' @maestroStartTime 12:30:00</span></span>
 <span><span class="va">my_etl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># Pretend we're getting data from a source</span></span>
@@ -141,10 +141,10 @@
 <span><span class="op">}</span></span></code></pre></div>
 <p>What makes this a <code>maestro</code> pipeline is the use of special <em>roxygen</em>-style comments above the function definition:</p>
 <ul>
-<li><p><code>#' @maestroFrequency 1 day</code> indicates that this function should execute at a daily frequency.</p></li>
-<li><p><code>#' @maestroStartTime 2024-03-25 12:30:00</code> denotes the first time it should run.</p></li>
+<li><p><code>#' @maestroFrequency daily</code> indicates that this function should execute at a daily frequency.</p></li>
+<li><p><code>#' @maestroStartTime 12:30:00</code> indicates that it runs at 12:30.</p></li>
 </ul>
-<p>In other words, we’d expect it to run every day at 12:30 starting the 25th of March 2024. There are more <code>maestro</code> tags than these ones and all follow the camelCase convention established by <code>roxygen2</code>.</p>
+<p>In other words, we’d expect it to run every day at 12:30. There are more <code>maestro</code> tags than these ones and all follow the camelCase convention established by <code>roxygen2</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="orchestrator">Orchestrator<a class="anchor" aria-label="anchor" href="#orchestrator"></a>

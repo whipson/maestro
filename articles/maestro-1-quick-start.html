@@ -134,7 +134,7 @@ take a quick look at the sample <code>my_pipe.R</code>:</p>
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
-<span><span class="co">#' @maestroStartTime 2024-05-24</span></span>
+<span><span class="co">#' @maestroStartTime 03:00:00</span></span>
 <span><span class="co">#' @maestroTz UTC</span></span>
 <span><span class="co">#' @maestroLogLevel INFO</span></span>
 <span></span>
@@ -144,8 +144,8 @@ take a quick look at the sample <code>my_pipe.R</code>:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p><code>my_pipe</code> is a function with an empty body - so right now
 it won’t do anything. The comments above are interpreted by
-<code>maestro</code> as “this function is scheduled to run every day
-starting at 2024-05-24 (00:00:00) UTC time”.</p>
+<code>maestro</code> as “this function is scheduled to run every day at
+03:00:00 UTC time”.</p>
 <p>maestroFrequency and maestroStartTime are the most important tags for
 scheduling. Frequency is how often you want the pipeline to run and can
 be formatted as a single string like hourly, daily, weekly, biweekly,
@@ -164,7 +164,7 @@ important.</p>
 <code class="sourceCode R"><span><span class="co">#' my_pipe maestro pipeline</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
-<span><span class="co">#' @maestroStartTime 2024-05-24</span></span>
+<span><span class="co">#' @maestroStartTime 03:00:00</span></span>
 <span><span class="co">#' @maestroTz UTC</span></span>
 <span><span class="co">#' @maestroLogLevel INFO</span></span>
 <span></span>
@@ -190,7 +190,6 @@ pipelines to your pipelines directory manually or use
 <span>  pipe_name <span class="op">=</span> <span class="st">"another_pipeline"</span>,</span>
 <span>  pipeline_dir <span class="op">=</span> <span class="st">"pipelines"</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="st">"1 hour"</span>,</span>
-<span>  start_time <span class="op">=</span> <span class="st">"2024-05-17 15:00:00"</span>,</span>
 <span>  tz <span class="op">=</span> <span class="st">"America/Halifax"</span>,</span>
 <span>  log_level <span class="op">=</span> <span class="st">"ERROR"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -221,17 +220,17 @@ we’ll use a regular R script. Here is where you’ll run
 <pre>
 <span style="color: #2AA198;">ℹ</span> 1 script successfully parsed                                                  
                                                                                 
-── [2026-04-14 15:13:14]                                                        
+── [2026-04-14 15:59:59]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
                                                                                 
-── [2026-04-14 15:13:14]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.017 sec elapsed                              
+── [2026-04-14 15:59:59]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.023 sec elapsed                              
 <span style="color: #859900;">✔</span> 0 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 0 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• my_pipe | 2026-04-15                                                          
+• my_pipe | 2026-04-15 03:00:00                                                 
 </pre>
 </div>
 <p>Building the schedule gets <code>maestro</code> to look through the

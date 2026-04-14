@@ -52,7 +52,7 @@ take a quick look at the sample `my_pipe.R`:
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-05-24
+#' @maestroStartTime 03:00:00
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
 
@@ -64,8 +64,7 @@ my_pipe <- function() {
 
 `my_pipe` is a function with an empty body - so right now it won’t do
 anything. The comments above are interpreted by `maestro` as “this
-function is scheduled to run every day starting at 2024-05-24 (00:00:00)
-UTC time”.
+function is scheduled to run every day at 03:00:00 UTC time”.
 
 maestroFrequency and maestroStartTime are the most important tags for
 scheduling. Frequency is how often you want the pipeline to run and can
@@ -88,7 +87,7 @@ Here’s a more realistic, albeit impractical, example:
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-05-24
+#' @maestroStartTime 03:00:00
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
 
@@ -115,7 +114,6 @@ create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",
   frequency = "1 hour",
-  start_time = "2024-05-17 15:00:00",
   tz = "America/Halifax",
   log_level = "ERROR"
 )
@@ -148,17 +146,17 @@ output <- run_schedule(
 
     ℹ 1 script successfully parsed                                                  
                                                                                     
-    ── [2026-04-14 15:13:14]                                                        
+    ── [2026-04-14 15:59:59]                                                        
     Running pipelines ▶                                                             
                                                                                     
-    ── [2026-04-14 15:13:14]                                                        
-    Pipeline execution completed ■ | 0.017 sec elapsed                              
+    ── [2026-04-14 15:59:59]                                                        
+    Pipeline execution completed ■ | 0.023 sec elapsed                              
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • my_pipe | 2026-04-15                                                          
+    • my_pipe | 2026-04-15 03:00:00                                                 
 
 Building the schedule gets `maestro` to look through the pipelines in
 the pipelines folder and creates a schedule object. Then, you pass that
