@@ -17,6 +17,8 @@
 
 - Some optimizations in schedule building and running.
 
+- Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.
+
 # maestro 1.0.1
 
 ### Minor changes
