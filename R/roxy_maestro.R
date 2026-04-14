@@ -74,17 +74,37 @@ roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
   x$raw <- x$raw |>
     trimws()
 
+  .weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+  weekday_pattern <- sprintf(
+    "^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
+    paste(.weekday_abbrs, collapse = "|")
+  )
+  monthday_pattern <- "^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$"
+
   tryCatch({
 
     if (x$raw == "") {
       x$val <- "1970-01-01 00:00:00"
-    } else if (nchar(x$raw) == 8) {
-      x_ts <- as.POSIXct(x$raw, format = "%H:%M:%S") # check if coercible
+    } else if (grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", x$raw)) {
+      as.POSIXct(x$raw, format = "%H:%M:%S")  # validate format
+      x$val <- x$raw
+    } else if (grepl(weekday_pattern, x$raw)) {
+      x$val <- x$raw
+    } else if (grepl(monthday_pattern, x$raw)) {
+      mday <- as.integer(strsplit(x$raw, "\\s+")[[1]][1])
+      if (is.na(mday) || mday < 1L || mday > 31L) {
+        roxygen2::roxy_tag_warning(
+          x,
+          glue::glue("Invalid maestroStartTime `{x$raw}`. Month-day must be an integer in [1-31].")
+        )
+        return()
+      }
       x$val <- x$raw
     } else {
-      x_ts <- as.POSIXct(x$raw) # check if coercible
-      x_ts <- strftime(x_ts, format = "%Y-%m-%d %H:%M:%S")
-      x$val <- x_ts
+      x_ts <- as.POSIXct(x$raw, format = "%Y-%m-%d %H:%M:%S")
+      if (is.na(x_ts)) x_ts <- as.POSIXct(x$raw, format = "%Y-%m-%d")
+      if (is.na(x_ts)) stop("could not parse")
+      x$val <- strftime(x_ts, format = "%Y-%m-%d %H:%M:%S")
     }
 
   }, error = \(e) {
@@ -92,7 +112,7 @@ roxy_tag_parse.roxy_tag_maestroStartTime <- function(x) {
       x,
       glue::glue(
         "Invalid maestroStartTime `{x$raw}`.
-          Must be a timestamp formatted as yyyy-mm-dd HH:MM:SS or HH:MM:SS"
+        Must be a datetime (yyyy-mm-dd HH:MM:SS), HH:MM:SS, Mon HH:MM:SS, or DD HH:MM:SS."
       )
     )
     return()

@@ -9,45 +9,59 @@ maestro_logger <- logger::layout_glue_generator(
 #' @return number of seconds
 convert_to_seconds <- function(time_string) {
 
-  stopifnot("Must be a single string" = length(time_string) == 1)
-
-  # Extract the number and the unit from the time string
-  matches <- regmatches(time_string, regexec("([0-9]+)\\s*(\\w+)", time_string))
-  number <- as.numeric(matches[[1]][2])
-  unit <- matches[[1]][3]
+  nunits <- parse_rounding_unit(time_string)
 
   # Define the conversion factors to seconds for each unit
-  conversion_factors <- list(
-    "sec" = 1,
-    "secs" = 1,
-    "second" = 1,
-    "seconds" = 1,
-    "min" = 60,
-    "mins" = 60,
-    "minute" = 60,
-    "minutes" = 60,
-    "hour" = 3600,
-    "hours" = 3600,
-    "day" = 86400,
-    "days" = 86400,
-    "week" = 604800,
-    "weeks" = 604800,
-    "month" = 2629800,
-    "months" = 2629800,
-    "quarter" = 7884000,
-    "quarters" = 7884000,
-    "year" = 31557600,
-    "years" = 31557600
+  conversion_factors <- c(
+    sec = 1, second = 1,
+    min = 60, minute = 60,
+    hour = 3600,
+    day = 86400,
+    week = 604800,
+    month = 2629800,
+    quarter = 7884000,
+    year = 31557600
   )
 
-  # Convert the time to seconds
-  if (!is.null(conversion_factors[[unit]])) {
-    seconds <- number * conversion_factors[[unit]]
-  } else {
+  if (!nunits$unit %in% names(conversion_factors)) {
     stop("Unknown time unit")
   }
 
-  seconds
+  nunits$n * conversion_factors[[nunits$unit]]
+}
+
+#' Number of days ahead to generate run sequences for a given frequency unit
+#' Used by the observable get_run_sequence path.
+#' @param unit character frequency unit
+#' @keywords internal
+#' @return integer
+.run_sequence_days_out <- function(unit) {
+  switch(
+    unit,
+    second = 3L,
+    minute = 7L,
+    hour = 60L,
+    day = 120L,
+    week = 240L,
+    month = 365L * 2L,
+    quarter = 365L * 4L,
+    year = 365L * 10L
+  )
+}
+
+#' Minimum days ahead to pre-compute run sequences on initialization
+#' This small window is used at parse time; the full window is built lazily
+#' when observability functions (get_run_sequence, get_slot_usage) are called.
+#' @param unit character frequency unit
+#' @keywords internal
+#' @return integer
+.run_sequence_min_days_out <- function(unit) {
+  switch(
+    unit,
+    second = 1L,
+    minute = 2L,
+    7L
+  )
 }
 
 valid_units <- c(
@@ -62,8 +76,6 @@ valid_units <- c(
 #' @keywords internal
 #' @return nunit list
 parse_rounding_unit <- function(time_string) {
-
-  stopifnot("Must be a single string" = length(time_string) == 1)
 
   # Extract the number and the unit from the time string
   if (!grepl("^[0-9]", time_string)) {
@@ -124,23 +136,15 @@ get_pipeline_run_sequence <- function(
     pipeline_months = 1:12
   ) {
 
-  check_datetime <- tryCatch({
-    lubridate::as_datetime(check_datetime)
-  }, error = function(e) {
-    cli::cli_abort(
-      "{.code check_datetime} must be a POSIXt object."
-    )
-  }, warning = function(w) {
-    cli::cli_abort(
-      "{.code check_datetime} must be a POSIXt object."
-    )
-  })
+  check_datetime <- lubridate::as_datetime(check_datetime)
 
-  pipeline_unit <- dplyr::case_match(
+  pipeline_unit <- switch(
     pipeline_unit,
-    c("minutes", "minute") ~ "min",
-    c("seconds", "second") ~ "sec",
-    .default = pipeline_unit
+    minutes = ,
+    minute  = "min",
+    seconds = ,
+    second  = "sec",
+    pipeline_unit
   )
 
   if (pipeline_datetime > check_datetime) {
@@ -226,24 +230,26 @@ is_valid_dag <- function(edges) {
   is_dag
 }
 
+.unit_order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
+
+.unit_aliases <- c(
+  seconds = "second", sec = "second", secs = "second",
+  minutes = "minute", min = "minute", mins = "minute",
+  hours = "hour",
+  days = "day",
+  weeks = "week",
+  months = "month",
+  quarters = "quarter",
+  years = "year"
+)
+
 standardize_units <- function(unit) {
-  dplyr::case_match(
-    unit,
-    c("second", "seconds", "sec", "secs") ~ "second",
-    c("minute", "minutes", "min", "mins") ~ "minute",
-    c("hour", "hours") ~ "hour",
-    c("day", "days") ~ "day",
-    c("week", "weeks") ~ "week",
-    c("month", "months") ~ "month",
-    c("quarter", "quarters") ~ "quarter",
-    c("year", "years") ~ "year"
-  )
+  .unit_aliases[unit] %n% unit
 }
 
 units_lt_units <- function(u1, u2) {
-  order <- c("second", "minute", "hour", "day", "week", "month", "quarter", "year")
-  u1_ord <- factor(u1, levels = order, ordered = TRUE)
-  u2_ord <- factor(u2, levels = order, ordered = TRUE)
+  u1_ord <- factor(u1, levels = .unit_order, ordered = TRUE)
+  u2_ord <- factor(u2, levels = .unit_order, ordered = TRUE)
   u1_ord < u2_ord
 }
 
@@ -334,6 +340,96 @@ make_id <- function(n = 6) {
   paste0(c(first, rest), collapse = "")
 }
 
+# Weekday abbreviations, ordered Mon–Sun (matches lubridate week_start = 1)
+.weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+#' Resolve a partial \code{@maestroStartTime} string to a concrete POSIXct
+#'
+#' Accepts four formats:
+#' \itemize{
+#'   \item \code{"HH:MM:SS"} — time of day; anchored to today's date.
+#'   \item \code{"Mon HH:MM:SS"} — weekday + time; anchored to that weekday of
+#'     the current ISO week.
+#'   \item \code{"DD HH:MM:SS"} or \code{"DD"} — month-day (+ optional time);
+#'     anchored to that day of the current month.
+#'   \item Full datetime string — passed through to \code{as.POSIXct()}.
+#' }
+#'
+#' Using a recent \code{now} as the reference keeps the anchor close to the
+#' present, so \code{n} in \code{.prev_on_cycle()} stays small.
+#'
+#' @param raw Character string from the tag value.
+#' @param tz  Timezone string.
+#' @param now \code{POSIXct} reference point (default \code{lubridate::now(tz)}).
+#' @return A \code{POSIXct}, or \code{NA} if \code{raw} is \code{NA}/\code{""}.
+#' @keywords internal
+parse_maestro_start_time <- function(raw, tz, now = lubridate::now(tzone = tz)) {
+
+  if (is.na(raw) || raw == "") return(NA)
+
+  # HH:MM:SS
+  if (grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", raw)) {
+    date_part <- format(now, "%Y-%m-%d")
+    return(as.POSIXct(paste(date_part, raw), format = "%Y-%m-%d %H:%M:%S", tz = tz))
+  }
+
+  # Mon HH:MM:SS — weekday + time
+  if (grepl(sprintf("^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
+                    paste(.weekday_abbrs, collapse = "|")), raw)) {
+    parts    <- strsplit(raw, "\\s+")[[1]]
+    day_abbr <- parts[1]
+    time_str <- parts[2]
+
+    # target_dow is an offset from Monday (1 = Mon, 7 = Sun), derived purely
+    # from .weekday_abbrs — not from lubridate.week.start or wday().
+    # floor_date(..., week_start = 1) is also explicit, so this is
+    # session-option-independent.
+    target_dow  <- match(day_abbr, .weekday_abbrs)
+    week_start  <- lubridate::floor_date(now, unit = "week", week_start = 1)
+    anchor_date <- week_start + lubridate::days(target_dow - 1L)
+    return(as.POSIXct(
+      paste(format(anchor_date, "%Y-%m-%d"), time_str),
+      format = "%Y-%m-%d %H:%M:%S",
+      tz = tz
+    ))
+  }
+
+  # DD or DD HH:MM:SS — month-day + optional time
+  if (grepl("^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$", raw)) {
+    parts       <- strsplit(raw, "\\s+")[[1]]
+    mday        <- as.integer(parts[1])
+    time_str    <- if (length(parts) == 2) parts[2] else "00:00:00"
+    month_start <- lubridate::floor_date(now, unit = "month")
+    anchor_date <- month_start + lubridate::days(mday - 1L)
+    return(as.POSIXct(
+      paste(format(anchor_date, "%Y-%m-%d"), time_str),
+      format = "%Y-%m-%d %H:%M:%S",
+      tz = tz
+    ))
+  }
+
+  # Full datetime — delegate to base coercion
+  as.POSIXct(raw, tz = tz)
+}
+
+#' Find the most recent cycle point before a given time
+#'
+#' Given a repeating cycle anchored at \code{start} and stepping every
+#' \code{amount} \code{unit}s, returns the latest cycle point strictly before
+#' \code{current}.
+#'
+#' @param start \code{Date} or \code{POSIXct} defining the cycle origin.
+#' @param current \code{Date} or \code{POSIXct} (coerced to match \code{start})
+#'   used as the reference point. Defaults to \code{Sys.time()}.
+#' @param amount Positive integer; number of \code{unit}s per cycle step.
+#' @param unit Character; one of \code{"second"}, \code{"minute"},
+#'   \code{"hour"}, \code{"day"}, \code{"week"}, \code{"month"},
+#'   \code{"year"}. Sub-day units are not supported when \code{start} is a
+#'   \code{Date}.
+#'
+#' @return A \code{Date} or \code{POSIXct} of the same class and timezone as
+#'   \code{start}, or \code{NA} if \code{current <= start}.
+#' @keywords internal
 .prev_on_cycle <- function(start,
                            current = Sys.time(),
                            amount = 1L,
@@ -345,10 +441,6 @@ make_id <- function(n = 6) {
   unit <- match.arg(unit)
 
   amount <- as.integer(amount)
-  if (is.na(amount) || amount <= 0L) {
-    stop("Internal error: `amount` must be a positive integer.")
-  }
-
   start_is_date <- inherits(start, "Date")
   start_is_time <- inherits(start, "POSIXct")
 

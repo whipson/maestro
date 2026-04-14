@@ -52,6 +52,20 @@ is \verb{2025-03-18 03:00:00} and the frequency is daily, the pipeline will run 
 every day. A value in the future prevents the pipeline from running until that time
 has been reached.
 
+For pipelines with a frequency lower than daily, partial anchor formats are supported
+to make it easier to express natural cycle points without choosing a specific date:
+\itemize{
+\item \strong{\code{HH:MM:SS}} — time-of-day anchor for \code{minute}, \code{hour}, or \code{day} frequencies.
+e.g., \code{08:00:00} runs every day at 8am.
+\item \strong{\verb{Mon HH:MM:SS}} (weekday abbreviation + time) — anchor for \code{week} or multi-week
+frequencies. Resolved to that weekday of the current ISO week.
+e.g., \verb{Mon 04:00:00} with \verb{@maestroFrequency 1 week} runs every Monday at 4am.
+Valid abbreviations: \code{Mon}, \code{Tue}, \code{Wed}, \code{Thu}, \code{Fri}, \code{Sat}, \code{Sun}.
+\item \strong{\verb{DD HH:MM:SS}} or \strong{\code{DD}} (month-day + optional time) — anchor for \code{month}
+frequencies. Resolved to that day of the current month.
+e.g., \verb{15 04:00:00} with \verb{@maestroFrequency 1 month} runs on the 15th of every month at 4am.
+}
+
 Default: \verb{2024-01-01 00:00:00}
 
 Examples:
@@ -59,6 +73,10 @@ Examples:
 \item \verb{#' @maestroStartTime 2025-02-05 12:00:00}
 \item \verb{#' @maestroStartTime 2025-01-01}
 \item \verb{#' @maestroStartTime 08:00:00}
+\item \verb{#' @maestroStartTime Mon 04:00:00}
+\item \verb{#' @maestroStartTime Wed 09:30:00}
+\item \verb{#' @maestroStartTime 15 04:00:00}
+\item \verb{#' @maestroStartTime 1}
 }
 }
 

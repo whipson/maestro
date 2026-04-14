@@ -1,3 +1,28 @@
+# maestro 1.1.0.9001
+
+### Breaking changes
+
+- The default value for `maestroStartTime` is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.
+
+### New features
+
+- `maestroStartTime` now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:
+  - `Mon HH:MM:SS` (weekday + time) — for weekly pipelines, e.g. `Mon 04:00:00` runs every Monday at 4am.
+  - `DD HH:MM:SS` or `DD` (month-day + optional time) — for monthly pipelines, e.g. `15 04:00:00` runs on the 15th of every month at 4am.
+
+### Deprecated functionality
+
+- `suggest_orch_frequency()` is deprecated with no replacement.
+
+- `show_network()` (and `MaestroSchedule$show_network()`) is deprecated due to
+  its reliance on `DiagrammeR`, which brings in a large number of little-used dependencies. Use `get_network()` to retrieve the pipeline dependency edge list directly.
+
+### Minor changes
+
+- Some optimizations in schedule building and running.
+
+- Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.
+
 # maestro 1.0.1
 
 ### Minor changes

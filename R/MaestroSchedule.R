@@ -29,9 +29,8 @@ MaestroSchedule <- R6::R6Class(
         purrr::list_c()
       if (length(priorities) == 0) priorities <- list()
       pipeline_list <- pipeline_list[order(priorities)]
-      for (pipeline in pipeline_list) {
-        self$PipelineList$add_pipelines(pipeline)
-      }
+      self$PipelineList$MaestroPipelines <- pipeline_list
+      self$PipelineList$n_pipelines <- length(pipeline_list)
     },
 
     #' @description
@@ -228,6 +227,12 @@ MaestroSchedule <- R6::R6Class(
     #' Visualize the DAG relationships between pipelines in the schedule
     #' @return interactive visualization
     show_network = function() {
+
+      lifecycle::deprecate_warn(
+        "1.1.0",
+        "MaestroSchedule$show_network()",
+        details = "It will be removed entirely in 1.2.0."
+      )
 
       pipe_names <- self$PipelineList$get_pipe_names()
 

@@ -77,55 +77,6 @@ build_schedule_entry <- function(script_path) {
     )
   }
 
-  # Checks on pipelines with maestroInput
-  withCallingHandlers({
-    purrr::walk2(tag_list, maestro_tag_vals, ~{
-      if (!all(is.na(.y$inputs))) {
-
-        pipe_name <- .x$object$topic
-        inputs <- roxygen2::block_get_tag_value(.x, "maestroInputs")
-        if (pipe_name %in% inputs) {
-          cli::cli_abort(
-            c("`@maestroInput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
-              contains an input with the same name."),
-            call = NULL
-          )
-        }
-
-        params <- roxygen2::block_get_tag_value(.x, ".formals")
-        if (!".input" %in% params) {
-          cli::cli_abort(
-            c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
-              "i" = "Example: {.code pipeline <- function(.input) ...}"),
-            call = NULL
-          )
-        }
-      }
-    })
-  }, purrr_error_indexed = function(err) {
-    rlang::cnd_signal(err$parent)
-  })
-
-  # Checks on pipelines with maestroOutput
-  withCallingHandlers({
-    purrr::walk2(tag_list, maestro_tag_vals, ~{
-      if (!all(is.na(.y$outputs))) {
-
-        pipe_name <- .x$object$topic
-        outputs <- roxygen2::block_get_tag_value(.x, "maestroOutputs")
-        if (pipe_name %in% outputs) {
-          cli::cli_abort(
-            c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg pipe_name} in {basename(script_path)}
-              contains an output with the same name."),
-            call = NULL
-          )
-        }
-      }
-    })
-  }, purrr_error_indexed = function(err) {
-    rlang::cnd_signal(err$parent)
-  })
-
   # Get pipe names from the function name and check
   withCallingHandlers({
     pipe_names <- purrr::imap(tag_list, ~{
@@ -154,11 +105,46 @@ build_schedule_entry <- function(script_path) {
   maestro_pipeline_list <- MaestroPipelineList$new()
 
   withCallingHandlers({
-    purrr::walk2(pipe_names, maestro_tag_vals, ~{
+    pipelines <- purrr::pmap(list(tag_list, pipe_names, maestro_tag_vals), ~{
+      block  <- ..1
+      .x <- ..2
+      .y <- ..3
 
-      if (!is.na(.y$frequency)) {
-        
-        freq_unit <- parse_rounding_unit(.y$frequency)$unit
+      # Validate inputs
+      if (!all(is.na(.y$inputs))) {
+        if (.x %in% .y$inputs) {
+          cli::cli_abort(
+            c("`@maestroInput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
+              contains an input with the same name."),
+            call = NULL
+          )
+        }
+        params <- roxygen2::block_get_tag_value(block, ".formals")
+        if (!".input" %in% params) {
+          cli::cli_abort(
+            c("If specifying `@maestroInputs` the pipeline must have a parameter named `.input`",
+              "i" = "Example: {.code pipeline <- function(.input) ...}"),
+            call = NULL
+          )
+        }
+      }
+
+      # Validate outputs
+      if (!all(is.na(.y$outputs))) {
+        if (.x %in% .y$outputs) {
+          cli::cli_abort(
+            c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
+              contains an output with the same name."),
+            call = NULL
+          )
+        }
+      }
+
+      freq_nunits <- if (!is.na(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
+
+      if (!is.null(freq_nunits)) {
+
+        freq_unit <- freq_nunits$unit
 
         # Validate hours
         if (
@@ -195,13 +181,25 @@ build_schedule_entry <- function(script_path) {
 
       tz <- .y$tz %n% "UTC"
 
-      # Find the format for the start time
-      start_time_fmt <- lubridate::guess_formats(.y$start_time, c("%Y-%m-%d %H:%M:%S", "%H:%M:%S"))
+      # Detect partial start_time formats for validation
+      .weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+      is_time_only   <- !is.na(.y$start_time) &&
+        grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", .y$start_time %n% "")
+      is_weekday_fmt <- !is.na(.y$start_time) &&
+        grepl(
+          sprintf("^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
+                  paste(.weekday_abbrs, collapse = "|")),
+          .y$start_time %n% ""
+        )
+      is_monthday_fmt <- !is.na(.y$start_time) &&
+        grepl("^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$",
+              .y$start_time %n% "")
 
-      if ("HMS" %in% names(start_time_fmt)) {
-        if (!is.null(.y$frequency)) {
-          nunits <- parse_rounding_unit(.y$frequency)
-          if (nunits$n > 1 && nunits$unit == "day") {
+      if (!is.null(freq_nunits)) {
+
+        # Existing validation: HH:MM:SS only valid for minute/hour/day
+        if (is_time_only) {
+          if (freq_nunits$n > 1 && freq_nunits$unit == "day") {
             cli::cli_abort(
               c("Cannot use a `@maestroStartTime` with format %H:%M:%S in combination with
                 a multi-unit daily `@maestroFrequency`.",
@@ -209,24 +207,56 @@ build_schedule_entry <- function(script_path) {
               call = NULL
             )
           }
-          if (nunits$unit %in% c("week", "month", "year")) {
+          if (freq_nunits$unit %in% c("week", "month", "year")) {
             cli::cli_abort(
               c("`@maestroStartTime` with format %H:%M:%S is only valid for `@maestroFrequency` of minute, hour, or day."),
               call = NULL
             )
           }
         }
-        start_time <- as.POSIXct(.y$start_time, "%H:%M:%S", tz = tz)
+
+        # New validation: weekday format only valid for week-based frequencies
+        if (is_weekday_fmt && !freq_nunits$unit %in% c("week")) {
+          cli::cli_abort(
+            c("`@maestroStartTime` with weekday format (e.g., `Mon 04:00:00`) is only valid for weekly `@maestroFrequency`.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+
+        # New validation: month-day format only valid for month-based frequencies
+        if (is_monthday_fmt && !freq_nunits$unit %in% c("month")) {
+          cli::cli_abort(
+            c("`@maestroStartTime` with month-day format (e.g., `15 04:00:00`) is only valid for monthly `@maestroFrequency`.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+      }
+
+      # Resolve start_time to a concrete POSIXct
+      start_time <- if (!is.na(.y$start_time %n% NA)) {
+        parse_maestro_start_time(.y$start_time, tz = tz)
       } else {
-        start_time <- as.POSIXct(.y$start_time, tz = tz)
+        NA
       }
 
       # Create the new pipeline
-      pipeline <- MaestroPipeline$new(
+      MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
-        start_time = start_time %n% as.POSIXct("2024-01-01 00:00:00", tz = tz),
+        start_time = start_time %n% lubridate::floor_date(
+          lubridate::now(tzone = tz),
+          unit = switch(
+            freq_nunits$unit %n% "day",
+            "year" = , 
+            "quarter" = "year",
+            "month" = "month",
+            "week" = "week",
+            "day"
+          )
+        ),
         tz = tz,
         skip = .y$skip %n% FALSE,
         log_level = .y$log_level %n% "INFO",
@@ -239,13 +269,13 @@ build_schedule_entry <- function(script_path) {
         flags = .y$flags %n% character(),
         run_if = .y$run_if %n% NULL
       )
-
-      # Append to the list of pipelines
-      maestro_pipeline_list$add_pipelines(pipeline)
     })
   }, purrr_error_indexed = function(err) {
     rlang::cnd_signal(err$parent)
   })
+
+  maestro_pipeline_list$MaestroPipelines <- pipelines
+  maestro_pipeline_list$n_pipelines <- length(pipelines)
 
   maestro_pipeline_list
 }

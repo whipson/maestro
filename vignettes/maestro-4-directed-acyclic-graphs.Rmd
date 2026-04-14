@@ -180,16 +180,6 @@ status <- run_schedule(
 )
 ```
 
-When developing these pipelines, it is helpful to visualize the dependency structure. We can do this by calling `show_network()` on the schedule:
-
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-library(maestro)
-
-schedule <- build_schedule(quiet = TRUE)
-
-show_network(schedule)
-```
-
 ```{r cleanup, echo=FALSE, message=FALSE, warning=FALSE}
 invisible(unlink("pipelines", recursive = TRUE))
 invisible(unlink("transformed_mtcars.csv"))

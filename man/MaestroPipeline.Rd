@@ -19,6 +19,7 @@ A pipeline is defined as a single R script with a schedule or input
 \item \href{#method-MaestroPipeline-print}{\code{MaestroPipeline$print()}}
 \item \href{#method-MaestroPipeline-run}{\code{MaestroPipeline$run()}}
 \item \href{#method-MaestroPipeline-get_pipe_name}{\code{MaestroPipeline$get_pipe_name()}}
+\item \href{#method-MaestroPipeline-get_frequency_nunits}{\code{MaestroPipeline$get_frequency_nunits()}}
 \item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
 \item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
 \item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
@@ -112,9 +113,6 @@ Prints the pipeline
 \if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-print
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-run"></a>}}
@@ -179,6 +177,19 @@ Get the pipeline name
 
 \subsection{Returns}{
 pipeline_name
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_frequency_nunits"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_frequency_nunits}{}}}
+\subsection{Method \code{get_frequency_nunits()}}{
+Get the frequency n and unit as a list
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_frequency_nunits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+list with n and unit
 }
 }
 \if{html}{\out{<hr>}}

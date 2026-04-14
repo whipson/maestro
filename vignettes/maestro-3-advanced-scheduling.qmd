@@ -148,8 +148,6 @@ So a good heuristic is to run it as often as the smallest interval of time diffe
 
 [^1]: Make sure you consider the amount of time it takes to execute `build_schedule()` and that you account for the additional work done in `run_schedule()` not related to your actual pipeline logic.
 
-Maestro has a function for determining the ideal orchestrator frequency based on the pipeline frequencies in the project called `suggest_orch_frequency()`. It looks for the shortest interval of time between any future pipeline executions and suggests that for the frequency.
-
 ## Irregular Schedules
 
 It is also possible to run pipelines on an irregular schedule by specifying hours, days of week, days of month, or months of the year:
