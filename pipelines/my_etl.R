@@ -1,6 +1,6 @@
 #' Example ETL pipeline
-#' @maestroFrequency 1 day
-#' @maestroStartTime 2024-03-25 12:30:00
+#' @maestroFrequency daily
+#' @maestroStartTime 12:30:00
 my_etl <- function() {
 
   # Pretend we're getting data from a source

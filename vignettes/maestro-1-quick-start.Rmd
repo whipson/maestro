@@ -57,7 +57,7 @@ writeLines(
   #' my_pipe maestro pipeline
   #'
   #' @maestroFrequency 1 day
-  #' @maestroStartTime 2024-05-24
+  #' @maestroStartTime 03:00:00
   #' @maestroTz UTC
   #' @maestroLogLevel INFO
   
@@ -90,7 +90,7 @@ A pipeline is simply an R function with decorators called maestro tags. Maestro 
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-05-24
+#' @maestroStartTime 03:00:00
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
 
@@ -100,7 +100,7 @@ my_pipe <- function() {
 }
 ```
 
-`my_pipe` is a function with an empty body - so right now it won't do anything. The comments above are interpreted by `maestro` as "this function is scheduled to run every day starting at 2024-05-24 (00:00:00) UTC time".
+`my_pipe` is a function with an empty body - so right now it won't do anything. The comments above are interpreted by `maestro` as "this function is scheduled to run every day at 03:00:00 UTC time".
 
 maestroFrequency and maestroStartTime are the most important tags for scheduling. Frequency is how often you want the pipeline to run and can be formatted as a single string like hourly, daily, weekly, biweekly, etc. or with a number and a unit (e.g., 1 day, 3 hours, etc.).
 
@@ -114,7 +114,7 @@ Here's a more realistic, albeit impractical, example:
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-05-24
+#' @maestroStartTime 03:00:00
 #' @maestroTz UTC
 #' @maestroLogLevel INFO
 
@@ -139,7 +139,6 @@ create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",
   frequency = "1 hour",
-  start_time = "2024-05-17 15:00:00",
   tz = "America/Halifax",
   log_level = "ERROR"
 )
