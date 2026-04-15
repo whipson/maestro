@@ -308,7 +308,7 @@ MaestroPipeline <- R6::R6Class(
 
       run_time_end <- lubridate::now()
 
-      private$run_time_artifacts[[internal_run_id]] <- results
+      private$run_time_artifacts[[run_id]] <- results
       private$insert_run_time_attributes(
         internal_run_id,
         list(
