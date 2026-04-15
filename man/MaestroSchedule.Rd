@@ -185,7 +185,8 @@ Get full sequence of scheduled executions for all pipelines
   n = NULL,
   min_datetime = NULL,
   max_datetime = NULL,
-  include_only_primary = FALSE
+  include_only_primary = FALSE,
+  include_skipped = TRUE
 )}\if{html}{\out{</div>}}
 }
 
@@ -200,6 +201,9 @@ Get full sequence of scheduled executions for all pipelines
 
 \item{\code{include_only_primary}}{only primary pipelines are included
 (this are pipelines that are scheduled and not downstream nodes in a DAG)}
+
+\item{\code{include_skipped}}{whether to include pipelines tagged with \verb{@maestroSkip}
+(default \code{TRUE} for backwards compatibility)}
 }
 \if{html}{\out{</div>}}
 }

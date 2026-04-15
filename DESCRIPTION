@@ -14,7 +14,6 @@ License: MIT + file LICENSE
 URL: https://github.com/whipson/maestro, https://whipson.github.io/maestro/
 BugReports: https://github.com/whipson/maestro/issues
 Encoding: UTF-8
-LazyData: true
 Imports: 
     cli (>= 3.3.0),
     dplyr (>= 1.1.0),

@@ -9,7 +9,8 @@ get_run_sequence(
   n = NULL,
   min_datetime = NULL,
   max_datetime = NULL,
-  include_only_primary = FALSE
+  include_only_primary = FALSE,
+  include_skipped = TRUE
 )
 }
 \arguments{
@@ -25,9 +26,13 @@ If specified, only returns runs scheduled at or before this datetime.}
 
 \item{include_only_primary}{only primary pipelines are included
 (this are pipelines that are scheduled and not downstream nodes in a DAG)}
+
+\item{include_skipped}{whether to include pipelines tagged with \verb{@maestroSkip}
+(default \code{TRUE} for backwards compatibility)}
 }
 \value{
-A vector of datetime values representing the scheduled run times.
+A data.frame of scheduled run times with columns \code{pipe_name}, \code{scheduled_time},
+and \code{is_primary}.
 }
 \description{
 Retrieves the scheduled run times for a given schedule, with optional filtering

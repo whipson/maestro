@@ -26,6 +26,8 @@ test_that("get_run_sequence works", {
   expect_in(c("p1", "p2", "p3"), unique(run_seq$pipe_name))
   expect_equal(nrow(run_seq), 30L)
   expect_s3_class(run_seq$scheduled_time, "POSIXct")
+  expect_true("is_primary" %in% names(run_seq))
+  expect_true(all(run_seq$is_primary))
 })
 
 test_that("informative error messages on invalid params", {
@@ -70,6 +72,11 @@ test_that("informative error messages on invalid params", {
     get_run_sequence(schedule, include_only_primary = "a"),
     regexp = "must be a boolean"
   )
+
+  expect_error(
+    get_run_sequence(schedule, include_skipped = "a"),
+    regexp = "must be a boolean"
+  )
 })
 
 test_that("dags are properly represented", {
@@ -102,9 +109,46 @@ test_that("dags are properly represented", {
   expect_s3_class(run_seq$scheduled_time, "POSIXct")
   expect_true(!any(is.na(run_seq$scheduled_time)))
 
+  # is_primary: p1 is root, p2 and p3 are downstream
+  expect_true(all(run_seq$is_primary[run_seq$pipe_name == "p1"]))
+  expect_true(all(!run_seq$is_primary[run_seq$pipe_name %in% c("p2", "p3")]))
+
   run_seq <- get_run_sequence(schedule, n = 10, include_only_primary = TRUE)
   expect_true(all(run_seq$pipe_name == "p1"))
   expect_equal(nrow(run_seq), 10L)
   expect_s3_class(run_seq$scheduled_time, "POSIXct")
   expect_true(!any(is.na(run_seq$scheduled_time)))
+})
+
+test_that("include_skipped = FALSE excludes skipped pipelines", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency hourly
+      p1 <- function() {
+      }
+
+      #' @maestroFrequency 2 hours
+      #' @maestroSkip
+      p2 <- function() {
+      }
+
+      #' @maestroFrequency 3 hours
+      p3 <- function() {
+      }
+      ",
+      con = "pipelines/pipes.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+  })
+
+  run_seq_all <- get_run_sequence(schedule, n = 10, include_skipped = TRUE)
+  expect_in(c("p1", "p2", "p3"), unique(run_seq_all$pipe_name))
+
+  run_seq_no_skip <- get_run_sequence(schedule, n = 10, include_skipped = FALSE)
+  expect_false("p2" %in% unique(run_seq_no_skip$pipe_name))
+  expect_in(c("p1", "p3"), unique(run_seq_no_skip$pipe_name))
 })

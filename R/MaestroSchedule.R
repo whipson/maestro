@@ -266,39 +266,53 @@ MaestroSchedule <- R6::R6Class(
     #' @param max_datetime optional maximum datetime
     #' @param include_only_primary only primary pipelines are included 
     #'   (this are pipelines that are scheduled and not downstream nodes in a DAG)
+    #' @param include_skipped whether to include pipelines tagged with `@maestroSkip`
+    #'   (default `TRUE` for backwards compatibility)
     #' @return data.frame
-    get_run_sequence = function(n = NULL, min_datetime = NULL, max_datetime = NULL, include_only_primary = FALSE) {
-      run_sequence <- self$PipelineList$get_run_sequences(n = n, min_datetime = min_datetime, max_datetime = max_datetime) |> 
+    get_run_sequence = function(n = NULL, min_datetime = NULL, max_datetime = NULL, include_only_primary = FALSE, include_skipped = TRUE) {
+
+      pipeline_list <- self$PipelineList$MaestroPipelines
+
+      if (!include_skipped) {
+        pipeline_list <- purrr::discard(pipeline_list, ~isTRUE(.x$get_schedule()$skip))
+      }
+
+      run_sequence <- purrr::map(pipeline_list, ~.x$get_run_sequence(n = n, min_datetime = min_datetime, max_datetime = max_datetime)) |>
+        stats::setNames(purrr::map_chr(pipeline_list, ~.x$get_schedule()$pipe_name)) |>
+        purrr::discard(is.null) |>
         purrr::imap(
           ~dplyr::tibble(
             pipe_name = .y,
             scheduled_time = .x
           )
-        ) |> 
-        purrr::list_rbind() |> 
+        ) |>
+        purrr::list_rbind() |>
         dplyr::filter(!is.na(scheduled_time))
 
-      if (!include_only_primary) {
-        network <- self$get_network()
+      network <- self$get_network()
+      network$root <- find_roots(network$from, network$to)
 
-        network$root <- find_roots(network$from, network$to)
-        
+      # Primary = not a downstream DAG node
+      downstream_nodes <- network$to
+
+      if (!include_only_primary) {
         run_sequence_dags <- NULL
         if (nrow(network) > 0) {
           run_sequence_dags <- purrr::map2(network$to, network$root, ~{
-            run_sequence |> 
-              dplyr::filter(pipe_name == .y) |> 
+            run_sequence |>
+              dplyr::filter(pipe_name == .y) |>
               dplyr::mutate(pipe_name = .x)
-          }) |> 
+          }) |>
             purrr::list_rbind()
         }
 
-        run_sequence <- run_sequence |> 
-          dplyr::bind_rows(run_sequence_dags) |> 
+        run_sequence <- run_sequence |>
+          dplyr::bind_rows(run_sequence_dags) |>
           dplyr::arrange(scheduled_time)
       }
 
-      run_sequence
+      run_sequence |>
+        dplyr::mutate(is_primary = !pipe_name %in% downstream_nodes)
     }
   ),
 
