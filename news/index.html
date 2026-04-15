@@ -78,6 +78,10 @@
 <ul><li><p>Some optimizations in schedule building and running.</p></li>
 <li><p>Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.</p></li>
 </ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-1-0-9001">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0-9001"></a></h4>
+<ul><li>Fixed issue where unique identifiers from <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> were not the same as the corresponding <code>run_id</code> from <code><a href="../reference/get_status.html">get_status()</a></code> for fan-in style DAGs.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="maestro-101">maestro 1.0.1<a class="anchor" aria-label="anchor" href="#maestro-101"></a></h2><p class="text-muted">CRAN release: 2026-02-18</p>

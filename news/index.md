@@ -51,6 +51,14 @@
   making it more practical in production to cache a schedule as an RDS
   to avoid re-parsing tags.
 
+#### Bug fixes
+
+- Fixed issue where unique identifiers from
+  [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+  were not the same as the corresponding `run_id` from
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+  for fan-in style DAGs.
+
 ## maestro 1.0.1
 
 CRAN release: 2026-02-18
