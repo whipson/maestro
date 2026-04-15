@@ -27,6 +27,10 @@
 
 - Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.
 
+### Bug fixes
+
+- Fixed issue where unique identifiers from `get_artifacts()` were not the same as the corresponding `run_id` from `get_status()` for fan-in style DAGs.
+
 # maestro 1.0.1
 
 ### Minor changes
