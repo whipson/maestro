@@ -11,8 +11,11 @@
 #'   If specified, only returns runs scheduled at or before this datetime.
 #' @param include_only_primary only primary pipelines are included 
 #'   (this are pipelines that are scheduled and not downstream nodes in a DAG)
+#' @param include_skipped whether to include pipelines tagged with `@maestroSkip`
+#'   (default `TRUE` for backwards compatibility)
 #'
-#' @return A vector of datetime values representing the scheduled run times.
+#' @return A data.frame of scheduled run times with columns `pipe_name`, `scheduled_time`,
+#'   and `is_primary`.
 #'
 #' @examples
 #' if (interactive()) {
@@ -26,7 +29,7 @@
 #'   schedule$get_run_sequence()
 #' }
 #' @export
-get_run_sequence <- function(schedule, n = NULL, min_datetime = NULL, max_datetime = NULL, include_only_primary = FALSE) {
+get_run_sequence <- function(schedule, n = NULL, min_datetime = NULL, max_datetime = NULL, include_only_primary = FALSE, include_skipped = TRUE) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -70,6 +73,13 @@ get_run_sequence <- function(schedule, n = NULL, min_datetime = NULL, max_dateti
     )
   }
 
+  if (!rlang::is_scalar_logical(include_skipped)) {
+    cli::cli_abort(
+      "`include_skipped` must be a boolean.",
+      call = rlang::caller_env()
+    )
+  }
+
   if (!is.null(min_datetime) && !is.null(max_datetime)) {
     if (min_datetime > max_datetime) {
       cli::cli_abort(
@@ -83,6 +93,7 @@ get_run_sequence <- function(schedule, n = NULL, min_datetime = NULL, max_dateti
     n = n,
     min_datetime = min_datetime, 
     max_datetime = max_datetime,
-    include_only_primary = include_only_primary
+    include_only_primary = include_only_primary,
+    include_skipped = include_skipped
   )
 }
