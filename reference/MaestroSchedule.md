@@ -200,7 +200,8 @@ Get full sequence of scheduled executions for all pipelines
       n = NULL,
       min_datetime = NULL,
       max_datetime = NULL,
-      include_only_primary = FALSE
+      include_only_primary = FALSE,
+      include_skipped = TRUE
     )
 
 #### Arguments
@@ -221,6 +222,11 @@ Get full sequence of scheduled executions for all pipelines
 
   only primary pipelines are included (this are pipelines that are
   scheduled and not downstream nodes in a DAG)
+
+- `include_skipped`:
+
+  whether to include pipelines tagged with `@maestroSkip` (default
+  `TRUE` for backwards compatibility)
 
 #### Returns
 

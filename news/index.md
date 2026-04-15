@@ -12,9 +12,19 @@
 
 #### New features
 
+- [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+  now returns an `is_primary` column: `TRUE` for pipelines that are not
+  downstream nodes in a DAG (i.e., root or standalone pipelines),
+  `FALSE` for downstream DAG nodes.
+
+- [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+  gains an `include_skipped` argument (default `TRUE`). Set to `FALSE`
+  to exclude pipelines tagged with `@maestroSkip` from the output.
+
 - `maestroStartTime` now accepts partial anchor formats, making it
   easier to express natural cycle points without picking a specific
   date:
+
   - `Mon HH:MM:SS` (weekday + time) — for weekly pipelines,
     e.g. `Mon 04:00:00` runs every Monday at 4am.
   - `DD HH:MM:SS` or `DD` (month-day + optional time) — for monthly

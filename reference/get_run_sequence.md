@@ -11,7 +11,8 @@ get_run_sequence(
   n = NULL,
   min_datetime = NULL,
   max_datetime = NULL,
-  include_only_primary = FALSE
+  include_only_primary = FALSE,
+  include_skipped = TRUE
 )
 ```
 
@@ -44,9 +45,15 @@ get_run_sequence(
   only primary pipelines are included (this are pipelines that are
   scheduled and not downstream nodes in a DAG)
 
+- include_skipped:
+
+  whether to include pipelines tagged with `@maestroSkip` (default
+  `TRUE` for backwards compatibility)
+
 ## Value
 
-A vector of datetime values representing the scheduled run times.
+A data.frame of scheduled run times with columns `pipe_name`,
+`scheduled_time`, and `is_primary`.
 
 ## Examples
 

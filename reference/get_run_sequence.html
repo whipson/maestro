@@ -65,7 +65,8 @@ by number of runs and datetime range.</p>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  include_only_primary <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  include_only_primary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_skipped <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,10 +96,16 @@ If specified, only returns runs scheduled at or before this datetime.</p></dd>
 <dd><p>only primary pipelines are included
 (this are pipelines that are scheduled and not downstream nodes in a DAG)</p></dd>
 
+
+<dt id="arg-include-skipped">include_skipped<a class="anchor" aria-label="anchor" href="#arg-include-skipped"></a></dt>
+<dd><p>whether to include pipelines tagged with <code>@maestroSkip</code>
+(default <code>TRUE</code> for backwards compatibility)</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A vector of datetime values representing the scheduled run times.</p>
+    <p>A data.frame of scheduled run times with columns <code>pipe_name</code>, <code>scheduled_time</code>,
+and <code>is_primary</code>.</p>
     </div>
 
     <div class="section level2">

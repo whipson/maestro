@@ -58,8 +58,10 @@
 </ul></div>
 <div class="section level4">
 <h4 id="new-features-1-1-0-9001">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0-9001"></a></h4>
-<ul><li>
-<code>maestroStartTime</code> now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:
+<ul><li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> now returns an <code>is_primary</code> column: <code>TRUE</code> for pipelines that are not downstream nodes in a DAG (i.e., root or standalone pipelines), <code>FALSE</code> for downstream DAG nodes.</p></li>
+<li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> gains an <code>include_skipped</code> argument (default <code>TRUE</code>). Set to <code>FALSE</code> to exclude pipelines tagged with <code>@maestroSkip</code> from the output.</p></li>
+<li>
+<p><code>maestroStartTime</code> now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:</p>
 <ul><li>
 <code>Mon HH:MM:SS</code> (weekday + time) — for weekly pipelines, e.g. <code>Mon 04:00:00</code> runs every Monday at 4am.</li>
 <li>

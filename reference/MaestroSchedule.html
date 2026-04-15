@@ -228,7 +228,8 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  include_only_primary <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  include_only_primary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  include_skipped <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -249,6 +250,11 @@ Class for a schedule of pipelines"><meta property="og:image" content="https://wh
 <dt><code>include_only_primary</code></dt>
 <dd><p>only primary pipelines are included
 (this are pipelines that are scheduled and not downstream nodes in a DAG)</p></dd>
+
+
+<dt><code>include_skipped</code></dt>
+<dd><p>whether to include pipelines tagged with <code>@maestroSkip</code>
+(default <code>TRUE</code> for backwards compatibility)</p></dd>
 
 
 </dl><p></p></div>
