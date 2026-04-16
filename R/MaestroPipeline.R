@@ -369,7 +369,7 @@ MaestroPipeline <- R6::R6Class(
         return(FALSE)
       }
       if (!is.null(private$inputs)) {
-        return(TRUE)
+        return(TRUE) 
       } # pipes with a dependency are always timely
 
       orch_string <- paste(orch_n, orch_unit)

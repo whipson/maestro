@@ -15,7 +15,238 @@ knitr::opts_chunk$set(
 
 ## What is maestro?
 
-`maestro` is an R package for creating and orchestrating many data pipelines in R. If you have several batch jobs/pipelines that you want to schedule and monitor from within a single R project, then `maestro` is for you. All you do is *decorate* R functions with special `roxygen2` tags and then execute an orchestrator script:
+`maestro` is an R package for creating and orchestrating many data pipelines in R. If you have several batch jobs/pipelines that you want to schedule and monitor from within a single R project, then `maestro` is for you. All you do is *decorate* R functions with special `roxygen2` tags and then execute an orchestrator script.
+
+The diagram below imagines a weather-based maestro project with four distinct pipeline scripts (one of which has a dependency on an upstream pipeline). In this scenario, every 15 minutes the orchestrator runs and evaluates which pipelines are scheduled to run; then it kicks off those pipelines.
+
+```{=html}
+<div id="maestro-orch">
+<style>
+  #maestro-orch { margin: 1.5rem 0; }
+  #maestro-orch svg { display: block; width: 100%; max-width: 700px; margin: 0 auto; }
+  #maestro-orch .orch-ring {
+    fill: none; stroke: #9012C7; stroke-width: 2; opacity: 0;
+    transform-box: fill-box; transform-origin: center;
+  }
+  #maestro-orch .orch-ring.fire { animation: moRingOut 0.72s ease-out forwards; }
+  @keyframes moRingOut {
+    0%   { opacity: 0.5; transform: scale(1.0); }
+    100% { opacity: 0.0; transform: scale(2.1); }
+  }
+  #maestro-orch .node-box {
+    fill: #fff; stroke: #ddd0ed; stroke-width: 1.5;
+    transition: fill 0.32s, stroke 0.32s, filter 0.32s;
+  }
+  #maestro-orch .node-box.active {
+    fill: #9012C7; stroke: #9012C7;
+    filter: drop-shadow(0 3px 14px rgba(144,18,199,0.32));
+  }
+  #maestro-orch .down-box {
+    fill: #fff; stroke: #ddd0ed; stroke-width: 1.5;
+    transition: fill 0.32s, stroke 0.32s, filter 0.32s;
+  }
+  #maestro-orch .down-box.active {
+    fill: #c060e8; stroke: #9012C7;
+    filter: drop-shadow(0 3px 10px rgba(144,18,199,0.25));
+  }
+  #maestro-orch .branch {
+    stroke: #e8ddf5; stroke-width: 2; fill: none;
+    marker-end: url(#mo-arr-off); transition: stroke 0.32s, filter 0.32s;
+  }
+  #maestro-orch .branch.active {
+    stroke: #9012C7; marker-end: url(#mo-arr-on);
+    filter: drop-shadow(0 0 5px rgba(144,18,199,0.38));
+  }
+  #maestro-orch .tl-segment { stroke: #e8ddf5; stroke-width: 2; transition: stroke 0.3s; }
+  #maestro-orch .tl-segment.active { stroke: #9012C7; }
+  #maestro-orch .tl-node {
+    fill: #e4d6f5; stroke: #d4c4ea; stroke-width: 1.5;
+    transition: fill 0.25s, stroke 0.25s;
+  }
+  #maestro-orch .tl-node.active { fill: #9012C7; stroke: #9012C7; }
+  #maestro-orch .tl-label { fill: #c0a8d8; font-size: 9.5px; letter-spacing: 0.05em; transition: fill 0.25s; }
+  #maestro-orch .tl-label.active { fill: #9012C7; font-weight: 700; }
+  #maestro-orch .clock-face { fill: none; stroke: rgba(255,255,255,0.48); stroke-width: 1.5; }
+  #maestro-orch .clock-tick { stroke: rgba(255,255,255,0.55); stroke-width: 1.5; stroke-linecap: round; }
+  #maestro-orch .clock-hand { stroke: #fff; stroke-width: 2.2; stroke-linecap: round; }
+  #maestro-orch .clock-dot  { fill: rgba(255,255,255,0.9); }
+  #maestro-orch .badge-bg { fill: #ede5f8; transition: fill 0.32s; }
+  #maestro-orch .badge-bg.active { fill: rgba(255,255,255,0.16); }
+  #maestro-orch .badge-text {
+    font-family: 'Courier New', Courier, monospace; font-size: 7.8px;
+    fill: #8858aa; transition: fill 0.32s;
+  }
+  #maestro-orch .badge-text.active { fill: rgba(255,255,255,0.85); }
+  #maestro-orch .node-name {
+    font-size: 11px; font-weight: 500; fill: #7a5c96; transition: fill 0.32s;
+  }
+  #maestro-orch .node-name.active { fill: #fff; }
+  #maestro-orch .wordmark { fill: #c8b2de; font-size: 11px; letter-spacing: 0.22em; font-weight: 500; }
+  #maestro-orch .orch-label { fill: #6b24a0; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; }
+</style>
+
+<svg width="700" height="410" viewBox="0 0 700 410">
+<defs>
+  <marker id="mo-arr-off" markerWidth="7" markerHeight="6" refX="6.5" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0.5 L7,3 L0,5.5 Z" fill="#e8ddf5"/>
+  </marker>
+  <marker id="mo-arr-on" markerWidth="7" markerHeight="6" refX="6.5" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0.5 L7,3 L0,5.5 Z" fill="#9012C7"/>
+  </marker>
+  <filter id="mo-card-shadow" x="-10%" y="-15%" width="120%" height="140%">
+    <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(100,50,140,0.10)"/>
+  </filter>
+  <pattern id="mo-pts" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse">
+    <circle cx="13" cy="13" r="1.1" fill="#f0e8f8"/>
+  </pattern>
+</defs>
+  <rect width="700" height="410" rx="16" fill="#faf7fd"/>
+  <rect width="700" height="410" rx="16" fill="url(#mo-pts)"/>
+  <text class="wordmark" x="350" y="26" text-anchor="middle">MAESTRO</text>
+  <line id="mo-tls0" class="tl-segment" x1="158" y1="56" x2="298" y2="56"/>
+  <line id="mo-tls1" class="tl-segment" x1="318" y1="56" x2="452" y2="56"/>
+  <line id="mo-tls2" class="tl-segment" x1="472" y1="56" x2="592" y2="56"/>
+  <circle id="mo-tn0" class="tl-node" cx="147" cy="56" r="11"/>
+  <circle id="mo-tn1" class="tl-node" cx="308" cy="56" r="11"/>
+  <circle id="mo-tn2" class="tl-node" cx="462" cy="56" r="11"/>
+  <circle id="mo-tn3" class="tl-node" cx="603" cy="56" r="11"/>
+  <text id="mo-tl0" class="tl-label" x="147" y="78" text-anchor="middle">:00</text>
+  <text id="mo-tl1" class="tl-label" x="308" y="78" text-anchor="middle">:15</text>
+  <text id="mo-tl2" class="tl-label" x="462" y="78" text-anchor="middle">:30</text>
+  <text id="mo-tl3" class="tl-label" x="603" y="78" text-anchor="middle">:45</text>
+  <text class="tl-label" x="222" y="78" text-anchor="middle" opacity="0.7">15m</text>
+  <text class="tl-label" x="385" y="78" text-anchor="middle" opacity="0.7">15m</text>
+  <text class="tl-label" x="527" y="78" text-anchor="middle" opacity="0.7">15m</text>
+  <circle id="mo-or1" class="orch-ring" cx="112" cy="246" r="52"/>
+  <circle id="mo-or2" class="orch-ring" cx="112" cy="246" r="60"/>
+  <circle id="mo-orch-body" cx="112" cy="246" r="44" fill="#9012C7"
+          style="filter: drop-shadow(0 3px 12px rgba(144,18,199,0.28)); transition: filter 0.2s;"/>
+  <circle class="clock-face" cx="112" cy="246" r="20"/>
+  <line class="clock-tick" x1="112" y1="228" x2="112" y2="231"/>
+  <line class="clock-tick" x1="130" y1="246" x2="127" y2="246"/>
+  <line class="clock-tick" x1="112" y1="264" x2="112" y2="261"/>
+  <line class="clock-tick" x1="94"  y1="246" x2="97"  y2="246"/>
+  <line id="mo-orch-min" class="clock-hand" x1="112" y1="246" x2="112" y2="228"/>
+  <circle class="clock-dot" cx="112" cy="246" r="2.5"/>
+  <text class="orch-label" x="112" y="304" text-anchor="middle">ORCHESTRATOR</text>
+  <line id="mo-bra" class="branch" x1="151" y1="226" x2="291" y2="158"/>
+  <line id="mo-brb" class="branch" x1="156" y1="246" x2="291" y2="246"/>
+  <line id="mo-brc" class="branch" x1="151" y1="267" x2="291" y2="334"/>
+  <line id="mo-brd" class="branch" x1="414" y1="246" x2="471" y2="246"/>
+  <rect id="mo-ta" class="node-box" x="294" y="118" width="120" height="72" rx="12" filter="url(#mo-card-shadow)"/>
+  <rect id="mo-ta-badge" class="badge-bg" x="300" y="124" width="108" height="28" rx="7"/>
+  <text id="mo-ta-badge-t" class="badge-text" x="354" y="135" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan><tspan x="354" dy="12">15 minutes</tspan>
+  </text>
+  <text id="mo-ta-name" class="node-name" x="354" y="174" text-anchor="middle">temp_readings</text>
+  <rect id="mo-tb" class="node-box" x="294" y="210" width="120" height="72" rx="12" filter="url(#mo-card-shadow)"/>
+  <rect id="mo-tb-badge" class="badge-bg" x="300" y="216" width="108" height="28" rx="7"/>
+  <text id="mo-tb-badge-t" class="badge-text" x="354" y="227" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan><tspan x="354" dy="12">30 minutes</tspan>
+  </text>
+  <text id="mo-tb-name" class="node-name" x="354" y="267" text-anchor="middle">weather_bulletins</text>
+  <rect id="mo-tc" class="node-box" x="294" y="304" width="120" height="72" rx="12" filter="url(#mo-card-shadow)"/>
+  <rect id="mo-tc-badge" class="badge-bg" x="300" y="310" width="108" height="28" rx="7"/>
+  <text id="mo-tc-badge-t" class="badge-text" x="354" y="321" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan><tspan x="354" dy="12">1 hour</tspan>
+  </text>
+  <text id="mo-tc-name" class="node-name" x="354" y="361" text-anchor="middle">satellite_imagery</text>
+  <rect id="mo-td" class="down-box" x="472" y="218" width="104" height="56" rx="12" filter="url(#mo-card-shadow)"/>
+  <rect id="mo-td-badge" class="badge-bg" x="478" y="224" width="92" height="26" rx="7"/>
+  <text id="mo-td-badge-t" class="badge-text" x="524" y="234" text-anchor="middle">
+    <tspan x="524" dy="0">@maestroInputs</tspan><tspan x="524" dy="12">weather_bulletins</tspan>
+  </text>
+  <text id="mo-td-name" class="node-name" x="524" y="262" text-anchor="middle">send_alert</text>
+</svg>
+
+<script>
+(function() {
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const $  = id => document.getElementById(id);
+  function cls(state, name, ...ids) {
+    ids.forEach(id => { const el = $(id); if (el) el.classList.toggle(name, state); });
+  }
+  function setFill(fill, ...ids) {
+    ids.forEach(id => { const el = $(id); if (el) el.setAttribute('fill', fill); });
+  }
+  const TASK_DEF = { name: '#7a5c96', badge: '#ede5f8', badgeT: '#8858aa' };
+  const TASK_ACT = { name: '#fff',    badge: 'rgba(255,255,255,0.16)', badgeT: 'rgba(255,255,255,0.85)' };
+  const DOWN_DEF = { name: '#7a5c96', badge: '#ede5f8', badgeT: '#8858aa' };
+  const DOWN_ACT = { name: '#fff',    badge: 'rgba(255,255,255,0.16)', badgeT: 'rgba(255,255,255,0.85)' };
+  function setNode(id, colors) {
+    const active = colors === TASK_ACT || colors === DOWN_ACT;
+    cls(active, 'active', id, `${id}-badge`, `${id}-badge-t`);
+    setFill(colors.name,   `${id}-name`);
+    setFill(colors.badge,  `${id}-badge`);
+    setFill(colors.badgeT, `${id}-badge-t`);
+  }
+  function setTimeline(tick) {
+    for (let i = 0; i < 4; i++) {
+      cls(i === tick, 'active', `mo-tn${i}`, `mo-tl${i}`);
+      if (i < 3) cls(i < tick, 'active', `mo-tls${i}`);
+    }
+  }
+  function pulseOrch() {
+    const body = $('mo-orch-body');
+    body.style.filter = 'drop-shadow(0 0 22px rgba(144,18,199,0.62))';
+    setTimeout(() => { body.style.filter = 'drop-shadow(0 3px 12px rgba(144,18,199,0.28))'; }, 480);
+    ['mo-or1','mo-or2'].forEach((id, i) => {
+      const el = $(id); el.classList.remove('fire'); void el.offsetWidth;
+      setTimeout(() => el.classList.add('fire'), i * 110);
+    });
+  }
+  const MIN_POS = [
+    { x2: 112, y2: 228 },
+    { x2: 130, y2: 246 },
+    { x2: 112, y2: 264 },
+    { x2: 94,  y2: 246 },
+  ];
+  function setMinHand(tick) {
+    const p = MIN_POS[tick];
+    $('mo-orch-min').setAttribute('x2', p.x2);
+    $('mo-orch-min').setAttribute('y2', p.y2);
+  }
+  const FIRES = [
+    { a: true,  b: true,  c: true  },
+    { a: true,  b: false, c: false },
+    { a: true,  b: true,  c: false },
+    { a: true,  b: false, c: false },
+  ];
+  const STEP = 310, HOLD = 820, GAP = 280, SETTLE = 150;
+  async function runTick(i) {
+    const f = FIRES[i];
+    setTimeline(i); setMinHand(i); pulseOrch();
+    await sleep(300);
+    if (f.a) cls(true, 'active', 'mo-bra');
+    if (f.b) cls(true, 'active', 'mo-brb');
+    if (f.c) cls(true, 'active', 'mo-brc');
+    await sleep(STEP);
+    if (f.a) setNode('mo-ta', TASK_ACT);
+    await sleep(80);
+    if (f.b) setNode('mo-tb', TASK_ACT);
+    await sleep(80);
+    if (f.c) setNode('mo-tc', TASK_ACT);
+    if (f.b) {
+      await sleep(STEP);
+      cls(true, 'active', 'mo-brd');
+      await sleep(STEP * 0.5);
+      setNode('mo-td', DOWN_ACT);
+    }
+    await sleep(HOLD);
+    cls(false, 'active', 'mo-bra', 'mo-brb', 'mo-brc', 'mo-brd');
+    setNode('mo-ta', TASK_DEF); setNode('mo-tb', TASK_DEF);
+    setNode('mo-tc', TASK_DEF); setNode('mo-td', DOWN_DEF);
+    await sleep(SETTLE);
+  }
+  async function loop() {
+    for (let i = 0; i < 4; i++) { await runTick(i); await sleep(GAP); }
+    await sleep(500); loop();
+  }
+  setTimeout(loop, 600);
+})();
+</script>
+</div>
+```
 
 ## Why do I need maestro?
 
