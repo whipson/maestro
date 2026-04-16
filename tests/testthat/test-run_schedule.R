@@ -42,6 +42,46 @@ test_that("run_schedule errors if check_datetime is not a timestamp", {
 }) |>
   suppressMessages()
 
+test_that("maestro.check_datetime_override option overrides check_datetime", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
+    suppressMessages()
+
+  override_dt <- as.POSIXct("2025-06-01 09:00:00", tz = "UTC")
+
+  withr::with_options(
+    list(maestro.check_datetime_override = override_dt),
+    {
+      # Argument value is ignored; option takes precedence without error
+      expect_no_error(
+        run_schedule(
+          schedule,
+          orch_frequency = "hourly",
+          check_datetime = Sys.time()
+        ) |>
+          suppressMessages()
+      )
+    }
+  )
+})
+
+test_that("maestro.check_datetime_override errors if not POSIXct", {
+
+  schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
+    suppressMessages()
+
+  withr::with_options(
+    list(maestro.check_datetime_override = "not-a-datetime"),
+    {
+      expect_error(
+        run_schedule(schedule, orch_frequency = "hourly") |>
+          suppressMessages(),
+        regexp = "must be a"
+      )
+    }
+  )
+})
+
 test_that("run_schedule with quiet=TRUE prints no messages", {
   schedule <- build_schedule(test_path("test_pipelines_run_all_good")) |>
     suppressMessages()
