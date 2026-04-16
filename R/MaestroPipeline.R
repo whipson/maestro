@@ -11,6 +11,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param pipe_name name of the pipeline
     #' @param frequency frequency of the pipeline (e.g., 1 day)
     #' @param start_time start time of the pipeline
+    #' @param start_time_raw start time as it initially came from the build process
     #' @param tz time zone of the pipeline
     #' @param hours specific hours of the day
     #' @param days specific days of week or month
@@ -29,6 +30,7 @@ MaestroPipeline <- R6::R6Class(
       pipe_name,
       frequency = NA_character_,
       start_time = lubridate::NA_POSIXct_,
+      start_time_raw = NA_character_,
       tz = NA_character_,
       hours = NULL,
       days = NULL,
@@ -61,6 +63,7 @@ MaestroPipeline <- R6::R6Class(
         private$tz <- tz
         private$frequency <- frequency
         private$start_time <- lubridate::with_tz(start_time, tz)
+        private$start_time_raw <- start_time_raw
         private$hours <- hours
         private$months <- months
 
@@ -373,7 +376,7 @@ MaestroPipeline <- R6::R6Class(
         return(FALSE)
       }
       if (!is.null(private$inputs)) {
-        return(TRUE) 
+        return(TRUE)
       } # pipes with a dependency are always timely
 
       orch_string <- paste(orch_n, orch_unit)
@@ -381,6 +384,20 @@ MaestroPipeline <- R6::R6Class(
         lubridate::with_tz(check_datetime, private$tz),
         unit = orch_string
       )
+
+      # Re-parse relative start_time formats (HH:MM:SS, weekday, month-day)
+      start_time <- if (
+        !is.na(private$start_time_raw) &&
+        !grepl("^[0-9]{4}-", private$start_time_raw)
+      ) {
+        parse_maestro_start_time(
+          private$start_time_raw,
+          tz = private$tz,
+          now = lubridate::with_tz(check_datetime, private$tz)
+        )
+      } else {
+        private$start_time
+      }
 
       # One step in pipeline frequency as a difftime/duration
       .one_freq_step <- function() {
@@ -408,7 +425,7 @@ MaestroPipeline <- R6::R6Class(
       }
 
       prev <- .prev_on_cycle(
-        private$start_time,
+        start_time,
         current = check_datetime,
         amount = private$frequency_n,
         unit = private$frequency_unit
@@ -416,10 +433,10 @@ MaestroPipeline <- R6::R6Class(
 
       if (is.na(prev)) {
         # Could be: (a) pipeline hasn't started yet, or (b) check_datetime is
-        # exactly on a cycle point (epsilon in .prev_on_cycle pushes it to NA).
+        # exactly on a cycle point (epsilon in .prev_on_cycle pushes it to NA).\
         # Detect case (b) by nudging forward 1 second.
         prev_eps <- .prev_on_cycle(
-          private$start_time,
+          start_time,
           current = check_datetime + lubridate::seconds(1),
           amount = private$frequency_n,
           unit = private$frequency_unit
@@ -429,7 +446,7 @@ MaestroPipeline <- R6::R6Class(
           prev <- prev_eps
         } else {
           # Pipeline truly hasn't started yet
-          private$next_run <- private$start_time
+          private$next_run <- start_time
           return(FALSE)
         }
       }
@@ -664,6 +681,7 @@ MaestroPipeline <- R6::R6Class(
     pipe_name = NA_character_,
     frequency = NA_character_,
     start_time = lubridate::NA_POSIXct_,
+    start_time_raw = NA_character_,
     tz = NA_character_,
     hours = NULL,
     months = NULL,

@@ -688,6 +688,47 @@ test_that("Old README example pipelines all run with daily orchestrator", {
   })
 })
 
+test_that("Other vignette examples", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      # ./pipelines/daily_example.R
+      #' daily_example maestro pipeline
+      #'
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 09:20:00
+      daily_example <- function() {
+      
+        # Pipeline code
+      }
+      ",
+      con = "pipelines/daily_example.R"
+    )
+
+    schedule <- build_schedule()
+
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      check_datetime = as.POSIXct("2024-06-20 08:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+
+    expect_true(get_status(schedule)$invoked)
+
+    run_schedule(
+      schedule,
+      orch_frequency = "15 minutes",
+      check_datetime = as.POSIXct("2024-06-20 08:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+
+    expect_false(get_status(schedule)$invoked)
+  })
+})
+
 test_that("Check validity of next_run", {
   withr::with_tempdir({
     dir.create("pipelines")

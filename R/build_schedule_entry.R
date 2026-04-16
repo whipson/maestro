@@ -235,8 +235,9 @@ build_schedule_entry <- function(script_path) {
       }
 
       # Resolve start_time to a concrete POSIXct
-      start_time <- if (!is.na(.y$start_time %n% NA)) {
-        parse_maestro_start_time(.y$start_time, tz = tz)
+      start_time_raw <- .y$start_time %n% NA_character_
+      start_time <- if (!is.na(start_time_raw)) {
+        parse_maestro_start_time(start_time_raw, tz = tz)
       } else {
         NA
       }
@@ -257,6 +258,7 @@ build_schedule_entry <- function(script_path) {
             "day"
           )
         ),
+        start_time_raw = start_time_raw,
         tz = tz,
         skip = .y$skip %n% FALSE,
         log_level = .y$log_level %n% "INFO",
