@@ -1,0 +1,110 @@
+<svg width="700" height="410" viewBox="0 0 700 410" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+<defs>
+  <marker id="arr" markerWidth="7" markerHeight="6"
+          refX="6.5" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0.5 L7,3 L0,5.5 Z" fill="#e8ddf5"/>
+  </marker>
+  <filter id="card-shadow" x="-10%" y="-15%" width="120%" height="140%">
+    <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(100,50,140,0.10)"/>
+  </filter>
+  <pattern id="pts" x="0" y="0" width="26" height="26" patternUnits="userSpaceOnUse">
+    <circle cx="13" cy="13" r="1.1" fill="#f0e8f8"/>
+  </pattern>
+</defs>
+
+  <!-- Background -->
+  <rect width="700" height="410" rx="16" fill="#faf7fd"/>
+  <rect width="700" height="410" rx="16" fill="url(#pts)"/>
+
+  <!-- Wordmark -->
+  <text fill="#c8b2de" font-size="11" letter-spacing="0.22em" font-weight="500"
+        x="350" y="26" text-anchor="middle">MAESTRO</text>
+
+  <!-- ── Timeline ─────────────────────────────────────── -->
+  <line x1="158" y1="56" x2="298" y2="56" stroke="#e8ddf5" stroke-width="2"/>
+  <line x1="318" y1="56" x2="452" y2="56" stroke="#e8ddf5" stroke-width="2"/>
+  <line x1="472" y1="56" x2="592" y2="56" stroke="#e8ddf5" stroke-width="2"/>
+
+  <circle cx="147" cy="56" r="11" fill="#e4d6f5" stroke="#d4c4ea" stroke-width="1.5"/>
+  <circle cx="308" cy="56" r="11" fill="#e4d6f5" stroke="#d4c4ea" stroke-width="1.5"/>
+  <circle cx="462" cy="56" r="11" fill="#e4d6f5" stroke="#d4c4ea" stroke-width="1.5"/>
+  <circle cx="603" cy="56" r="11" fill="#e4d6f5" stroke="#d4c4ea" stroke-width="1.5"/>
+
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="147" y="78" text-anchor="middle">:00</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="308" y="78" text-anchor="middle">:15</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="462" y="78" text-anchor="middle">:30</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="603" y="78" text-anchor="middle">:45</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="222" y="78" text-anchor="middle" opacity="0.7">15m</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="385" y="78" text-anchor="middle" opacity="0.7">15m</text>
+  <text fill="#c0a8d8" font-size="9.5" letter-spacing="0.05em" x="527" y="78" text-anchor="middle" opacity="0.7">15m</text>
+
+  <!-- ── Orchestrator (cx=112, cy=246, r=44) ─────────── -->
+  <circle cx="112" cy="246" r="44" fill="#9012C7"
+          style="filter: drop-shadow(0 3px 12px rgba(144,18,199,0.28));"/>
+
+  <!-- Clock face centred at (112, 246), r=20 -->
+  <circle cx="112" cy="246" r="20" fill="none" stroke="rgba(255,255,255,0.48)" stroke-width="1.5"/>
+  <!-- Tick marks 12/3/6/9 -->
+  <line x1="112" y1="228" x2="112" y2="231" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="130" y1="246" x2="127" y2="246" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="112" y1="264" x2="112" y2="261" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="94"  y1="246" x2="97"  y2="246" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Minute hand at 12 -->
+  <line x1="112" y1="246" x2="112" y2="228" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="112" cy="246" r="2.5" fill="rgba(255,255,255,0.9)"/>
+
+  <!-- Label -->
+  <text fill="#6b24a0" font-size="9.5" font-weight="600" letter-spacing="0.1em"
+        x="112" y="304" text-anchor="middle">ORCHESTRATOR</text>
+
+  <!-- ── Branch lines ─────────────────────────────────── -->
+  <line x1="151" y1="226" x2="291" y2="158" stroke="#e8ddf5" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="156" y1="246" x2="291" y2="246" stroke="#e8ddf5" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="151" y1="267" x2="291" y2="334" stroke="#e8ddf5" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="414" y1="246" x2="471" y2="246" stroke="#e8ddf5" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- ── Task A: temp_readings (15m) ──────────────────── -->
+  <rect x="294" y="118" width="120" height="72" rx="12"
+        fill="#fff" stroke="#ddd0ed" stroke-width="1.5" filter="url(#card-shadow)"/>
+  <rect x="300" y="124" width="108" height="28" rx="7" fill="#ede5f8"/>
+  <text font-family="'Courier New', Courier, monospace" font-size="7.8" fill="#8858aa"
+        x="354" y="135" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan>
+    <tspan x="354" dy="12">15 minutes</tspan>
+  </text>
+  <text font-size="11" font-weight="500" fill="#7a5c96" x="354" y="174" text-anchor="middle">temp_readings</text>
+
+  <!-- ── Task B: weather_bulletins (30m) ──────────────── -->
+  <rect x="294" y="210" width="120" height="72" rx="12"
+        fill="#fff" stroke="#ddd0ed" stroke-width="1.5" filter="url(#card-shadow)"/>
+  <rect x="300" y="216" width="108" height="28" rx="7" fill="#ede5f8"/>
+  <text font-family="'Courier New', Courier, monospace" font-size="7.8" fill="#8858aa"
+        x="354" y="227" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan>
+    <tspan x="354" dy="12">30 minutes</tspan>
+  </text>
+  <text font-size="11" font-weight="500" fill="#7a5c96" x="354" y="267" text-anchor="middle">weather_bulletins</text>
+
+  <!-- ── Task C: satellite_imagery (1 hour) ───────────── -->
+  <rect x="294" y="304" width="120" height="72" rx="12"
+        fill="#fff" stroke="#ddd0ed" stroke-width="1.5" filter="url(#card-shadow)"/>
+  <rect x="300" y="310" width="108" height="28" rx="7" fill="#ede5f8"/>
+  <text font-family="'Courier New', Courier, monospace" font-size="7.8" fill="#8858aa"
+        x="354" y="321" text-anchor="middle">
+    <tspan x="354" dy="0">@maestroFrequency</tspan>
+    <tspan x="354" dy="12">1 hour</tspan>
+  </text>
+  <text font-size="11" font-weight="500" fill="#7a5c96" x="354" y="361" text-anchor="middle">satellite_imagery</text>
+
+  <!-- ── Task D: send_alert (downstream) ──────────────── -->
+  <rect x="472" y="218" width="104" height="56" rx="12"
+        fill="#fff" stroke="#ddd0ed" stroke-width="1.5" filter="url(#card-shadow)"/>
+  <rect x="478" y="224" width="92" height="26" rx="7" fill="#ede5f8"/>
+  <text font-family="'Courier New', Courier, monospace" font-size="7.8" fill="#8858aa"
+        x="524" y="234" text-anchor="middle">
+    <tspan x="524" dy="0">@maestroInputs</tspan>
+    <tspan x="524" dy="12">weather_bulletins</tspan>
+  </text>
+  <text font-size="11" font-weight="500" fill="#7a5c96" x="524" y="262" text-anchor="middle">send_alert</text>
+
+</svg>
