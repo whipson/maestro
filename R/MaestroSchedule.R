@@ -59,6 +59,9 @@ MaestroSchedule <- R6::R6Class(
 
       dots <- rlang::list2(..., quiet = quiet)
       check_datetime <- dots$check_datetime
+      if (is.null(check_datetime)) {
+        check_datetime <- lubridate::now()
+      }
 
       is_multicore <- FALSE
       cores <- dots$cores
