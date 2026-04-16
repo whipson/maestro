@@ -16,7 +16,12 @@ knitr::opts_chunk$set(
 )
 asciicast::init_knitr_engine(
   echo = TRUE,
-  echo_input = FALSE
+  echo_input = FALSE,
+  startup = quote({
+    library(maestro)
+    options(maestro.check_datetime_override = as.POSIXct("2026-04-21 00:00:00", tz = "UTC"))
+    set.seed(1) 
+  })
 )
 options(asciicast_theme = "pkgdown")
 ```
