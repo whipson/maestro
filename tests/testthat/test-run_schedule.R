@@ -650,7 +650,7 @@ test_that("Pipeline that prints curly brackets runs fine", {
   })
 })
 
-test_that("README example pipelines all run with daily orchestrator", {
+test_that("Old README example pipelines all run with daily orchestrator", {
   withr::with_tempdir({
     dir.create("pipelines")
     writeLines(
@@ -685,5 +685,31 @@ test_that("README example pipelines all run with daily orchestrator", {
     )
     status <- get_status(schedule)
     expect_true(all(status$invoked))
+  })
+})
+
+test_that("Check validity of next_run", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 03:00:00
+      #' @maestroTz UTC
+      my_pipe <- function() {
+      }
+      ",
+      con = "pipelines/pipes.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2026-04-16 03:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_equal(status$next_run, as.POSIXct("2026-04-17 03:00:00", tz = "UTC"))
   })
 })
