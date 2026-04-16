@@ -50,7 +50,6 @@ Create a new Pipeline object
   script_path,
   pipe_name,
   frequency = NA_character_,
-  start_time = lubridate::NA_POSIXct_,
   start_time_raw = NA_character_,
   tz = NA_character_,
   hours = NULL,
@@ -75,9 +74,7 @@ Create a new Pipeline object
 
 \item{\code{frequency}}{frequency of the pipeline (e.g., 1 day)}
 
-\item{\code{start_time}}{start time of the pipeline}
-
-\item{\code{start_time_raw}}{start time as it initially came from the build process}
+\item{\code{start_time_raw}}{start time as a raw string from the @maestroStartTime tag}
 
 \item{\code{tz}}{time zone of the pipeline}
 

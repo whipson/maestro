@@ -10,8 +10,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param script_path path to the script
     #' @param pipe_name name of the pipeline
     #' @param frequency frequency of the pipeline (e.g., 1 day)
-    #' @param start_time start time of the pipeline
-    #' @param start_time_raw start time as it initially came from the build process
+    #' @param start_time_raw start time as a raw string from the @maestroStartTime tag
     #' @param tz time zone of the pipeline
     #' @param hours specific hours of the day
     #' @param days specific days of week or month
@@ -29,7 +28,6 @@ MaestroPipeline <- R6::R6Class(
       script_path,
       pipe_name,
       frequency = NA_character_,
-      start_time = lubridate::NA_POSIXct_,
       start_time_raw = NA_character_,
       tz = NA_character_,
       hours = NULL,
@@ -62,8 +60,8 @@ MaestroPipeline <- R6::R6Class(
       if (is.null(inputs)) {
         private$tz <- tz
         private$frequency <- frequency
-        private$start_time <- lubridate::with_tz(start_time, tz)
         private$start_time_raw <- start_time_raw
+
         private$hours <- hours
         private$months <- months
 
@@ -122,7 +120,7 @@ MaestroPipeline <- R6::R6Class(
         cli::cli_li("Dependent on: {private$inputs}")
       } else {
         cli::cli_li("Frequency: {private$frequency}")
-        cli::cli_li("Start Time: {private$start_time}")
+        cli::cli_li("Start Time: {private$start_time_raw}")
       }
 
       if (!is.null(private$hours)) {
@@ -349,7 +347,7 @@ MaestroPipeline <- R6::R6Class(
         script_path = private$script_path %n% NA_character_,
         pipe_name = private$pipe_name %n% NA_character_,
         frequency = private$frequency %n% NA_character_,
-        start_time = private$start_time %n% lubridate::NA_POSIXct_,
+        start_time = private$start_time_raw %n% NA_character_,
         tz = private$tz %n% NA_character_,
         skip = private$skip %n% NA,
         log_level = private$log_level %n% NA_character_,
@@ -385,19 +383,7 @@ MaestroPipeline <- R6::R6Class(
         unit = orch_string
       )
 
-      # Re-parse relative start_time formats (HH:MM:SS, weekday, month-day)
-      start_time <- if (
-        !is.na(private$start_time_raw) &&
-        !grepl("^[0-9]{4}-", private$start_time_raw)
-      ) {
-        parse_maestro_start_time(
-          private$start_time_raw,
-          tz = private$tz,
-          now = lubridate::with_tz(check_datetime, private$tz)
-        )
-      } else {
-        private$start_time
-      }
+      start_time <- private$resolve_start_time(check_datetime)
 
       # One step in pipeline frequency as a difftime/duration
       .one_freq_step <- function() {
@@ -639,18 +625,20 @@ MaestroPipeline <- R6::R6Class(
         lubridate::now() + lubridate::days(.run_sequence_days_out(private$frequency_unit))
       }
 
+      resolved_start <- private$resolve_start_time(lubridate::now())
+
       start_time_adj <- .prev_on_cycle(
-        private$start_time,
+        resolved_start,
         current = lubridate::now(),
         amount = private$frequency_n,
         unit = private$frequency_unit
       )
-      if (is.na(start_time_adj)) start_time_adj <- private$start_time
+      if (is.na(start_time_adj)) start_time_adj <- resolved_start
 
       seq <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
-        pipeline_datetime = private$start_time,
+        pipeline_datetime = start_time_adj,
         check_datetime = extend_to,
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,
@@ -680,7 +668,6 @@ MaestroPipeline <- R6::R6Class(
     script_path = NA_character_,
     pipe_name = NA_character_,
     frequency = NA_character_,
-    start_time = lubridate::NA_POSIXct_,
     start_time_raw = NA_character_,
     tz = NA_character_,
     hours = NULL,
@@ -708,6 +695,33 @@ MaestroPipeline <- R6::R6Class(
     warnings = NULL,
     messages = NULL,
     sourced_context = NULL,
+
+    # Resolve start_time for a given reference datetime.
+    # All formats are parsed on demand via parse_maestro_start_time:
+    # - Relative formats (HH:MM:SS, weekday, month-day): now anchors the result
+    # - Absolute formats (YYYY-...): now is ignored by parse_maestro_start_time
+    # - NA (no @maestroStartTime tag): floor now to the pipeline's frequency
+    resolve_start_time = function(now) {
+      if (!is.na(private$start_time_raw)) {
+        return(parse_maestro_start_time(
+          private$start_time_raw,
+          tz = private$tz,
+          now = lubridate::with_tz(now, private$tz)
+        ))
+      }
+
+      # No start_time tag: floor now to the pipeline's frequency granularity
+      lubridate::floor_date(
+        lubridate::with_tz(now, private$tz),
+        unit = switch(
+          private$frequency_unit %n% "day",
+          "year" = , "quarter" = "year",
+          "month" = "month",
+          "week"  = "week",
+          "day"
+        )
+      )
+    },
 
     escape_for_glue = function(msg) {
       msg <- trimws(msg)

@@ -234,30 +234,14 @@ build_schedule_entry <- function(script_path) {
         }
       }
 
-      # Resolve start_time to a concrete POSIXct
+      # Pass the raw start_time string through; MaestroPipeline resolves it
       start_time_raw <- .y$start_time %n% NA_character_
-      start_time <- if (!is.na(start_time_raw)) {
-        parse_maestro_start_time(start_time_raw, tz = tz)
-      } else {
-        NA
-      }
 
       # Create the new pipeline
       MaestroPipeline$new(
         script_path = script_path,
         pipe_name = .x,
         frequency = .y$frequency %n% "daily",
-        start_time = start_time %n% lubridate::floor_date(
-          lubridate::now(tzone = tz),
-          unit = switch(
-            freq_nunits$unit %n% "day",
-            "year" = , 
-            "quarter" = "year",
-            "month" = "month",
-            "week" = "week",
-            "day"
-          )
-        ),
         start_time_raw = start_time_raw,
         tz = tz,
         skip = .y$skip %n% FALSE,

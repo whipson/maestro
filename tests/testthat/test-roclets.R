@@ -119,26 +119,28 @@ test_that("build_schedule_entry errors on month-day format with non-monthly freq
   )
 })
 
-test_that("build_schedule_entry resolves weekday start_time to POSIXct", {
+test_that("build_schedule_entry stores weekday start_time as raw string", {
   res <- build_schedule_entry(
     test_path("test_pipelines/test_pipeline_weekly_weekday.R")
   )
   pipeline <- res$MaestroPipelines[[1]]
-  expect_s3_class(pipeline$.__enclos_env__$private$start_time, "POSIXct")
-  # Resolved anchor should be a Monday
-  expect_equal(
-    lubridate::wday(pipeline$.__enclos_env__$private$start_time, week_start = 1),
-    1L  # 1 = Monday
-  )
+  expect_match(pipeline$.__enclos_env__$private$start_time_raw, "^Mon ")
+  # resolve_start_time should produce a Monday
+  resolved <- pipeline$.__enclos_env__$private$resolve_start_time(lubridate::now())
+  expect_s3_class(resolved, "POSIXct")
+  expect_equal(lubridate::wday(resolved, week_start = 1), 1L)
 })
 
-test_that("build_schedule_entry resolves month-day start_time to POSIXct", {
+test_that("build_schedule_entry stores month-day start_time as raw string", {
   res <- build_schedule_entry(
     test_path("test_pipelines/test_pipeline_monthly_monthday.R")
   )
   pipeline <- res$MaestroPipelines[[1]]
-  expect_s3_class(pipeline$.__enclos_env__$private$start_time, "POSIXct")
-  expect_equal(lubridate::mday(pipeline$.__enclos_env__$private$start_time), 15L)
+  expect_match(pipeline$.__enclos_env__$private$start_time_raw, "^15")
+  # resolve_start_time should produce the 15th of the month
+  resolved <- pipeline$.__enclos_env__$private$resolve_start_time(lubridate::now())
+  expect_s3_class(resolved, "POSIXct")
+  expect_equal(lubridate::mday(resolved), 15L)
 })
 
 test_that("parse maestroTz tag works", {
