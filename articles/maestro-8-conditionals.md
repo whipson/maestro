@@ -39,20 +39,20 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2026-04-16 17:09:56]                                                        
+    ── [2026-04-16 17:59:34]                                                        
     Running pipelines ▶                                                             
-    ✔ random_execution (?) [19ms]                                                   
-    [random_execution] [INFO] [2026-04-16 17:09:57]: Maybe, maybe not               
-    ✔ random_execution [45ms]                                                       
+    ✔ random_execution (?) [20ms]                                                   
+    [random_execution] [INFO] [2026-04-16 17:59:35]: Maybe, maybe not               
+    ✔ random_execution [47ms]                                                       
                                                                                     
-    ── [2026-04-16 17:09:56]                                                        
-    Pipeline execution completed ■ | 0.104 sec elapsed                              
+    ── [2026-04-16 17:59:34]                                                        
+    Pipeline execution completed ■ | 0.108 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • random_execution | 2026-04-17                                                 
+    • random_execution | 2026-04-18                                                 
 
 ## DAG Conditionals
 
@@ -120,21 +120,21 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2026-04-16 17:09:57]                                                        
+    ── [2026-04-16 17:59:35]                                                        
     Running pipelines ▶                                                             
-    ✔ extract_flights [9ms]                                                         
+    ✔ extract_flights [10ms]                                                        
     ✔ |-transform_flights (?) [9ms]                                                 
-    ✔ |-transform_flights [23ms]                                                    
-    ✔   |-load_flights (?) [8ms]                                                    
+    ✔ |-transform_flights [24ms]                                                    
+    ✔   |-load_flights (?) [9ms]                                                    
                                                                                     
-    ── [2026-04-16 17:09:57]                                                        
-    Pipeline execution completed ■ | 0.087 sec elapsed                              
+    ── [2026-04-16 17:59:35]                                                        
+    Pipeline execution completed ■ | 0.094 sec elapsed                              
     ✔ 2 successes | ! 0 warnings | ✖ 0 errors | ◼ 2 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • extract_flights | 2026-04-16 18:00:00                                         
+    • extract_flights | 2026-04-16 19:00:00                                         
 
 ## Resource Conditionals
 
@@ -176,17 +176,17 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2026-04-16 17:09:57]                                                        
+    ── [2026-04-16 17:59:35]                                                        
     Running pipelines ▶                                                             
-    ✔ process_payments (?) [8ms]                                                    
-    [process_payments] [INFO] [2026-04-16 17:09:57]: Payments processed             
-    ✔ process_payments [21ms]                                                       
+    ✔ process_payments (?) [9ms]                                                    
+    [process_payments] [INFO] [2026-04-16 17:59:35]: Payments processed             
+    ✔ process_payments [23ms]                                                       
                                                                                     
-    ── [2026-04-16 17:09:57]                                                        
-    Pipeline execution completed ■ | 0.039 sec elapsed                              
+    ── [2026-04-16 17:59:35]                                                        
+    Pipeline execution completed ■ | 0.042 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • process_payments | 2026-04-17                                                 
+    • process_payments | 2026-04-18                                                 

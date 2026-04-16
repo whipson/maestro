@@ -82,8 +82,7 @@ schedule <- build_schedule()
 
 output <- run_schedule(
   schedule, 
-  orch_frequency = "15 minutes",
-  n_show_next = 0
+  orch_frequency = "15 minutes"
 )
 ```
 

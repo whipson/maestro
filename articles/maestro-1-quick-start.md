@@ -146,17 +146,18 @@ output <- run_schedule(
 
     ℹ 1 script successfully parsed                                                  
                                                                                     
-    ── [2026-04-16 17:09:50]                                                        
+    ── [2026-04-21 03:00:00]                                                        
     Running pipelines ▶                                                             
+    ✔ my_pipe [42ms]                                                                
                                                                                     
-    ── [2026-04-16 17:09:50]                                                        
-    Pipeline execution completed ■ | 0.021 sec elapsed                              
-    ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total                           
+    ── [2026-04-21 03:00:00]                                                        
+    Pipeline execution completed ■ | 0.077 sec elapsed                              
+    ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • my_pipe | 2026-04-17 03:00:00                                                 
+    • my_pipe | 2026-04-22 03:00:00                                                 
 
 Building the schedule gets `maestro` to look through the pipelines in
 the pipelines folder and creates a schedule object. Then, you pass that

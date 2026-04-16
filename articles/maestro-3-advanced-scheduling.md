@@ -108,7 +108,7 @@ status <- run_schedule(
     Running pipelines ▶
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0 sec elapsed
+    Pipeline execution completed ■ | 0.001 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
