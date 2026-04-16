@@ -27,9 +27,13 @@
 
 - Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.
 
+- Added option `maestro.check_datetime_override` which takes a POSIXct and overrides the `check_datetime` argument of `run_schedule()`. This should only be used for development and debugging - NOT in production.
+
 ### Bug fixes
 
 - Fixed issue where unique identifiers from `get_artifacts()` were not the same as the corresponding `run_id` from `get_status()` for fan-in style DAGs.
+
+- Fixed alignment of DAG cli output
 
 # maestro 1.0.1
 
