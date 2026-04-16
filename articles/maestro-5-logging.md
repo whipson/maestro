@@ -67,14 +67,14 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-15 18:19:02]
+    ── [2026-04-16 15:38:43]
     Running pipelines ▶
-    ✔ hello [31ms]
-    ✔ uhh [141ms]
-    ✖ oh_no [16ms]
+    ✔ hello [29ms]
+    ✔ uhh [105ms]
+    ✖ oh_no [15ms]
 
-    ── [2026-04-15 18:19:02]
-    Pipeline execution completed ■ | 0.242 sec elapsed
+    ── [2026-04-16 15:38:43]
+    Pipeline execution completed ■ | 0.201 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -88,9 +88,9 @@ log (INFO, WARN, or ERROR), the timestamp, and the message itself.
 readLines("maestro.log")
 ```
 
-    [1] "[hello] [INFO] [2026-04-15 18:19:02]: hello"
-    [2] "[uhh] [WARN] [2026-04-15 18:19:02]: this could be a problem"
-    [3] "[oh_no] [ERROR] [2026-04-15 18:19:02]: this is bad"
+    [1] "[hello] [INFO] [2026-04-16 15:38:43]: hello"
+    [2] "[uhh] [WARN] [2026-04-16 15:38:43]: this could be a problem"
+    [3] "[oh_no] [ERROR] [2026-04-16 15:38:43]: this is bad"
 
 ## Log to Console
 
@@ -108,17 +108,17 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-15 18:19:02]
+    ── [2026-04-16 15:38:43]
     Running pipelines ▶
-    [hello] [INFO] [2026-04-15 18:19:02]: hello
-    ✔ hello [11ms]
-    [uhh] [WARN] [2026-04-15 18:19:02]: this could be a problem
-    ✔ uhh [15ms]
-    [oh_no] [ERROR] [2026-04-15 18:19:02]: this is bad
-    ✖ oh_no [18ms]
+    [hello] [INFO] [2026-04-16 15:38:43]: hello
+    ✔ hello [10ms]
+    [uhh] [WARN] [2026-04-16 15:38:43]: this could be a problem
+    ✔ uhh [12ms]
+    [oh_no] [ERROR] [2026-04-16 15:38:43]: this is bad
+    ✖ oh_no [15ms]
 
-    ── [2026-04-15 18:19:02]
-    Pipeline execution completed ■ | 0.073 sec elapsed
+    ── [2026-04-16 15:38:43]
+    Pipeline execution completed ■ | 0.064 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -170,15 +170,15 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-15 18:19:02]
+    ── [2026-04-16 15:38:43]
     Running pipelines ▶
     ✔ hello [9ms]
-    ✔ uhh [10ms]
-    [oh_no] [ERROR] [2026-04-15 18:19:02]: this is bad
-    ✖ oh_no [12ms]
+    ✔ uhh [9ms]
+    [oh_no] [ERROR] [2026-04-16 15:38:43]: this is bad
+    ✖ oh_no [11ms]
 
-    ── [2026-04-15 18:19:02]
-    Pipeline execution completed ■ | 0.062 sec elapsed
+    ── [2026-04-16 15:38:43]
+    Pipeline execution completed ■ | 0.057 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -224,17 +224,17 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-15 18:19:02]
+    ── [2026-04-16 15:38:43]
     Running pipelines ▶
-    [hello] [INFO] [2026-04-15 18:19:02]: hi
-    ✔ hello [11ms]
-    [uhh] [WARN] [2026-04-15 18:19:02]: this could be a problem
-    ✔ uhh [14ms]
-    [oh_no] [ERROR] [2026-04-15 18:19:02]: this is bad
-    ✔ oh_no [16ms]
+    [hello] [INFO] [2026-04-16 15:38:43]: hi
+    ✔ hello [10ms]
+    [uhh] [WARN] [2026-04-16 15:38:43]: this could be a problem
+    ✔ uhh [12ms]
+    [oh_no] [ERROR] [2026-04-16 15:38:43]: this is bad
+    ✔ oh_no [14ms]
 
-    ── [2026-04-15 18:19:02]
-    Pipeline execution completed ■ | 0.07 sec elapsed
+    ── [2026-04-16 15:38:43]
+    Pipeline execution completed ■ | 0.063 sec elapsed
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total
     ────────────────────────────────────────────────────────────────────────────────
 

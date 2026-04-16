@@ -100,6 +100,12 @@
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"https://github.com/whipson/maestro"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="big-picture">Big Picture<a class="anchor" aria-label="anchor" href="#big-picture"></a>
+</h2>
+<p><code>maestro</code> is a framework for orchestrating multiple pipelines. The picture below imagines multiple weather-based ingestion pipelines, managed by a single orchestrator.</p>
+<p><img src="reference/figures/orchestrator.svg" alt="Diagram showing the Maestro orchestrator firing three pipelines (temp_readings every 15 min, weather_bulletins every 30 min, satellite_imagery every hour) with a downstream send_alert pipeline." width="100%"></p>
+</div>
+<div class="section level2">
 <h2 id="project-setup">Project Setup<a class="anchor" aria-label="anchor" href="#project-setup"></a>
 </h2>
 <p>A <code>maestro</code> project needs at least two components:</p>

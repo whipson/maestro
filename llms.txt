@@ -28,6 +28,17 @@ Or, try out the development version via:
 devtools::install_github("https://github.com/whipson/maestro")
 ```
 
+## Big Picture
+
+`maestro` is a framework for orchestrating multiple pipelines. The
+picture below imagines multiple weather-based ingestion pipelines,
+managed by a single orchestrator.
+
+![Diagram showing the Maestro orchestrator firing three pipelines
+(temp_readings every 15 min, weather_bulletins every 30 min,
+satellite_imagery every hour) with a downstream send_alert
+pipeline.](reference/figures/orchestrator.svg)
+
 ## Project Setup
 
 A `maestro` project needs at least two components:
