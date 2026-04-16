@@ -104,7 +104,7 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  <span class="va">script_path</span>,</span>
 <span>  <span class="va">pipe_name</span>,</span>
 <span>  frequency <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  start_time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="va"><a href="https://lubridate.tidyverse.org/reference/posix_utils.html" class="external-link">NA_POSIXct_</a></span>,</span>
+<span>  start_time_raw <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  tz <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  hours <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  days <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -133,8 +133,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <dd><p>frequency of the pipeline (e.g., 1 day)</p></dd>
 
 
-<dt><code>start_time</code></dt>
-<dd><p>start time of the pipeline</p></dd>
+<dt><code>start_time_raw</code></dt>
+<dd><p>start time as a raw string from the @maestroStartTime tag</p></dd>
 
 
 <dt><code>tz</code></dt>

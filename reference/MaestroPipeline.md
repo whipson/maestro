@@ -68,7 +68,7 @@ Create a new Pipeline object
       script_path,
       pipe_name,
       frequency = NA_character_,
-      start_time = lubridate::NA_POSIXct_,
+      start_time_raw = NA_character_,
       tz = NA_character_,
       hours = NULL,
       days = NULL,
@@ -96,9 +96,9 @@ Create a new Pipeline object
 
   frequency of the pipeline (e.g., 1 day)
 
-- `start_time`:
+- `start_time_raw`:
 
-  start time of the pipeline
+  start time as a raw string from the @maestroStartTime tag
 
 - `tz`:
 

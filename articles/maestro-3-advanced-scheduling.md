@@ -79,15 +79,16 @@ status <- run_schedule(
 
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
+    ✔ daily_example [38ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.024 sec elapsed
-    ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
+    Pipeline execution completed ■ | 0.068 sec elapsed
+    ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2026-04-15 09:20:00
+    • daily_example | 2024-06-21
 
 We can see that the pipeline executed even though the current time was
 not 09:20:00. This is because we set the orchestrator to run daily and
@@ -114,7 +115,7 @@ status <- run_schedule(
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2026-04-15 09:20:00
+    • daily_example | 2024-06-21 09:15:00
 
 It was skipped because it wasn’t within a 15 minute degree of difference
 but the output tells us that will next run at `2024-06-20 09:15:00`.  
