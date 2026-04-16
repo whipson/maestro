@@ -369,6 +369,7 @@ parse_maestro_start_time <- function(raw, tz, now = lubridate::now(tzone = tz)) 
 
   # HH:MM:SS
   if (grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", raw)) {
+    now <- now - lubridate::days(1)
     date_part <- format(now, "%Y-%m-%d")
     return(as.POSIXct(paste(date_part, raw), format = "%Y-%m-%d %H:%M:%S", tz = tz))
   }

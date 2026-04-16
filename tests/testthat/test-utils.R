@@ -21,7 +21,7 @@ test_that("parse_maestro_start_time handles HH:MM:SS", {
   result <- parse_maestro_start_time("04:00:00", tz = "UTC", now = now)
   expect_s3_class(result, "POSIXct")
   expect_equal(format(result, "%H:%M:%S"), "04:00:00")
-  expect_equal(format(result, "%Y-%m-%d"), "2026-04-14")
+  expect_equal(format(result, "%Y-%m-%d"), "2026-04-13")
 })
 
 test_that("parse_maestro_start_time handles weekday + time", {
