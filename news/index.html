@@ -77,10 +77,12 @@
 <h4 id="minor-changes-1-1-0-9001">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-1-0-9001"></a></h4>
 <ul><li><p>Some optimizations in schedule building and running.</p></li>
 <li><p>Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.</p></li>
+<li><p>Added option <code>maestro.check_datetime_override</code> which takes a POSIXct and overrides the <code>check_datetime</code> argument of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>. This should only be used for development and debugging - NOT in production.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-1-1-0-9001">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0-9001"></a></h4>
-<ul><li>Fixed issue where unique identifiers from <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> were not the same as the corresponding <code>run_id</code> from <code><a href="../reference/get_status.html">get_status()</a></code> for fan-in style DAGs.</li>
+<ul><li><p>Fixed issue where unique identifiers from <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> were not the same as the corresponding <code>run_id</code> from <code><a href="../reference/get_status.html">get_status()</a></code> for fan-in style DAGs.</p></li>
+<li><p>Fixed alignment of DAG cli output</p></li>
 </ul></div>
 </div>
     <div class="section level2">

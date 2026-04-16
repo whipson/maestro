@@ -47,22 +47,55 @@ A `maestro` project needs at least two components:
 2.  A single orchestrator script that kicks off the scripts when they’re
     scheduled to run
 
-The project file structure will look like this:
+The project file structure will look something like this:
 
 ``` R
 sample_project
 ├── orchestrator.R
 └── pipelines
-    ├── my_etl.R
-    ├── pipe1.R
-    └── pipe2.R
+    ├── satellite_imagery.R
+    ├── temp_readings.R
+    └── weather_bulletins.R
 ```
 
 Use
 [`maestro::create_maestro()`](https://whipson.github.io/maestro/reference/create_maestro.md)
 to easily create this project structure in a blank R project.
 
-Let’s look at each of these in more detail.
+### Orchestrator
+
+The orchestrator is a script that checks the schedules of all the
+pipelines in a `maestro` project and executes them. The orchestrator
+also handles global execution tasks such as collecting logs and managing
+shared resources like global objects and custom functions.
+
+You have the option of using Quarto, RMarkdown, or a straight-up R
+script for the orchestrator, but the former two have some advantages
+with respect to deployment on Posit Connect.
+
+A simple orchestrator looks like this:
+
+``` r
+library(maestro)
+
+schedule <- build_schedule()
+
+output <- run_schedule(
+  schedule, 
+  orch_frequency = "15 minutes",
+  n_show_next = 0
+)
+```
+
+![](reference/figures/README-/unnamed-chunk-2.svg)
+
+The function
+[`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+scours through all the pipelines in the project and builds a schedule.
+Then
+[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
+checks each pipeline’s scheduled time against the system time within
+some margin of rounding and calls those pipelines to run.
 
 ### Pipelines
 
@@ -104,39 +137,3 @@ What makes this a `maestro` pipeline is the use of special
 In other words, we’d expect it to run every day at 12:30. There are more
 `maestro` tags than these ones and all follow the camelCase convention
 established by `roxygen2`.
-
-### Orchestrator
-
-The orchestrator is a script that checks the schedules of all the
-pipelines in a `maestro` project and executes them. The orchestrator
-also handles global execution tasks such as collecting logs and managing
-shared resources like global objects and custom functions.
-
-You have the option of using Quarto, RMarkdown, or a straight-up R
-script for the orchestrator, but the former two have some advantages
-with respect to deployment on Posit Connect.
-
-A simple orchestrator looks like this:
-
-``` r
-library(maestro)
-
-# Look through the pipelines directory for maestro pipelines to create a schedule
-schedule <- build_schedule(pipeline_dir = "pipelines")
-
-# Checks which pipelines are due to run and then executes them
-output <- run_schedule(
-  schedule, 
-  orch_frequency = "1 day"
-)
-```
-
-![](reference/figures/README-/unnamed-chunk-3.svg)
-
-The function
-[`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
-scours through all the pipelines in the project and builds a schedule.
-Then
-[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
-checks each pipeline’s scheduled time against the system time within
-some margin of rounding and calls those pipelines to run.
