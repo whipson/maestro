@@ -609,3 +609,41 @@ test_that("Pipeline that prints curly brackets runs fine", {
     expect_true(status$success)
   })
 })
+
+test_that("README example pipelines all run with daily orchestrator", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      #' @maestroStartTime 09:00:00
+      #' @maestroTz America/Halifax
+      get_mtcars <- function() {
+      }
+
+      #' @maestroFrequency daily
+      #' @maestroStartTime 09:00:00
+      #' @maestroTz America/Halifax
+      multi_rng <- function() {
+      }
+
+      #' @maestroFrequency daily
+      #' @maestroStartTime 12:30:00
+      #' @maestroTz America/Halifax
+      my_etl <- function() {
+      }
+      ",
+      con = "pipelines/pipes.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      check_datetime = as.POSIXct("2026-04-16 11:00:00", tz = "America/Halifax"),
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_true(all(status$invoked))
+  })
+})
