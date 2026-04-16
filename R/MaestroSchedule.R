@@ -58,6 +58,10 @@ MaestroSchedule <- R6::R6Class(
     run = function(..., quiet = FALSE, run_all = FALSE, n_show_next = 5) {
 
       dots <- rlang::list2(..., quiet = quiet)
+      check_datetime <- dots$check_datetime
+      if (is.null(check_datetime)) {
+        check_datetime <- lubridate::now()
+      }
 
       is_multicore <- FALSE
       cores <- dots$cores
@@ -93,7 +97,7 @@ MaestroSchedule <- R6::R6Class(
 
         if (!quiet) {
           cli::cli_h3(
-            "[{format(lubridate::now(), '%Y-%m-%d %H:%M:%S')}]
+            "[{format(check_datetime, '%Y-%m-%d %H:%M:%S')}]
         Running pipelines {cli::col_green(cli::symbol$play)}")
         }
 
@@ -101,10 +105,11 @@ MaestroSchedule <- R6::R6Class(
         pipes_that_ran <- do.call(pipes_to_run$run, dots)
         if (is_multicore) self$PipelineList$update_pipelines(pipes_that_ran)
         elapsed <- tictoc::toc(quiet = TRUE)
+        elapsed_ms <- elapsed$toc - elapsed$tic
 
         if (!quiet) {
           cli::cli_h3(
-            "[{format(lubridate::now(), '%Y-%m-%d %H:%M:%S')}]
+            "[{format(check_datetime + lubridate::milliseconds(elapsed_ms), '%Y-%m-%d %H:%M:%S')}]
             Pipeline execution completed {cli::col_silver(cli::symbol$stop)} | {elapsed$callback_msg}"
           )
         }

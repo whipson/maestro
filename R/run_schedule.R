@@ -113,6 +113,17 @@ run_schedule <- function(
     cli::cli_abort("`check_datetime` must be a {.cls Date} or {.cls POSIXct} type.")
   }
 
+  # Allow a session-level override of check_datetime via options()
+  override <- getOption("maestro.check_datetime_override")
+  if (!is.null(override)) {
+    if (!lubridate::is.POSIXct(override)) {
+      cli::cli_abort(
+        "{.code getOption('maestro.check_datetime_override')} must be a {.cls POSIXct} value."
+      )
+    }
+    check_datetime <- override
+  }
+
   # Get the orchestrator nunits
   orch_nunits <- validate_orch_frequency(orch_frequency)
 

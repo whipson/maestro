@@ -231,7 +231,11 @@ MaestroPipeline <- R6::R6Class(
       resources <- append(resources, list(.input = .input))
       args <- formals(pipe_name, envir = maestro_context)
 
-      prepend <- if (depth != 0) cli::format_inline(rep("  ", times = depth), "|-") else ""
+      prepend <- if (depth == 0) {
+        ""
+      } else {
+        cli::format_inline(rep("  ", times = depth - 1), "|-")
+      }
 
       do_run <- TRUE
       if (!is.null(private$run_if)) {
