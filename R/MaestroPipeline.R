@@ -460,7 +460,7 @@ MaestroPipeline <- R6::R6Class(
       next_seq <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
-        pipeline_datetime = current_cycle,
+        pipeline_datetime = current_cycle + .one_freq_step(),
         check_datetime = current_cycle + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,

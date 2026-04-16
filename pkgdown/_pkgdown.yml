@@ -4,6 +4,29 @@ template:
   bslib:
     primary: "#9012C7"
 
+navbar:
+  structure:
+    left: [intro, articles, reference, tutorials, news]
+  components:
+    intro:
+      text: Quick Start
+      href: articles/maestro-1-quick-start.html
+
+articles:
+- title: ~
+  contents:
+  - maestro-1-quick-start
+- title: Guides
+  navbar: ~
+  contents:
+  - maestro-2-motivation-concepts
+  - maestro-3-advanced-scheduling
+  - maestro-4-directed-acyclic-graphs
+  - maestro-5-logging
+  - maestro-6-deployment
+  - maestro-7-tag-reference
+  - maestro-8-conditionals
+
 news:
   releases:
   - text: "0.4.0"

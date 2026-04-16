@@ -24,6 +24,7 @@ asciicast::init_knitr_engine(
   same_process = TRUE,
   startup = quote({
     library(maestro)
+    options(maestro.check_datetime_override = as.POSIXct("2026-04-21 03:00:00", tz = "UTC"))
     set.seed(1) 
   })
 )
