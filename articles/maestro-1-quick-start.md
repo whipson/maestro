@@ -148,10 +148,10 @@ output <- run_schedule(
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
     Running pipelines ▶                                                             
-    ✔ my_pipe [38ms]                                                                
+    ✔ my_pipe [30ms]                                                                
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
-    Pipeline execution completed ■ | 0.072 sec elapsed                              
+    Pipeline execution completed ■ | 0.057 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     

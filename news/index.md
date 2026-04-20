@@ -1,5 +1,11 @@
 # Changelog
 
+## maestro (development version)
+
+#### Bug fixes
+
+- Fixed the calculation of `next_run`
+
 ## maestro 1.1.0
 
 #### Breaking changes

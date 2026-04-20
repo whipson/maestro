@@ -79,10 +79,10 @@ status <- run_schedule(
 
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
-    ✔ daily_example [39ms]
+    ✔ daily_example [31ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.074 sec elapsed
+    Pipeline execution completed ■ | 0.058 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -109,13 +109,13 @@ status <- run_schedule(
     Running pipelines ▶
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.001 sec elapsed
+    Pipeline execution completed ■ | 0 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
     ── Next scheduled pipelines ❯
     Pipe name | Next scheduled run
-    • daily_example | 2024-06-21 09:15:00
+    • daily_example | 2024-06-20 09:15:00
 
 It was skipped because it wasn’t within a 15 minute degree of difference
 but the output tells us that will next run at `2024-06-20 09:15:00`.  
