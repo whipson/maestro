@@ -1,6 +1,6 @@
 # Changelog
 
-## maestro 1.1.0.9001
+## maestro 1.1.0
 
 #### Breaking changes
 
@@ -11,6 +11,14 @@
   frequencies.
 
 #### New features
+
+- [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+  is a new standalone function equivalent to `schedule$get_network()`,
+  following the same pattern as
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
+  [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md),
+  etc. Replaces the deprecated
+  [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md).
 
 - [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
   now returns an `is_primary` column: `TRUE` for pipelines that are not
@@ -39,8 +47,9 @@
 - [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
   (and `MaestroSchedule$show_network()`) is deprecated due to its
   reliance on `DiagrammeR`, which brings in a large number of
-  little-used dependencies. Use `get_network()` to retrieve the pipeline
-  dependency edge list directly.
+  little-used dependencies. Use
+  [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+  to retrieve the pipeline dependency edge list directly.
 
 #### Minor changes
 
@@ -425,8 +434,9 @@ CRAN release: 2024-11-21
 - New function `show_network` for visualizing the connections between
   pipelines that are connected in a DAG.
 
-- `MaestroSchedule` gains new methods `get_network()` (returns a
-  data.frame) and
+- `MaestroSchedule` gains new methods
+  [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+  (returns a data.frame) and
   [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
   (returns a visualization using {DiagrammeR}).
 

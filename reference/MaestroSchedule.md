@@ -147,7 +147,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_network()`
+### Method [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
 
 Get the network structure of the pipelines as an edge list (will be
 empty if there are no DAG pipelines)

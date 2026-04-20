@@ -26,7 +26,7 @@ Three R6 classes form the core object model:
   Wraps a `MaestroPipelineList` and exposes `run()`,
   [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
   [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md),
-  `get_network()`,
+  [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md),
   [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md),
   [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md).
 
@@ -202,7 +202,7 @@ This dual API applies to:
 [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md),
 [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md),
 [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md),
-`get_network()`,
+[`get_network()`](https://whipson.github.io/maestro/reference/get_network.md),
 [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md),
 [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md).
 

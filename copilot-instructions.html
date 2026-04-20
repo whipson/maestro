@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
 <li>
 <strong><code>MaestroPipelineList</code></strong> (<code>R/MaestroPipelineList.R</code>) — an ordered collection of <code>MaestroPipeline</code> objects sorted by priority. Handles bulk operations (run, get_status, validate_network).</li>
 <li>
-<strong><code>MaestroSchedule</code></strong> (<code>R/MaestroSchedule.R</code>) — the top-level user-facing object returned by <code><a href="reference/build_schedule.html">build_schedule()</a></code>. Wraps a <code>MaestroPipelineList</code> and exposes <code>run()</code>, <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code>get_network()</code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</li>
+<strong><code>MaestroSchedule</code></strong> (<code>R/MaestroSchedule.R</code>) — the top-level user-facing object returned by <code><a href="reference/build_schedule.html">build_schedule()</a></code>. Wraps a <code>MaestroPipelineList</code> and exposes <code>run()</code>, <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</li>
 </ul><div class="section level3">
 <h3 id="data-flow">Data flow<a class="anchor" aria-label="anchor" href="#data-flow"></a></h3>
 <pre><code>pipelines/*.R  →  build_schedule()  →  MaestroSchedule
@@ -188,7 +188,7 @@ MaestroSchedule  →  run_schedule()  →  side effects + returns MaestroSchedul
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_flags.html">get_flags</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span>       <span class="co"># standalone</span></span>
 <span><span class="va">schedule</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span>      <span class="co"># R6 equivalent — same result</span></span></code></pre></div>
-<p>This dual API applies to: <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_schedule.html">get_schedule()</a></code>, <code><a href="reference/get_flags.html">get_flags()</a></code>, <code>get_network()</code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</p>
+<p>This dual API applies to: <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_schedule.html">get_schedule()</a></code>, <code><a href="reference/get_flags.html">get_flags()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</p>
 <div class="section level3">
 <h3 id="invoke--ad-hoc-single-pipeline-runs">
 <code>invoke()</code> — ad-hoc single pipeline runs<a class="anchor" aria-label="anchor" href="#invoke--ad-hoc-single-pipeline-runs"></a></h3>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,14 +53,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0.9001" id="maestro-1109001">maestro 1.1.0.9001<a class="anchor" aria-label="anchor" href="#maestro-1109001"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0" id="maestro-110">maestro 1.1.0<a class="anchor" aria-label="anchor" href="#maestro-110"></a></h2>
 <div class="section level4">
-<h4 id="breaking-changes-1-1-0-9001">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-1-0-9001"></a></h4>
+<h4 id="breaking-changes-1-1-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-1-0"></a></h4>
 <ul><li>The default value for <code>maestroStartTime</code> is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="new-features-1-1-0-9001">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0-9001"></a></h4>
-<ul><li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> now returns an <code>is_primary</code> column: <code>TRUE</code> for pipelines that are not downstream nodes in a DAG (i.e., root or standalone pipelines), <code>FALSE</code> for downstream DAG nodes.</p></li>
+<h4 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h4>
+<ul><li><p><code><a href="../reference/get_network.html">get_network()</a></code> is a new standalone function equivalent to <code>schedule$get_network()</code>, following the same pattern as <code><a href="../reference/get_status.html">get_status()</a></code>, <code><a href="../reference/get_flags.html">get_flags()</a></code>, etc. Replaces the deprecated <code><a href="../reference/show_network.html">show_network()</a></code>.</p></li>
+<li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> now returns an <code>is_primary</code> column: <code>TRUE</code> for pipelines that are not downstream nodes in a DAG (i.e., root or standalone pipelines), <code>FALSE</code> for downstream DAG nodes.</p></li>
 <li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> gains an <code>include_skipped</code> argument (default <code>TRUE</code>). Set to <code>FALSE</code> to exclude pipelines tagged with <code>@maestroSkip</code> from the output.</p></li>
 <li>
 <p><code>maestroStartTime</code> now accepts partial anchor formats, making it easier to express natural cycle points without picking a specific date:</p>
@@ -71,18 +72,18 @@
 </ul></li>
 </ul></div>
 <div class="section level4">
-<h4 id="deprecated-functionality-1-1-0-9001">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-1-1-0-9001"></a></h4>
+<h4 id="deprecated-functionality-1-1-0">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-1-1-0"></a></h4>
 <ul><li><p><code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code> is deprecated with no replacement.</p></li>
-<li><p><code><a href="../reference/show_network.html">show_network()</a></code> (and <code>MaestroSchedule$show_network()</code>) is deprecated due to its reliance on <code>DiagrammeR</code>, which brings in a large number of little-used dependencies. Use <code>get_network()</code> to retrieve the pipeline dependency edge list directly.</p></li>
+<li><p><code><a href="../reference/show_network.html">show_network()</a></code> (and <code>MaestroSchedule$show_network()</code>) is deprecated due to its reliance on <code>DiagrammeR</code>, which brings in a large number of little-used dependencies. Use <code><a href="../reference/get_network.html">get_network()</a></code> to retrieve the pipeline dependency edge list directly.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="minor-changes-1-1-0-9001">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-1-0-9001"></a></h4>
+<h4 id="minor-changes-1-1-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-1-0"></a></h4>
 <ul><li><p>Some optimizations in schedule building and running.</p></li>
 <li><p>Schedules no longer store run_sequences, but are rather built lazily as needed. This greatly improves the portability of schedule objects making it more practical in production to cache a schedule as an RDS to avoid re-parsing tags.</p></li>
 <li><p>Added option <code>maestro.check_datetime_override</code> which takes a POSIXct and overrides the <code>check_datetime</code> argument of <code><a href="../reference/run_schedule.html">run_schedule()</a></code>. This should only be used for development and debugging - NOT in production.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-1-1-0-9001">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0-9001"></a></h4>
+<h4 id="bug-fixes-1-1-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-0"></a></h4>
 <ul><li><p>Fixed issue where unique identifiers from <code><a href="../reference/get_artifacts.html">get_artifacts()</a></code> were not the same as the corresponding <code>run_id</code> from <code><a href="../reference/get_status.html">get_status()</a></code> for fan-in style DAGs.</p></li>
 <li><p>Fixed alignment of DAG cli output</p></li>
 </ul></div>
@@ -273,7 +274,7 @@
 <h4 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h4>
 <ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag (<a href="https://github.com/whipson/maestro/issues/98" class="external-link">#98</a>).</p></li>
 <li><p>New function <code>show_network</code> for visualizing the connections between pipelines that are connected in a DAG.</p></li>
-<li><p><code>MaestroSchedule</code> gains new methods <code>get_network()</code> (returns a data.frame) and <code><a href="../reference/show_network.html">show_network()</a></code> (returns a visualization using {DiagrammeR}).</p></li>
+<li><p><code>MaestroSchedule</code> gains new methods <code><a href="../reference/get_network.html">get_network()</a></code> (returns a data.frame) and <code><a href="../reference/show_network.html">show_network()</a></code> (returns a visualization using {DiagrammeR}).</p></li>
 <li><p>Added catch-all <code>maestro</code> tag to identify a function as a pipeline without specifying other configurations.</p></li>
 </ul></div>
 <div class="section level4">

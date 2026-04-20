@@ -98,7 +98,7 @@ include monitoring, CI/CD, etc.), but we won’t focus on those here.
 
 Seasoned R users will likely be familiar with [Posit](https://posit.co/)
 and its hosting platform [Posit
-Connect](https://posit.co/products/enterprise/connect/). While
+Connect](https://posit.co/products/enterprise/connect). While
 traditionally seen as a hosting environment for dashboards, APIs, and
 reports, it is actually perfectly capable of data orchestration with
 maestro.
