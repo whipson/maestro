@@ -11,6 +11,16 @@ test_that("DAGs work as expected", {
 }) |>
   suppressMessages()
 
+test_that("get_network() standalone returns same result as R6 method", {
+  dag <- build_schedule(test_path("test_pipelines_dags_good"))
+  expect_equal(get_network(dag), dag$get_network())
+}) |>
+  suppressMessages()
+
+test_that("get_network() errors on non-MaestroSchedule input", {
+  expect_error(get_network(list()), class = "rlang_error")
+})
+
 test_that("Error messages for DAGs with nonexistent inputs/outputs", {
   expect_error({
     dag_bad <- build_schedule(test_path("test_pipelines_dags_bad"))

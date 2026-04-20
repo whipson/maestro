@@ -71,7 +71,7 @@ All said, this kind of deployment is probably only advisable for testing and pro
 
 ## Posit Connect
 
-Seasoned R users will likely be familiar with [Posit](https://posit.co/) and its hosting platform [Posit Connect](https://posit.co/products/enterprise/connect/). While traditionally seen as a hosting environment for dashboards, APIs, and reports, it is actually perfectly capable of data orchestration with maestro.
+Seasoned R users will likely be familiar with [Posit](https://posit.co/) and its hosting platform [Posit Connect](https://posit.co/products/enterprise/connect). While traditionally seen as a hosting environment for dashboards, APIs, and reports, it is actually perfectly capable of data orchestration with maestro.
 
 ::: callout-note
 A Posit Connect license and instance is required for this type of deployment. User must also have Publisher privileges to deploy to Connect.

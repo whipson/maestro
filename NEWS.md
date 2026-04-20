@@ -1,10 +1,12 @@
-# maestro 1.1.0.9001
+# maestro 1.1.0
 
 ### Breaking changes
 
 - The default value for `maestroStartTime` is no longer fixed to 2024-01-01 00:00:00 but is now dynamic based on the frequency of the pipeline. Daily or more frequent is midnight of the current build day, weekly is beginning of the current week, and so on for lower frequencies.
 
 ### New features
+
+- `get_network()` is a new standalone function equivalent to `schedule$get_network()`, following the same pattern as `get_status()`, `get_flags()`, etc. Replaces the deprecated `show_network()`.
 
 - `get_run_sequence()` now returns an `is_primary` column: `TRUE` for pipelines that are not downstream nodes in a DAG (i.e., root or standalone pipelines), `FALSE` for downstream DAG nodes.
 
