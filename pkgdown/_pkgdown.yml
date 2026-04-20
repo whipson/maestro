@@ -29,9 +29,11 @@ articles:
 
 news:
   releases:
-  - text: "0.4.0"
-    href: https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html
-  - text: "0.6.0"
-    href: https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html
+  - text: "1.1.0"
+    href: https://whipson.github.io/data-in-flight/posts/maestro-1-1-0/maestro-1-1-0-release.html
   - text: "0.7.0"
     href: https://whipson.github.io/data-in-flight/posts/maestro-0-7-0/maestro-0-7-0-release.html
+  - text: "0.6.0"
+    href: https://whipson.github.io/data-in-flight/posts/maestro-0-6-0/maestro-0-6-0-release.html
+  - text: "0.4.0"
+    href: https://whipson.github.io/data-in-flight/posts/maestro-dags/main.html
