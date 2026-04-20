@@ -623,17 +623,25 @@ MaestroPipeline <- R6::R6Class(
     ) {
       if (!is.null(private$inputs)) return(NULL)
 
+      now <- lubridate::now()
+
+      anchor <- if (!is.null(min_datetime)) {
+        lubridate::as_datetime(min_datetime)
+      } else {
+        now
+      }
+
       extend_to <- if (!is.null(max_datetime)) {
         lubridate::as_datetime(max_datetime)
       } else {
-        lubridate::now() + lubridate::days(.run_sequence_days_out(private$frequency_unit))
+        now + lubridate::days(.run_sequence_days_out(private$frequency_unit))
       }
 
-      resolved_start <- private$resolve_start_time(lubridate::now())
+      resolved_start <- private$resolve_start_time(anchor)
 
       start_time_adj <- .prev_on_cycle(
         resolved_start,
-        current = lubridate::now(),
+        current = anchor,
         amount = private$frequency_n,
         unit = private$frequency_unit
       )
