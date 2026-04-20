@@ -347,7 +347,11 @@ MaestroPipeline <- R6::R6Class(
         script_path = private$script_path %n% NA_character_,
         pipe_name = private$pipe_name %n% NA_character_,
         frequency = private$frequency %n% NA_character_,
-        start_time = private$start_time_raw %n% NA_character_,
+        start_time = if (!is.null(private$inputs)) {
+          lubridate::NA_POSIXct_
+        } else {
+          private$resolve_start_time(lubridate::now())
+        },
         tz = private$tz %n% NA_character_,
         skip = private$skip %n% NA,
         log_level = private$log_level %n% NA_character_,
