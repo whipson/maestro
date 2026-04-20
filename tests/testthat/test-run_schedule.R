@@ -442,9 +442,18 @@ test_that("run_schedule handles errors in a pipeline", {
 
 test_that("run_schedule creates maestro.log if log_to_file is TRUE", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_some_errors"))
-
   withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency hourly
+      test <- function() {
+
+      }
+      ",
+      con = "pipelines/test.R"
+    )
+    schedule <- build_schedule()
     run_schedule(schedule, run_all = TRUE, log_to_file = TRUE)
     expect_true(file.exists("maestro.log"))
   })
@@ -453,9 +462,18 @@ test_that("run_schedule creates maestro.log if log_to_file is TRUE", {
 
 test_that("run_schedule doesn't create maestro.log if log_to_file is FALSE", {
 
-  schedule <- build_schedule(test_path("test_pipelines_run_some_errors"))
-
   withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency hourly
+      test <- function() {
+
+      }
+      ",
+      con = "pipelines/test.R"
+    )
+    schedule <- build_schedule()
     run_schedule(schedule, run_all = TRUE, log_to_file = FALSE)
     expect_true(!file.exists("maestro.log"))
   })
