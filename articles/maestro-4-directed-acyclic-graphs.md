@@ -59,14 +59,14 @@ get_artifacts(schedule)
 ```
 
                                                                                     
-    ── [2026-04-20 17:19:54]                                                        
+    ── [2026-04-20 17:22:35]                                                        
     Running pipelines ▶                                                             
     ✔ start [21ms]                                                                  
-    ✔ |-high_road [29ms]                                                            
+    ✔ |-high_road [30ms]                                                            
     ✔ |-low_road [8ms]                                                              
                                                                                     
-    ── [2026-04-20 17:19:54]                                                        
-    Pipeline execution completed ■ | 0.107 sec elapsed                              
+    ── [2026-04-20 17:22:35]                                                        
+    Pipeline execution completed ■ | 0.11 sec elapsed                               
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
     $start                                                                          
@@ -143,14 +143,14 @@ status <- run_schedule(
 ```
 
                                                                                     
-    ── [2026-04-20 17:19:55]                                                        
+    ── [2026-04-20 17:22:35]                                                        
     Running pipelines ▶                                                             
     ✔ extract [9ms]                                                                 
-    ✔ |-transform [13ms]                                                            
+    ✔ |-transform [14ms]                                                            
     ✔   |-load [9ms]                                                                
                                                                                     
-    ── [2026-04-20 17:19:55]                                                        
-    Pipeline execution completed ■ | 0.061 sec elapsed                              
+    ── [2026-04-20 17:22:35]                                                        
+    Pipeline execution completed ■ | 0.064 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
 
