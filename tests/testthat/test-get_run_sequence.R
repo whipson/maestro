@@ -152,3 +152,41 @@ test_that("include_skipped = FALSE excludes skipped pipelines", {
   expect_false("p2" %in% unique(run_seq_no_skip$pipe_name))
   expect_in(c("p1", "p3"), unique(run_seq_no_skip$pipe_name))
 })
+
+test_that("backward-looking min_datetime returns historic run sequences", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 04:00:00
+      daily_early <- function() {
+      }
+
+      #' @maestroFrequency 1 hour
+      hourly <- function() {
+      }
+      ",
+      con = "pipelines/pipes.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+  })
+
+  now <- lubridate::now()
+  min_dt <- now - lubridate::days(7)
+  max_dt <- now
+
+  run_seq <- get_run_sequence(schedule, min_datetime = min_dt, max_datetime = max_dt)
+
+  expect_in(c("daily_early", "hourly"), unique(run_seq$pipe_name))
+  expect_s3_class(run_seq$scheduled_time, "POSIXct")
+  expect_true(all(run_seq$scheduled_time >= min_dt))
+  expect_true(all(run_seq$scheduled_time <= max_dt))
+
+  # daily pipeline at 04:00:00 should have ~7 occurrences over 7 days
+  daily_seq <- run_seq[run_seq$pipe_name == "daily_early", ]
+  expect_gte(nrow(daily_seq), 6L)
+  expect_lte(nrow(daily_seq), 8L)
+})
