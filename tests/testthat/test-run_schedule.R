@@ -748,6 +748,8 @@ test_that("Other vignette examples", {
 })
 
 test_that("Check validity of next_run", {
+
+  # On exact timestamp
   withr::with_tempdir({
     dir.create("pipelines")
     writeLines(
@@ -770,5 +772,31 @@ test_that("Check validity of next_run", {
     )
     status <- get_status(schedule)
     expect_equal(status$next_run, as.POSIXct("2026-04-17 03:00:00", tz = "UTC"))
+  })
+
+  # After the 12:00:00 on the previous day
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency 1 day
+      #' @maestroStartTime 09:00:00
+      #' @maestroTz UTC
+      local <- function() {
+
+      }
+      ",
+      con = "pipelines/local.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 hour",
+      check_datetime = as.POSIXct("2026-04-16 14:00:00", tz = "UTC"),
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_equal(status$next_run, as.POSIXct("2026-04-17 09:00:00", tz = "UTC"))
   })
 })

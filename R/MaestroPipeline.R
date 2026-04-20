@@ -464,11 +464,17 @@ MaestroPipeline <- R6::R6Class(
 
       is_scheduled_now <- !is.null(matched_slot) && .passes_filters(matched_slot)
 
+      next_seq_start <- if (!is.null(matched_slot) && identical(as.integer(matched_slot), as.integer(current_cycle))) {
+        current_cycle + .one_freq_step()
+      } else {
+        current_cycle
+      }
+
       next_seq <- get_pipeline_run_sequence(
         pipeline_n = private$frequency_n,
         pipeline_unit = private$frequency_unit,
-        pipeline_datetime = current_cycle + .one_freq_step(),
-        check_datetime = current_cycle + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
+        pipeline_datetime = next_seq_start,
+        check_datetime = next_seq_start + lubridate::days(.run_sequence_min_days_out(private$frequency_unit)),
         pipeline_hours = private$hours,
         pipeline_days_of_week = private$days_of_week,
         pipeline_days_of_month = private$days_of_month,
