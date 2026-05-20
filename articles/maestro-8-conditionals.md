@@ -42,14 +42,14 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-05-20 13:58:55]                                                        
+    ── [2026-05-20 17:46:10]                                                        
     Running pipelines ▶                                                             
-    ✔ random_execution (?) [18ms]                                                   
-    [random_execution] [INFO] [2026-05-20 13:58:56]: Maybe, maybe not               
-    ✔ random_execution [42ms]                                                       
+    ✔ random_execution (?) [17ms]                                                   
+    [random_execution] [INFO] [2026-05-20 17:46:10]: Maybe, maybe not               
+    ✔ random_execution [41ms]                                                       
                                                                                     
-    ── [2026-05-20 13:58:55]                                                        
-    Pipeline execution completed ■ | 0.094 sec elapsed                              
+    ── [2026-05-20 17:46:10]                                                        
+    Pipeline execution completed ■ | 0.093 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -126,21 +126,21 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-05-20 13:58:56]                                                        
+    ── [2026-05-20 17:46:10]                                                        
     Running pipelines ▶                                                             
     ✔ extract_flights [9ms]                                                         
     ✔ |-transform_flights (?) [11ms]                                                
     ✔ |-transform_flights [19ms]                                                    
     ✔   |-load_flights (?) [8ms]                                                    
                                                                                     
-    ── [2026-05-20 13:58:56]                                                        
-    Pipeline execution completed ■ | 0.085 sec elapsed                              
+    ── [2026-05-20 17:46:10]                                                        
+    Pipeline execution completed ■ | 0.086 sec elapsed                              
     ✔ 2 successes | ! 0 warnings | ✖ 0 errors | ◼ 2 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • extract_flights | 2026-05-20 15:00:00                                         
+    • extract_flights | 2026-05-20 19:00:00                                         
 
 ## Resource Conditionals
 
@@ -185,13 +185,13 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-05-20 13:58:56]                                                        
+    ── [2026-05-20 17:46:11]                                                        
     Running pipelines ▶                                                             
     ✔ process_payments (?) [8ms]                                                    
-    [process_payments] [INFO] [2026-05-20 13:58:56]: Payments processed             
+    [process_payments] [INFO] [2026-05-20 17:46:11]: Payments processed             
     ✔ process_payments [18ms]                                                       
                                                                                     
-    ── [2026-05-20 13:58:56]                                                        
+    ── [2026-05-20 17:46:11]                                                        
     Pipeline execution completed ■ | 0.034 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────

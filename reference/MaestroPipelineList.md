@@ -3,9 +3,6 @@
 Class for a list of MaestroPipelines A MaestroPipelineList is created
 when there are multiple maestro pipelines in a single script
 
-Class for a list of MaestroPipelines A MaestroPipelineList is created
-when there are multiple maestro pipelines in a single script
-
 ## Public fields
 
 - `MaestroPipelines`:
@@ -20,7 +17,7 @@ when there are multiple maestro pipelines in a single script
 
 ### Public methods
 
-- [`MaestroPipelineList$new()`](#method-MaestroPipelineList-new)
+- [`MaestroPipelineList$new()`](#method-MaestroPipelineList-initialize)
 
 - [`MaestroPipelineList$print()`](#method-MaestroPipelineList-print)
 
@@ -70,7 +67,7 @@ when there are multiple maestro pipelines in a single script
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `MaestroPipelineList$new()`
 
 Create a MaestroPipelineList object
 
@@ -94,7 +91,7 @@ MaestroPipelineList
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `MaestroPipelineList$print()`
 
 Print the MaestroPipelineList
 
@@ -108,7 +105,7 @@ print
 
 ------------------------------------------------------------------------
 
-### Method `add_pipelines()`
+### `MaestroPipelineList$add_pipelines()`
 
 Add pipelines to the list
 
@@ -128,7 +125,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method `update_pipelines()`
+### `MaestroPipelineList$update_pipelines()`
 
 Update pipelines in a list
 
@@ -148,7 +145,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method `get_pipe_names()`
+### `MaestroPipelineList$get_pipe_names()`
 
 Get names of the pipelines in the list arranged by priority
 
@@ -162,7 +159,7 @@ character
 
 ------------------------------------------------------------------------
 
-### Method `get_pipe_by_name()`
+### `MaestroPipelineList$get_pipe_by_name()`
 
 Get a MaestroPipeline by its name
 
@@ -182,7 +179,7 @@ MaestroPipeline
 
 ------------------------------------------------------------------------
 
-### Method `get_pipes_by_name()`
+### `MaestroPipelineList$get_pipes_by_name()`
 
 Get a MaestroPipelineList with selected pipelines
 
@@ -202,7 +199,7 @@ MaestroPipelineList
 
 ------------------------------------------------------------------------
 
-### Method `get_priorities()`
+### `MaestroPipelineList$get_priorities()`
 
 Get priorities
 
@@ -216,7 +213,7 @@ numeric
 
 ------------------------------------------------------------------------
 
-### Method [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
+### `MaestroPipelineList$get_schedule()`
 
 Get the schedule as a data.frame
 
@@ -230,7 +227,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `get_timely_pipelines()`
+### `MaestroPipelineList$get_timely_pipelines()`
 
 Get a new MaestroPipelineList containing only those pipelines scheduled
 to run
@@ -251,7 +248,7 @@ MaestroPipelineList
 
 ------------------------------------------------------------------------
 
-### Method `get_primary_pipes()`
+### `MaestroPipelineList$get_primary_pipes()`
 
 Get pipelines that are primary (i.e., don't have an inputting pipeline)
 
@@ -265,7 +262,7 @@ list of MaestroPipelines
 
 ------------------------------------------------------------------------
 
-### Method `check_timeliness()`
+### `MaestroPipelineList$check_timeliness()`
 
 Check whether pipelines in the list are scheduled to run based on
 orchestrator frequency and current time
@@ -286,7 +283,7 @@ logical
 
 ------------------------------------------------------------------------
 
-### Method [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+### `MaestroPipelineList$get_status()`
 
 Get status of the pipelines as a data.frame
 
@@ -300,7 +297,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `get_errors()`
+### `MaestroPipelineList$get_errors()`
 
 Get list of errors from the pipelines
 
@@ -314,7 +311,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_warnings()`
+### `MaestroPipelineList$get_warnings()`
 
 Get list of warnings from the pipelines
 
@@ -328,7 +325,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_messages()`
+### `MaestroPipelineList$get_messages()`
 
 Get list of messages from the pipelines
 
@@ -342,7 +339,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+### `MaestroPipelineList$get_artifacts()`
 
 Get artifacts (return values) from the pipelines
 
@@ -356,7 +353,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_run_sequences()`
+### `MaestroPipelineList$get_run_sequences()`
 
 Get run sequences from the pipelines
 
@@ -388,7 +385,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md)
+### `MaestroPipelineList$get_flags()`
 
 Get the flags of the pipelines as a named list
 
@@ -402,7 +399,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+### `MaestroPipelineList$get_network()`
 
 Get the network structure as a edge list
 
@@ -416,7 +413,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `validate_network()`
+### `MaestroPipelineList$validate_network()`
 
 Validates whether all inputs and outputs exist and that the network is a
 valid DAG
@@ -431,7 +428,7 @@ warning or invisible
 
 ------------------------------------------------------------------------
 
-### Method `run()`
+### `MaestroPipelineList$run()`
 
 Runs all the pipelines in the list
 
@@ -460,7 +457,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method `reset_pipelines()`
+### `MaestroPipelineList$reset_pipelines()`
 
 Resets the run time attributes
 
@@ -470,7 +467,7 @@ Resets the run time attributes
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `MaestroPipelineList$clone()`
 
 The objects of this class are cloneable with this method.
 

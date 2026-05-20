@@ -3,14 +3,11 @@
 Class for an individual maestro pipeline A pipeline is defined as a
 single R script with a schedule or input
 
-Class for an individual maestro pipeline A pipeline is defined as a
-single R script with a schedule or input
-
 ## Methods
 
 ### Public methods
 
-- [`MaestroPipeline$new()`](#method-MaestroPipeline-new)
+- [`MaestroPipeline$new()`](#method-MaestroPipeline-initialize)
 
 - [`MaestroPipeline$print()`](#method-MaestroPipeline-print)
 
@@ -58,7 +55,7 @@ single R script with a schedule or input
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `MaestroPipeline$new()`
 
 Create a new Pipeline object
 
@@ -151,7 +148,7 @@ MaestroPipeline object
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `MaestroPipeline$print()`
 
 Prints the pipeline
 
@@ -161,7 +158,7 @@ Prints the pipeline
 
 ------------------------------------------------------------------------
 
-### Method `run()`
+### `MaestroPipeline$run()`
 
 Runs the pipeline
 
@@ -236,7 +233,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method `get_pipe_name()`
+### `MaestroPipeline$get_pipe_name()`
 
 Get the pipeline name
 
@@ -250,7 +247,7 @@ pipeline_name
 
 ------------------------------------------------------------------------
 
-### Method `get_frequency_nunits()`
+### `MaestroPipeline$get_frequency_nunits()`
 
 Get the frequency n and unit as a list
 
@@ -264,7 +261,7 @@ list with n and unit
 
 ------------------------------------------------------------------------
 
-### Method [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
+### `MaestroPipeline$get_schedule()`
 
 Get the schedule as a data.frame
 
@@ -278,7 +275,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `check_timeliness()`
+### `MaestroPipeline$check_timeliness()`
 
 Check whether a pipeline is scheduled to run based on orchestrator
 frequency and current time
@@ -317,7 +314,7 @@ MaestroPipeline
 
 ------------------------------------------------------------------------
 
-### Method [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+### `MaestroPipeline$get_status()`
 
 Get status of the pipeline as a data.frame
 
@@ -331,7 +328,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `get_status_chr()`
+### `MaestroPipeline$get_status_chr()`
 
 Get status of the pipeline as a string
 
@@ -345,7 +342,7 @@ character
 
 ------------------------------------------------------------------------
 
-### Method `get_outputs()`
+### `MaestroPipeline$get_outputs()`
 
 Names of pipelines that receive input from this pipeline
 
@@ -359,7 +356,7 @@ character
 
 ------------------------------------------------------------------------
 
-### Method `get_inputs()`
+### `MaestroPipeline$get_inputs()`
 
 Names of pipelines that input into this pipeline
 
@@ -373,7 +370,7 @@ character
 
 ------------------------------------------------------------------------
 
-### Method `get_priority()`
+### `MaestroPipeline$get_priority()`
 
 Get priority of the pipeline
 
@@ -387,7 +384,7 @@ numeric
 
 ------------------------------------------------------------------------
 
-### Method `get_returns()`
+### `MaestroPipeline$get_returns()`
 
 Get immediate return values from the pipeline for downstream pipelines
 
@@ -401,7 +398,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+### `MaestroPipeline$get_artifacts()`
 
 Get artifacts (return values) from the pipeline
 
@@ -415,7 +412,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_errors()`
+### `MaestroPipeline$get_errors()`
 
 Get list of errors from the pipeline
 
@@ -429,7 +426,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_warnings()`
+### `MaestroPipeline$get_warnings()`
 
 Get list of warnings from the pipeline
 
@@ -443,7 +440,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method `get_messages()`
+### `MaestroPipeline$get_messages()`
 
 Get list of messages from the pipeline
 
@@ -457,7 +454,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md)
+### `MaestroPipeline$get_flags()`
 
 Get the flags of a pipeline as a vector
 
@@ -471,7 +468,7 @@ character
 
 ------------------------------------------------------------------------
 
-### Method `update_inputs()`
+### `MaestroPipeline$update_inputs()`
 
 Update the inputs of a pipeline
 
@@ -491,7 +488,7 @@ vector
 
 ------------------------------------------------------------------------
 
-### Method `update_outputs()`
+### `MaestroPipeline$update_outputs()`
 
 Update the outputs of a pipeline
 
@@ -511,7 +508,7 @@ vector
 
 ------------------------------------------------------------------------
 
-### Method `reset_run_time_attributes()`
+### `MaestroPipeline$reset_run_time_attributes()`
 
 Resets run time attributes
 
@@ -525,7 +522,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+### `MaestroPipeline$get_run_sequence()`
 
 Get the run sequence of a pipeline
 
@@ -557,7 +554,7 @@ vector
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `MaestroPipeline$clone()`
 
 The objects of this class are cloneable with this method.
 

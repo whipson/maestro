@@ -30,15 +30,13 @@ get_run_sequence(
 
 - min_datetime:
 
-  Optional minimum datetime filter. Can be a lubridate::Date or
-  lubridate::POSIXct object. If specified, only returns runs scheduled
-  at or after this datetime.
+  Optional minimum datetime filter. Can be a `Date` or `POSIXct` object.
+  If specified, only returns runs scheduled at or after this datetime.
 
 - max_datetime:
 
-  Optional maximum datetime filter. Can be a lubridate::Date or
-  lubridate::POSIXct object. If specified, only returns runs scheduled
-  at or before this datetime.
+  Optional maximum datetime filter. Can be a `Date` or `POSIXct` object.
+  If specified, only returns runs scheduled at or before this datetime.
 
 - include_only_primary:
 

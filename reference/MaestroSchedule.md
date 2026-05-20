@@ -2,8 +2,6 @@
 
 Class for a schedule of pipelines
 
-Class for a schedule of pipelines
-
 ## Public fields
 
 - `PipelineList`:
@@ -14,7 +12,7 @@ Class for a schedule of pipelines
 
 ### Public methods
 
-- [`MaestroSchedule$new()`](#method-MaestroSchedule-new)
+- [`MaestroSchedule$new()`](#method-MaestroSchedule-initialize)
 
 - [`MaestroSchedule$print()`](#method-MaestroSchedule-print)
 
@@ -38,7 +36,7 @@ Class for a schedule of pipelines
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `MaestroSchedule$new()`
 
 Create a MaestroSchedule object
 
@@ -58,7 +56,7 @@ MaestroSchedule
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `MaestroSchedule$print()`
 
 Print the schedule object
 
@@ -72,7 +70,7 @@ print
 
 ------------------------------------------------------------------------
 
-### Method `run()`
+### `MaestroSchedule$run()`
 
 Run a MaestroSchedule
 
@@ -105,7 +103,7 @@ invisible
 
 ------------------------------------------------------------------------
 
-### Method [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md)
+### `MaestroSchedule$get_schedule()`
 
 Get the schedule as a data.frame
 
@@ -119,7 +117,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md)
+### `MaestroSchedule$get_status()`
 
 Get status of the pipelines as a data.frame
 
@@ -133,7 +131,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md)
+### `MaestroSchedule$get_artifacts()`
 
 Get artifacts (return values) from the pipelines
 
@@ -147,7 +145,7 @@ list
 
 ------------------------------------------------------------------------
 
-### Method [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+### `MaestroSchedule$get_network()`
 
 Get the network structure of the pipelines as an edge list (will be
 empty if there are no DAG pipelines)
@@ -162,7 +160,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md)
+### `MaestroSchedule$get_flags()`
 
 Get all pipeline flags as a long data.frame
 
@@ -176,7 +174,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
+### `MaestroSchedule$show_network()`
 
 Visualize the DAG relationships between pipelines in the schedule
 
@@ -190,7 +188,7 @@ interactive visualization
 
 ------------------------------------------------------------------------
 
-### Method [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
+### `MaestroSchedule$get_run_sequence()`
 
 Get full sequence of scheduled executions for all pipelines
 
@@ -234,7 +232,7 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `MaestroSchedule$clone()`
 
 The objects of this class are cloneable with this method.
 

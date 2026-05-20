@@ -23,5 +23,8 @@ Useful links:
 
 Authors:
 
+- Will Hipson <will.e.hipson@gmail.com>
+  ([ORCID](https://orcid.org/0000-0002-3931-2189)) \[copyright holder\]
+
 - Ryan Garnett <ryangarnett78@gmail.com> \[contributor, copyright
   holder\]
