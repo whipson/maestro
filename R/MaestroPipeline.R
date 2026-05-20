@@ -299,11 +299,30 @@ MaestroPipeline <- R6::R6Class(
       )
 
       results <- withCallingHandlers(
-        do.call(
-          pipe_name,
-          args = resources[names(args)],
-          envir = maestro_context
-        ),
+        {
+          # Identify args with no default value (i.e. required args)
+          required_args <- names(args)[sapply(args, function(x) identical(x, quote(expr = )))]
+          missing_args <- setdiff(required_args, names(resources))
+          if (length(missing_args) > 0) {
+            stop(
+              paste0(
+                "missing argument",
+                if (length(missing_args) > 1) "s" else "",
+                " ",
+                paste0("`", missing_args, "`", collapse = ", "),
+                " - pass via `resources = list(",
+                paste0(missing_args, " = ...", collapse = ", "),
+                ")`"
+              ),
+              call. = FALSE
+            )
+          }
+          do.call(
+            pipe_name,
+            args = resources[intersect(names(args), names(resources))],
+            envir = maestro_context
+          )
+        },
         error = private$error_handler(internal_run_id = internal_run_id),
         warning = private$warning_handler(internal_run_id = internal_run_id),
         message = private$message_handler(internal_run_id = internal_run_id)
