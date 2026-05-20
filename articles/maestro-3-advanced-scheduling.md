@@ -43,6 +43,7 @@ First, we’ll consider one pipeline that is scheduled to run daily at
 09:20:00 and we’ll configure the orchestrator to run daily.
 
 ``` r
+
 # ./pipelines/daily_example.R
 #' daily_example maestro pipeline
 #'
@@ -62,6 +63,7 @@ system time using either
 [`lubridate::now()`](https://lubridate.tidyverse.org/reference/now.html).
 
 ``` r
+
 # ./orchestrator.R
 
 library(maestro)
@@ -79,10 +81,10 @@ status <- run_schedule(
 
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
-    ✔ daily_example [31ms]
+    ✔ daily_example [38ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.058 sec elapsed
+    Pipeline execution completed ■ | 0.07 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -97,6 +99,7 @@ so it considers it close enough to within a day.
 Let’s see what happens if we up the frequency of the orchestrator:
 
 ``` r
+
 # ./orchestrator.R
 status <- run_schedule(
   schedule,
@@ -105,11 +108,12 @@ status <- run_schedule(
 )
 ```
 
+
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0 sec elapsed
+    Pipeline execution completed ■ | 0.001 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -175,7 +179,7 @@ time difference between any pipeline. This is pretty good so long as we
 don’t run it so often that the pipelines can’t complete before the next
 execution time. We don’t recommend running the orchestrator more
 frequently than every 5 minutes unless you’re confident that your
-pipelines are fast to execute.[¹](#fn1)
+pipelines are fast to execute.[^1]
 
 ## Irregular Schedules
 
@@ -191,6 +195,7 @@ integers corresponding to hours \[0-23\] separated by white space. Be
 sure to use the corresponding `maestroFrequency`.
 
 ``` r
+
 #' specific_hours maestro pipeline
 #'
 #' @maestroFrequency hourly
@@ -209,6 +214,7 @@ Wed, etc. If using days of month use integers \[1-31\]. You cannot
 specify both days of week and days of month.
 
 ``` r
+
 #' specific_days_of_week maestro pipeline
 #'
 #' @maestroFrequency daily
@@ -234,6 +240,7 @@ If your pipeline runs at least monthly, you can run it on specific
 months. Use integers \[1-12\] to specify the months.
 
 ``` r
+
 #' specific_months maestro pipeline
 #'
 #' @maestroFrequency months
@@ -250,6 +257,7 @@ run on specific hours and days. If you wanted a pipeline to only run on
 business hours including not on weekends. It could look like this:
 
 ``` r
+
 #' business_hours maestro pipeline
 #'
 #' @maestroFrequency hourly
@@ -271,9 +279,7 @@ time rather than fractional units - if my orchestrator runs every 15
 minutes I like to have it run on the 00:00, 15:00, 30:00, and 45:00
 minutes. It makes reasoning about the scheduling simpler.
 
-------------------------------------------------------------------------
-
-1.  Make sure you consider the amount of time it takes to execute
+[^1]: Make sure you consider the amount of time it takes to execute
     [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
     and that you account for the additional work done in
     [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)

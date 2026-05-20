@@ -17,13 +17,14 @@ We’ll create three simple pipelines. `start` outputs a vector,
 the input all lowercase. We use the `maestroOutputs` tag to indicate the
 names of the downstream pipelines (i.e., these pipelines use the output
 of the target pipeline as input) and we use the `maestroInputs` tag to
-indicate the names of pipelines that are used as input.[¹](#fn1)
+indicate the names of pipelines that are used as input.[^1]
 
 Note the use of `.input` as a parameter for all pipelines that receive
 an input. It is important to have this here to enable the passing of
 data from inputs to outputs. It must be named `.input`.
 
 ``` r
+
 #' ./pipelines/dags.R
 #' @maestroOutputs high_road low_road
 start <- function() {
@@ -45,6 +46,7 @@ Now we’ll create and run the schedule. Notice that the output in the
 console will reflect the network structure of the DAG.
 
 ``` r
+
 # ./orchestrator.R
 library(maestro)
 
@@ -58,15 +60,16 @@ status <- run_schedule(
 get_artifacts(schedule)
 ```
 
+
                                                                                     
-    ── [2026-04-20 17:29:37]                                                        
+    ── [2026-05-20 13:58:52]                                                        
     Running pipelines ▶                                                             
-    ✔ start [17ms]                                                                  
-    ✔ |-high_road [24ms]                                                            
-    ✔ |-low_road [7ms]                                                              
+    ✔ start [22ms]                                                                  
+    ✔ |-high_road [30ms]                                                            
+    ✔ |-low_road [9ms]                                                              
                                                                                     
-    ── [2026-04-20 17:29:37]                                                        
-    Pipeline execution completed ■ | 0.088 sec elapsed                              
+    ── [2026-05-20 13:58:52]                                                        
+    Pipeline execution completed ■ | 0.115 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
     $start                                                                          
@@ -86,6 +89,7 @@ extract, transform, and load could be a single element in the DAG.
 Consider the example on the home page:
 
 ``` r
+
 #' Example ETL pipeline
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
@@ -111,6 +115,7 @@ practice, but let’s do it for illustrative purposes (and also get rid of
 the messaging).
 
 ``` r
+
 #' @maestroFrequency 1 day
 #' @maestroStartTime 2024-03-25 12:30:00
 #' @maestroOutputs transform
@@ -132,6 +137,7 @@ load <- function(.input) {
 ```
 
 ``` r
+
 library(maestro)
 
 schedule <- build_schedule(quiet = TRUE)
@@ -142,22 +148,21 @@ status <- run_schedule(
 )
 ```
 
+
                                                                                     
-    ── [2026-04-20 17:29:37]                                                        
+    ── [2026-05-20 13:58:53]                                                        
     Running pipelines ▶                                                             
-    ✔ extract [7ms]                                                                 
-    ✔ |-transform [11ms]                                                            
-    ✔   |-load [7ms]                                                                
+    ✔ extract [10ms]                                                                
+    ✔ |-transform [13ms]                                                            
+    ✔   |-load [9ms]                                                                
                                                                                     
-    ── [2026-04-20 17:29:37]                                                        
-    Pipeline execution completed ■ | 0.05 sec elapsed                               
+    ── [2026-05-20 13:58:53]                                                        
+    Pipeline execution completed ■ | 0.063 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
 
-------------------------------------------------------------------------
-
-1.  Specifying the outputs and inputs is redundant. You can specify just
-    the outputs or just the inputs if you like, but make sure all
+[^1]: Specifying the outputs and inputs is redundant. You can specify
+    just the outputs or just the inputs if you like, but make sure all
     pipelines are identified as maestro pipelines by including at least
     one maestro tag (you could make use of the catch-all `@maestro` tag
     for this.

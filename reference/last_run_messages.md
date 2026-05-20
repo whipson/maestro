@@ -24,6 +24,7 @@ will ignore messages.
 ## Examples
 
 ``` r
+
 last_run_messages()
 #> NULL
 ```

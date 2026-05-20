@@ -30,6 +30,7 @@ this can be any text file. Here we create a sample set of 3 pipelines,
 one with a message, one with a warning, and another with an error.
 
 ``` r
+
 #' pipelines/logs.R
 #' @maestroFrequency hourly
 hello <- function() {
@@ -55,6 +56,7 @@ project directory. We can see the typical output of a maestro schedule
 as the pipeline runs.
 
 ``` r
+
 # orchestrator.R
 library(maestro)
 
@@ -67,14 +69,15 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-20 17:29:47]
-    Running pipelines ▶
-    ✔ hello [19ms]
-    ✔ uhh [28ms]
-    ✖ oh_no [99ms]
 
-    ── [2026-04-20 17:29:47]
-    Pipeline execution completed ■ | 0.188 sec elapsed
+    ── [2026-05-20 13:59:04]
+    Running pipelines ▶
+    ✔ hello [23ms]
+    ✔ uhh [32ms]
+    ✖ oh_no [94ms]
+
+    ── [2026-05-20 13:59:04]
+    Pipeline execution completed ■ | 0.198 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -85,12 +88,13 @@ with the name of the pipeline from where the message came, the type of
 log (INFO, WARN, or ERROR), the timestamp, and the message itself.
 
 ``` r
+
 readLines("maestro.log")
 ```
 
-    [1] "[hello] [INFO] [2026-04-20 17:29:47]: hello"
-    [2] "[uhh] [WARN] [2026-04-20 17:29:47]: this could be a problem"
-    [3] "[oh_no] [ERROR] [2026-04-20 17:29:47]: this is bad"
+    [1] "[hello] [INFO] [2026-05-20 13:59:04]: hello"
+    [2] "[uhh] [WARN] [2026-05-20 13:59:04]: this could be a problem"
+    [3] "[oh_no] [ERROR] [2026-05-20 13:59:04]: this is bad"
 
 ## Log to Console
 
@@ -98,6 +102,7 @@ We can also have the logs printed directly to the console using the
 `log_to_console` argument.
 
 ``` r
+
 # orchestrator.R
 schedule <- build_schedule(quiet = TRUE)
 
@@ -108,17 +113,18 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-20 17:29:47]
-    Running pipelines ▶
-    [hello] [INFO] [2026-04-20 17:29:47]: hello
-    ✔ hello [8ms]
-    [uhh] [WARN] [2026-04-20 17:29:47]: this could be a problem
-    ✔ uhh [10ms]
-    [oh_no] [ERROR] [2026-04-20 17:29:47]: this is bad
-    ✖ oh_no [11ms]
 
-    ── [2026-04-20 17:29:47]
-    Pipeline execution completed ■ | 0.048 sec elapsed
+    ── [2026-05-20 13:59:04]
+    Running pipelines ▶
+    [hello] [INFO] [2026-05-20 13:59:04]: hello
+    ✔ hello [11ms]
+    [uhh] [WARN] [2026-05-20 13:59:04]: this could be a problem
+    ✔ uhh [11ms]
+    [oh_no] [ERROR] [2026-05-20 13:59:04]: this is bad
+    ✖ oh_no [13ms]
+
+    ── [2026-05-20 13:59:04]
+    Pipeline execution completed ■ | 0.058 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -137,6 +143,7 @@ ignore warnings and info messages, you would use the `maestroLogLevel`
 tag for the relevant pipelines.
 
 ``` r
+
 #' pipelines/logs.R
 #' @maestroFrequency hourly
 #' @maestroLogLevel ERROR
@@ -160,6 +167,7 @@ oh_no <- function() {
 Now, only the error messages are displayed and logged.
 
 ``` r
+
 # orchestrator.R
 schedule <- build_schedule(quiet = TRUE)
 
@@ -170,15 +178,16 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-20 17:29:47]
-    Running pipelines ▶
-    ✔ hello [7ms]
-    ✔ uhh [6ms]
-    [oh_no] [ERROR] [2026-04-20 17:29:48]: this is bad
-    ✖ oh_no [9ms]
 
-    ── [2026-04-20 17:29:47]
-    Pipeline execution completed ■ | 0.043 sec elapsed
+    ── [2026-05-20 13:59:04]
+    Running pipelines ▶
+    ✔ hello [11ms]
+    ✔ uhh [8ms]
+    [oh_no] [ERROR] [2026-05-20 13:59:04]: this is bad
+    ✖ oh_no [10ms]
+
+    ── [2026-05-20 13:59:04]
+    Pipeline execution completed ■ | 0.054 sec elapsed
     ✔ 2 successes | ! 1 warning | ✖ 1 error | ◼ 3 total
     ✖ Use `last_run_errors()` to show pipeline errors.
     ! Use `last_run_warnings()` to show pipeline warnings.
@@ -196,6 +205,7 @@ logs that maestro uses. Best approach is to use the `namespace` argument
 and reference the name of the pipeline.
 
 ``` r
+
 #' pipelines/logs.R
 #' @maestroFrequency hourly
 hello <- function() {
@@ -214,6 +224,7 @@ oh_no <- function() {
 ```
 
 ``` r
+
 # orchestrator.R
 schedule <- build_schedule(quiet = TRUE)
 
@@ -224,17 +235,18 @@ status <- run_schedule(
 )
 ```
 
-    ── [2026-04-20 17:29:48]
-    Running pipelines ▶
-    [hello] [INFO] [2026-04-20 17:29:48]: hi
-    ✔ hello [8ms]
-    [uhh] [WARN] [2026-04-20 17:29:48]: this could be a problem
-    ✔ uhh [11ms]
-    [oh_no] [ERROR] [2026-04-20 17:29:48]: this is bad
-    ✔ oh_no [10ms]
 
-    ── [2026-04-20 17:29:48]
-    Pipeline execution completed ■ | 0.051 sec elapsed
+    ── [2026-05-20 13:59:04]
+    Running pipelines ▶
+    [hello] [INFO] [2026-05-20 13:59:04]: hi
+    ✔ hello [9ms]
+    [uhh] [WARN] [2026-05-20 13:59:04]: this could be a problem
+    ✔ uhh [14ms]
+    [oh_no] [ERROR] [2026-05-20 13:59:04]: this is bad
+    ✔ oh_no [12ms]
+
+    ── [2026-05-20 13:59:04]
+    Pipeline execution completed ■ | 0.06 sec elapsed
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total
     ────────────────────────────────────────────────────────────────────────────────
 

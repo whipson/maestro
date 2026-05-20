@@ -119,18 +119,18 @@ Tags are custom roxygen2 roclets defined in `R/roxy_maestro.R` and
 documented in `R/maestro_tags.R`. Each tag has a `roxy_tag_parse.*` S3
 method that validates at parse time. Key tags:
 
-| Tag                                  | Default               | Notes                                                             |
-|--------------------------------------|-----------------------|-------------------------------------------------------------------|
-| `@maestroFrequency`                  | `1 day`               | e.g. `hourly`, `2 weeks`, `3 months`                              |
-| `@maestroStartTime`                  | `2024-01-01 00:00:00` | date, datetime, or `HH:MM:SS` time                                |
-| `@maestroTz`                         | `UTC`                 | any [`OlsonNames()`](https://rdrr.io/r/base/timezones.html) value |
-| `@maestroLogLevel`                   | `INFO`                | `ERROR`, `WARN`, `INFO`                                           |
-| `@maestroInputs` / `@maestroOutputs` | —                     | DAG wiring; receiving pipeline needs `.input` param               |
-| `@maestroSkip`                       | —                     | flag only, no value                                               |
-| `@maestroPriority`                   | `Inf`                 | lower integer = higher priority                                   |
-| `@maestroFlags`                      | —                     | space-separated arbitrary labels                                  |
-| `@maestroRunIf`                      | —                     | R expression evaluated to a single `TRUE`/`FALSE` (see below)     |
-| `@maestro`                           | —                     | generic tag to include pipeline with all defaults                 |
+| Tag | Default | Notes |
+|----|----|----|
+| `@maestroFrequency` | `1 day` | e.g. `hourly`, `2 weeks`, `3 months` |
+| `@maestroStartTime` | `2024-01-01 00:00:00` | date, datetime, or `HH:MM:SS` time |
+| `@maestroTz` | `UTC` | any [`OlsonNames()`](https://rdrr.io/r/base/timezones.html) value |
+| `@maestroLogLevel` | `INFO` | `ERROR`, `WARN`, `INFO` |
+| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param |
+| `@maestroSkip` | — | flag only, no value |
+| `@maestroPriority` | `Inf` | lower integer = higher priority |
+| `@maestroFlags` | — | space-separated arbitrary labels |
+| `@maestroRunIf` | — | R expression evaluated to a single `TRUE`/`FALSE` (see below) |
+| `@maestro` | — | generic tag to include pipeline with all defaults |
 
 **Pipeline scripts must not contain top-level code** (only function
 definitions).
@@ -149,6 +149,7 @@ errored) when it returns `FALSE`.
 1.  **Inline expression** — any R code returning a single boolean:
 
     ``` r
+
     #' @maestroRunIf sample(c(TRUE, FALSE), size = 1)
     ```
 
@@ -156,6 +157,7 @@ errored) when it returns `FALSE`.
     `.input`; useful for guarding against empty/bad data:
 
     ``` r
+
     #' @maestroInputs extract_flights
     #' @maestroRunIf
     #' is.data.frame(.input) && nrow(.input) > 0
@@ -166,6 +168,7 @@ errored) when it returns `FALSE`.
     `run_schedule(..., resources = list(...))` is referenced by name:
 
     ``` r
+
     #' @maestroRunIf prod          # TRUE only when resources = list(prod = TRUE)
     process_payments <- function() { ... }
     ```
@@ -178,6 +181,7 @@ pipeline is passed as `.input`. An error in an upstream node stops
 downstream execution.
 
 ``` r
+
 #' @maestroFrequency daily
 extract <- function() { mtcars }
 
@@ -193,6 +197,7 @@ R6 method first; the standalone is a thin wrapper that validates the
 class then delegates:
 
 ``` r
+
 get_flags(schedule)       # standalone
 schedule$get_flags()      # R6 equivalent — same result
 ```
@@ -229,6 +234,7 @@ attempted.
 ### Testing
 
 ``` r
+
 devtools::test()              # run all tests
 devtools::test_active_file()  # test current file
 ```
@@ -241,6 +247,7 @@ outputs; update with `testthat::snapshot_update()`.
 ### Build / Check
 
 ``` r
+
 devtools::load_all()   # load package
 devtools::check()      # full R CMD check
 devtools::document()   # regenerate docs (runs roxygen2)

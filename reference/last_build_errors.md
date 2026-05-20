@@ -19,6 +19,7 @@ error messages
 ## Examples
 
 ``` r
+
 last_build_errors()
 #> NULL
 ```

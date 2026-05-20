@@ -19,6 +19,7 @@ actions:
 ### Project Setup
 
 ``` r
+
 library(maestro)
 ```
 
@@ -49,6 +50,7 @@ scheduling and configuration of a pipeline to the orchestrator. Let’s
 take a quick look at the sample `my_pipe.R`:
 
 ``` r
+
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
@@ -84,6 +86,7 @@ the code and not its return value that is important.
 Here’s a more realistic, albeit impractical, example:
 
 ``` r
+
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency 1 day
@@ -110,6 +113,7 @@ pipelines directory manually or use
 [`create_pipeline()`](https://whipson.github.io/maestro/reference/create_pipeline.md):
 
 ``` r
+
 create_pipeline(
   pipe_name = "another_pipeline",
   pipeline_dir = "pipelines",
@@ -134,6 +138,7 @@ and
 [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md).
 
 ``` r
+
 library(maestro)
 
 schedule <- build_schedule()
@@ -144,14 +149,15 @@ output <- run_schedule(
 )
 ```
 
+
     ℹ 1 script successfully parsed                                                  
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
     Running pipelines ▶                                                             
-    ✔ my_pipe [30ms]                                                                
+    ✔ my_pipe [37ms]                                                                
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
-    Pipeline execution completed ■ | 0.057 sec elapsed                              
+    Pipeline execution completed ■ | 0.069 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -170,14 +176,11 @@ orchestrator is running every 1 hour.
 
 Importantly, it isn’t `maestro`’s job to actually run it this often -
 it’s *your* job to make sure it runs at that frequency (e.g., deploying
-it via cron or some cloud environment where code can be
-scheduled).[¹](#fn1)
+it via cron or some cloud environment where code can be scheduled).[^1]
 
-------------------------------------------------------------------------
-
-1.  The decision around how often to run the orchestrator depends on the
-    frequencies of the pipelines in the project. The simplest guideline
-    is to take the frequency of your most often recurring pipeline and
-    split that in half. So for example, if my most often running
-    pipeline runs every 1 day then my orchestrator should run every 12
-    hours.
+[^1]: The decision around how often to run the orchestrator depends on
+    the frequencies of the pipelines in the project. The simplest
+    guideline is to take the frequency of your most often recurring
+    pipeline and split that in half. So for example, if my most often
+    running pipeline runs every 1 day then my orchestrator should run
+    every 12 hours.

@@ -44,6 +44,7 @@ be removed in a future release.
 ## Examples
 
 ``` r
+
 if (interactive()) {
   pipeline_dir <- tempdir()
   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)

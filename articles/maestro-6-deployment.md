@@ -37,6 +37,7 @@ and manage cron scheduled tasks from within R. Create a new script at
 the root level of the project:
 
 ``` r
+
 library(cronR)
 library(here) # makes it easier to deal with path issues
 
@@ -61,6 +62,7 @@ you to create and manage scheduled tasks from within R. Create a new R
 script at the root level of the project:
 
 ``` r
+
 library(taskscheduleR)
 library(here) # makes it easier to deal with path issues
 
@@ -110,10 +112,10 @@ maestro.
 > Connect.
 
 The key difference for a Posit Connect deployment is the use of
-[Quarto](https://quarto.org/) for the orchestrator.[¹](#fn1) There’s no
-need for any visual embellishments in this Quarto doc (but, hey, here’s
-a pretty good place for some observability metrics and graphics!), all
-you need is at least one R chunk containing the orchestrator code.
+[Quarto](https://quarto.org/) for the orchestrator.[^1] There’s no need
+for any visual embellishments in this Quarto doc (but, hey, here’s a
+pretty good place for some observability metrics and graphics!), all you
+need is at least one R chunk containing the orchestrator code.
 
 Here’s a basic .qmd script that could be deployed on Posit Connect.
 
@@ -255,9 +257,7 @@ inserting it into a database, or generating and storing predictions from
 a model. All of this lies outside maestro’s functionality but is
 nevertheless part of the entire deployment stack.
 
-------------------------------------------------------------------------
-
-1.  This feels a bit odd given that Quarto is conventionally used for
+[^1]: This feels a bit odd given that Quarto is conventionally used for
     publishing reports, presentations, and dashboards. That said,
     there’s nothing stopping you from executing whatever R code you want
     in a Quarto document, and Posit Connect won’t let you “deploy” a

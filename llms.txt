@@ -19,12 +19,14 @@ functions for scheduling and invoking the pipelines.
 `maestro` is available on CRAN and can be installed via:
 
 ``` r
+
 install.packages("maestro")
 ```
 
 Or, try out the development version via:
 
 ``` r
+
 devtools::install_github("https://github.com/whipson/maestro")
 ```
 
@@ -76,6 +78,7 @@ with respect to deployment on Posit Connect.
 A simple orchestrator looks like this:
 
 ``` r
+
 library(maestro)
 
 schedule <- build_schedule()
@@ -105,6 +108,7 @@ pipeline does, but rather *when* you want to run it. Here’s a simple
 pipeline in `maestro`:
 
 ``` r
+
 #' Example ETL pipeline
 #' @maestroFrequency daily
 #' @maestroStartTime 12:30:00

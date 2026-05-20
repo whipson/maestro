@@ -53,6 +53,7 @@ In `maestro` a pipeline is an R function with `roxygen2` comments for
 scheduling and configuration:
 
 ``` r
+
 #' my_pipe maestro pipeline
 #'
 #' @maestroFrequency daily
@@ -100,6 +101,7 @@ least as frequency as your highest frequency pipeline.
 In `maestro` an orchestrator is an R script or Quarto like this:
 
 ``` r
+
 library(maestro)
 
 schedule <- build_schedule()

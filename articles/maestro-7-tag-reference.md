@@ -11,6 +11,7 @@ Maestro tags must be written above the function that is to be included
 as a pipeline. A typical pipeline with tags could look like this:
 
 ``` r
+
 #' @maestroFrequency 1 hour
 #' @maestroStartTime 12:30:00
 #' @maestroLogLevel WARN

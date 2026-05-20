@@ -37,6 +37,7 @@ invisible
 ## Examples
 
 ``` r
+
 # Creates a new maestro project with an R orchestrator
 if (interactive()) {
   new_proj_dir <- tempdir()

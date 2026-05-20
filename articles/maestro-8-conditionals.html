@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Conditional Pipelines">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,20 +125,20 @@ will only execute if a <code>TRUE</code> is randomly sampled.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-04-20 17:29:40]                                                        
+── [2026-05-20 13:58:55]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> (?) <span style="color: #b8b8b8;">[15ms]</span>                                                   
-[random_execution] [INFO] [2026-04-20 17:29:40]: Maybe, maybe not               
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[34ms]</span>                                                       
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> (?) <span style="color: #b8b8b8;">[18ms]</span>                                                   
+[random_execution] [INFO] [2026-05-20 13:58:56]: Maybe, maybe not               
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[42ms]</span>                                                       
                                                                                 
-── [2026-04-20 17:29:40]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.078 sec elapsed                              
+── [2026-05-20 13:58:55]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.094 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• random_execution | 2026-04-22                                                 
+• random_execution | 2026-05-22                                                 
 </pre>
 </div>
 </div>
@@ -204,21 +204,21 @@ dataframe and its row count is greater than 0.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-04-20 17:29:40]                                                        
+── [2026-05-20 13:58:56]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract_flights</span> <span style="color: #b8b8b8;">[7ms]</span>                                                         
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> (?) <span style="color: #b8b8b8;">[9ms]</span>                                                 
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[15ms]</span>                                                    
-<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load_flights</span> (?) <span style="color: #b8b8b8;">[7ms]</span>                                                    
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract_flights</span> <span style="color: #b8b8b8;">[9ms]</span>                                                         
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> (?) <span style="color: #b8b8b8;">[11ms]</span>                                                
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[19ms]</span>                                                    
+<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load_flights</span> (?) <span style="color: #b8b8b8;">[8ms]</span>                                                    
                                                                                 
-── [2026-04-20 17:29:40]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.071 sec elapsed                              
+── [2026-05-20 13:58:56]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.085 sec elapsed                              
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 2 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• extract_flights | 2026-04-20 18:00:00                                         
+• extract_flights | 2026-05-20 15:00:00                                         
 </pre>
 </div>
 </div>
@@ -260,20 +260,20 @@ orchestator:</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-04-20 17:29:40]                                                        
+── [2026-05-20 13:58:56]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> (?) <span style="color: #b8b8b8;">[7ms]</span>                                                    
-[process_payments] [INFO] [2026-04-20 17:29:40]: Payments processed             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[15ms]</span>                                                       
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> (?) <span style="color: #b8b8b8;">[8ms]</span>                                                    
+[process_payments] [INFO] [2026-05-20 13:58:56]: Payments processed             
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[18ms]</span>                                                       
                                                                                 
-── [2026-04-20 17:29:40]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.028 sec elapsed                              
+── [2026-05-20 13:58:56]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.034 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• process_payments | 2026-04-22                                                 
+• process_payments | 2026-05-22                                                 
 </pre>
 </div>
 </div>

@@ -24,6 +24,7 @@ will ignore warnings.
 ## Examples
 
 ``` r
+
 last_run_warnings()
 #> NULL
 ```
