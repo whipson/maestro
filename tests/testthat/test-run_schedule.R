@@ -747,6 +747,36 @@ test_that("Other vignette examples", {
   })
 })
 
+test_that("Irregular hourly with weekly pipeline", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #'
+      #' @maestroFrequency weekly
+      #' @maestroStartTime Fri 04:00:00
+      weekly <- function() {
+      
+        # Pipeline code
+      }
+      ",
+      con = "pipelines/weekly.R"
+    )
+
+    schedule <- build_schedule()
+
+    run_schedule(
+      schedule,
+      orch_frequency = "4 hours",
+      check_datetime = as.POSIXct("2026-05-01 04:00:00", tz = "UTC"), # this is a Friday
+      quiet = TRUE
+    )
+
+    expect_true(get_status(schedule)$invoked)
+  })
+})
+
 test_that("Check validity of next_run", {
 
   # On exact timestamp
@@ -798,5 +828,57 @@ test_that("Check validity of next_run", {
     )
     status <- get_status(schedule)
     expect_equal(status$next_run, as.POSIXct("2026-04-17 09:00:00", tz = "UTC"))
+  })
+})
+
+
+
+test_that("pipeline with unmatched argument errors gracefully", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      needs_arg <- function(my_arg) {
+        my_arg + 1
+      }
+      ",
+      con = "pipelines/needs_arg.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      run_all = TRUE,
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_false(status$success)
+    expect_match(last_run_errors()$needs_arg, "missing argument `my_arg`")
+  })
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      needs_arg <- function(my_arg = 2) {
+        my_arg + 1
+      }
+      ",
+      con = "pipelines/needs_arg.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    run_schedule(
+      schedule,
+      orch_frequency = "1 day",
+      run_all = TRUE,
+      quiet = TRUE
+    )
+    status <- get_status(schedule)
+    expect_true(status$success)
   })
 })

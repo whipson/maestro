@@ -1,8 +1,10 @@
-# maestro (development version)
+# maestro 1.1.1
 
 ### Bug fixes
 
 - Fixed the calculation of `next_run`
+
+- Pipeline functions with required arguments not supplied via `resources` now give an informative error message (e.g. `` missing argument `my_arg` - pass via `resources = list(my_arg = ...)` ``) instead of the cryptic `unused argument (NA = NULL)`.
 
 # maestro 1.1.0
 
