@@ -81,10 +81,10 @@ status <- run_schedule(
 
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
-    ✔ daily_example [37ms]
+    ✔ daily_example [41ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.07 sec elapsed
+    Pipeline execution completed ■ | 0.074 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -113,7 +113,7 @@ status <- run_schedule(
     Running pipelines ▶
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.001 sec elapsed
+    Pipeline execution completed ■ | 0 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
