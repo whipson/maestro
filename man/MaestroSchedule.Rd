@@ -5,8 +5,6 @@
 \title{Class for a schedule of pipelines}
 \description{
 Class for a schedule of pipelines
-
-Class for a schedule of pipelines
 }
 \examples{
 if (interactive()) {
@@ -16,216 +14,231 @@ if (interactive()) {
 }
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{PipelineList}}{object of type MaestroPipelineList}
-}
-\if{html}{\out{</div>}}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{PipelineList}}{object of type MaestroPipelineList}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MaestroSchedule-new}{\code{MaestroSchedule$new()}}
-\item \href{#method-MaestroSchedule-print}{\code{MaestroSchedule$print()}}
-\item \href{#method-MaestroSchedule-run}{\code{MaestroSchedule$run()}}
-\item \href{#method-MaestroSchedule-get_schedule}{\code{MaestroSchedule$get_schedule()}}
-\item \href{#method-MaestroSchedule-get_status}{\code{MaestroSchedule$get_status()}}
-\item \href{#method-MaestroSchedule-get_artifacts}{\code{MaestroSchedule$get_artifacts()}}
-\item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
-\item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
-\item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
-\item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
-\item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
-}
+  \itemize{
+    \item \href{#method-MaestroSchedule-initialize}{\code{MaestroSchedule$new()}}
+    \item \href{#method-MaestroSchedule-print}{\code{MaestroSchedule$print()}}
+    \item \href{#method-MaestroSchedule-run}{\code{MaestroSchedule$run()}}
+    \item \href{#method-MaestroSchedule-get_schedule}{\code{MaestroSchedule$get_schedule()}}
+    \item \href{#method-MaestroSchedule-get_status}{\code{MaestroSchedule$get_status()}}
+    \item \href{#method-MaestroSchedule-get_artifacts}{\code{MaestroSchedule$get_artifacts()}}
+    \item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
+    \item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
+    \item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
+    \item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
+    \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroSchedule-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroSchedule-new}{}}}
-\subsection{Method \code{new()}}{
-Create a MaestroSchedule object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$new(Pipelines = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-MaestroSchedule-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-initialize}{}}}
+\subsection{\code{MaestroSchedule$new()}}{
+  Create a MaestroSchedule object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$new(Pipelines = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{Pipelines}}{list of MaestroPipelines}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    MaestroSchedule
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{Pipelines}}{list of MaestroPipelines}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-MaestroSchedule
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-print"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-print}{}}}
-\subsection{Method \code{print()}}{
-Print the schedule object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$print()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$print()}}{
+  Print the schedule object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$print()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    print
+  }
 }
 
-\subsection{Returns}{
-print
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-run"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-run}{}}}
-\subsection{Method \code{run()}}{
-Run a MaestroSchedule
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$run(..., quiet = FALSE, run_all = FALSE, n_show_next = 5)}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$run()}}{
+  Run a MaestroSchedule
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$run(..., quiet = FALSE, run_all = FALSE, n_show_next = 5)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{arguments passed to MaestroPipelineList$run}
+      \item{\code{quiet}}{whether or not to silence console messages}
+      \item{\code{run_all}}{run all pipelines regardless of the schedule (default is \code{FALSE}) - useful for testing.}
+      \item{\code{n_show_next}}{show the next n scheduled pipes}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{arguments passed to MaestroPipelineList$run}
-
-\item{\code{quiet}}{whether or not to silence console messages}
-
-\item{\code{run_all}}{run all pipelines regardless of the schedule (default is \code{FALSE}) - useful for testing.}
-
-\item{\code{n_show_next}}{show the next n scheduled pipes}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-invisible
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_schedule"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_schedule}{}}}
-\subsection{Method \code{get_schedule()}}{
-Get the schedule as a data.frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_schedule()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$get_schedule()}}{
+  Get the schedule as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_schedule()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_status}{}}}
-\subsection{Method \code{get_status()}}{
-Get status of the pipelines as a data.frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_status()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$get_status()}}{
+  Get status of the pipelines as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_status()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_artifacts"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_artifacts}{}}}
-\subsection{Method \code{get_artifacts()}}{
-Get artifacts (return values) from the pipelines
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_artifacts()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$get_artifacts()}}{
+  Get artifacts (return values) from the pipelines
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_artifacts()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_network"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_network}{}}}
-\subsection{Method \code{get_network()}}{
-Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_network()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$get_network()}}{
+  Get the network structure of the pipelines as an edge list (will be empty if there are no DAG pipelines)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_network()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_flags"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_flags}{}}}
-\subsection{Method \code{get_flags()}}{
-Get all pipeline flags as a long data.frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_flags()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$get_flags()}}{
+  Get all pipeline flags as a long data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_flags()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-show_network"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-show_network}{}}}
-\subsection{Method \code{show_network()}}{
-Visualize the DAG relationships between pipelines in the schedule
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$show_network()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$show_network()}}{
+  Visualize the DAG relationships between pipelines in the schedule
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$show_network()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    interactive visualization
+  }
 }
 
-\subsection{Returns}{
-interactive visualization
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-get_run_sequence"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-get_run_sequence}{}}}
-\subsection{Method \code{get_run_sequence()}}{
-Get full sequence of scheduled executions for all pipelines
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$get_run_sequence(
+\subsection{\code{MaestroSchedule$get_run_sequence()}}{
+  Get full sequence of scheduled executions for all pipelines
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_run_sequence(
   n = NULL,
   min_datetime = NULL,
   max_datetime = NULL,
   include_only_primary = FALSE,
   include_skipped = TRUE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n}}{optional sequence limit}
-
-\item{\code{min_datetime}}{optional minimum datetime}
-
-\item{\code{max_datetime}}{optional maximum datetime}
-
-\item{\code{include_only_primary}}{only primary pipelines are included
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n}}{optional sequence limit}
+      \item{\code{min_datetime}}{optional minimum datetime}
+      \item{\code{max_datetime}}{optional maximum datetime}
+      \item{\code{include_only_primary}}{only primary pipelines are included
 (this are pipelines that are scheduled and not downstream nodes in a DAG)}
-
-\item{\code{include_skipped}}{whether to include pipelines tagged with \verb{@maestroSkip}
+      \item{\code{include_skipped}}{whether to include pipelines tagged with \verb{@maestroSkip}
 (default \code{TRUE} for backwards compatibility)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-data.frame
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroSchedule-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroSchedule-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroSchedule$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MaestroSchedule$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
