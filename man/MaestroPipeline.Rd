@@ -7,46 +7,44 @@ A pipeline is defined as a single R script with a schedule or input}
 \description{
 Class for an individual maestro pipeline
 A pipeline is defined as a single R script with a schedule or input
-
-Class for an individual maestro pipeline
-A pipeline is defined as a single R script with a schedule or input
 }
 \keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MaestroPipeline-new}{\code{MaestroPipeline$new()}}
-\item \href{#method-MaestroPipeline-print}{\code{MaestroPipeline$print()}}
-\item \href{#method-MaestroPipeline-run}{\code{MaestroPipeline$run()}}
-\item \href{#method-MaestroPipeline-get_pipe_name}{\code{MaestroPipeline$get_pipe_name()}}
-\item \href{#method-MaestroPipeline-get_frequency_nunits}{\code{MaestroPipeline$get_frequency_nunits()}}
-\item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
-\item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
-\item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
-\item \href{#method-MaestroPipeline-get_status_chr}{\code{MaestroPipeline$get_status_chr()}}
-\item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
-\item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
-\item \href{#method-MaestroPipeline-get_priority}{\code{MaestroPipeline$get_priority()}}
-\item \href{#method-MaestroPipeline-get_returns}{\code{MaestroPipeline$get_returns()}}
-\item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
-\item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
-\item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
-\item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
-\item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
-\item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
-\item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
-\item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
-\item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
-\item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
-}
+  \itemize{
+    \item \href{#method-MaestroPipeline-initialize}{\code{MaestroPipeline$new()}}
+    \item \href{#method-MaestroPipeline-print}{\code{MaestroPipeline$print()}}
+    \item \href{#method-MaestroPipeline-run}{\code{MaestroPipeline$run()}}
+    \item \href{#method-MaestroPipeline-get_pipe_name}{\code{MaestroPipeline$get_pipe_name()}}
+    \item \href{#method-MaestroPipeline-get_frequency_nunits}{\code{MaestroPipeline$get_frequency_nunits()}}
+    \item \href{#method-MaestroPipeline-get_schedule}{\code{MaestroPipeline$get_schedule()}}
+    \item \href{#method-MaestroPipeline-check_timeliness}{\code{MaestroPipeline$check_timeliness()}}
+    \item \href{#method-MaestroPipeline-get_status}{\code{MaestroPipeline$get_status()}}
+    \item \href{#method-MaestroPipeline-get_status_chr}{\code{MaestroPipeline$get_status_chr()}}
+    \item \href{#method-MaestroPipeline-get_outputs}{\code{MaestroPipeline$get_outputs()}}
+    \item \href{#method-MaestroPipeline-get_inputs}{\code{MaestroPipeline$get_inputs()}}
+    \item \href{#method-MaestroPipeline-get_priority}{\code{MaestroPipeline$get_priority()}}
+    \item \href{#method-MaestroPipeline-get_returns}{\code{MaestroPipeline$get_returns()}}
+    \item \href{#method-MaestroPipeline-get_artifacts}{\code{MaestroPipeline$get_artifacts()}}
+    \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
+    \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
+    \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
+    \item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
+    \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
+    \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
+    \item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
+    \item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
+    \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroPipeline-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroPipeline-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new Pipeline object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$new(
+\if{html}{\out{<a id="method-MaestroPipeline-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-initialize}{}}}
+\subsection{\code{MaestroPipeline$new()}}{
+  Create a new Pipeline object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$new(
   script_path,
   pipe_name,
   frequency = NA_character_,
@@ -62,65 +60,55 @@ Create a new Pipeline object
   priority = Inf,
   flags = c(),
   run_if = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{script_path}}{path to the script}
+      \item{\code{pipe_name}}{name of the pipeline}
+      \item{\code{frequency}}{frequency of the pipeline (e.g., 1 day)}
+      \item{\code{start_time_raw}}{start time as a raw string from the @maestroStartTime tag}
+      \item{\code{tz}}{time zone of the pipeline}
+      \item{\code{hours}}{specific hours of the day}
+      \item{\code{days}}{specific days of week or month}
+      \item{\code{months}}{specific months of year}
+      \item{\code{skip}}{whether to skip the pipeline regardless of scheduling}
+      \item{\code{log_level}}{log level of the pipeline}
+      \item{\code{inputs}}{names of pipelines that this pipeline is dependent on for input}
+      \item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
+      \item{\code{priority}}{priority of the pipeline}
+      \item{\code{flags}}{arbitrary pipelines flags}
+      \item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    MaestroPipeline object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{script_path}}{path to the script}
-
-\item{\code{pipe_name}}{name of the pipeline}
-
-\item{\code{frequency}}{frequency of the pipeline (e.g., 1 day)}
-
-\item{\code{start_time_raw}}{start time as a raw string from the @maestroStartTime tag}
-
-\item{\code{tz}}{time zone of the pipeline}
-
-\item{\code{hours}}{specific hours of the day}
-
-\item{\code{days}}{specific days of week or month}
-
-\item{\code{months}}{specific months of year}
-
-\item{\code{skip}}{whether to skip the pipeline regardless of scheduling}
-
-\item{\code{log_level}}{log level of the pipeline}
-
-\item{\code{inputs}}{names of pipelines that this pipeline is dependent on for input}
-
-\item{\code{outputs}}{names of pipelines for which this pipeline is a dependency}
-
-\item{\code{priority}}{priority of the pipeline}
-
-\item{\code{flags}}{arbitrary pipelines flags}
-
-\item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-MaestroPipeline object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-print"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-print}{}}}
-\subsection{Method \code{print()}}{
-Prints the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$print()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$print()}}{
+  Prints the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$print()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-run"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-run}{}}}
-\subsection{Method \code{run()}}{
-Runs the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$run(
+\subsection{\code{MaestroPipeline$run()}}{
+  Runs the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$run(
   resources = list(),
   log_file = tempfile(),
   quiet = FALSE,
@@ -132,349 +120,375 @@ Runs the pipeline
   input_run_id = NA_character_,
   lineage = c(),
   ...
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{resources}}{named list of arguments and values to pass to the pipeline}
+      \item{\code{log_file}}{path to the log file for logging}
+      \item{\code{quiet}}{whether to silence console output}
+      \item{\code{log_file_max_bytes}}{maximum bytes of the log file before trimming}
+      \item{\code{.input}}{input values from upstream pipelines}
+      \item{\code{depth}}{number of inputting pipelines above the current}
+      \item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
+      \item{\code{run_id}}{unique id for the run}
+      \item{\code{input_run_id}}{unique id of the run that inputted into the current run (NA if there is no input)}
+      \item{\code{lineage}}{character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)}
+      \item{\code{...}}{additional arguments (unused)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{resources}}{named list of arguments and values to pass to the pipeline}
-
-\item{\code{log_file}}{path to the log file for logging}
-
-\item{\code{quiet}}{whether to silence console output}
-
-\item{\code{log_file_max_bytes}}{maximum bytes of the log file before trimming}
-
-\item{\code{.input}}{input values from upstream pipelines}
-
-\item{\code{depth}}{number of inputting pipelines above the current}
-
-\item{\code{log_to_console}}{whether or not to output statements in the console (FALSE is to suppress and append to log)}
-
-\item{\code{run_id}}{unique id for the run}
-
-\item{\code{input_run_id}}{unique id of the run that inputted into the current run (NA if there is no input)}
-
-\item{\code{lineage}}{character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)}
-
-\item{\code{...}}{additional arguments (unused)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-invisible
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_pipe_name"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_pipe_name}{}}}
-\subsection{Method \code{get_pipe_name()}}{
-Get the pipeline name
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_pipe_name()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_pipe_name()}}{
+  Get the pipeline name
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_pipe_name()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    pipeline_name
+  }
 }
 
-\subsection{Returns}{
-pipeline_name
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_frequency_nunits"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_frequency_nunits}{}}}
-\subsection{Method \code{get_frequency_nunits()}}{
-Get the frequency n and unit as a list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_frequency_nunits()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_frequency_nunits()}}{
+  Get the frequency n and unit as a list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_frequency_nunits()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list with n and unit
+  }
 }
 
-\subsection{Returns}{
-list with n and unit
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_schedule"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_schedule}{}}}
-\subsection{Method \code{get_schedule()}}{
-Get the schedule as a data.frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_schedule()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_schedule()}}{
+  Get the schedule as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_schedule()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-check_timeliness"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-check_timeliness}{}}}
-\subsection{Method \code{check_timeliness()}}{
-Check whether a pipeline is scheduled to run based on orchestrator frequency and current time
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$check_timeliness(
+\subsection{\code{MaestroPipeline$check_timeliness()}}{
+  Check whether a pipeline is scheduled to run based on orchestrator frequency and current time
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$check_timeliness(
   orch_unit,
   orch_n,
   check_datetime = lubridate::now(),
   ...
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{orch_unit}}{unit of the orchestrator (e.g., day)}
+      \item{\code{orch_n}}{number of units of the frequency}
+      \item{\code{check_datetime}}{datetime against which to check the timeliness of the pipeline (should almost always be now)}
+      \item{\code{...}}{unused}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    MaestroPipeline
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{orch_unit}}{unit of the orchestrator (e.g., day)}
-
-\item{\code{orch_n}}{number of units of the frequency}
-
-\item{\code{check_datetime}}{datetime against which to check the timeliness of the pipeline (should almost always be now)}
-
-\item{\code{...}}{unused}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-MaestroPipeline
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_status}{}}}
-\subsection{Method \code{get_status()}}{
-Get status of the pipeline as a data.frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_status()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_status()}}{
+  Get status of the pipeline as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_status()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
 }
 
-\subsection{Returns}{
-data.frame
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_status_chr"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_status_chr}{}}}
-\subsection{Method \code{get_status_chr()}}{
-Get status of the pipeline as a string
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_status_chr()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_status_chr()}}{
+  Get status of the pipeline as a string
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_status_chr()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character
+  }
 }
 
-\subsection{Returns}{
-character
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_outputs"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_outputs}{}}}
-\subsection{Method \code{get_outputs()}}{
-Names of pipelines that receive input from this pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_outputs()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_outputs()}}{
+  Names of pipelines that receive input from this pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_outputs()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character
+  }
 }
 
-\subsection{Returns}{
-character
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_inputs"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_inputs}{}}}
-\subsection{Method \code{get_inputs()}}{
-Names of pipelines that input into this pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_inputs()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_inputs()}}{
+  Names of pipelines that input into this pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_inputs()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character
+  }
 }
 
-\subsection{Returns}{
-character
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_priority"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_priority}{}}}
-\subsection{Method \code{get_priority()}}{
-Get priority of the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_priority()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_priority()}}{
+  Get priority of the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_priority()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    numeric
+  }
 }
 
-\subsection{Returns}{
-numeric
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_returns"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_returns}{}}}
-\subsection{Method \code{get_returns()}}{
-Get immediate return values from the pipeline for downstream pipelines
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_returns()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_returns()}}{
+  Get immediate return values from the pipeline for downstream pipelines
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_returns()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_artifacts"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_artifacts}{}}}
-\subsection{Method \code{get_artifacts()}}{
-Get artifacts (return values) from the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_artifacts()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_artifacts()}}{
+  Get artifacts (return values) from the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_artifacts()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_errors"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_errors}{}}}
-\subsection{Method \code{get_errors()}}{
-Get list of errors from the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_errors()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_errors()}}{
+  Get list of errors from the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_errors()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_warnings"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_warnings}{}}}
-\subsection{Method \code{get_warnings()}}{
-Get list of warnings from the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_warnings()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_warnings()}}{
+  Get list of warnings from the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_warnings()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_messages"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_messages}{}}}
-\subsection{Method \code{get_messages()}}{
-Get list of messages from the pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_messages()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_messages()}}{
+  Get list of messages from the pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_messages()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list
+  }
 }
 
-\subsection{Returns}{
-list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_flags"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_flags}{}}}
-\subsection{Method \code{get_flags()}}{
-Get the flags of a pipeline as a vector
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_flags()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$get_flags()}}{
+  Get the flags of a pipeline as a vector
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_flags()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character
+  }
 }
 
-\subsection{Returns}{
-character
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-update_inputs"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-update_inputs}{}}}
-\subsection{Method \code{update_inputs()}}{
-Update the inputs of a pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$update_inputs(inputs)}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$update_inputs()}}{
+  Update the inputs of a pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$update_inputs(inputs)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{inputs}}{character vector of inputting pipeline names}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    vector
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{inputs}}{character vector of inputting pipeline names}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-vector
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-update_outputs"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-update_outputs}{}}}
-\subsection{Method \code{update_outputs()}}{
-Update the outputs of a pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$update_outputs(outputs)}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$update_outputs()}}{
+  Update the outputs of a pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$update_outputs(outputs)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{outputs}}{character vector of outputting pipeline names}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    vector
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{outputs}}{character vector of outputting pipeline names}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-vector
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-reset_run_time_attributes"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-reset_run_time_attributes}{}}}
-\subsection{Method \code{reset_run_time_attributes()}}{
-Resets run time attributes
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$reset_run_time_attributes()}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$reset_run_time_attributes()}}{
+  Resets run time attributes
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$reset_run_time_attributes()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
 }
 
-\subsection{Returns}{
-invisible
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_run_sequence"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_run_sequence}{}}}
-\subsection{Method \code{get_run_sequence()}}{
-Get the run sequence of a pipeline
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$get_run_sequence(
+\subsection{\code{MaestroPipeline$get_run_sequence()}}{
+  Get the run sequence of a pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_run_sequence(
   n = NULL,
   min_datetime = NULL,
   max_datetime = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n}}{optional sequence limit}
+      \item{\code{min_datetime}}{optional minimum datetime}
+      \item{\code{max_datetime}}{optional maximum datetime}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    vector
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n}}{optional sequence limit}
-
-\item{\code{min_datetime}}{optional minimum datetime}
-
-\item{\code{max_datetime}}{optional maximum datetime}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-vector
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MaestroPipeline$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MaestroPipeline$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

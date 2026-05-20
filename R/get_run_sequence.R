@@ -5,9 +5,9 @@
 #'
 #' @inheritParams run_schedule
 #' @param n Optional positive integer. If specified, returns only the first `n` runs for each pipeline.
-#' @param min_datetime Optional minimum datetime filter. Can be a [Date] or [POSIXct] object.
+#' @param min_datetime Optional minimum datetime filter. Can be a `Date` or `POSIXct` object.
 #'   If specified, only returns runs scheduled at or after this datetime.
-#' @param max_datetime Optional maximum datetime filter. Can be a [Date] or [POSIXct] object.
+#' @param max_datetime Optional maximum datetime filter. Can be a `Date` or `POSIXct` object.
 #'   If specified, only returns runs scheduled at or before this datetime.
 #' @param include_only_primary only primary pipelines are included 
 #'   (this are pipelines that are scheduled and not downstream nodes in a DAG)

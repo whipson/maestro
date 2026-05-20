@@ -25,6 +25,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Will Hipson \email{will.e.hipson@gmail.com} (\href{https://orcid.org/0000-0002-3931-2189}{ORCID}) [copyright holder]
   \item Ryan Garnett \email{ryangarnett78@gmail.com} [contributor, copyright holder]
 }
 

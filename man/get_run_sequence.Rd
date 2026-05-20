@@ -18,10 +18,10 @@ get_run_sequence(
 
 \item{n}{Optional positive integer. If specified, returns only the first \code{n} runs for each pipeline.}
 
-\item{min_datetime}{Optional minimum datetime filter. Can be a \link[lubridate:date_utils]{lubridate::Date} or \link[lubridate:posix_utils]{lubridate::POSIXct} object.
+\item{min_datetime}{Optional minimum datetime filter. Can be a \code{Date} or \code{POSIXct} object.
 If specified, only returns runs scheduled at or after this datetime.}
 
-\item{max_datetime}{Optional maximum datetime filter. Can be a \link[lubridate:date_utils]{lubridate::Date} or \link[lubridate:posix_utils]{lubridate::POSIXct} object.
+\item{max_datetime}{Optional maximum datetime filter. Can be a \code{Date} or \code{POSIXct} object.
 If specified, only returns runs scheduled at or before this datetime.}
 
 \item{include_only_primary}{only primary pipelines are included
