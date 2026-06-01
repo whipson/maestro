@@ -1,3 +1,15 @@
+# maestro 1.2.0
+
+### Breaking changes
+
+- `show_network()` and `MaestroSchedule$show_network()` are fully removed. Use `get_network()` instead.
+
+### New features
+
+- Dynamic fan-out (scatter): a downstream pipeline declared with `@maestroInputs each(upstream)` now executes once per element of the upstream return value.
+
+- New `@maestroIterateOver` tag for use with `each()`. When the upstream pipeline returns a named list, `@maestroIterateOver .input$field` selects which field to scatter over while keeping the full list available as `.input` inside each branch (e.g. `.input$other_field` remains accessible).
+
 # maestro 1.1.1
 
 ### Bug fixes

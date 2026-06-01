@@ -34,7 +34,6 @@ Depends:
     R (>= 4.1.0)
 Suggests: 
     asciicast,
-    DiagrammeR,
     furrr,
     future,
     knitr,
