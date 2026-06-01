@@ -8,7 +8,6 @@
 #'
 #' @return data.frame with columns `from` and `to`
 #' @export
-#' @seealso [maestro::show_network()] which is deprecated in favour of this function.
 #' @examples
 #' if (interactive()) {
 #'   pipeline_dir <- tempdir()

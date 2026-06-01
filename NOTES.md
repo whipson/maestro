@@ -200,6 +200,21 @@ downstream <- function(.input) {
 
 ---
 
+### Scheduling constraint for collect
+
+For a fan-in to actually execute, **all named upstream pipelines must be scheduled in the same orchestrator run**. If any upstream is not scheduled (wrong frequency, skipped, future start time, etc.), the collect node will wait indefinitely — it will never see all upstream results and will silently not run.
+
+**Mitigation:** At runtime, before deferring or accumulating, check that every upstream named in `collect(...)` is actually scheduled (`pipe$get_is_scheduled()` or equivalent). If one or more are not scheduled, emit a warning and skip the downstream rather than silently hanging.
+
+**Validation options (in priority order):**
+
+1. **Runtime warning** — cheapest; warn when a collect node's upstream set is only partially scheduled in the current run. The downstream is skipped with a descriptive message.
+2. **Build-time warning** — at `build_schedule()` time, flag collect nodes whose upstreams have mismatched frequencies or skip flags. Cannot catch time-based misses (e.g. `hourly` vs `daily`), so this is supplementary at best.
+
+Decision: implement option 1 at minimum for v1.2.0. Option 2 deferred.
+
+---
+
 ## Implementation Checklist
 
 ### Step 1 — `MaestroPipeline`: new fields ✅

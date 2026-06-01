@@ -55,7 +55,7 @@
       3 TRUE    TRUE   
       4 TRUE    TRUE   
 
-# iterateOver is NULL
+# iterateOver is misspecified name in return
 
     Code
       status[, c("invoked", "success")]

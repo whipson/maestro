@@ -31,7 +31,6 @@ if (interactive()) {
     \item \href{#method-MaestroSchedule-get_artifacts}{\code{MaestroSchedule$get_artifacts()}}
     \item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
     \item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
-    \item \href{#method-MaestroSchedule-show_network}{\code{MaestroSchedule$show_network()}}
     \item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
     \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
   }
@@ -170,21 +169,6 @@ if (interactive()) {
   }
   \subsection{Returns}{
     data.frame
-  }
-}
-
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroSchedule-show_network"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroSchedule-show_network}{}}}
-\subsection{\code{MaestroSchedule$show_network()}}{
-  Visualize the DAG relationships between pipelines in the schedule
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{MaestroSchedule$show_network()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    interactive visualization
   }
 }
 

@@ -441,8 +441,8 @@ MaestroPipelineList <- R6::R6Class(
             } else {
               .input
             }
-            run_results <- purrr::imap(scatter_input, ~{
-              run_pipe(
+            purrr::iwalk(scatter_input, ~{
+              res <- run_pipe(
                 pipe,
                 .input = .x,
                 depth = depth,
@@ -453,6 +453,8 @@ MaestroPipelineList <- R6::R6Class(
                 iter = .y,
                 pre_error = pre_error
               )
+
+              run_results <<- append(run_results, res)
             })
           } else {
             run_results <- run_pipe(

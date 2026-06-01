@@ -29,6 +29,3 @@ if (interactive()) {
   schedule$get_network()
 }
 }
-\seealso{
-\code{\link[=show_network]{show_network()}} which is deprecated in favour of this function.
-}

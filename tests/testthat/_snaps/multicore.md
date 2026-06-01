@@ -32,3 +32,15 @@
       8 high_road end        
       9 low_road  end        
 
+# Simple fan out into common downstream
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 3 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 FALSE   NA     
+      2 FALSE   NA     
+      3 FALSE   NA     
+

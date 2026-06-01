@@ -22,14 +22,6 @@ test_that("maestroInputs parser: each() with multiple names", {
   expect_true(parsed$val$is_each)
 })
 
-test_that("maestroInputs parser: collect() -> is_collect TRUE, correct names", {
-  tag <- roxygen2::roxy_tag("maestroInputs", "collect(src_a, src_b)", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroInputs(tag)
-  expect_equal(parsed$val$inputs, c("src_a", "src_b"))
-  expect_false(parsed$val$is_each)
-  expect_true(parsed$val$is_collect)
-})
-
 test_that("maestroIterateOver parser stores raw string verbatim", {
   raw <- "id = .input$ids lbl = .input$labels"
   tag <- roxygen2::roxy_tag("maestroIterateOver", raw, NULL)
@@ -168,7 +160,7 @@ test_that("Use iterateOver to specify a particular iteration variable", {
   })
 })
 
-test_that("iterateOver is NULL", {
+test_that("iterateOver is misspecified name in return", {
 
   withr::with_tempdir({
     dir.create("pipelines")

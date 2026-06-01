@@ -40,3 +40,40 @@ test_that("Multicore DAGs work", {
   expect_equal(artifacts$subbranch2, 6)
 }) |>
   suppressMessages()
+
+test_that("Simple fan out into common downstream", {
+
+  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      numbers <- function() {
+        1:3
+      }
+
+      #' @maestroInputs each(numbers)
+      multiply <- function(.input) {
+        .input * 3
+      }
+        
+      #' @maestroInputs multiply
+      add_2 <- function(.input) {
+        .input + 2
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule,
+      cores = 2L
+    )
+    status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success")])
+    expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(5, 8, 11))
+    expect_equal(length(unique(status$run_id)), length(status$run_id))
+  })
+})

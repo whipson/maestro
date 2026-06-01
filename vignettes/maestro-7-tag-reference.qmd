@@ -160,11 +160,29 @@ Examples:
 
 For a DAG style pipeline, the names of pipelines that input into the pipeline. These names must match the function name defining the inputting pipeline. Multiple pipelines can be used as inputs and the input value is used in the target pipeline via the required `.input` parameter. Note that this tag could be redundant if the inputting pipeline uses `maestroOutputs`.
 
+To enable **dynamic fan-out (scatter)**, wrap the input name with `each()`. The downstream pipeline will then be executed once per element of the upstream return value, with each element passed as `.input`.
+
 Default:
 
 Examples:
 
 -   `#' @maestroInputs extract verify`
+
+-   `#' @maestroInputs each(get_data)`
+
+## maestroIterateOver
+
+For use with `each()` in `@maestroInputs`. When the upstream pipeline returns a named list, specifies which field of the list to scatter over. The full list remains accessible as `.input` inside each branch, so other fields can still be used.
+
+The value must follow the pattern `.input$field`.
+
+Default:
+
+Examples:
+
+-   `#' @maestroIterateOver .input$letter`
+
+------------------------------------------------------------------------
 
 ## maestroOutputs
 

@@ -64,11 +64,12 @@ Tags are custom roxygen2 roclets defined in `R/roxy_maestro.R` and documented in
 | `@maestroStartTime` | `2024-01-01 00:00:00` | date, datetime, or `HH:MM:SS` time |
 | `@maestroTz` | `UTC` | any `OlsonNames()` value |
 | `@maestroLogLevel` | `INFO` | `ERROR`, `WARN`, `INFO` |
-| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param |
+| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param; wrap input name with `each()` for dynamic fan-out |
 | `@maestroSkip` | — | flag only, no value |
 | `@maestroPriority` | `Inf` | lower integer = higher priority |
 | `@maestroFlags` | — | space-separated arbitrary labels |
 | `@maestroRunIf` | — | R expression evaluated to a single `TRUE`/`FALSE` (see below) |
+| `@maestroIterateOver` | — | used with `each()` in `@maestroInputs`; value must be `.input$field` (see below) |
 | `@maestro` | — | generic tag to include pipeline with all defaults |
 
 **Pipeline scripts must not contain top-level code** (only function definitions). `build_schedule_entry()` uses `roxygen2::parse_file()` which executes the script in a fresh environment—loose code will error.
@@ -110,6 +111,59 @@ extract <- function() { mtcars }
 transform <- function(.input) { dplyr::mutate(.input, hp2 = hp^2) }
 ```
 
+### Dynamic Fan-out (Scatter)
+
+Wrapping the upstream name with `each()` in `@maestroInputs` enables **dynamic fan-out**: the downstream pipeline executes once per element of the upstream return value, with each element passed as `.input`.
+
+```r
+#' @maestroFrequency daily
+get_letters <- function() {
+  c("a", "b", "c")
+}
+
+#' @maestroInputs each(get_letters)
+shout <- function(.input) {
+  toupper(.input)  # called 3 times, .input = "a", "b", "c"
+}
+```
+
+Each branch appears in the CLI output labelled with its iteration value in blue square brackets, e.g. `|- shout[a]`.
+
+### `@maestroIterateOver` — scatter over a named list field
+
+When the upstream pipeline returns a **named list**, `@maestroIterateOver .input$field` selects which field to scatter over. The **full list** is passed as `.input` in each branch, so other fields remain accessible.
+
+```r
+#' @maestroFrequency daily
+get_data <- function() {
+  list(letter = letters[1:3], greeting = "hello")
+}
+
+#' @maestroInputs each(get_data)
+#' @maestroIterateOver .input$letter
+make_message <- function(.input) {
+  paste(.input$greeting, toupper(.input$letter))  # .input$greeting always available
+}
+```
+
+**Implementation details** (in `MaestroPipelineList$run()`):
+
+1. `pipe$get_iterate_over()` returns the raw tag string, e.g. `".input$letter"`.
+2. `eval(str2lang(iterate_over), envir = list(.input = .input))` extracts the scatter vector.
+3. If the result is `NULL` (field doesn't exist), a `simpleError` is constructed and passed to `pipe$run()` via the `prev_error` argument — **not** thrown directly — so `MaestroPipeline$run()` records it as a pipeline error rather than crashing the orchestrator.
+4. Otherwise, `purrr::imap` builds a named list where each element is a copy of the full `.input` list with the iterated field replaced by its scalar value for that iteration. Names are `as.character(scatter_vec)` and become the `iter` label shown in the CLI.
+
+### `prev_error` — pre-execution errors in `MaestroPipeline$run()`
+
+`MaestroPipeline$run()` accepts a `prev_error` argument (a `simpleError` or `NULL`). When non-`NULL`:
+
+1. Run-time attributes (`invoked = TRUE`, `run_id`, `lineage`, etc.) are set as normal.
+2. The CLI step is emitted then immediately marked failed via `cli::cli_progress_done(result = "failed")`.
+3. `tryCatch(stop(prev_error), error = private$pre_error_handler(internal_run_id))` records the error — `pre_error_handler` is structurally identical to `cond_error_handler` but prefixes the message with `"Error before pipeline execution:"`.
+4. `return(invisible())` exits before any normal execution path runs.
+
+This pattern ensures pre-execution errors (e.g. bad `@maestroIterateOver` field) appear correctly in `get_status()`, `last_run_errors()`, and the CLI without crashing the run.
+
 ## Key User-Facing Functions
 
 Most schedule-level operations have both a **standalone function** and an equivalent **R6 method** on `MaestroSchedule`. Always implement the R6 method first; the standalone is a thin wrapper that validates the class then delegates:
@@ -119,7 +173,9 @@ get_flags(schedule)       # standalone
 schedule$get_flags()      # R6 equivalent — same result
 ```
 
-This dual API applies to: `get_status()`, `get_artifacts()`, `get_schedule()`, `get_flags()`, `get_network()`, `show_network()`, `get_run_sequence()`.
+This dual API applies to: This dual API applies to: `get_status()`, `get_artifacts()`, `get_schedule()`, `get_flags()`, `get_network()`, `get_run_sequence()`.
+
+Note: `show_network()` has been **fully removed** as of v1.2.0. Use `get_network()` instead.
 
 ### `invoke()` — ad-hoc single pipeline runs
 
