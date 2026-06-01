@@ -375,6 +375,7 @@ MaestroPipelineList <- R6::R6Class(
         run_results = list(),
         lineage = character(),
         iter = NULL,
+        pre_error = NULL,
         ...
       ) {
 
@@ -392,7 +393,8 @@ MaestroPipelineList <- R6::R6Class(
                 input_run_id = input_run_id,
                 depth = depth,
                 lineage = lineage,
-                iter = iter
+                iter = iter,
+                pre_error = pre_error
               )
             )
           )
@@ -417,13 +419,25 @@ MaestroPipelineList <- R6::R6Class(
 
           if (pipe$get_is_each()) {
             iterate_over <- pipe$get_iterate_over()
+            pre_error <- NULL
             scatter_input <- if (!is.null(iterate_over)) {
               scatter_vec <- eval(str2lang(iterate_over), envir = list(.input = .input))
-              field <- sub("^\\.input\\$", "", iterate_over)
-              purrr::imap(scatter_vec, \(item, idx) {
-                modifyList(.input, stats::setNames(list(item), field))
-              }) |>
-                stats::setNames(as.character(scatter_vec))
+              if (is.null(scatter_vec)) {
+                field <- sub("^\\.input\\$", "", iterate_over)
+                pre_error <- simpleError(
+                  paste0(
+                    "Field '", field, "' specified in @maestroIterateOver not found in ",
+                    "the output of the upstream pipeline."
+                  )
+                )
+                list(structure(list("0"), names = "N"))
+              } else {
+                field <- sub("^\\.input\\$", "", iterate_over)
+                purrr::imap(scatter_vec, \(item, idx) {
+                  modifyList(.input, stats::setNames(list(item), field))
+                }) |>
+                  stats::setNames(as.character(scatter_vec))
+              }
             } else {
               .input
             }
@@ -436,7 +450,8 @@ MaestroPipelineList <- R6::R6Class(
                 input_run_id = run_id,
                 run_results = run_results,
                 lineage = lineage,
-                iter = .y
+                iter = .y,
+                pre_error = pre_error
               )
             })
           } else {
@@ -447,7 +462,8 @@ MaestroPipelineList <- R6::R6Class(
               run_id = run_id,
               input_run_id = run_id,
               run_results = run_results,
-              lineage = lineage
+              lineage = lineage,
+              pre_error = pre_error
             )
           }
         }

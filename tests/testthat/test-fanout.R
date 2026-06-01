@@ -195,5 +195,7 @@ test_that("iterateOver is NULL", {
       schedule, orch_frequency = "1 day"
     )
     status <- get_status(schedule)
+    expect_snapshot(status[, c("invoked", "success")])
+    expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
   })
 })

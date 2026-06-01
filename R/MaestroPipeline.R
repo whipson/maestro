@@ -176,6 +176,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param input_run_id unique id of the run that inputted into the current run (NA if there is no input)
     #' @param lineage character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)
     #' @param iter iteration number for dynamic fanout
+    #' @param pre_error trigger error from outside execution
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -191,6 +192,7 @@ MaestroPipeline <- R6::R6Class(
       input_run_id = NA_character_,
       lineage = c(),
       iter = NULL,
+      pre_error = NULL,
       ...
     ) {
       internal_run_id <- make_id()
@@ -210,6 +212,33 @@ MaestroPipeline <- R6::R6Class(
           messages = 0L
         )
       )
+
+      if (!is.null(pre_error)) {
+        private$insert_run_time_attributes(
+          internal_run_id,
+          list(
+            run_id = run_id,
+            invoked = TRUE,
+            input_run_id = input_run_id,
+            lineage = lineage
+          )
+        )
+        prepend <- if (depth == 0) {
+          ""
+        } else {
+          cli::format_inline(rep("  ", times = depth - 1), "|-")
+        }
+        iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""
+        if (!quiet) {
+          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label}")
+        }
+        tryCatch(
+          stop(pre_error),
+          error = private$pre_error_handler(internal_run_id = internal_run_id)
+        )
+        if (!quiet) cli::cli_progress_done(result = "failed")
+        return(invisible())
+      }
 
       if (log_to_console) {
         logger_fun <- logger::appender_tee
@@ -907,6 +936,27 @@ MaestroPipeline <- R6::R6Class(
           )
         )
         invokeRestart("muffleMessage")
+      }
+    },
+
+    pre_error_handler = function(internal_run_id) {
+      function(e) {
+        e$message <- paste("Error before pipeline execution:", e$message)
+        private$errors <- c(private$errors, e$message)
+        private$status <- "Error"
+        logger::log_error(
+          private$escape_for_glue(e$message),
+          namespace = private$pipe_name
+        )
+        run_time_end <- lubridate::now()
+        private$insert_run_time_attributes(
+          internal_run_id,
+          list(
+            pipeline_ended = run_time_end,
+            success = FALSE,
+            errors = 1L
+          )
+        )
       }
     },
 
