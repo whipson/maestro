@@ -22,6 +22,9 @@ MaestroPipeline <- R6::R6Class(
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
+    #' @param is_each logical; TRUE when @maestroInputs uses each() fan-out marker
+    #' @param is_collect logical; TRUE when @maestroInputs uses collect() fan-in marker
+    #' @param iterate_over named list of key=expr_string pairs from @maestroIterateOver, or NULL
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -39,7 +42,10 @@ MaestroPipeline <- R6::R6Class(
       outputs = NULL,
       priority = Inf,
       flags = c(),
-      run_if = NULL
+      run_if = NULL,
+      is_each = FALSE,
+      is_collect = FALSE,
+      iterate_over = NULL
     ) {
 
       # Update the private attributes
@@ -56,6 +62,9 @@ MaestroPipeline <- R6::R6Class(
       } else {
         run_if
       }
+      private$is_each <- is_each
+      private$is_collect <- is_collect
+      private$iterate_over <- iterate_over
 
       if (is.null(inputs)) {
         private$tz <- tz
@@ -166,6 +175,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param run_id unique id for the run
     #' @param input_run_id unique id of the run that inputted into the current run (NA if there is no input)
     #' @param lineage character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)
+    #' @param iter iteration number for dynamic fanout
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -180,6 +190,7 @@ MaestroPipeline <- R6::R6Class(
       run_id = NA_character_,
       input_run_id = NA_character_,
       lineage = c(),
+      iter = NULL,
       ...
     ) {
       internal_run_id <- make_id()
@@ -238,10 +249,12 @@ MaestroPipeline <- R6::R6Class(
         cli::format_inline(rep("  ", times = depth - 1), "|-")
       }
 
+      iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""
+
       do_run <- TRUE
       if (!is.null(private$run_if)) {
         if (!quiet) {
-          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)} (?)")
+          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label} (?)")
         }
 
         cond <- withCallingHandlers(
@@ -284,7 +297,7 @@ MaestroPipeline <- R6::R6Class(
       private$run_time_start <- run_time_start
 
       if (!quiet) {
-        cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}")
+        cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label}")
       }
 
       private$insert_run_time_attributes(
@@ -595,6 +608,21 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get whether the pipeline uses `each` for dynamic scatter
+    #' @return logical
+    get_is_each = function() {
+      private$is_each
+    },
+
+
+    #' @description
+    #' Get the .input value to iterate over
+    #' @return character
+    get_iterate_over = function() {
+      private$iterate_over
+    },
+
+    #' @description
     #' Update the inputs of a pipeline
     #' @param inputs character vector of inputting pipeline names
     #' @return vector
@@ -716,6 +744,9 @@ MaestroPipeline <- R6::R6Class(
     priority = Inf,
     flags = c(),
     run_if = NULL,
+    is_each = FALSE,
+    is_collect = FALSE,
+    iterate_over = NULL,
 
     # Transformed attributes
     days_of_week = NULL,

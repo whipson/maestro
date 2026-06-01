@@ -30,6 +30,8 @@ A pipeline is defined as a single R script with a schedule or input
     \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
     \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
     \item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
+    \item \href{#method-MaestroPipeline-get_is_each}{\code{MaestroPipeline$get_is_each()}}
+    \item \href{#method-MaestroPipeline-get_iterate_over}{\code{MaestroPipeline$get_iterate_over()}}
     \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
     \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
     \item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
@@ -59,7 +61,10 @@ A pipeline is defined as a single R script with a schedule or input
   outputs = NULL,
   priority = Inf,
   flags = c(),
-  run_if = NULL
+  run_if = NULL,
+  is_each = FALSE,
+  is_collect = FALSE,
+  iterate_over = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -81,6 +86,9 @@ A pipeline is defined as a single R script with a schedule or input
       \item{\code{priority}}{priority of the pipeline}
       \item{\code{flags}}{arbitrary pipelines flags}
       \item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
+      \item{\code{is_each}}{logical; TRUE when @maestroInputs uses each() fan-out marker}
+      \item{\code{is_collect}}{logical; TRUE when @maestroInputs uses collect() fan-in marker}
+      \item{\code{iterate_over}}{named list of key=expr_string pairs from @maestroIterateOver, or NULL}
     }
     \if{html}{\out{</div>}}
   }
@@ -378,6 +386,36 @@ A pipeline is defined as a single R script with a schedule or input
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroPipeline$get_flags()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_is_each"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_is_each}{}}}
+\subsection{\code{MaestroPipeline$get_is_each()}}{
+  Get whether the pipeline uses \code{each} for dynamic scatter
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_is_each()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    logical
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_iterate_over"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_iterate_over}{}}}
+\subsection{\code{MaestroPipeline$get_iterate_over()}}{
+  Get the .input value to iterate over
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_iterate_over()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{

@@ -22,7 +22,8 @@ build_schedule_entry <- function(script_path) {
     maestro = "maestro",
     priority = "maestroPriority",
     flags = "maestroFlags",
-    run_if = "maestroRunIf"
+    run_if = "maestroRunIf",
+    iterate_over = "maestroIterateOver"
   )
 
   # Initial Validation ------------------------------------------------------
@@ -56,7 +57,7 @@ build_schedule_entry <- function(script_path) {
         ~{
           val <- roxygen2::block_get_tag_value(tag, .x)
           if (is.null(val)) {
-            val <- NA
+            val <- NULL
           }
           val
         }
@@ -111,7 +112,7 @@ build_schedule_entry <- function(script_path) {
       .y <- ..3
 
       # Validate inputs
-      if (!all(is.na(.y$inputs))) {
+      if (!all(is.null(.y$inputs))) {
         if (.x %in% .y$inputs) {
           cli::cli_abort(
             c("`@maestroInput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
@@ -130,7 +131,7 @@ build_schedule_entry <- function(script_path) {
       }
 
       # Validate outputs
-      if (!all(is.na(.y$outputs))) {
+      if (!all(is.null(.y$outputs))) {
         if (.x %in% .y$outputs) {
           cli::cli_abort(
             c("`@maestroOutput` cannot contain self-references. Pipeline {.pkg .x} in {basename(script_path)}
@@ -140,7 +141,7 @@ build_schedule_entry <- function(script_path) {
         }
       }
 
-      freq_nunits <- if (!is.na(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
+      freq_nunits <- if (!is.null(.y$frequency)) parse_rounding_unit(.y$frequency) else NULL
 
       if (!is.null(freq_nunits)) {
 
@@ -148,7 +149,7 @@ build_schedule_entry <- function(script_path) {
 
         # Validate hours
         if (
-          !all(is.na(.y$hours)) && !freq_unit %in% c("second", "minute", "hour")
+          !all(is.null(.y$hours)) && !freq_unit %in% c("second", "minute", "hour")
         ) {
           cli::cli_abort(
             c("If specifying `@maestroHours` the pipeline must have a `@maestroFrequency` of at least 'hourly'.",
@@ -158,7 +159,7 @@ build_schedule_entry <- function(script_path) {
         }
 
         # Validate days
-        if (!all(is.na(.y$days)) &&
+        if (!all(is.null(.y$days)) &&
             !freq_unit %in% c("second", "minute", "hour", "day")) {
           cli::cli_abort(
             c("If specifying `@maestroDays` the pipeline must have a `@maestroFrequency` of at least 'daily'.",
@@ -168,7 +169,7 @@ build_schedule_entry <- function(script_path) {
         }
 
         # Validate months
-        if (!all(is.na(.y$months)) && !freq_unit %in%
+        if (!all(is.null(.y$months)) && !freq_unit %in%
             c("second", "minute", "hour", "day", "week", "month")) {
           cli::cli_abort(
             c("If specifying `@maestroMonths` the pipeline must have a `@maestroFrequency` of
@@ -181,23 +182,21 @@ build_schedule_entry <- function(script_path) {
 
       tz <- .y$tz %n% "UTC"
 
-      # Detect partial start_time formats for validation
       .weekday_abbrs <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-      is_time_only   <- !is.na(.y$start_time) &&
+      is_time_only   <- !is.null(.y$start_time) &&
         grepl("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", .y$start_time %n% "")
-      is_weekday_fmt <- !is.na(.y$start_time) &&
+      is_weekday_fmt <- !is.null(.y$start_time) &&
         grepl(
           sprintf("^(%s)\\s+[0-9]{2}:[0-9]{2}:[0-9]{2}$",
                   paste(.weekday_abbrs, collapse = "|")),
           .y$start_time %n% ""
         )
-      is_monthday_fmt <- !is.na(.y$start_time) &&
+      is_monthday_fmt <- !is.null(.y$start_time) &&
         grepl("^[0-9]{1,2}(\\s+[0-9]{2}:[0-9]{2}:[0-9]{2})?$",
               .y$start_time %n% "")
 
       if (!is.null(freq_nunits)) {
 
-        # Existing validation: HH:MM:SS only valid for minute/hour/day
         if (is_time_only) {
           if (freq_nunits$n > 1 && freq_nunits$unit == "day") {
             cli::cli_abort(
@@ -215,7 +214,6 @@ build_schedule_entry <- function(script_path) {
           }
         }
 
-        # New validation: weekday format only valid for week-based frequencies
         if (is_weekday_fmt && !freq_nunits$unit %in% c("week")) {
           cli::cli_abort(
             c("`@maestroStartTime` with weekday format (e.g., `Mon 04:00:00`) is only valid for weekly `@maestroFrequency`.",
@@ -224,7 +222,6 @@ build_schedule_entry <- function(script_path) {
           )
         }
 
-        # New validation: month-day format only valid for month-based frequencies
         if (is_monthday_fmt && !freq_nunits$unit %in% c("month")) {
           cli::cli_abort(
             c("`@maestroStartTime` with month-day format (e.g., `15 04:00:00`) is only valid for monthly `@maestroFrequency`.",
@@ -236,6 +233,30 @@ build_schedule_entry <- function(script_path) {
 
       # Pass the raw start_time string through; MaestroPipeline resolves it
       start_time_raw <- .y$start_time %n% NA_character_
+
+      if (!is.null(.y$inputs)) {
+        inputs <- .y$inputs$inputs
+        is_each <- .y$inputs$is_each
+        is_collect <- .y$inputs$is_collect
+      } else {
+        inputs <- NULL
+        is_each <- FALSE
+        is_collect <- FALSE
+      }
+
+      # Parse and validate @maestroIterateOver
+      iterate_over <- if (!is.null(.y$iterate_over)) {
+        if (!is_each) {
+          cli::cli_abort(
+            c("`@maestroIterateOver` requires `@maestroInputs` to use `each()`.",
+              "i" = "Issue is with pipeline named {.x}."),
+            call = NULL
+          )
+        }
+        .y$iterate_over
+      } else {
+        NULL
+      }
 
       # Create the new pipeline
       MaestroPipeline$new(
@@ -249,11 +270,14 @@ build_schedule_entry <- function(script_path) {
         hours = .y$hours %n% 0:23,
         days = .y$days %n% NULL,
         months = .y$months %n% 1:12,
-        inputs = .y$inputs %n% NULL,
+        inputs = inputs,
         outputs = .y$outputs %n% NULL,
         priority = as.numeric(.y$priority %n% Inf),
         flags = .y$flags %n% character(),
-        run_if = .y$run_if %n% NULL
+        run_if = .y$run_if %n% NULL,
+        is_each = is_each,
+        is_collect = is_collect,
+        iterate_over = iterate_over
       )
     })
   }, purrr_error_indexed = function(err) {

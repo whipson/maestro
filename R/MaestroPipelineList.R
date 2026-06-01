@@ -374,6 +374,7 @@ MaestroPipelineList <- R6::R6Class(
         input_run_id = NA_character_, 
         run_results = list(),
         lineage = character(),
+        iter = NULL,
         ...
       ) {
 
@@ -390,7 +391,8 @@ MaestroPipelineList <- R6::R6Class(
                 run_id = run_id, 
                 input_run_id = input_run_id,
                 depth = depth,
-                lineage = lineage
+                lineage = lineage,
+                iter = iter
               )
             )
           )
@@ -409,18 +411,45 @@ MaestroPipelineList <- R6::R6Class(
         }
         
         if (length(out_names) == 0) return(run_results)
-        
+
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
-          run_results <- run_pipe(
-            pipe,
-            .input = .input,
-            depth = depth,
-            run_id = run_id,
-            input_run_id = run_id,
-            run_results = run_results,
-            lineage = lineage
-          )
+
+          if (pipe$get_is_each()) {
+            iterate_over <- pipe$get_iterate_over()
+            scatter_input <- if (!is.null(iterate_over)) {
+              scatter_vec <- eval(str2lang(iterate_over), envir = list(.input = .input))
+              field <- sub("^\\.input\\$", "", iterate_over)
+              purrr::imap(scatter_vec, \(item, idx) {
+                modifyList(.input, stats::setNames(list(item), field))
+              }) |>
+                stats::setNames(as.character(scatter_vec))
+            } else {
+              .input
+            }
+            run_results <- purrr::imap(scatter_input, ~{
+              run_pipe(
+                pipe,
+                .input = .x,
+                depth = depth,
+                run_id = run_id,
+                input_run_id = run_id,
+                run_results = run_results,
+                lineage = lineage,
+                iter = .y
+              )
+            })
+          } else {
+            run_results <- run_pipe(
+              pipe,
+              .input = .input,
+              depth = depth,
+              run_id = run_id,
+              input_run_id = run_id,
+              run_results = run_results,
+              lineage = lineage
+            )
+          }
         }
 
         run_results

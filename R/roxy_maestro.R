@@ -437,7 +437,28 @@ roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
     return(x)
   }
 
-  x$val <- strsplit(x$raw, "\\s+")[[1]]
+  # Detect each() / collect() markers
+  each_match <- regmatches(x$raw, regexpr("^each\\(([^)]+)\\)$", x$raw))
+  collect_match <- regmatches(x$raw, regexpr("^collect\\(([^)]+)\\)$", x$raw))
+
+  if (length(each_match) == 1L) {
+    inner <- trimws(regmatches(each_match, regexpr("(?<=\\()([^)]+)(?=\\))", each_match, perl = TRUE)))
+    pipe_names <- strsplit(inner, "[[:space:],]+")[[1]]
+    pipe_names <- pipe_names[nzchar(pipe_names)]
+    x$val <- list(inputs = pipe_names, is_each = TRUE, is_collect = FALSE)
+  } else if (length(collect_match) == 1L) {
+    inner <- trimws(regmatches(collect_match, regexpr("(?<=\\()([^)]+)(?=\\))", collect_match, perl = TRUE)))
+    pipe_names <- strsplit(inner, "[[:space:],]+")[[1]]
+    pipe_names <- pipe_names[nzchar(pipe_names)]
+    x$val <- list(inputs = pipe_names, is_each = FALSE, is_collect = TRUE)
+  } else {
+    # Plain list of pipeline names (existing behaviour)
+    x$val <- list(
+      inputs = strsplit(x$raw, "\\s+")[[1]],
+      is_each = FALSE,
+      is_collect = FALSE
+    )
+  }
 
   x
 }
@@ -449,6 +470,30 @@ maestroInputs_roclet <- function() {
 #' @exportS3Method
 roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInputs")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+# maestroIterateOver ------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroIterateOver <- function(x) {
+  # Store raw string verbatim — consistent with @maestroRunIf.
+  # Structural parsing into named key=expr_string pairs is done at
+  # build_schedule_entry() time; expression validation surfaces at run time.
+  x$val <- x$raw
+  x
+}
+
+maestroIterateOver_roclet <- function() {
+  roxygen2::roclet("maestroIterateOver")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroIterateOver <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroIterateOver")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
