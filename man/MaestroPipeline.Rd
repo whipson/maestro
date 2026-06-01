@@ -127,6 +127,8 @@ A pipeline is defined as a single R script with a schedule or input
   run_id = NA_character_,
   input_run_id = NA_character_,
   lineage = c(),
+  iter = NULL,
+  pre_error = NULL,
   ...
 )}
     \if{html}{\out{</div>}}
@@ -144,6 +146,8 @@ A pipeline is defined as a single R script with a schedule or input
       \item{\code{run_id}}{unique id for the run}
       \item{\code{input_run_id}}{unique id of the run that inputted into the current run (NA if there is no input)}
       \item{\code{lineage}}{character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)}
+      \item{\code{iter}}{iteration number for dynamic fanout}
+      \item{\code{pre_error}}{trigger error from outside execution}
       \item{\code{...}}{additional arguments (unused)}
     }
     \if{html}{\out{</div>}}
