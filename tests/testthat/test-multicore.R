@@ -1,11 +1,14 @@
 test_that("Multicore works", {
 
   testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
-  schedule <- build_schedule(test_path("test_pipelines_run_all_good"))
+  future::plan(future::multisession(workers = 2))
+
+  schedule <- build_schedule(
+    test_path("test_pipelines_run_all_good"),
+    cores = 2
+  )
 
   expect_no_error({
-
-    future::plan(future::multisession(workers = 2))
 
     run_schedule(
       schedule,
@@ -44,36 +47,15 @@ test_that("Multicore DAGs work", {
 test_that("Simple fan out into common downstream", {
 
   testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
+  future::plan(future::multisession(workers = 2))
 
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroFrequency daily
-      numbers <- function() {
-        1:3
-      }
-
-      #' @maestroInputs each(numbers)
-      multiply <- function(.input) {
-        .input * 3
-      }
-        
-      #' @maestroInputs multiply
-      add_2 <- function(.input) {
-        .input + 2
-      }",
-      con = "pipelines/fanout.R"
-    )
-
-    schedule <- build_schedule()
-    run_schedule(
-      schedule,
-      cores = 2L
-    )
-    status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(5, 8, 11))
-    expect_equal(length(unique(status$run_id)), length(status$run_id))
-  })
+  schedule <- build_schedule(test_path("test_pipelines_fan_out"))
+  run_schedule(
+    schedule,
+    cores = 2L
+  )
+  status <- get_status(schedule)
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(5, 8, 11))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
