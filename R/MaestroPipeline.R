@@ -682,6 +682,25 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the number of iterations expected for this each() pipeline.
+    #' Set by run_pipe() just before the scatter loop so that resolve_collect_input()
+    #' can compare against get_n_invocations() without depending on the upstream
+    #' return value's length (which is wrong when @maestroIterateOver is used).
+    #' @return integer or NULL
+    get_n_expected_iterations = function() {
+      private$n_expected_iterations
+    },
+
+    #' @description
+    #' Record the number of iterations that will be dispatched for this each() pipeline.
+    #' @param n integer
+    #' @return invisible
+    set_n_expected_iterations = function(n) {
+      private$n_expected_iterations <- as.integer(n)
+      invisible()
+    },
+
+    #' @description
     #' Update the inputs of a pipeline
     #' @param inputs character vector of inputting pipeline names
     #' @return vector
@@ -720,6 +739,7 @@ MaestroPipeline <- R6::R6Class(
       private$messages <- NULL
       private$returns <- NULL
       private$run_time_start <- lubridate::NA_POSIXct_
+      private$n_expected_iterations <- NULL
     },
 
     #' @description
@@ -806,6 +826,7 @@ MaestroPipeline <- R6::R6Class(
     is_each = FALSE,
     is_collect = FALSE,
     iterate_over = NULL,
+    n_expected_iterations = NULL,
 
     # Transformed attributes
     days_of_week = NULL,

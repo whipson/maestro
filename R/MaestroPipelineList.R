@@ -488,6 +488,7 @@ MaestroPipelineList <- R6::R6Class(
             } else {
               effective_input
             }
+            pipe$set_n_expected_iterations(length(scatter_input))
             purrr::iwalk(scatter_input, ~{
               res <- run_pipe(
                 pipe,
@@ -655,10 +656,19 @@ MaestroPipelineList <- R6::R6Class(
       # Each inputs must have all iterations finished (succeeded or errored)
       each_not_ready <- purrr::map_lgl(in_pipes, ~{
         if (!.x$get_is_each()) return(FALSE)
-        scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
-        if (length(scatter_source_name) == 0) return(FALSE)
-        scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
-        expected_n <- length(scatter_source$get_returns())
+        # Prefer the count recorded by set_n_expected_iterations() — it is
+        # always correct even when @maestroIterateOver sub-selects a field
+        # (in that case length(scatter_source$get_returns()) gives the number
+        # of fields in the upstream list, not the fan-out width).
+        expected_n <- .x$get_n_expected_iterations()
+        if (is.null(expected_n)) {
+          # Fallback for each() without @maestroIterateOver: derive from the
+          # scatter source's return value (plain vector/list fan-out).
+          scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
+          if (length(scatter_source_name) == 0) return(FALSE)
+          scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
+          expected_n <- length(scatter_source$get_returns())
+        }
         finished_n <- .x$get_n_invocations()
         finished_n < expected_n
       })

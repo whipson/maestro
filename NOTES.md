@@ -10,7 +10,7 @@
 
 ---
 
-## Feature 1: Dynamic Fan-Out (Scatter)
+## Feature 1: Dynamic Fan-Out (Scatter) ✅
 
 **Concept:** When an upstream pipeline returns a list or vector, a downstream declared with `@maestroInputs each(upstream)` executes once per element. All iterations are housed in a single `MaestroPipeline` object (consistent with the existing multi-execution model).
 
@@ -69,47 +69,25 @@ Unnamed multi-selector (>1 selector, none named) is not supported — `cli_abort
 - `roxy_tag_parse.roxy_tag_maestroInputs` detects `each()` and `collect()` forms before splitting, and stores `is_each`/`is_collect` flags alongside the inner pipeline name(s) in `x$val`. ✅
 - Selector expressions in `@maestroIterateOver` are **not** validated at parse time — consistent with `@maestroRunIf`. Invalid expressions surface as runtime errors.
 
-**Validation at `build_schedule()` time** (in `build_schedule_entry.R`):
+**Validation at `build_schedule()` time:**
 - `@maestroIterateOver` without `each()` in `@maestroInputs` → `cli_abort()` ✅
 - Unnamed multi-selector in `@maestroIterateOver` → `cli_abort()` ✅
-- `each()` and `collect()` on the same `@maestroInputs` tag → `cli_abort()` (pending)
-- Pipeline names inside `each()` / `collect()` must resolve to known pipelines → `cli_abort()` (occurs in `build_schedule()` / `MaestroPipelineList`, not `build_schedule_entry()`)
+- `each()` and `collect()` on the same `@maestroInputs` tag → `cli_abort()` (deferred post-v1.2.0)
+- `each()` with more than one input pipeline → `cli_abort()` ✅ (validated in `validate_network()`)
+- Pipeline names inside `each()` / `collect()` must resolve to known pipelines → `cli_abort()` ✅
 
 ---
 
 ### Runtime execution
 
-`run_pipe()` is a recursive closure defined inside `MaestroPipelineList$run()`. Currently it:
+`run_pipe()` is a recursive closure defined inside `MaestroPipelineList$run()`. It:
 1. Calls `pipe$run(...)` once
 2. Gets the return value via `pipe$get_returns()`
 3. Looks up downstream names from the network: `out_names <- network$to[network$from == pipe$get_pipe_name()]`
 4. Recurses into each downstream, passing `.input = .input`
 5. Short-circuits on error/not-run status
 
-For fan-out (`is_each = TRUE`), step 2-4 change: loop over `iterator`, calling `pipe$run(..., .input = iterator[[i]])` for each element. All iterations write into the same `MaestroPipeline` object distinguished by `internal_run_id`.
-
-```r
-eval_selector <- function(expr_str, upstream_result) {
-  eval(parse(text = expr_str), envir = list(.input = upstream_result))
-}
-
-# No @maestroIterateOver — iterate over whole upstream result
-iterator <- upstream_result
-
-# Unnamed single selector
-iterator <- eval_selector(".input$vec", upstream_result)
-branch_input <- iterator[[i]]
-
-# Named single or multi selector
-iterators <- lapply(named_selectors, eval_selector, upstream_result = upstream_result)
-# length parity validated here at run time
-branch_input <- lapply(iterators, `[[`, i)  # named list preserved as .input
-```
-
-For fan-in (`is_collect = TRUE`), `run_pipe()` must accumulate results from all upstream executions before calling `pipe$run()` once. This cuts against the current depth-first recursive model and is the most complex architectural change — see implementation notes below.
-
-**Branch identity** in `get_status()` / `get_artifacts()`: `downstream[1]`, `downstream[2]`, ...
-Label-by-input-value deferred post-v1.2.0.
+For fan-out (`is_each = TRUE`): `purrr::iwalk` iterates over the scatter input, calling `run_pipe(pipe, .input = item, iter = label)` for each element. All iterations write into the same `MaestroPipeline` object, distinguished by `internal_run_id`.
 
 ---
 
@@ -130,7 +108,7 @@ Label-by-input-value deferred post-v1.2.0.
 
 ---
 
-## Feature 2: Fan-In (Gather/Merge)
+## Feature 2: Fan-In (Gather/Merge) ✅
 
 **Concept:** A downstream pipeline collects outputs from multiple upstream nodes and receives all of them together as `.input`. The `collect()` marker is required in all fan-in cases — without it, maestro cannot know to wait for all upstream results before executing the downstream.
 
@@ -157,8 +135,8 @@ downstream <- function(.input) {
 ```r
 #' @maestroInputs collect(upstream)  # upstream declared with each()
 downstream <- function(.input) {
-  # .input is an unnamed list of length n (one element per branch)
-  # .input[[1]], .input[[2]], ...\n
+  # .input is an unnamed list of length n (one element per successful branch)
+  # .input[[1]], .input[[2]], ...
 }
 ```
 
@@ -169,7 +147,7 @@ downstream <- function(.input) {
 | Case | `.input` shape |
 |---|---|
 | Static fan-in | Named list keyed by pipeline name |
-| Dynamic fan-in (fork-join) | Unnamed list of length n |
+| Dynamic fan-in (fork-join) | Unnamed list of successful iteration results |
 
 ---
 
@@ -178,11 +156,53 @@ downstream <- function(.input) {
 - `collect()` is **not** an exported function. It is a marker recognised only during tag parsing, consistent with `each()` and `@maestroRunIf`.
 - Whether the upstream used `each()` or not is resolved at runtime — `collect()` on a non-`each()` upstream is valid (static fan-in).
 
-**Validation at `build_schedule()` time:**
-- Pipeline names inside `collect()` must resolve to known pipelines in the schedule → `cli_abort()`
-- `collect()` and `each()` cannot both appear on the same `@maestroInputs` tag → `cli_abort()`
+**Validation at `build_schedule()` time** (in `validate_network()`):
+- Pipeline names inside `collect()` must resolve to known pipelines → `cli_abort()` ✅
+- `each()` with more than one input → `cli_abort()` ✅
+- `collect()` with fewer than two inputs, where the single input is not an `each()` pipe → `cli_abort()` ✅
+- `collect()` and `each()` cannot both appear on the same `@maestroInputs` tag → deferred post-v1.2.0
 
 **Deferred:** aliasing in `collect()` (e.g. `collect(cust = upstream_customers, ord = upstream_orders)`) — not necessary since users can rename inside the function body. Deferred post-v1.2.0.
+
+---
+
+### Runtime execution — collect guards
+
+All collect readiness logic is centralised in `private$resolve_collect_input(pipe, network)` in `MaestroPipelineList`. Returns the named `.input` list if ready, `NULL` if the collect should not fire.
+
+Guards (in order):
+1. **Already invoked** — `pipe$get_status_chr() != "Not Run"` → skip. Collect fires exactly once per execution regardless of how many branches reach it.
+2. **Non-each inputs** — all must have status `"Success"`. An errored non-each input has no meaningful return value; the collect is skipped entirely.
+3. **Each inputs** — all iterations must have finished (succeeded *or* errored), checked via `get_n_invocations()`. At least one iteration must have succeeded (`get_n_artifacts() > 0`).
+
+`.input` assembly:
+- For `each()` upstreams: `get_all_returns()` — plain unnamed list of all successful iteration results.
+- For normal upstreams: `get_returns()` — the single return value.
+
+---
+
+### Runtime execution — multicore
+
+In multicore mode (`cores > 1`), `furrr::future_map` serialises the entire `MaestroPipelineList` into each worker. Workers cannot see each other's state, so a collect pipe whose inputs span independent primary branches is never triggered inside any worker.
+
+**Fix:** `MaestroPipelineList$run_pending_collects(...)` is called by `MaestroSchedule$run()` after `update_pipelines()` syncs worker results back to the main process. It contains its own `run_pipe` closure (mirroring the one in `run()`) so that the collect pipe's own downstream outputs are recursed into normally.
+
+Sequencing in `MaestroSchedule$run()`:
+```
+pipes_that_ran <- do.call(pipes_to_run$run, dots)   # workers run primaries
+update_pipelines(pipes_that_ran)                      # sync worker state to main process
+run_pending_collects(dots)                            # fire collect + recurse on main process
+```
+
+---
+
+### Error semantics
+
+| Case | Behaviour |
+|---|---|
+| Non-each input errors | Collect is skipped entirely |
+| Each input: some iterations error | Collect fires with only the successful iterations' results |
+| Each input: all iterations error | Collect is skipped entirely |
 
 ---
 
@@ -193,25 +213,21 @@ downstream <- function(.input) {
 | Marker name | `collect()` |
 | Real exported function? | No |
 | Static fan-in `.input` shape | Named list keyed by pipeline name |
-| Dynamic fan-in `.input` shape | Unnamed list of length n |
+| Dynamic fan-in `.input` shape | Unnamed list of successful results |
 | `collect()` on non-`each()` upstream | Valid — no build-time error |
-| `collect()` + `each()` on same tag | Invalid → `cli_abort()` at build time |
-| Aliasing in `collect()` | Not needed; deferred post-v1.2.0 |
+| `collect()` + `each()` on same tag | Invalid → deferred to post-v1.2.0 |
+| Collect fires how many times | Exactly once per execution |
+| Aliasing in `collect()` | Deferred post-v1.2.0 |
+| Partial each failure | Collect proceeds with successful results |
+| Full each failure | Collect skipped |
 
 ---
 
 ### Scheduling constraint for collect
 
-For a fan-in to actually execute, **all named upstream pipelines must be scheduled in the same orchestrator run**. If any upstream is not scheduled (wrong frequency, skipped, future start time, etc.), the collect node will wait indefinitely — it will never see all upstream results and will silently not run.
+For a fan-in to actually execute, **all named upstream pipelines must be scheduled in the same orchestrator run**. If any upstream is not scheduled (wrong frequency, skipped, future start time, etc.), the collect node will wait indefinitely.
 
-**Mitigation:** At runtime, before deferring or accumulating, check that every upstream named in `collect(...)` is actually scheduled (`pipe$get_is_scheduled()` or equivalent). If one or more are not scheduled, emit a warning and skip the downstream rather than silently hanging.
-
-**Validation options (in priority order):**
-
-1. **Runtime warning** — cheapest; warn when a collect node's upstream set is only partially scheduled in the current run. The downstream is skipped with a descriptive message.
-2. **Build-time warning** — at `build_schedule()` time, flag collect nodes whose upstreams have mismatched frequencies or skip flags. Cannot catch time-based misses (e.g. `hourly` vs `daily`), so this is supplementary at best.
-
-Decision: implement option 1 at minimum for v1.2.0. Option 2 deferred.
+**Status:** Runtime warning when a collect node's upstream set is only partially scheduled — deferred post-v1.2.0.
 
 ---
 
@@ -224,7 +240,7 @@ Added to `initialize()` and private fields:
 - `is_collect` (logical, default `FALSE`)
 - `iterate_over` (list of named `key = expr_string` pairs, or `NULL`)
 
-Getters added: `get_is_each()`, `get_is_collect()`, `get_iterate_over()`.
+Getters added: `get_is_each()`, `get_is_collect()`, `get_iterate_over()`, `get_n_artifacts()`, `get_n_invocations()`, `get_all_returns()`.
 
 ### Step 2 — Tag parsing ✅
 
@@ -232,26 +248,41 @@ Getters added: `get_is_each()`, `get_is_collect()`, `get_iterate_over()`.
 
 **`roxy_tag_parse.roxy_tag_maestroIterateOver`** added. Stores `x$val <- x$raw` verbatim (consistent with `@maestroRunIf`).
 
-### Step 3 — `build_schedule_entry()` validations and wiring
+### Step 3 — `build_schedule_entry()` validations and wiring ✅
 
 - [x] Unpack `is_each` / `is_collect` / `inputs` from new list val
 - [x] Parse `@maestroIterateOver` raw string into named `key = expr_string` pairs
 - [x] Abort if `@maestroIterateOver` present but `is_each = FALSE`
 - [x] Abort if unnamed multi-selector in `@maestroIterateOver`
-- [ ] Abort if `is_each` and `is_collect` both `TRUE` on same pipeline
 - [x] Pass `is_each`, `is_collect`, `iterate_over` into `MaestroPipeline$new()`
+- [ ] Abort if `is_each` and `is_collect` both `TRUE` on same pipeline (deferred)
 
-### Step 4 — `run_pipe()` in `MaestroPipelineList$run()`
+### Step 4 — `validate_network()` in `MaestroPipelineList` ✅
 
-Fan-out (`is_each`): loop over iterator, run branch n times on same `MaestroPipeline` object.
-Fan-in (`is_collect`): accumulate upstream results before single downstream execution. Most complex change — likely requires an accumulator pattern rather than pure depth-first recursion.
+- [x] `each()` with more than one input → `cli_abort()`
+- [x] `collect()` with fewer than two inputs where the single input is not an `each()` pipe → `cli_abort()`
 
-### Step 5 — Tests
+### Step 5 — `run_pipe()` in `MaestroPipelineList$run()` ✅
 
-Test file: `tests/testthat/test-fanout.R` — uses `withr::local_tempfile()` + `writeLines()` inline (no fixture files).
+- [x] Fan-out (`is_each`): `purrr::iwalk` scatter loop, all iterations on one `MaestroPipeline` object
+- [x] Fan-in (`is_collect`): `private$resolve_collect_input()` centralises all readiness guards; inline guard in `run_pipe` + post-pass via `run_pending_collects()` for multicore
 
-- [x] Tag parser tests (Steps 1 & 2)
+### Step 6 — Tests ✅
+
+- [x] Tag parser tests
 - [x] `build_schedule_entry()` success cases
 - [x] `build_schedule_entry()` validation errors
-- [ ] `run_pipe()` fan-out execution
-- [ ] `run_pipe()` fan-in execution
+- [x] `validate_network()` arity errors (`each()` > 1 input, `collect()` < 2 non-each inputs)
+- [x] Fan-out execution (single-core + multicore)
+- [x] Fan-in execution: simple, error cases, conditional, complex DAG (single-core + multicore)
+- [x] Fork-join (fan-out → fan-in): happy path, partial error, full error (single-core + multicore)
+- [x] Collect with downstream outputs (gap #6) — single-core fixture in place; multicore test in `test-multicore.R`
+
+### Remaining / Deferred post-v1.2.0
+
+- [ ] `each()` + `collect()` on same tag → `cli_abort()` at parse time
+- [ ] Cancel-on-first-failure for fan-out
+- [ ] Aliasing in `collect()`
+- [ ] Runtime warning when collect upstream is only partially scheduled
+- [ ] CLI output improvements for fan-in/fan-out (docs and display)
+- [ ] Label-by-input-value for branch identity in `get_status()` / `get_artifacts()`

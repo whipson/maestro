@@ -413,3 +413,40 @@ test_that("Dynamic fan out followed by fan in - all error case", {
   status <- get_status(schedule)
   expect_false(status$invoked[status$pipe_name == "add"])
 })
+
+test_that("Fan-out collect with iterateOver", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      get_letters <- function() {
+        list(
+          letter = letters[1:3],
+          greeting = 'hello'
+        )
+      }
+
+      #' @maestroInputs each(get_letters)
+      #' @maestroIterateOver .input$letter
+      make_message <- function(.input) {
+        paste(.input$greeting, toupper(.input$letter))
+      }
+      
+      #' @maestroInputs collect(make_message)
+      capitalize <- function(.input) {
+        paste(toupper(unlist(.input)))
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+  })
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$capitalize)), paste("HELLO", c("A", "B", "C")))
+})
