@@ -306,8 +306,40 @@ MaestroPipelineList <- R6::R6Class(
         })
       }
 
-      network <- self$get_network()
+      # Validate each() and collect() arity
+      withCallingHandlers({
+        purrr::walk(self$MaestroPipelines, ~{
+          pipe <- .x
+          if (pipe$get_is_each()) {
+            n <- length(pipe$get_inputs())
+            if (n != 1L) {
+              cli::cli_abort(
+                "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code each()} but references {n} input{?s}. {.code each()} requires exactly one input pipeline.",
+                call = NULL
+              )
+            }
+          }
+          if (pipe$get_is_collect()) {
+            n <- length(pipe$get_inputs())
+            if (n < 2L) {
+              # A single each() upstream is valid (dynamic fan-out → fan-in)
+              single_is_each <- n == 1L &&
+                pipe$get_inputs()[[1]] %in% pipe_names &&
+                self$get_pipe_by_name(pipe$get_inputs()[[1]])$get_is_each()
+              if (!single_is_each) {
+                cli::cli_abort(
+                  "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code collect()} but references {n} input{?s}. {.code collect()} requires at least two input pipelines or a single {.code each()} pipeline.",
+                  call = NULL
+                )
+              }
+            }
+          }
+        })
+      }, purrr_error_indexed = function(err) {
+        rlang::cnd_signal(err$parent)
+      })
 
+      network <- self$get_network()
 
       if (nrow(network) > 0) {
 
@@ -417,59 +449,14 @@ MaestroPipelineList <- R6::R6Class(
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
 
-          # For collect() fan-in: gather return values from ALL inputting pipes
-          # into a named list keyed by pipe name, then use that as .input.
-          # Guards:
-          #   1. Skip if the collect pipe itself has already been invoked this
-          #      execution — it should fire exactly once regardless of how many
-          #      independent branches eventually reach it.
-          #   2. Skip if any non-each input hasn't run yet.
-          #   3. For each-flagged inputs, skip until all scatter iterations have
-          #      completed. The expected iteration count comes from the length of
-          #      the each pipe's own upstream (the scatter source) return value.
+          # For collect() fan-in, resolve_collect_input checks all readiness
+          # guards and returns the named .input list, or NULL to skip.
+          # Guard: also skip if already invoked (fires exactly once).
           collect_input <- NULL
           if (pipe$get_is_collect()) {
             if (pipe$get_status_chr() != "Not Run") next
-
-            in_names <- network$from[network$to == i]
-            in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
-              stats::setNames(in_names)
-
-            # Guard 2: non-each inputs must have run
-            non_each_pending <- purrr::map_lgl(in_pipes, ~{
-              !.x$get_is_each() && .x$get_status_chr() == "Not Run"
-            })
-            if (any(non_each_pending)) next
-
-            # Guard 3: each inputs must have all iterations finished (succeeded
-            # or errored) before collect fires. Use get_n_invocations() so that
-            # failed iterations count toward completion. The collect then
-            # proceeds as long as at least one iteration succeeded.
-            each_not_ready <- purrr::map_lgl(in_pipes, ~{
-              if (!.x$get_is_each()) return(FALSE)
-              scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
-              if (length(scatter_source_name) == 0) return(FALSE)
-              scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
-              expected_n <- length(scatter_source$get_returns())
-              finished_n <- .x$get_n_invocations()
-              finished_n < expected_n
-            })
-            if (any(each_not_ready)) next
-
-            # Skip collect if every iteration of every each input errored
-            each_all_failed <- purrr::map_lgl(in_pipes, ~{
-              .x$get_is_each() && .x$get_n_artifacts() == 0L
-            })
-            if (any(each_all_failed)) next
-
-            # All inputs ready — build the named collect input list.
-            # For each pipes, use get_all_returns() which gives a plain unnamed
-            # list of only the successful iterations' results.
-            # For normal pipes, pass the single return value directly.
-            collect_input <- purrr::map(in_pipes, ~{
-              if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
-            }) |>
-              stats::setNames(in_names)
+            collect_input <- private$resolve_collect_input(pipe, network)
+            if (is.null(collect_input)) next
           }
 
           # Use the collected named list as .input when this is a collect pipe,
@@ -544,19 +531,17 @@ MaestroPipelineList <- R6::R6Class(
           )
         }, quiet = TRUE)
       )
-      
-      purrr::map(run_res, "result") |> 
+
+      purrr::map(run_res, "result") |>
         purrr::list_flatten()
     },
-    
+
     #' @description
-    #' Run any collect pipelines that are ready but were not triggered during a
-    #' parallel (multicore) run. In multicore mode each primary pipeline runs in
-    #' its own worker with a private copy of self, so a collect pipe whose inputs
-    #' span multiple independent branches can never see all inputs as complete
-    #' inside a worker. This method is called on the main process after worker
-    #' results have been synced back via update_pipelines().
-    #' @param ... arguments forwarded to MaestroPipeline$run
+    #' Run any collect pipelines that are ready but were skipped during a
+    #' parallel run. Called on the main process after update_pipelines() has
+    #' synced worker state back. Uses run_pipe internally so that the collect
+    #' pipe's own downstream outputs are recursed into normally.
+    #' @param ... arguments forwarded to MaestroPipeline$run (same dots as run())
     #' @return list of MaestroPipeline objects that were run
     run_pending_collects = function(...) {
       dots <- rlang::list2(...)
@@ -566,67 +551,83 @@ MaestroPipelineList <- R6::R6Class(
       pending <- purrr::keep(collect_pipes, ~.x$get_status_chr() == "Not Run")
       if (length(pending) == 0) return(invisible(list()))
 
-      run_results <- list()
-
-      purrr::walk(pending, ~{
-        pipe <- .x
-        i <- pipe$get_pipe_name()
-
-        in_names <- network$from[network$to == i]
-        in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
-          stats::setNames(in_names)
-
-        # Non-each inputs must have completed
-        non_each_pending <- purrr::map_lgl(in_pipes, ~{
-          !.x$get_is_each() && .x$get_status_chr() == "Not Run"
-        })
-        if (any(non_each_pending)) return()
-
-        # Each inputs must have all iterations finished (succeeded or errored)
-        each_not_ready <- purrr::map_lgl(in_pipes, ~{
-          if (!.x$get_is_each()) return(FALSE)
-          scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
-          if (length(scatter_source_name) == 0) return(FALSE)
-          scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
-          expected_n <- length(scatter_source$get_returns())
-          finished_n <- .x$get_n_invocations()
-          finished_n < expected_n
-        })
-        if (any(each_not_ready)) return()
-
-        # Skip collect if every iteration of every each input errored
-        each_all_failed <- purrr::map_lgl(in_pipes, ~{
-          .x$get_is_each() && .x$get_n_artifacts() == 0L
-        })
-        if (any(each_all_failed)) return()
-
-        collect_input <- purrr::map(in_pipes, ~{
-          if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
-        }) |>
-          stats::setNames(in_names)
-
+      # Reconstruct a run_pipe closure that mirrors the one inside run(),
+      # giving full recursive output traversal for the collect pipe and any
+      # pipelines downstream of it.
+      run_pipe <- function(
+        pipe,
+        .input = NULL,
+        depth = -1,
+        input_run_id = NA_character_,
+        run_results = list(),
+        lineage = character(),
+        iter = NULL,
+        pre_error = NULL,
+        ...
+      ) {
         run_id <- make_id()
+        depth <- min(depth + 1, 6)
+
         tryCatch({
           do.call(
             pipe$run,
             append(
               dots,
               list(
-                .input = collect_input,
+                .input = .input,
                 run_id = run_id,
-                depth = 0L,
-                lineage = character()
+                input_run_id = input_run_id,
+                depth = depth,
+                lineage = lineage,
+                iter = iter,
+                pre_error = pre_error
               )
             )
           )
-        }, error = \(e) NULL)
+        }, error = \(e) return(pipe))
 
-        run_results <<- append(run_results, pipe)
-      })
+        lineage <- append(lineage, pipe$get_pipe_name())
+        run_results <- append(run_results, pipe)
 
-      run_results
+        .input <- pipe$get_returns()
+        out_names <- network$to[network$from == pipe$get_pipe_name()]
+
+        if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(run_results)
+        if (length(out_names) == 0) return(run_results)
+
+        for (i in out_names) {
+          pipe <- self$get_pipe_by_name(i)
+
+          collect_input <- NULL
+          if (pipe$get_is_collect()) {
+            if (pipe$get_status_chr() != "Not Run") next
+            collect_input <- private$resolve_collect_input(pipe, network)
+            if (is.null(collect_input)) next
+          }
+
+          effective_input <- if (!is.null(collect_input)) collect_input else .input
+
+          run_results <- run_pipe(
+            pipe,
+            .input = effective_input,
+            depth = depth,
+            input_run_id = run_id,
+            run_results = run_results,
+            lineage = lineage
+          )
+        }
+
+        run_results
+      }
+
+      purrr::map(pending, ~{
+        collect_input <- private$resolve_collect_input(.x, network)
+        if (is.null(collect_input)) return(list())
+        run_pipe(.x, .input = collect_input, run_results = list(), lineage = character())
+      }) |>
+        purrr::list_flatten()
     },
-
+    
     #' @description
     #' Resets the run time attributes
     reset_pipelines = function() {
@@ -635,6 +636,44 @@ MaestroPipelineList <- R6::R6Class(
   ),
 
   private = list(
-    network = NULL
+    network = NULL,
+
+    # Returns the named .input list for a collect pipe if all its inputs are
+    # ready, or NULL if the collect should not fire yet / at all.
+    resolve_collect_input = function(pipe, network) {
+      i <- pipe$get_pipe_name()
+      in_names <- network$from[network$to == i]
+      in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
+        stats::setNames(in_names)
+
+      # All non-each inputs must have succeeded
+      non_each_not_ready <- purrr::map_lgl(in_pipes, ~{
+        !.x$get_is_each() && .x$get_status_chr() != "Success"
+      })
+      if (any(non_each_not_ready)) return(NULL)
+
+      # Each inputs must have all iterations finished (succeeded or errored)
+      each_not_ready <- purrr::map_lgl(in_pipes, ~{
+        if (!.x$get_is_each()) return(FALSE)
+        scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
+        if (length(scatter_source_name) == 0) return(FALSE)
+        scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
+        expected_n <- length(scatter_source$get_returns())
+        finished_n <- .x$get_n_invocations()
+        finished_n < expected_n
+      })
+      if (any(each_not_ready)) return(NULL)
+
+      # Skip if every iteration of every each input errored
+      each_all_failed <- purrr::map_lgl(in_pipes, ~{
+        .x$get_is_each() && .x$get_n_artifacts() == 0L
+      })
+      if (any(each_all_failed)) return(NULL)
+
+      purrr::map(in_pipes, ~{
+        if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
+      }) |>
+        stats::setNames(in_names)
+    }
   )
 )

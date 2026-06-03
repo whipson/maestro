@@ -6,6 +6,43 @@ test_that("maestroInputs parser: collect() -> is_collect TRUE, correct names", {
   expect_true(parsed$val$is_collect)
 })
 
+test_that("each() with more than one input errors at build_schedule()", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      src_a <- function() 1:3
+
+      #' @maestroFrequency daily
+      src_b <- function() 4:6
+
+      #' @maestroInputs each(src_a, src_b)
+      downstream <- function(.input) .input * 2
+      ",
+      con = "pipelines/bad_each.R"
+    )
+    expect_error(build_schedule(), regexp = "each\\(\\).*exactly one")
+  })
+})
+
+test_that("collect() with fewer than two inputs errors at build_schedule()", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      src_a <- function() 'a'
+
+      #' @maestroInputs collect(src_a)
+      downstream <- function(.input) .input$src_a
+      ",
+      con = "pipelines/bad_collect.R"
+    )
+    expect_error(build_schedule(), regexp = "collect\\(\\).*at least two input pipelines or a single")
+  })
+})
+
 test_that("Simple collect from distinct upstreams", {
 
   withr::with_tempdir({
@@ -71,6 +108,46 @@ test_that("Simple collect from distinct upstreams - single error case", {
 
   status <- get_status(schedule)
   expect_equal(status$invoked, c(TRUE, TRUE, FALSE))
+})
+
+test_that("Collect does not run when a non-each input errored", {
+
+  # This tests gap #2: the non_each_pending guard uses != "Not Run", so an
+  # errored input passes through and collect would run with NULL as that input.
+  # A single primary fans out to two branches (so both are always visited before
+  # collect is evaluated, removing any traversal-order ambiguity).
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      source <- function() {
+        'a'
+      }
+
+      #' @maestroInputs source
+      branch_ok <- function(.input) {
+        paste0(.input, 'b')
+      }
+
+      #' @maestroInputs source
+      branch_err <- function(.input) {
+        stop('deliberate error')
+      }
+
+      #' @maestroInputs collect(branch_ok, branch_err)
+      collector <- function(.input) {
+        paste0(.input$branch_ok, .input$branch_err)
+      }",
+      con = "pipelines/fanin.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(schedule)
+  })
+
+  status <- get_status(schedule)
+  expect_false(status$invoked[status$pipe_name == "collector"])
 })
 
 test_that("Simple collect from distinct upstreams - multi-output from upstream", {
@@ -220,6 +297,17 @@ test_that("Complex collect from distinct upstreams where an upstream is triggere
   expect_length(status$pipe_name[status$pipe_name == "collector"], 1)
 })
 
+
+test_that("Collect pipeline with its own downstream output runs the downstream", {
+
+  schedule <- build_schedule(test_path("test_pipelines_fan_in_chained"))
+  run_schedule(schedule)
+
+  status <- get_status(schedule)
+  expect_true(all(status$invoked))
+  expect_true(all(status$success))
+  expect_equal(get_artifacts(schedule)$ab_upper, "AB")
+})
 
 test_that("Dynamic fan out followed by fan in", {
 

@@ -76,6 +76,23 @@ test_that("Simple collect from distinct upstreams", {
   expect_equal(unlist(unname(get_artifacts(schedule)$ab)), "ab")
 })
 
+test_that("Collect pipeline with its own downstream output runs the downstream (multicore)", {
+
+  # Gap #6: run_pending_collects fires the collect pipe on the main process
+  # after worker sync, but doesn't recurse into the collect pipe's own outputs.
+  # This test will fail until that recursion is implemented.
+  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
+  future::plan(future::multisession(workers = 2))
+
+  schedule <- build_schedule(test_path("test_pipelines_fan_in_chained"))
+  run_schedule(schedule, cores = 2)
+
+  status <- get_status(schedule)
+  expect_true(all(status$invoked))
+  expect_true(all(status$success))
+  expect_equal(get_artifacts(schedule)$ab_upper, "AB")
+})
+
 test_that("Dynamic fan out followed by fan in", {
 
   testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
@@ -89,4 +106,21 @@ test_that("Dynamic fan out followed by fan in", {
   status <- get_status(schedule)
   expect_snapshot(status[, c("invoked", "success")])
   expect_equal(unlist(unname(get_artifacts(schedule)$add)), 18)
+})
+
+test_that("Collect pipeline with its own downstream output runs the downstream", {
+
+  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
+  future::plan(future::multisession(workers = 2))
+
+  # Gap #6: in single-core, run_pipe recurses into a collect pipe's own outputs
+  # after it runs. This test establishes the expected behaviour so the multicore
+  # version (in test-multicore.R) has a clear baseline to match.
+  schedule <- build_schedule(test_path("test_pipelines_fan_in_chained"))
+  run_schedule(schedule, cores = 2L)
+
+  status <- get_status(schedule)
+  expect_true(all(status$invoked))
+  expect_true(all(status$success))
+  expect_equal(get_artifacts(schedule)$ab_upper, "AB")
 })
