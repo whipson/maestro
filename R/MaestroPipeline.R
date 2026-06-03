@@ -609,6 +609,21 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the number of completed artifact runs (iterations) for this pipeline
+    #' @return integer
+    get_n_artifacts = function() {
+      length(private$run_time_artifacts)
+    },
+
+    #' @description
+    #' Get all artifact values as a plain unnamed list, regardless of how many
+    #' iterations have run. Used by collect() to gather each-pipe outputs.
+    #' @return list
+    get_all_returns = function() {
+      unname(as.list(private$run_time_artifacts))
+    },
+
+    #' @description
     #' Get list of errors from the pipeline
     #' @return list
     get_errors = function() {
@@ -643,6 +658,12 @@ MaestroPipeline <- R6::R6Class(
       private$is_each
     },
 
+    #' @description
+    #' Get whether the pipeline uses `collect` for fan in
+    #' @return logical
+    get_is_collect = function() {
+      private$is_collect
+    },
 
     #' @description
     #' Get the .input value to iterate over

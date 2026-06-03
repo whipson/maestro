@@ -36,7 +36,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @param MaestroPipelines list of MaestroPipelines
     #' @return invisible
     add_pipelines = function(MaestroPipelines = NULL) {
-      if ("MaestroPipeline" %in% class(MaestroPipelines)) {
+      if (inherits(MaestroPipelines, "MaestroPipeline")) {
         self$n_pipelines <- self$n_pipelines + 1
         self$MaestroPipelines <- append(self$MaestroPipelines, MaestroPipelines)
       } else {
@@ -54,7 +54,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return invisible
     update_pipelines = function(MaestroPipelines = NULL) {
       pipe_names <- self$get_pipe_names()
-      if ("MaestroPipeline" %in% class(MaestroPipelines)) {
+      if (inherits(MaestroPipelines, "MaestroPipeline")) {
         pipe_to_update_name <- MaestroPipelines$get_pipe_name()
         idx_to_update <- which(pipe_names == pipe_to_update_name)
         self$MaestroPipelines[[idx_to_update]] <- MaestroPipelines
@@ -417,11 +417,63 @@ MaestroPipelineList <- R6::R6Class(
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
 
+          # For collect() fan-in: gather return values from ALL inputting pipes
+          # into a named list keyed by pipe name, then use that as .input.
+          # Guards:
+          #   1. Skip if the collect pipe itself has already been invoked this
+          #      execution — it should fire exactly once regardless of how many
+          #      independent branches eventually reach it.
+          #   2. Skip if any non-each input hasn't run yet.
+          #   3. For each-flagged inputs, skip until all scatter iterations have
+          #      completed. The expected iteration count comes from the length of
+          #      the each pipe's own upstream (the scatter source) return value.
+          collect_input <- NULL
+          if (pipe$get_is_collect()) {
+            if (pipe$get_status_chr() != "Not Run") next
+
+            in_names <- network$from[network$to == i]
+            in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
+              stats::setNames(in_names)
+
+            # Guard 2: non-each inputs must have run
+            non_each_pending <- purrr::map_lgl(in_pipes, ~{
+              !.x$get_is_each() && .x$get_status_chr() == "Not Run"
+            })
+            if (any(non_each_pending)) next
+
+            # Guard 3: each inputs must have all iterations completed.
+            # Compare the count of completed artifact runs on the each pipe
+            # against the length of its scatter source's return value.
+            each_pending <- purrr::map_lgl(in_pipes, ~{
+              if (!.x$get_is_each()) return(FALSE)
+              scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
+              if (length(scatter_source_name) == 0) return(FALSE)
+              scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
+              expected_n <- length(scatter_source$get_returns())
+              actual_n <- .x$get_n_artifacts()
+              actual_n < expected_n
+            })
+            if (any(each_pending)) next
+
+            # All inputs ready — build the named collect input list.
+            # For each pipes, use get_all_returns() which gives a plain unnamed
+            # list of every iteration's result (e.g. list(3, 6, 9)).
+            # For normal pipes, pass the single return value directly.
+            collect_input <- purrr::map(in_pipes, ~{
+              if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
+            }) |>
+              stats::setNames(in_names)
+          }
+
+          # Use the collected named list as .input when this is a collect pipe,
+          # otherwise fall through to the normal .input from the current pipe.
+          effective_input <- if (!is.null(collect_input)) collect_input else .input
+
           if (pipe$get_is_each()) {
             iterate_over <- pipe$get_iterate_over()
             pre_error <- NULL
             scatter_input <- if (!is.null(iterate_over)) {
-              scatter_vec <- eval(str2lang(iterate_over), envir = list(.input = .input))
+              scatter_vec <- eval(str2lang(iterate_over), envir = list(.input = effective_input))
               if (is.null(scatter_vec)) {
                 field <- sub("^\\.input\\$", "", iterate_over)
                 pre_error <- simpleError(
@@ -430,16 +482,17 @@ MaestroPipelineList <- R6::R6Class(
                     "the output of the upstream pipeline."
                   )
                 )
+                # Dummy output that won't get seen
                 list(structure(list("0"), names = "N"))
               } else {
                 field <- sub("^\\.input\\$", "", iterate_over)
                 purrr::imap(scatter_vec, \(item, idx) {
-                  modifyList(.input, stats::setNames(list(item), field))
+                  modifyList(effective_input, stats::setNames(list(item), field))
                 }) |>
                   stats::setNames(as.character(scatter_vec))
               }
             } else {
-              .input
+              effective_input
             }
             purrr::iwalk(scatter_input, ~{
               res <- run_pipe(
@@ -459,7 +512,7 @@ MaestroPipelineList <- R6::R6Class(
           } else {
             run_results <- run_pipe(
               pipe,
-              .input = .input,
+              .input = effective_input,
               depth = depth,
               run_id = run_id,
               input_run_id = run_id,

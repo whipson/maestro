@@ -51,11 +51,12 @@ test_that("Simple fan out with no specified iterator", {
     run_schedule(
       schedule, orch_frequency = "1 day"
     )
-    status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(unlist(unname(get_artifacts(schedule)$multiply)), c(3, 6, 9))
-    expect_equal(length(unique(status$run_id)), length(status$run_id))
   })
+
+  status <- get_status(schedule)
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$multiply)), c(3, 6, 9))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
 test_that("Simple fan out into common downstream", {
@@ -85,11 +86,11 @@ test_that("Simple fan out into common downstream", {
     run_schedule(
       schedule, orch_frequency = "1 day"
     )
-    status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(5, 8, 11))
-    expect_equal(length(unique(status$run_id)), length(status$run_id))
   })
+  status <- get_status(schedule)
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(5, 8, 11))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
 test_that("Simple fan out into common downstream and one error", {
@@ -121,10 +122,10 @@ test_that("Simple fan out into common downstream and one error", {
       schedule, orch_frequency = "1 day"
     )
     status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(8, 11))
-    expect_equal(length(unique(status$run_id)), length(status$run_id))
   })
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$add_2)), c(8, 11))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
 test_that("Use iterateOver to specify a particular iteration variable", {
@@ -154,10 +155,10 @@ test_that("Use iterateOver to specify a particular iteration variable", {
       schedule, orch_frequency = "1 day"
     )
     status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(unlist(unname(get_artifacts(schedule)$make_message)), paste("hello", c("A", "B", "C")))
-    expect_equal(length(unique(status$run_id)), length(status$run_id))
   })
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$make_message)), paste("hello", c("A", "B", "C")))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
 test_that("iterateOver is misspecified name in return", {
@@ -187,7 +188,7 @@ test_that("iterateOver is misspecified name in return", {
       schedule, orch_frequency = "1 day"
     )
     status <- get_status(schedule)
-    expect_snapshot(status[, c("invoked", "success")])
-    expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
   })
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
 })
