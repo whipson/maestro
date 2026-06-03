@@ -450,3 +450,37 @@ test_that("Fan-out collect with iterateOver", {
   expect_snapshot(status[, c("invoked", "success")])
   expect_equal(unlist(unname(get_artifacts(schedule)$capitalize)), paste("HELLO", c("A", "B", "C")))
 })
+
+test_that("Possibly conflicting info from maestroInputs collect and maestroOutputs", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      letter_a <- function() {
+        'a'
+      }
+
+      #' @maestroFrequency daily
+      #' @maestroOutputs ab
+      letter_b <- function() {
+        'b'
+      }
+        
+      #' @maestroInputs collect(letter_a, letter_b)
+      ab <- function(.input) {
+        paste0(.input$letter_a, .input$letter_b)
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule
+    )
+    status <- get_status(schedule)
+  })
+
+  expect_equal(unlist(unname(get_artifacts(schedule)$ab)), "ab")
+})

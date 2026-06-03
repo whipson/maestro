@@ -306,7 +306,6 @@ MaestroPipelineList <- R6::R6Class(
         })
       }
 
-      # Validate each() and collect() arity
       withCallingHandlers({
         purrr::walk(self$MaestroPipelines, ~{
           pipe <- .x
@@ -450,8 +449,6 @@ MaestroPipelineList <- R6::R6Class(
           pipe <- self$get_pipe_by_name(i)
 
           # For collect() fan-in, resolve_collect_input checks all readiness
-          # guards and returns the named .input list, or NULL to skip.
-          # Guard: also skip if already invoked (fires exactly once).
           collect_input <- NULL
           if (pipe$get_is_collect()) {
             if (pipe$get_status_chr() != "Not Run") next
@@ -513,6 +510,33 @@ MaestroPipelineList <- R6::R6Class(
 
               run_results <<- append(run_results, res)
             })
+          } else if (pipe$get_is_collect()) {
+            in_names <- network$from[network$to == pipe$get_pipe_name()]
+            in_pipes  <- purrr::map(in_names, self$get_pipe_by_name)
+            collect_input_run_id <- purrr::map(in_pipes, ~{
+              st <- .x$get_status()
+              st$run_id[!is.na(st$run_id) & st$success]
+            }) |>
+              purrr::list_c() |>
+              paste(collapse = ", ")
+
+            collect_lineage_prefix <- purrr::map(in_pipes, ~{
+              st <- .x$get_status()
+              st$lineage[!is.na(st$lineage) & st$success]
+            }) |>
+              purrr::list_c() |>
+              unique() |>
+              paste(collapse = "&")
+
+            run_results <- run_pipe(
+              pipe,
+              .input = effective_input,
+              depth = depth,
+              input_run_id = collect_input_run_id,
+              run_results = run_results,
+              lineage = collect_lineage_prefix,
+              pre_error = pre_error
+            )
           } else {
             run_results <- run_pipe(
               pipe,
@@ -561,9 +585,6 @@ MaestroPipelineList <- R6::R6Class(
       pending <- purrr::keep(collect_pipes, ~.x$get_status_chr() == "Not Run")
       if (length(pending) == 0) return(invisible(list()))
 
-      # Reconstruct a run_pipe closure that mirrors the one inside run(),
-      # giving full recursive output traversal for the collect pipe and any
-      # pipelines downstream of it.
       run_pipe <- function(
         pipe,
         .input = NULL,
@@ -633,7 +654,28 @@ MaestroPipelineList <- R6::R6Class(
       purrr::map(pending, ~{
         collect_input <- private$resolve_collect_input(.x, network)
         if (is.null(collect_input)) return(list())
-        run_pipe(.x, .input = collect_input, run_results = list(), lineage = character())
+        in_names <- network$from[network$to == .x$get_pipe_name()]
+        in_pipes  <- purrr::map(in_names, self$get_pipe_by_name)
+        collect_input_run_id <- purrr::map(in_pipes, ~{
+          st <- .x$get_status()
+          st$run_id[!is.na(st$run_id) & st$success]
+        }) |>
+          purrr::list_c() |>
+          paste(collapse = ", ")
+        collect_lineage_prefix <- purrr::map(in_pipes, ~{
+          st <- .x$get_status()
+          st$lineage[!is.na(st$lineage) & st$success]
+        }) |>
+          purrr::list_c() |>
+          unique() |>
+          paste(collapse = "&")
+        run_pipe(
+          .x,
+          .input = collect_input,
+          input_run_id = collect_input_run_id,
+          run_results = list(),
+          lineage = collect_lineage_prefix
+        )
       }) |>
         purrr::list_flatten()
     },
@@ -648,8 +690,7 @@ MaestroPipelineList <- R6::R6Class(
   private = list(
     network = NULL,
 
-    # Returns the named .input list for a collect pipe if all its inputs are
-    # ready, or NULL if the collect should not fire yet / at all.
+
     resolve_collect_input = function(pipe, network) {
       i <- pipe$get_pipe_name()
       in_names <- network$from[network$to == i]
@@ -665,14 +706,10 @@ MaestroPipelineList <- R6::R6Class(
       # Each inputs must have all iterations finished (succeeded or errored)
       each_not_ready <- purrr::map_lgl(in_pipes, ~{
         if (!.x$get_is_each()) return(FALSE)
-        # Prefer the count recorded by set_n_expected_iterations() — it is
-        # always correct even when @maestroIterateOver sub-selects a field
-        # (in that case length(scatter_source$get_returns()) gives the number
-        # of fields in the upstream list, not the fan-out width).
+
         expected_n <- .x$get_n_expected_iterations()
         if (is.null(expected_n)) {
-          # Fallback for each() without @maestroIterateOver: derive from the
-          # scatter source's return value (plain vector/list fan-out).
+
           scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
           if (length(scatter_source_name) == 0) return(FALSE)
           scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])

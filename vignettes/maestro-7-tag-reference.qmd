@@ -162,6 +162,8 @@ For a DAG style pipeline, the names of pipelines that input into the pipeline. T
 
 To enable **dynamic fan-out (scatter)**, wrap the input name with `each()`. The downstream pipeline will then be executed once per element of the upstream return value, with each element passed as `.input`.
 
+To enable **fan-in (collect)**, wrap one or more input names with `collect()`. The downstream pipeline receives a named list as `.input`, where each name corresponds to an upstream pipeline and each value is that pipeline's return value. All listed upstream pipelines must have succeeded before the collect pipeline fires. Works with both static multi-source inputs and dynamic fan-out followed by fan-in (`each()` → `collect()`): in the latter case `.input` is a list of all successful iteration results.
+
 Default:
 
 Examples:
@@ -169,6 +171,10 @@ Examples:
 -   `#' @maestroInputs extract verify`
 
 -   `#' @maestroInputs each(get_data)`
+
+-   `#' @maestroInputs collect(letter_a, letter_b)`
+
+-   `#' @maestroInputs collect(multiply)` *(collect all iterations of an `each()` upstream)*
 
 ## maestroIterateOver
 
