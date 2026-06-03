@@ -45,6 +45,7 @@ single script
     \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
     \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
     \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
+    \item \href{#method-MaestroPipelineList-run_pending_collects}{\code{MaestroPipelineList$run_pending_collects()}}
     \item \href{#method-MaestroPipelineList-reset_pipelines}{\code{MaestroPipelineList$reset_pipelines()}}
     \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
   }
@@ -448,6 +449,31 @@ single script
   }
   \subsection{Returns}{
     invisible
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-run_pending_collects"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-run_pending_collects}{}}}
+\subsection{\code{MaestroPipelineList$run_pending_collects()}}{
+  Run any collect pipelines that are ready but were skipped during a
+parallel run. Called on the main process after update_pipelines() has
+synced worker state back. Uses run_pipe internally so that the collect
+pipe's own downstream outputs are recursed into normally.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipelineList$run_pending_collects(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{arguments forwarded to MaestroPipeline$run (same dots as run())}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    list of MaestroPipeline objects that were run
   }
 }
 
