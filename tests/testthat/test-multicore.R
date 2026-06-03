@@ -81,33 +81,11 @@ test_that("Dynamic fan out followed by fan in", {
   testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
   future::plan(future::multisession(workers = 2))
 
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroFrequency daily
-      numbers <- function() {
-        1:3
-      }
-
-      #' @maestroInputs each(numbers)
-      multiply <- function(.input) {
-        .input * 3
-      }
-      
-      #' @maestroInputs collect(multiply)
-      add <- function(.input) {
-        sum(unlist(.input))
-      }
-      ",
-      con = "pipelines/fanout-fanin.R"
-    )
-
-    schedule <- build_schedule()
-    run_schedule(
-      schedule, orch_frequency = "1 day"
-    )
-  })
+  schedule <- build_schedule(test_path("test_pipelines_fan_out_collect"))
+  run_schedule(
+    schedule,
+    cores = 2L
+  )
   status <- get_status(schedule)
   expect_snapshot(status[, c("invoked", "success")])
   expect_equal(unlist(unname(get_artifacts(schedule)$add)), 18)

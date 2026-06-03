@@ -103,7 +103,14 @@ MaestroSchedule <- R6::R6Class(
 
         tictoc::tic(quiet = quiet)
         pipes_that_ran <- do.call(pipes_to_run$run, dots)
-        if (is_multicore) self$PipelineList$update_pipelines(pipes_that_ran)
+        if (is_multicore) {
+          self$PipelineList$update_pipelines(pipes_that_ran)
+          # Collect pipelines whose inputs span independent parallel branches
+          # can't be triggered inside a worker (each worker only sees its own
+          # branch's state). Run them now on the main process with fully-synced
+          # pipeline state.
+          do.call(self$PipelineList$run_pending_collects, dots)
+        }
         elapsed <- tictoc::toc(quiet = TRUE)
         elapsed_ms <- elapsed$toc - elapsed$tic
 

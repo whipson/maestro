@@ -543,6 +543,78 @@ MaestroPipelineList <- R6::R6Class(
     },
     
     #' @description
+    #' Run any collect pipelines that are ready but were not triggered during a
+    #' parallel (multicore) run. In multicore mode each primary pipeline runs in
+    #' its own worker with a private copy of self, so a collect pipe whose inputs
+    #' span multiple independent branches can never see all inputs as complete
+    #' inside a worker. This method is called on the main process after worker
+    #' results have been synced back via update_pipelines().
+    #' @param ... arguments forwarded to MaestroPipeline$run
+    #' @return list of MaestroPipeline objects that were run
+    run_pending_collects = function(...) {
+      dots <- rlang::list2(...)
+      network <- self$get_network()
+
+      collect_pipes <- purrr::keep(self$MaestroPipelines, ~.x$get_is_collect())
+      pending <- purrr::keep(collect_pipes, ~.x$get_status_chr() == "Not Run")
+      if (length(pending) == 0) return(invisible(list()))
+
+      run_results <- list()
+
+      purrr::walk(pending, ~{
+        pipe <- .x
+        i <- pipe$get_pipe_name()
+
+        in_names <- network$from[network$to == i]
+        in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
+          stats::setNames(in_names)
+
+        # Non-each inputs must have completed
+        non_each_pending <- purrr::map_lgl(in_pipes, ~{
+          !.x$get_is_each() && .x$get_status_chr() == "Not Run"
+        })
+        if (any(non_each_pending)) return()
+
+        # Each inputs must have all iterations completed
+        each_pending <- purrr::map_lgl(in_pipes, ~{
+          if (!.x$get_is_each()) return(FALSE)
+          scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
+          if (length(scatter_source_name) == 0) return(FALSE)
+          scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
+          expected_n <- length(scatter_source$get_returns())
+          actual_n <- .x$get_n_artifacts()
+          actual_n < expected_n
+        })
+        if (any(each_pending)) return()
+
+        collect_input <- purrr::map(in_pipes, ~{
+          if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
+        }) |>
+          stats::setNames(in_names)
+
+        run_id <- make_id()
+        tryCatch({
+          do.call(
+            pipe$run,
+            append(
+              dots,
+              list(
+                .input = collect_input,
+                run_id = run_id,
+                depth = 0L,
+                lineage = character()
+              )
+            )
+          )
+        }, error = \(e) NULL)
+
+        run_results <<- append(run_results, pipe)
+      })
+
+      run_results
+    },
+
+    #' @description
     #' Resets the run time attributes
     reset_pipelines = function() {
       purrr::walk(self$MaestroPipelines, ~.x$reset_run_time_attributes())
