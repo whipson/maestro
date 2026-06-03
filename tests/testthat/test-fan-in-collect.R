@@ -323,6 +323,5 @@ test_that("Dynamic fan out followed by fan in - all error case", {
     )
   })
   status <- get_status(schedule)
-  # multiply runs 3 times (1 error on input=2, 2 successes); add proceeds with the successful results
   expect_false(status$invoked[status$pipe_name == "add"])
 })
