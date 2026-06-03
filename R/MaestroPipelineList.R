@@ -480,10 +480,19 @@ MaestroPipelineList <- R6::R6Class(
                 list(structure(list("0"), names = "N"))
               } else {
                 field <- sub("^\\.input\\$", "", iterate_over)
+                iter_names <- if (!is.null(names(scatter_vec))) {
+                  names(scatter_vec)
+                } else if (is.atomic(scatter_vec) && all(lengths(scatter_vec) == 1)) {
+                  as.character(scatter_vec)
+                } else {
+                  as.character(seq_along(scatter_vec))
+                }
                 purrr::imap(scatter_vec, \(item, idx) {
-                  modifyList(effective_input, stats::setNames(list(item), field))
+                  inp <- effective_input
+                  inp[[field]] <- item
+                  inp
                 }) |>
-                  stats::setNames(as.character(scatter_vec))
+                  stats::setNames(iter_names)
               }
             } else {
               effective_input

@@ -226,7 +226,8 @@ MaestroPipeline <- R6::R6Class(
         prepend <- if (depth == 0) {
           ""
         } else {
-          cli::format_inline(rep("  ", times = depth - 1), "|-")
+          marker <- if (private$is_collect) "|-+" else "|-"
+          cli::format_inline(rep("  ", times = depth - 1), marker)
         }
         iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""
         if (!quiet) {
@@ -275,7 +276,8 @@ MaestroPipeline <- R6::R6Class(
       prepend <- if (depth == 0) {
         ""
       } else {
-        cli::format_inline(rep("  ", times = depth - 1), "|-")
+        marker <- if (private$is_collect) "|-+" else "|-"
+        cli::format_inline(rep("  ", times = depth - 1), marker)
       }
 
       iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""

@@ -161,6 +161,76 @@ test_that("Use iterateOver to specify a particular iteration variable", {
   expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
+test_that("Fan out where upstream returns a list of S3 objects (lm)", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      fit_models <- function() {
+        list(
+          lm(mpg ~ wt, data = mtcars),
+          lm(mpg ~ hp, data = mtcars),
+          lm(mpg ~ cyl, data = mtcars)
+        )
+      }
+
+      #' @maestroInputs each(fit_models)
+      extract_r2 <- function(.input) {
+        summary(.input)$r.squared
+      }",
+      con = "pipelines/fanout_lm.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(schedule, orch_frequency = "1 day")
+    status <- get_status(schedule)
+  })
+
+  r2_values <- unlist(unname(get_artifacts(schedule)$extract_r2))
+  expect_length(r2_values, 3)
+  expect_true(all(r2_values > 0 & r2_values <= 1))
+  expect_snapshot(status[, c("invoked", "success")])
+})
+
+test_that("Fan out with iterateOver where the field contains S3 objects (lm)", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      fit_models <- function() {
+        list(
+          model = list(
+            lm(mpg ~ wt, data = mtcars),
+            lm(mpg ~ hp, data = mtcars),
+            lm(mpg ~ cyl, data = mtcars)
+          ),
+          label = c('wt', 'hp', 'cyl')
+        )
+      }
+
+      #' @maestroInputs each(fit_models)
+      #' @maestroIterateOver .input$model
+      extract_r2 <- function(.input) {
+        summary(.input$model)$r.squared
+      }",
+      con = "pipelines/fanout_lm.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(schedule, orch_frequency = "1 day")
+    status <- get_status(schedule)
+  })
+
+  r2_values <- unlist(unname(get_artifacts(schedule)$extract_r2))
+  expect_length(r2_values, 3)
+  expect_true(all(r2_values > 0 & r2_values <= 1))
+  expect_snapshot(status[, c("invoked", "success")])
+})
+
 test_that("iterateOver is misspecified name in return", {
 
   withr::with_tempdir({

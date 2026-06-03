@@ -55,6 +55,32 @@
       3 TRUE    TRUE   
       4 TRUE    TRUE   
 
+# Fan out where upstream returns a list of S3 objects (lm)
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+
+# Fan out with iterateOver where the field contains S3 objects (lm)
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+
 # iterateOver is misspecified name in return
 
     Code
