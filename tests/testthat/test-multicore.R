@@ -113,9 +113,6 @@ test_that("Collect pipeline with its own downstream output runs the downstream",
   testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
   future::plan(future::multisession(workers = 2))
 
-  # Gap #6: in single-core, run_pipe recurses into a collect pipe's own outputs
-  # after it runs. This test establishes the expected behaviour so the multicore
-  # version (in test-multicore.R) has a clear baseline to match.
   schedule <- build_schedule(test_path("test_pipelines_fan_in_chained"))
   run_schedule(schedule, cores = 2L)
 
