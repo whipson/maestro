@@ -178,15 +178,19 @@ Examples:
 
 ## maestroIterateOver
 
-For use with `each()` in `@maestroInputs`. When the upstream pipeline returns a named list, specifies which field of the list to scatter over. The full list remains accessible as `.input` inside each branch, so other fields can still be used.
+For use with `each()` in `@maestroInputs`. Specifies one or more `.input$field` expressions (space-separated) to scatter over. Each expression is evaluated against the upstream return value and the resulting vectors are zipped together `pmap`-style: each iteration receives `.input` with all specified fields replaced by their i-th element.
 
-The value must follow the pattern `.input$field`.
+All vectors must be the same length, unless a vector has length 1, in which case it is recycled across all iterations. The full list remains accessible as `.input` inside each branch.
 
 Default:
 
 Examples:
 
 -   `#' @maestroIterateOver .input$letter`
+
+-   `#' @maestroIterateOver .input$ids .input$labels`
+
+-   `#' @maestroIterateOver .input$model .input$label .input$threshold`
 
 ------------------------------------------------------------------------
 

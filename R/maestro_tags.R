@@ -185,6 +185,40 @@
 #' - `#' @maestroSkip`
 #'
 #'
+#' # maestroRunIf
+#'
+#' An R expression that is evaluated at run time to determine whether the pipeline
+#' should execute. The expression must return a single `TRUE` or `FALSE`. If the
+#' expression returns `FALSE`, the pipeline is silently skipped for that run. Resources
+#' passed via `run_schedule(..., resources = list(...))` are available inside the
+#' expression, as is `.input` for DAG pipelines.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroRunIf Sys.getenv("RUN_PIPELINE") == "true"`
+#' - `#' @maestroRunIf lubridate::wday(lubridate::now()) == 2`
+#' - `#' @maestroRunIf !is.null(.input)`
+#'
+#'
+#' # maestroIterateOver
+#'
+#' For fan-out pipelines that use `each()` in `@maestroInputs`, specifies one or
+#' more R expressions (referencing `.input` fields) that define the vectors to
+#' scatter over. Multiple expressions are separated by spaces and zipped together
+#' `pmap`-style: each iteration receives `.input` with all specified fields
+#' replaced by their i-th element. Vectors must all have the same length, unless
+#' a vector has length 1, in which case it is recycled across all iterations.
+#' Requires `@maestroInputs` to use `each()`.
+#'
+#' Default:
+#'
+#' Examples:
+#' - `#' @maestroIterateOver .input$items`
+#' - `#' @maestroIterateOver .input$ids .input$labels`
+#' - `#' @maestroIterateOver .input$model .input$label .input$threshold`
+#'
+#'
 #' # maestroPriority
 #'
 #' Determines the order in which pipelines that run at the same scheduled instance

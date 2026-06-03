@@ -480,10 +480,17 @@ roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
 
 #' @exportS3Method
 roxy_tag_parse.roxy_tag_maestroIterateOver <- function(x) {
-  # Store raw string verbatim — consistent with @maestroRunIf.
-  # Structural parsing into named key=expr_string pairs is done at
-  # build_schedule_entry() time; expression validation surfaces at run time.
-  x$val <- x$raw
+  # Split on whitespace to support pmap-style multiple iterators.
+  # Each element is an R expression string referencing `.input`.
+  # A single expression is stored as a length-1 character vector,
+  # keeping this fully backward-compatible with the old single-iterator form.
+  parts <- strsplit(trimws(x$raw), "\\s+")[[1]]
+  parts <- parts[nzchar(parts)]
+  if (length(parts) == 0) {
+    roxygen2::roxy_tag_warning(x, "Empty @maestroIterateOver tag.")
+    return(x)
+  }
+  x$val <- parts
   x
 }
 

@@ -92,3 +92,16 @@
       1 TRUE    TRUE   
       2 TRUE    FALSE  
 
+# Use iterateOver with multiple iterators
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 4 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 TRUE    TRUE   
+      3 TRUE    TRUE   
+      4 TRUE    TRUE   
+

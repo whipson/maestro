@@ -464,32 +464,54 @@ MaestroPipelineList <- R6::R6Class(
             iterate_over <- pipe$get_iterate_over()
             pre_error <- NULL
             scatter_input <- if (!is.null(iterate_over)) {
-              scatter_vec <- eval(str2lang(iterate_over), envir = list(.input = effective_input))
-              if (is.null(scatter_vec)) {
-                field <- sub("^\\.input\\$", "", iterate_over)
+              scatter_vec <- purrr::map(
+                stats::setNames(iterate_over, iterate_over),
+                \(expr) eval(str2lang(expr), envir = list(.input = effective_input))
+              )
+              # Check for any NULL results (field not found)
+              null_fields <- names(scatter_vec)[purrr::map_lgl(scatter_vec, is.null)]
+              if (length(null_fields) > 0) {
+                bad_fields <- sub("^\\.input\\$", "", null_fields)
                 pre_error <- simpleError(
                   paste0(
-                    "Field '", field, "' specified in @maestroIterateOver not found in ",
+                    "Field(s) '", paste(bad_fields, collapse = "', '"),
+                    "' specified in @maestroIterateOver not found in ",
                     "the output of the upstream pipeline."
                   )
                 )
                 # Dummy output that won't get seen
                 list(structure(list("0"), names = "N"))
               } else {
-                field <- sub("^\\.input\\$", "", iterate_over)
-                iter_names <- if (!is.null(names(scatter_vec))) {
-                  names(scatter_vec)
-                } else if (is.atomic(scatter_vec) && all(lengths(scatter_vec) == 1)) {
-                  as.character(scatter_vec)
+                fields <- sub("^\\.input\\$", "", names(scatter_vec))
+
+                # Validate lengths: all must be length 1 or the same length
+                vec_lengths <- lengths(scatter_vec)
+                non_scalar_lengths <- unique(vec_lengths[vec_lengths > 1])
+                if (length(non_scalar_lengths) > 1) {
+                  pre_error <- simpleError(
+                    paste0(
+                      "@maestroIterateOver vectors must all be the same length or length 1. ",
+                      "Got lengths: ",
+                      paste(paste0(fields, "=", vec_lengths), collapse = ", ")
+                    )
+                  )
+                  # Dummy output that won't get seen
+                  list(structure(list("0"), names = "N"))
                 } else {
-                  as.character(seq_along(scatter_vec))
+                  n_iter <- max(vec_lengths)
+                  # Recycle length-1 vectors
+                  scatter_vec <- purrr::map(scatter_vec, \(v) if (length(v) == 1) rep(v, n_iter) else v)
+
+                  iter_names <- as.character(seq_len(n_iter))
+                  purrr::map(seq_len(n_iter), \(i) {
+                    inp <- effective_input
+                    for (f in seq_along(fields)) {
+                      inp[[fields[[f]]]] <- scatter_vec[[f]][[i]]
+                    }
+                    inp
+                  }) |>
+                    stats::setNames(iter_names)
                 }
-                purrr::imap(scatter_vec, \(item, idx) {
-                  inp <- effective_input
-                  inp[[field]] <- item
-                  inp
-                }) |>
-                  stats::setNames(iter_names)
               }
             } else {
               effective_input

@@ -253,7 +253,21 @@ build_schedule_entry <- function(script_path) {
             call = NULL
           )
         }
-        .y$iterate_over
+        exprs <- .y$iterate_over  # character vector, one element per iterator
+        # Validate that every element is parseable R
+        bad <- purrr::keep(exprs, \(e) {
+          inherits(tryCatch(str2lang(e), error = \(err) err), "error")
+        })
+        if (length(bad) > 0) {
+          cli::cli_abort(
+            c(
+              "`@maestroIterateOver` contains invalid R expression{?s}: {.code {bad}}",
+              "i" = "Issue is with pipeline named {.x}."
+            ),
+            call = NULL
+          )
+        }
+        exprs
       } else {
         NULL
       }

@@ -22,11 +22,24 @@ test_that("maestroInputs parser: each() with multiple names", {
   expect_true(parsed$val$is_each)
 })
 
-test_that("maestroIterateOver parser stores raw string verbatim", {
-  raw <- "id = .input$ids lbl = .input$labels"
-  tag <- roxygen2::roxy_tag("maestroIterateOver", raw, NULL)
+test_that("maestroIterateOver parser: single expression -> length-1 character vector", {
+  tag <- roxygen2::roxy_tag("maestroIterateOver", ".input$ids", NULL)
   parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
-  expect_equal(parsed$val, raw)
+  expect_equal(parsed$val, ".input$ids")
+  expect_length(parsed$val, 1L)
+})
+
+test_that("maestroIterateOver parser: space-separated expressions -> character vector", {
+  tag <- roxygen2::roxy_tag("maestroIterateOver", ".input$ids .input$labels", NULL)
+  parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
+  expect_equal(parsed$val, c(".input$ids", ".input$labels"))
+  expect_length(parsed$val, 2L)
+})
+
+test_that("maestroIterateOver parser: extra whitespace is ignored", {
+  tag <- roxygen2::roxy_tag("maestroIterateOver", "  .input$x   .input$y  ", NULL)
+  parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
+  expect_equal(parsed$val, c(".input$x", ".input$y"))
 })
 
 test_that("Simple fan out with no specified iterator", {
@@ -260,5 +273,70 @@ test_that("iterateOver is misspecified name in return", {
     status <- get_status(schedule)
   })
   expect_snapshot(status[, c("invoked", "success")])
-  expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
+  expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field(s) 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
+})
+
+test_that("iterateOver with unequal length vectors errors", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      get_data <- function() {
+        list(
+          ids = 1:3,
+          labels = c('a', 'b')
+        )
+      }
+
+      #' @maestroInputs each(get_data)
+      #' @maestroIterateOver .input$ids .input$labels
+      process <- function(.input) {
+        paste(.input$ids, .input$labels)
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(schedule, orch_frequency = "1 day")
+    status <- get_status(schedule)
+  })
+  expect_match(
+    last_run_errors()$process,
+    regexp = "same length or length 1"
+  )
+})
+
+test_that("Use iterateOver with multiple iterators", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      get_letters <- function() {
+        list(
+          letter = letters[1:3],
+          greeting = c('hello', 'cheers', 'hi')
+        )
+      }
+
+      #' @maestroInputs each(get_letters)
+      #' @maestroIterateOver .input$letter .input$greeting
+      make_message <- function(.input) {
+        paste(.input$greeting, toupper(.input$letter))
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule, orch_frequency = "1 day"
+    )
+    status <- get_status(schedule)
+  })
+  expect_snapshot(status[, c("invoked", "success")])
+  expect_equal(unlist(unname(get_artifacts(schedule)$make_message)), c("hello A", "cheers B", "hi C"))
+  expect_equal(length(unique(status$run_id)), length(status$run_id))
 })

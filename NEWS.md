@@ -10,7 +10,7 @@
 
 - Dynamic fan-out (scatter): a downstream pipeline declared with `@maestroInputs each(upstream)` now executes once per element of the upstream return value. Note that `each()` is not an actual maestro function, but syntatic sugar.
 
-- New `@maestroIterateOver` tag for use with `each()`. When the upstream pipeline returns a named list, `@maestroIterateOver .input$field` selects which field to scatter over while keeping the full list available as `.input` inside each branch (e.g. `.input$other_field` remains accessible).
+- New `@maestroIterateOver` tag for use with `each()`. When the upstream pipeline returns a named list, `@maestroIterateOver .input$field` selects which field to scatter over while keeping the full list available as `.input` inside each branch (e.g. `.input$other_field` remains accessible). Multiple space-separated expressions (e.g. `@maestroIterateOver .input$ids .input$labels`) zip across several fields simultaneously, similar to `purrr::pmap()`. All vectors must be the same length or length 1 (scalars are recycled).
 
 - Fan-in (collect): a downstream pipeline declared with `@maestroInputs collect(upstream1, upstream2, ...)` now gathers the return values of all listed upstream pipelines into a single named list passed as `.input`. Works with both static multi-source fan-in and dynamic fan-out followed by fan-in (each → collect). In `get_status()`, `input_run_id` shows comma-separated IDs of all contributing upstream runs and `lineage` joins distinct upstream paths with `&` (e.g. `letter_a&letter_b->ab`). A future maestro release may involve restructuring the output of `get_status()` to better reflect many-to-one DAG relationships. Note that `collect()` is not an actual maestro function, but syntatic sugar.
 
