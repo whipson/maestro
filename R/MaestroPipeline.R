@@ -616,6 +616,15 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the number of times this pipeline was invoked (successes + errors).
+    #' For each() pipelines this equals the number of iterations that have
+    #' finished, regardless of outcome.
+    #' @return integer
+    get_n_invocations = function() {
+      sum(private$run_time_attributes$invoked, na.rm = TRUE)
+    },
+
+    #' @description
     #' Get all artifact values as a plain unnamed list, regardless of how many
     #' iterations have run. Used by collect() to gather each-pipe outputs.
     #' @return list

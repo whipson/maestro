@@ -255,9 +255,7 @@ test_that("Dynamic fan out followed by fan in", {
   expect_equal(unlist(unname(get_artifacts(schedule)$add)), 18)
 })
 
-test_that("Dynamic fan out followed by fan in - error case", {
-
-  testthat::skip()
+test_that("Dynamic fan out followed by fan in - partial error case", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -288,6 +286,43 @@ test_that("Dynamic fan out followed by fan in - error case", {
     )
   })
   status <- get_status(schedule)
-  expect_snapshot(status[, c("invoked", "success")])
-  expect_equal(unlist(unname(get_artifacts(schedule)$add)), 18)
+  # multiply runs 3 times (1 error on input=2, 2 successes); add proceeds with the successful results
+  expect_true(status$invoked[status$pipe_name == "add"])
+  expect_true(status$success[status$pipe_name == "add"])
+  # 1*3 + 3*3 = 3 + 9 = 12
+  expect_equal(unlist(unname(get_artifacts(schedule)$add)), 12)
+})
+
+test_that("Dynamic fan out followed by fan in - all error case", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      numbers <- function() {
+        1:3
+      }
+
+      #' @maestroInputs each(numbers)
+      multiply <- function(.input) {
+        stop()
+      }
+      
+      #' @maestroInputs collect(multiply)
+      add <- function(.input) {
+        sum(unlist(.input))
+      }
+      ",
+      con = "pipelines/fanout-fanin.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule, orch_frequency = "1 day"
+    )
+  })
+  status <- get_status(schedule)
+  # multiply runs 3 times (1 error on input=2, 2 successes); add proceeds with the successful results
+  expect_false(status$invoked[status$pipe_name == "add"])
 })

@@ -441,23 +441,30 @@ MaestroPipelineList <- R6::R6Class(
             })
             if (any(non_each_pending)) next
 
-            # Guard 3: each inputs must have all iterations completed.
-            # Compare the count of completed artifact runs on the each pipe
-            # against the length of its scatter source's return value.
-            each_pending <- purrr::map_lgl(in_pipes, ~{
+            # Guard 3: each inputs must have all iterations finished (succeeded
+            # or errored) before collect fires. Use get_n_invocations() so that
+            # failed iterations count toward completion. The collect then
+            # proceeds as long as at least one iteration succeeded.
+            each_not_ready <- purrr::map_lgl(in_pipes, ~{
               if (!.x$get_is_each()) return(FALSE)
               scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
               if (length(scatter_source_name) == 0) return(FALSE)
               scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
               expected_n <- length(scatter_source$get_returns())
-              actual_n <- .x$get_n_artifacts()
-              actual_n < expected_n
+              finished_n <- .x$get_n_invocations()
+              finished_n < expected_n
             })
-            if (any(each_pending)) next
+            if (any(each_not_ready)) next
+
+            # Skip collect if every iteration of every each input errored
+            each_all_failed <- purrr::map_lgl(in_pipes, ~{
+              .x$get_is_each() && .x$get_n_artifacts() == 0L
+            })
+            if (any(each_all_failed)) next
 
             # All inputs ready — build the named collect input list.
             # For each pipes, use get_all_returns() which gives a plain unnamed
-            # list of every iteration's result (e.g. list(3, 6, 9)).
+            # list of only the successful iterations' results.
             # For normal pipes, pass the single return value directly.
             collect_input <- purrr::map(in_pipes, ~{
               if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
@@ -575,17 +582,23 @@ MaestroPipelineList <- R6::R6Class(
         })
         if (any(non_each_pending)) return()
 
-        # Each inputs must have all iterations completed
-        each_pending <- purrr::map_lgl(in_pipes, ~{
+        # Each inputs must have all iterations finished (succeeded or errored)
+        each_not_ready <- purrr::map_lgl(in_pipes, ~{
           if (!.x$get_is_each()) return(FALSE)
           scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
           if (length(scatter_source_name) == 0) return(FALSE)
           scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
           expected_n <- length(scatter_source$get_returns())
-          actual_n <- .x$get_n_artifacts()
-          actual_n < expected_n
+          finished_n <- .x$get_n_invocations()
+          finished_n < expected_n
         })
-        if (any(each_pending)) return()
+        if (any(each_not_ready)) return()
+
+        # Skip collect if every iteration of every each input errored
+        each_all_failed <- purrr::map_lgl(in_pipes, ~{
+          .x$get_is_each() && .x$get_n_artifacts() == 0L
+        })
+        if (any(each_all_failed)) return()
 
         collect_input <- purrr::map(in_pipes, ~{
           if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
