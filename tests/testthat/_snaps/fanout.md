@@ -42,7 +42,7 @@
       5 TRUE    TRUE   
       6 TRUE    TRUE   
 
-# Use iterateOver to specify a particular iteration variable
+# Use maestroMap to specify a particular iteration variable
 
     Code
       status[, c("invoked", "success")]
@@ -92,7 +92,7 @@
       1 TRUE    TRUE   
       2 TRUE    FALSE  
 
-# Use iterateOver with multiple iterators
+# Use maestroMap with multiple iterators
 
     Code
       status[, c("invoked", "success")]

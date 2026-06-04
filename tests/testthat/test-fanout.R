@@ -100,7 +100,7 @@ test_that("Simple fan out into common downstream and one error", {
   expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
 
-test_that("Use iterateOver to specify a particular iteration variable", {
+test_that("Use maestroMap to specify a particular iteration variable", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -236,7 +236,7 @@ test_that("map is misspecified name in return", {
   expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field(s) 'asd' specified in @maestroMap not found in the output of the upstream pipeline.")
 })
 
-test_that("iterateOver with unequal length vectors errors", {
+test_that("maestroMap with unequal length vectors errors", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -268,7 +268,7 @@ test_that("iterateOver with unequal length vectors errors", {
   )
 })
 
-test_that("Use iterateOver with multiple iterators", {
+test_that("Use maestroMap with multiple iterators", {
 
   withr::with_tempdir({
     dir.create("pipelines")
