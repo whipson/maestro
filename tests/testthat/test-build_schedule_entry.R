@@ -203,7 +203,7 @@ test_that("Minutely frequency can be combined with maestroHours and other specif
   })
 })
 
-test_that("maestroIterateOver with multiple space-separated expressions is stored as character vector", {
+test_that("maestroMap with multiple space-separated expressions is stored as character vector", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -214,8 +214,8 @@ test_that("maestroIterateOver with multiple space-separated expressions is store
         "  list(ids = 1:3, labels = c('a', 'b', 'c'))",
         "}",
         "",
-        "#' @maestroInputs each(upstream)",
-        "#' @maestroIterateOver .input$ids .input$labels",
+        "#' @maestroInputs upstream",
+        "#' @maestroMap .input$ids .input$labels",
         "downstream <- function(.input) {",
         "  paste(.input$ids, .input$labels)",
         "}"
@@ -224,13 +224,13 @@ test_that("maestroIterateOver with multiple space-separated expressions is store
     )
 
     entry <- build_schedule_entry("pipelines/multi_iter.R")
-    iterate_over <- entry$MaestroPipelines[[2]]$get_iterate_over()
-    expect_equal(iterate_over, c(".input$ids", ".input$labels"))
-    expect_length(iterate_over, 2L)
+    map <- entry$MaestroPipelines[[2]]$get_map()
+    expect_equal(map, c(".input$ids", ".input$labels"))
+    expect_length(map, 2L)
   })
 })
 
-test_that("maestroIterateOver with invalid R expression errors at build_schedule_entry", {
+test_that("maestroMap with invalid R expression errors at build_schedule_entry", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -241,8 +241,8 @@ test_that("maestroIterateOver with invalid R expression errors at build_schedule
         "#' @maestroFrequency daily",
         "upstream <- function() 1:3",
         "",
-        "#' @maestroInputs each(upstream)",
-        "#' @maestroIterateOver .input$ids 1+",
+        "#' @maestroInputs upstream",
+        "#' @maestroMap .input$ids 1+",
         "downstream <- function(.input) .input"
       ),
       con = "pipelines/bad_iter.R"
@@ -251,29 +251,6 @@ test_that("maestroIterateOver with invalid R expression errors at build_schedule
     expect_error(
       build_schedule_entry("pipelines/bad_iter.R"),
       regexp = "invalid R expression"
-    )
-  })
-})
-
-test_that("maestroIterateOver without each() errors at build_schedule_entry", {
-
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroFrequency daily
-      upstream <- function() list(ids = 1:3)
-
-      #' @maestroInputs upstream
-      #' @maestroIterateOver .input$ids
-      downstream <- function(.input) .input
-      ",
-      con = "pipelines/no_each.R"
-    )
-
-    expect_error(
-      build_schedule_entry("pipelines/no_each.R"),
-      regexp = "requires.*each"
     )
   })
 })

@@ -309,25 +309,15 @@ MaestroPipelineList <- R6::R6Class(
       withCallingHandlers({
         purrr::walk(self$MaestroPipelines, ~{
           pipe <- .x
-          if (pipe$get_is_each()) {
-            n <- length(pipe$get_inputs())
-            if (n != 1L) {
-              cli::cli_abort(
-                "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code each()} but references {n} input{?s}. {.code each()} requires exactly one input pipeline.",
-                call = NULL
-              )
-            }
-          }
           if (pipe$get_is_collect()) {
             n <- length(pipe$get_inputs())
             if (n < 2L) {
-              # A single each() upstream is valid (dynamic fan-out → fan-in)
-              single_is_each <- n == 1L &&
+              single_is_iter <- n == 1L &&
                 pipe$get_inputs()[[1]] %in% pipe_names &&
-                self$get_pipe_by_name(pipe$get_inputs()[[1]])$get_is_each()
-              if (!single_is_each) {
+                self$get_pipe_by_name(pipe$get_inputs()[[1]])$get_is_map()
+              if (!single_is_iter) {
                 cli::cli_abort(
-                  "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code collect()} but references {n} input{?s}. {.code collect()} requires at least two input pipelines or a single {.code each()} pipeline.",
+                  "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code collect()} but references {n} input{?s}. {.code collect()} requires at least two input pipelines or a single {.code maestroMap} pipeline.",
                   call = NULL
                 )
               }
@@ -460,14 +450,34 @@ MaestroPipelineList <- R6::R6Class(
           # otherwise fall through to the normal .input from the current pipe.
           effective_input <- if (!is.null(collect_input)) collect_input else .input
 
-          if (pipe$get_is_each()) {
-            iterate_over <- pipe$get_iterate_over()
+          if (pipe$get_is_map()) {
             pre_error <- NULL
-            scatter_input <- if (!is.null(iterate_over)) {
-              scatter_vec <- purrr::map(
-                stats::setNames(iterate_over, iterate_over),
-                \(expr) eval(str2lang(expr), envir = list(.input = effective_input))
-              )
+            map_over <- pipe$get_map()
+            scatter_vec <- purrr::map(
+              stats::setNames(map_over, map_over),
+              \(expr) eval(str2lang(expr), envir = list(.input = effective_input))
+            )
+            fields <- sub("^\\.input\\$", "", names(scatter_vec))
+
+            if (length(map_over) == 1 && trimws(map_over) == ".input") {
+              scatter_vec <- scatter_vec[[1]]
+              iter_names <- as.character(seq_len(length(scatter_vec)))
+              scatter_input <- purrr::map(scatter_vec, ~.x) |> 
+                stats::setNames(iter_names)
+
+            } else {
+              vec_lengths <- lengths(scatter_vec)
+              non_scalar_lengths <- unique(vec_lengths[vec_lengths > 1])
+              if (length(non_scalar_lengths) > 1) {
+                pre_error <- simpleError(
+                  paste0(
+                    "@maestroMap vectors must all be the same length or length 1. ",
+                    "Got lengths: ",
+                    paste(paste0(fields, "=", vec_lengths), collapse = ", ")
+                  )
+                )
+              }
+
               # Check for any NULL results (field not found)
               null_fields <- names(scatter_vec)[purrr::map_lgl(scatter_vec, is.null)]
               if (length(null_fields) > 0) {
@@ -475,47 +485,31 @@ MaestroPipelineList <- R6::R6Class(
                 pre_error <- simpleError(
                   paste0(
                     "Field(s) '", paste(bad_fields, collapse = "', '"),
-                    "' specified in @maestroIterateOver not found in ",
+                    "' specified in @maestroMap not found in ",
                     "the output of the upstream pipeline."
                   )
                 )
-                # Dummy output that won't get seen
-                list(structure(list("0"), names = "N"))
-              } else {
-                fields <- sub("^\\.input\\$", "", names(scatter_vec))
-
-                # Validate lengths: all must be length 1 or the same length
-                vec_lengths <- lengths(scatter_vec)
-                non_scalar_lengths <- unique(vec_lengths[vec_lengths > 1])
-                if (length(non_scalar_lengths) > 1) {
-                  pre_error <- simpleError(
-                    paste0(
-                      "@maestroIterateOver vectors must all be the same length or length 1. ",
-                      "Got lengths: ",
-                      paste(paste0(fields, "=", vec_lengths), collapse = ", ")
-                    )
-                  )
-                  # Dummy output that won't get seen
-                  list(structure(list("0"), names = "N"))
-                } else {
-                  n_iter <- max(vec_lengths)
-                  # Recycle length-1 vectors
-                  scatter_vec <- purrr::map(scatter_vec, \(v) if (length(v) == 1) rep(v, n_iter) else v)
-
-                  iter_names <- as.character(seq_len(n_iter))
-                  purrr::map(seq_len(n_iter), \(i) {
-                    inp <- effective_input
-                    for (f in seq_along(fields)) {
-                      inp[[fields[[f]]]] <- scatter_vec[[f]][[i]]
-                    }
-                    inp
-                  }) |>
-                    stats::setNames(iter_names)
-                }
               }
-            } else {
-              effective_input
+
+              if (is.null(pre_error)) {
+                n_iter <- max(vec_lengths)
+                # Recycle length-1 vectors
+                scatter_vec <- purrr::map(scatter_vec, \(v) if (length(v) == 1) rep(v, n_iter) else v)
+
+                iter_names <- as.character(seq_len(n_iter))
+                scatter_input <- purrr::map(seq_len(n_iter), \(i) {
+                  inp <- effective_input
+                  for (f in seq_along(fields)) {
+                    inp[[fields[[f]]]] <- scatter_vec[[f]][[i]]
+                  }
+                  inp
+                }) |>
+                  stats::setNames(iter_names)
+              } else {
+                scatter_input <- list(structure(list("0"), names = "N"))
+              }              
             }
+
             pipe$set_n_expected_iterations(length(scatter_input))
             purrr::iwalk(scatter_input, ~{
               res <- run_pipe(
@@ -712,22 +706,21 @@ MaestroPipelineList <- R6::R6Class(
   private = list(
     network = NULL,
 
-
     resolve_collect_input = function(pipe, network) {
       i <- pipe$get_pipe_name()
       in_names <- network$from[network$to == i]
       in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
         stats::setNames(in_names)
 
-      # All non-each inputs must have succeeded
-      non_each_not_ready <- purrr::map_lgl(in_pipes, ~{
-        !.x$get_is_each() && .x$get_status_chr() != "Success"
+      # All non-iter inputs must have succeeded
+      non_iter_not_ready <- purrr::map_lgl(in_pipes, ~{
+        !.x$get_is_map() && .x$get_status_chr() != "Success"
       })
-      if (any(non_each_not_ready)) return(NULL)
+      if (any(non_iter_not_ready)) return(NULL)
 
-      # Each inputs must have all iterations finished (succeeded or errored)
-      each_not_ready <- purrr::map_lgl(in_pipes, ~{
-        if (!.x$get_is_each()) return(FALSE)
+      # iter inputs must have all iterations finished (succeeded or errored)
+      iter_not_ready <- purrr::map_lgl(in_pipes, ~{
+        if (!.x$get_is_map()) return(FALSE)
 
         expected_n <- .x$get_n_expected_iterations()
         if (is.null(expected_n)) {
@@ -740,16 +733,16 @@ MaestroPipelineList <- R6::R6Class(
         finished_n <- .x$get_n_invocations()
         finished_n < expected_n
       })
-      if (any(each_not_ready)) return(NULL)
+      if (any(iter_not_ready)) return(NULL)
 
-      # Skip if every iteration of every each input errored
-      each_all_failed <- purrr::map_lgl(in_pipes, ~{
-        .x$get_is_each() && .x$get_n_artifacts() == 0L
+      # Skip if every iteration of every iter input errored
+      iter_all_failed <- purrr::map_lgl(in_pipes, ~{
+        .x$get_is_map() && .x$get_n_artifacts() == 0L
       })
-      if (any(each_all_failed)) return(NULL)
+      if (any(iter_all_failed)) return(NULL)
 
       purrr::map(in_pipes, ~{
-        if (.x$get_is_each()) .x$get_all_returns() else .x$get_returns()
+        if (.x$get_is_map()) .x$get_all_returns() else .x$get_returns()
       }) |>
         stats::setNames(in_names)
     }

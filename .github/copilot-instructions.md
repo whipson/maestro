@@ -64,12 +64,12 @@ Tags are custom roxygen2 roclets defined in `R/roxy_maestro.R` and documented in
 | `@maestroStartTime` | `2024-01-01 00:00:00` | date, datetime, or `HH:MM:SS` time |
 | `@maestroTz` | `UTC` | any `OlsonNames()` value |
 | `@maestroLogLevel` | `INFO` | `ERROR`, `WARN`, `INFO` |
-| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param; wrap input name with `each()` for dynamic fan-out |
+| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param; use `collect()` for fan-in |
 | `@maestroSkip` | — | flag only, no value |
 | `@maestroPriority` | `Inf` | lower integer = higher priority |
 | `@maestroFlags` | — | space-separated arbitrary labels |
 | `@maestroRunIf` | — | R expression evaluated to a single `TRUE`/`FALSE` (see below) |
-| `@maestroIterateOver` | — | used with `each()` in `@maestroInputs`; value must be `.input$field` (see below) |
+| `@maestroMap` | — | enables dynamic fan-out; empty = scatter over each element, or `.input$field` to scatter over a named list field (see below) |
 | `@maestro` | — | generic tag to include pipeline with all defaults |
 
 **Pipeline scripts must not contain top-level code** (only function definitions). `build_schedule_entry()` uses `roxygen2::parse_file()` which executes the script in a fresh environment—loose code will error.
@@ -113,7 +113,7 @@ transform <- function(.input) { dplyr::mutate(.input, hp2 = hp^2) }
 
 ### Dynamic Fan-out (Scatter)
 
-Wrapping the upstream name with `each()` in `@maestroInputs` enables **dynamic fan-out**: the downstream pipeline executes once per element of the upstream return value, with each element passed as `.input`.
+Adding `@maestroMap` to a downstream pipeline enables **dynamic fan-out**: the pipeline executes once per element of the upstream return value. An empty `@maestroMap` tag iterates over each element directly; a `.input$field` expression selects a specific field of a named list return value.
 
 ```r
 #' @maestroFrequency daily
@@ -121,17 +121,18 @@ get_letters <- function() {
   c("a", "b", "c")
 }
 
-#' @maestroInputs each(get_letters)
+#' @maestroInputs get_letters
+#' @maestroMap
 shout <- function(.input) {
   toupper(.input)  # called 3 times, .input = "a", "b", "c"
 }
 ```
 
-Each branch appears in the CLI output labelled with its iteration value in blue square brackets, e.g. `|- shout[a]`.
+Each branch appears in the CLI output labelled with its iteration index in blue square brackets, e.g. `|- shout[1]`.
 
-### `@maestroIterateOver` — scatter over a named list field
+### `@maestroMap` — scatter over a named list field
 
-When the upstream pipeline returns a **named list**, `@maestroIterateOver .input$field` selects which field to scatter over. The **full list** is passed as `.input` in each branch, so other fields remain accessible.
+When the upstream pipeline returns a **named list**, `@maestroMap .input$field` selects which field to scatter over. The **full list** is passed as `.input` in each branch, so other fields remain accessible.
 
 ```r
 #' @maestroFrequency daily
@@ -139,8 +140,8 @@ get_data <- function() {
   list(letter = letters[1:3], greeting = "hello")
 }
 
-#' @maestroInputs each(get_data)
-#' @maestroIterateOver .input$letter
+#' @maestroInputs get_data
+#' @maestroMap .input$letter
 make_message <- function(.input) {
   paste(.input$greeting, toupper(.input$letter))  # .input$greeting always available
 }
@@ -148,21 +149,21 @@ make_message <- function(.input) {
 
 **Implementation details** (in `MaestroPipelineList$run()`):
 
-1. `pipe$get_iterate_over()` returns the raw tag string, e.g. `".input$letter"`.
-2. `eval(str2lang(iterate_over), envir = list(.input = .input))` extracts the scatter vector.
-3. If the result is `NULL` (field doesn't exist), a `simpleError` is constructed and passed to `pipe$run()` via the `prev_error` argument — **not** thrown directly — so `MaestroPipeline$run()` records it as a pipeline error rather than crashing the orchestrator.
-4. Otherwise, `purrr::imap` builds a named list where each element is a copy of the full `.input` list with the iterated field replaced by its scalar value for that iteration. Names are `as.character(scatter_vec)` and become the `iter` label shown in the CLI.
+1. `pipe$get_map()` returns a character vector of expression strings, e.g. `c(".input$letter")`.
+2. Each expression is evaluated via `eval(str2lang(expr), envir = list(.input = effective_input))` to extract the scatter vector.
+3. If a field doesn't exist (result is `NULL`), a `simpleError` is constructed and passed to `pipe$run()` via the `pre_error` argument — **not** thrown directly — so `MaestroPipeline$run()` records it as a pipeline error rather than crashing the orchestrator.
+4. Otherwise, `purrr::iwalk` iterates over the scatter input, passing each element as `.input` and the iteration index as the `iter` label shown in the CLI.
 
-### `prev_error` — pre-execution errors in `MaestroPipeline$run()`
+### `pre_error` — pre-execution errors in `MaestroPipeline$run()`
 
-`MaestroPipeline$run()` accepts a `prev_error` argument (a `simpleError` or `NULL`). When non-`NULL`:
+`MaestroPipeline$run()` accepts a `pre_error` argument (a `simpleError` or `NULL`). When non-`NULL`:
 
 1. Run-time attributes (`invoked = TRUE`, `run_id`, `lineage`, etc.) are set as normal.
 2. The CLI step is emitted then immediately marked failed via `cli::cli_progress_done(result = "failed")`.
-3. `tryCatch(stop(prev_error), error = private$pre_error_handler(internal_run_id))` records the error — `pre_error_handler` is structurally identical to `cond_error_handler` but prefixes the message with `"Error before pipeline execution:"`.
+3. `tryCatch(stop(pre_error), error = private$pre_error_handler(internal_run_id))` records the error — `pre_error_handler` is structurally identical to `cond_error_handler` but prefixes the message with `"Error before pipeline execution:"`.
 4. `return(invisible())` exits before any normal execution path runs.
 
-This pattern ensures pre-execution errors (e.g. bad `@maestroIterateOver` field) appear correctly in `get_status()`, `last_run_errors()`, and the CLI without crashing the run.
+This pattern ensures pre-execution errors (e.g. bad `@maestroMap` field) appear correctly in `get_status()`, `last_run_errors()`, and the CLI without crashing the run.
 
 ## Key User-Facing Functions
 

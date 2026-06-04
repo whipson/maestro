@@ -68,7 +68,7 @@
       3 TRUE    TRUE   
       4 TRUE    TRUE   
 
-# Fan out with iterateOver where the field contains S3 objects (lm)
+# Fan where the field contains S3 objects (lm)
 
     Code
       status[, c("invoked", "success")]
@@ -81,7 +81,7 @@
       3 TRUE    TRUE   
       4 TRUE    TRUE   
 
-# iterateOver is misspecified name in return
+# map is misspecified name in return
 
     Code
       status[, c("invoked", "success")]

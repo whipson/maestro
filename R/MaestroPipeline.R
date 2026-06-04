@@ -22,9 +22,8 @@ MaestroPipeline <- R6::R6Class(
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
-    #' @param is_each logical; TRUE when @maestroInputs uses each() fan-out marker
     #' @param is_collect logical; TRUE when @maestroInputs uses collect() fan-in marker
-    #' @param iterate_over named list of key=expr_string pairs from @maestroIterateOver, or NULL
+    #' @param map named list of key=expr_string pairs from @maestroMap, or NULL
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -43,9 +42,8 @@ MaestroPipeline <- R6::R6Class(
       priority = Inf,
       flags = c(),
       run_if = NULL,
-      is_each = FALSE,
       is_collect = FALSE,
-      iterate_over = NULL
+      map = NULL
     ) {
 
       # Update the private attributes
@@ -62,9 +60,8 @@ MaestroPipeline <- R6::R6Class(
       } else {
         run_if
       }
-      private$is_each <- is_each
       private$is_collect <- is_collect
-      private$iterate_over <- iterate_over
+      private$map <- map
 
       if (is.null(inputs)) {
         private$tz <- tz
@@ -619,7 +616,7 @@ MaestroPipeline <- R6::R6Class(
 
     #' @description
     #' Get the number of times this pipeline was invoked (successes + errors).
-    #' For each() pipelines this equals the number of iterations that have
+    #' For @maestroMap pipelines this equals the number of iterations that have
     #' finished, regardless of outcome.
     #' @return integer
     get_n_invocations = function() {
@@ -663,13 +660,6 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
-    #' Get whether the pipeline uses `each` for dynamic scatter
-    #' @return logical
-    get_is_each = function() {
-      private$is_each
-    },
-
-    #' @description
     #' Get whether the pipeline uses `collect` for fan in
     #' @return logical
     get_is_collect = function() {
@@ -679,22 +669,29 @@ MaestroPipeline <- R6::R6Class(
     #' @description
     #' Get the .input value to iterate over
     #' @return character
-    get_iterate_over = function() {
-      private$iterate_over
+    get_map = function() {
+      private$map
     },
 
     #' @description
-    #' Get the number of iterations expected for this each() pipeline.
+    #' Get whether the pipeline uses an iterator for dynamic fan out
+    #' @return logical
+    get_is_map = function() {
+      !is.null(private$map)
+    },
+
+    #' @description
+    #' Get the number of iterations expected for this @maestroMap pipeline.
     #' Set by run_pipe() just before the scatter loop so that resolve_collect_input()
     #' can compare against get_n_invocations() without depending on the upstream
-    #' return value's length (which is wrong when @maestroIterateOver is used).
+    #' return value's length (which is wrong when a field selector is used).
     #' @return integer or NULL
     get_n_expected_iterations = function() {
       private$n_expected_iterations
     },
 
     #' @description
-    #' Record the number of iterations that will be dispatched for this each() pipeline.
+    #' Record the number of iterations that will be dispatched for this @maestroMap pipeline.
     #' @param n integer
     #' @return invisible
     set_n_expected_iterations = function(n) {
@@ -825,9 +822,8 @@ MaestroPipeline <- R6::R6Class(
     priority = Inf,
     flags = c(),
     run_if = NULL,
-    is_each = FALSE,
     is_collect = FALSE,
-    iterate_over = NULL,
+    map = NULL,
     n_expected_iterations = NULL,
 
     # Transformed attributes

@@ -152,10 +152,20 @@
 #' via the required `.input` parameter. Note that this tag could be redundant if the
 #' inputting pipeline uses `maestroOutputs`.
 #'
+#' To enable **fan-in (collect)**, wrap one or more input names with `collect()`.
+#' The downstream pipeline receives a named list as `.input`, where each name
+#' corresponds to an upstream pipeline and each value is that pipeline's return
+#' value. All listed upstream pipelines must have succeeded before the collect
+#' pipeline fires. Works with both static multi-source inputs and dynamic fan-out
+#' followed by fan-in (`@maestroMap` → `collect()`): in the latter case `.input`
+#' is a list of all successful iteration results.
+#'
 #' Default:
 #'
 #' Examples:
 #' - `#' @maestroInputs extract verify`
+#' - `#' @maestroInputs collect(letter_a, letter_b)`
+#' - `#' @maestroInputs collect(multiply)` *(collect all iterations of a `@maestroMap` upstream)*
 #'
 #'
 #' # maestroOutputs
@@ -201,22 +211,29 @@
 #' - `#' @maestroRunIf !is.null(.input)`
 #'
 #'
-#' # maestroIterateOver
+#' # maestroMap
 #'
-#' For fan-out pipelines that use `each()` in `@maestroInputs`, specifies one or
-#' more R expressions (referencing `.input` fields) that define the vectors to
-#' scatter over. Multiple expressions are separated by spaces and zipped together
-#' `pmap`-style: each iteration receives `.input` with all specified fields
-#' replaced by their i-th element. Vectors must all have the same length, unless
-#' a vector has length 1, in which case it is recycled across all iterations.
-#' Requires `@maestroInputs` to use `each()`.
+#' Enables **dynamic fan-out (scatter)**: the downstream pipeline executes once
+#' per element of the upstream return value. When the tag value is empty, each
+#' element of the upstream return value is passed directly as `.input`. When one
+#' or more R expressions referencing `.input` fields are provided (space-separated),
+#' those fields are scattered over and zipped together `pmap`-style: each iteration
+#' receives `.input` with all specified fields replaced by their i-th element.
+#' The full list remains accessible as `.input` in every branch.
+#'
+#' Vectors must all have the same length, unless a vector has length 1, in which
+#' case it is recycled across all iterations. Mismatched lengths produce a
+#' pipeline error.
+#'
+#' Requires `@maestroInputs` to reference an upstream pipeline.
 #'
 #' Default:
 #'
 #' Examples:
-#' - `#' @maestroIterateOver .input$items`
-#' - `#' @maestroIterateOver .input$ids .input$labels`
-#' - `#' @maestroIterateOver .input$model .input$label .input$threshold`
+#' - `#' @maestroMap` *(iterate over each element of the upstream return value)*
+#' - `#' @maestroMap .input$items`
+#' - `#' @maestroMap .input$ids .input$labels`
+#' - `#' @maestroMap .input$model .input$label .input$threshold`
 #'
 #'
 #' # maestroPriority

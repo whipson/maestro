@@ -3,7 +3,8 @@ numbers <- function() {
   1:3
 }
 
-#' @maestroInputs each(numbers)
+#' @maestroInputs numbers
+#' @maestroMap
 multiply <- function(.input) {
   .input * 3
 }

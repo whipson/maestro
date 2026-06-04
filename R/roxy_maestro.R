@@ -437,25 +437,17 @@ roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
     return(x)
   }
 
-  # Detect each() / collect() markers
-  each_match <- regmatches(x$raw, regexpr("^each\\(([^)]+)\\)$", x$raw))
   collect_match <- regmatches(x$raw, regexpr("^collect\\(([^)]+)\\)$", x$raw))
 
-  if (length(each_match) == 1L) {
-    inner <- trimws(regmatches(each_match, regexpr("(?<=\\()([^)]+)(?=\\))", each_match, perl = TRUE)))
-    pipe_names <- strsplit(inner, "[[:space:],]+")[[1]]
-    pipe_names <- pipe_names[nzchar(pipe_names)]
-    x$val <- list(inputs = pipe_names, is_each = TRUE, is_collect = FALSE)
-  } else if (length(collect_match) == 1L) {
+  if (length(collect_match) == 1L) {
     inner <- trimws(regmatches(collect_match, regexpr("(?<=\\()([^)]+)(?=\\))", collect_match, perl = TRUE)))
     pipe_names <- strsplit(inner, "[[:space:],]+")[[1]]
     pipe_names <- pipe_names[nzchar(pipe_names)]
-    x$val <- list(inputs = pipe_names, is_each = FALSE, is_collect = TRUE)
+    x$val <- list(inputs = pipe_names, is_collect = TRUE)
   } else {
     # Plain list of pipeline names (existing behaviour)
     x$val <- list(
       inputs = strsplit(x$raw, "\\s+")[[1]],
-      is_each = FALSE,
       is_collect = FALSE
     )
   }
@@ -476,10 +468,10 @@ roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
   )
 }
 
-# maestroIterateOver ------------------------------------------------------
+# maestroMap ------------------------------------------------------
 
 #' @exportS3Method
-roxy_tag_parse.roxy_tag_maestroIterateOver <- function(x) {
+roxy_tag_parse.roxy_tag_maestroMap <- function(x) {
   # Split on whitespace to support pmap-style multiple iterators.
   # Each element is an R expression string referencing `.input`.
   # A single expression is stored as a length-1 character vector,
@@ -487,20 +479,19 @@ roxy_tag_parse.roxy_tag_maestroIterateOver <- function(x) {
   parts <- strsplit(trimws(x$raw), "\\s+")[[1]]
   parts <- parts[nzchar(parts)]
   if (length(parts) == 0) {
-    roxygen2::roxy_tag_warning(x, "Empty @maestroIterateOver tag.")
-    return(x)
+    parts <- ".input"
   }
   x$val <- parts
   x
 }
 
-maestroIterateOver_roclet <- function() {
-  roxygen2::roclet("maestroIterateOver")
+maestroMap_roclet <- function() {
+  roxygen2::roclet("maestroMap")
 }
 
 #' @exportS3Method
-roclet_process.roclet_maestroIterateOver <- function(x, blocks, env, base_path) {
-  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroIterateOver")
+roclet_process.roclet_maestroMap <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroMap")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic

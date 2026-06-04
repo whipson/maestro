@@ -1,31 +1,3 @@
-test_that("maestroInputs parser: collect() -> is_collect TRUE, correct names", {
-  tag <- roxygen2::roxy_tag("maestroInputs", "collect(src_a, src_b)", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroInputs(tag)
-  expect_equal(parsed$val$inputs, c("src_a", "src_b"))
-  expect_false(parsed$val$is_each)
-  expect_true(parsed$val$is_collect)
-})
-
-test_that("each() with more than one input errors at build_schedule()", {
-  withr::with_tempdir({
-    dir.create("pipelines")
-    writeLines(
-      "
-      #' @maestroFrequency daily
-      src_a <- function() 1:3
-
-      #' @maestroFrequency daily
-      src_b <- function() 4:6
-
-      #' @maestroInputs each(src_a, src_b)
-      downstream <- function(.input) .input * 2
-      ",
-      con = "pipelines/bad_each.R"
-    )
-    expect_error(build_schedule(), regexp = "each\\(\\).*exactly one")
-  })
-})
-
 test_that("collect() with fewer than two inputs errors at build_schedule()", {
   withr::with_tempdir({
     dir.create("pipelines")
@@ -320,7 +292,8 @@ test_that("Dynamic fan out followed by fan in", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         .input * 3
       }
@@ -354,7 +327,8 @@ test_that("Dynamic fan out followed by fan in - partial error case", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         if (.input == 2) stop()
         .input * 3
@@ -392,7 +366,8 @@ test_that("Dynamic fan out followed by fan in - all error case", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         stop()
       }
@@ -428,8 +403,8 @@ test_that("Fan-out collect with iterateOver", {
         )
       }
 
-      #' @maestroInputs each(get_letters)
-      #' @maestroIterateOver .input$letter
+      #' @maestroInputs get_letters
+      #' @maestroMap .input$letter
       make_message <- function(.input) {
         paste(.input$greeting, toupper(.input$letter))
       }

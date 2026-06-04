@@ -23,7 +23,7 @@ build_schedule_entry <- function(script_path) {
     priority = "maestroPriority",
     flags = "maestroFlags",
     run_if = "maestroRunIf",
-    iterate_over = "maestroIterateOver"
+    map = "maestroMap"
   )
 
   # Initial Validation ------------------------------------------------------
@@ -236,24 +236,15 @@ build_schedule_entry <- function(script_path) {
 
       if (!is.null(.y$inputs)) {
         inputs <- .y$inputs$inputs
-        is_each <- .y$inputs$is_each
         is_collect <- .y$inputs$is_collect
       } else {
         inputs <- NULL
-        is_each <- FALSE
         is_collect <- FALSE
       }
 
-      # Parse and validate @maestroIterateOver
-      iterate_over <- if (!is.null(.y$iterate_over)) {
-        if (!is_each) {
-          cli::cli_abort(
-            c("`@maestroIterateOver` requires `@maestroInputs` to use `each()`.",
-              "i" = "Issue is with pipeline named {.x}."),
-            call = NULL
-          )
-        }
-        exprs <- .y$iterate_over  # character vector, one element per iterator
+      # Parse and validate @maestroMap
+      map <- if (!is.null(.y$map)) {
+        exprs <- .y$map  # character vector, one element per iterator
         # Validate that every element is parseable R
         bad <- purrr::keep(exprs, \(e) {
           inherits(tryCatch(str2lang(e), error = \(err) err), "error")
@@ -261,7 +252,7 @@ build_schedule_entry <- function(script_path) {
         if (length(bad) > 0) {
           cli::cli_abort(
             c(
-              "`@maestroIterateOver` contains invalid R expression{?s}: {.code {bad}}",
+              "`@maestroMap` contains invalid R expression{?s}: {.code {bad}}",
               "i" = "Issue is with pipeline named {.x}."
             ),
             call = NULL
@@ -289,9 +280,8 @@ build_schedule_entry <- function(script_path) {
         priority = as.numeric(.y$priority %n% Inf),
         flags = .y$flags %n% character(),
         run_if = .y$run_if %n% NULL,
-        is_each = is_each,
         is_collect = is_collect,
-        iterate_over = iterate_over
+        map = map
       )
     })
   }, purrr_error_indexed = function(err) {

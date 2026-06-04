@@ -160,11 +160,21 @@ pipelines can be used as inputs and the input value is used in the target pipeli
 via the required \code{.input} parameter. Note that this tag could be redundant if the
 inputting pipeline uses \code{maestroOutputs}.
 
+To enable \strong{fan-in (collect)}, wrap one or more input names with \code{collect()}.
+The downstream pipeline receives a named list as \code{.input}, where each name
+corresponds to an upstream pipeline and each value is that pipeline's return
+value. All listed upstream pipelines must have succeeded before the collect
+pipeline fires. Works with both static multi-source inputs and dynamic fan-out
+followed by fan-in (\verb{@maestroMap} → \code{collect()}): in the latter case \code{.input}
+is a list of all successful iteration results.
+
 Default:
 
 Examples:
 \itemize{
 \item \verb{#' @maestroInputs extract verify}
+\item \verb{#' @maestroInputs collect(letter_a, letter_b)}
+\item \verb{#' @maestroInputs collect(multiply)} \emph{(collect all iterations of a \verb{@maestroMap} upstream)}
 }
 }
 
@@ -194,6 +204,49 @@ Default:
 Examples:
 \itemize{
 \item \verb{#' @maestroSkip}
+}
+}
+
+\section{maestroRunIf}{
+An R expression that is evaluated at run time to determine whether the pipeline
+should execute. The expression must return a single \code{TRUE} or \code{FALSE}. If the
+expression returns \code{FALSE}, the pipeline is silently skipped for that run. Resources
+passed via \code{run_schedule(..., resources = list(...))} are available inside the
+expression, as is \code{.input} for DAG pipelines.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroRunIf Sys.getenv("RUN_PIPELINE") == "true"}
+\item \verb{#' @maestroRunIf lubridate::wday(lubridate::now()) == 2}
+\item \verb{#' @maestroRunIf !is.null(.input)}
+}
+}
+
+\section{maestroMap}{
+Enables \strong{dynamic fan-out (scatter)}: the downstream pipeline executes once
+per element of the upstream return value. When the tag value is empty, each
+element of the upstream return value is passed directly as \code{.input}. When one
+or more R expressions referencing \code{.input} fields are provided (space-separated),
+those fields are scattered over and zipped together \code{pmap}-style: each iteration
+receives \code{.input} with all specified fields replaced by their i-th element.
+The full list remains accessible as \code{.input} in every branch.
+
+Vectors must all have the same length, unless a vector has length 1, in which
+case it is recycled across all iterations. Mismatched lengths produce a
+pipeline error.
+
+Requires \verb{@maestroInputs} to reference an upstream pipeline.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroMap} \emph{(iterate over each element of the upstream return value)}
+\item \verb{#' @maestroMap .input$items}
+\item \verb{#' @maestroMap .input$ids .input$labels}
+\item \verb{#' @maestroMap .input$model .input$label .input$threshold}
 }
 }
 

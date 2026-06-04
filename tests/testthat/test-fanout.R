@@ -1,47 +1,3 @@
-
-test_that("maestroInputs parser: plain names -> is_each/is_collect FALSE", {
-  tag <- roxygen2::roxy_tag("maestroInputs", "upstream_a upstream_b", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroInputs(tag)
-  expect_equal(parsed$val$inputs, c("upstream_a", "upstream_b"))
-  expect_false(parsed$val$is_each)
-  expect_false(parsed$val$is_collect)
-})
-
-test_that("maestroInputs parser: each() -> is_each TRUE, correct names", {
-  tag <- roxygen2::roxy_tag("maestroInputs", "each(upstream_a)", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroInputs(tag)
-  expect_equal(parsed$val$inputs, "upstream_a")
-  expect_true(parsed$val$is_each)
-  expect_false(parsed$val$is_collect)
-})
-
-test_that("maestroInputs parser: each() with multiple names", {
-  tag <- roxygen2::roxy_tag("maestroInputs", "each(up_a, up_b)", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroInputs(tag)
-  expect_equal(parsed$val$inputs, c("up_a", "up_b"))
-  expect_true(parsed$val$is_each)
-})
-
-test_that("maestroIterateOver parser: single expression -> length-1 character vector", {
-  tag <- roxygen2::roxy_tag("maestroIterateOver", ".input$ids", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
-  expect_equal(parsed$val, ".input$ids")
-  expect_length(parsed$val, 1L)
-})
-
-test_that("maestroIterateOver parser: space-separated expressions -> character vector", {
-  tag <- roxygen2::roxy_tag("maestroIterateOver", ".input$ids .input$labels", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
-  expect_equal(parsed$val, c(".input$ids", ".input$labels"))
-  expect_length(parsed$val, 2L)
-})
-
-test_that("maestroIterateOver parser: extra whitespace is ignored", {
-  tag <- roxygen2::roxy_tag("maestroIterateOver", "  .input$x   .input$y  ", NULL)
-  parsed <- roxy_tag_parse.roxy_tag_maestroIterateOver(tag)
-  expect_equal(parsed$val, c(".input$x", ".input$y"))
-})
-
 test_that("Simple fan out with no specified iterator", {
 
   withr::with_tempdir({
@@ -53,7 +9,8 @@ test_that("Simple fan out with no specified iterator", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         .input * 3
       }",
@@ -83,7 +40,8 @@ test_that("Simple fan out into common downstream", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         .input * 3
       }
@@ -117,7 +75,8 @@ test_that("Simple fan out into common downstream and one error", {
         1:3
       }
 
-      #' @maestroInputs each(numbers)
+      #' @maestroInputs numbers
+      #' @maestroMap
       multiply <- function(.input) {
         if (.input == 1) stop()
         .input * 3
@@ -155,8 +114,8 @@ test_that("Use iterateOver to specify a particular iteration variable", {
         )
       }
 
-      #' @maestroInputs each(get_letters)
-      #' @maestroIterateOver .input$letter
+      #' @maestroInputs get_letters
+      #' @maestroMap .input$letter
       make_message <- function(.input) {
         paste(.input$greeting, toupper(.input$letter))
       }",
@@ -189,7 +148,8 @@ test_that("Fan out where upstream returns a list of S3 objects (lm)", {
         )
       }
 
-      #' @maestroInputs each(fit_models)
+      #' @maestroInputs fit_models
+      #' @maestroMap
       extract_r2 <- function(.input) {
         summary(.input)$r.squared
       }",
@@ -207,7 +167,7 @@ test_that("Fan out where upstream returns a list of S3 objects (lm)", {
   expect_snapshot(status[, c("invoked", "success")])
 })
 
-test_that("Fan out with iterateOver where the field contains S3 objects (lm)", {
+test_that("Fan where the field contains S3 objects (lm)", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -225,8 +185,8 @@ test_that("Fan out with iterateOver where the field contains S3 objects (lm)", {
         )
       }
 
-      #' @maestroInputs each(fit_models)
-      #' @maestroIterateOver .input$model
+      #' @maestroInputs fit_models
+      #' @maestroMap .input$model
       extract_r2 <- function(.input) {
         summary(.input$model)$r.squared
       }",
@@ -244,7 +204,7 @@ test_that("Fan out with iterateOver where the field contains S3 objects (lm)", {
   expect_snapshot(status[, c("invoked", "success")])
 })
 
-test_that("iterateOver is misspecified name in return", {
+test_that("map is misspecified name in return", {
 
   withr::with_tempdir({
     dir.create("pipelines")
@@ -258,8 +218,8 @@ test_that("iterateOver is misspecified name in return", {
         )
       }
 
-      #' @maestroInputs each(get_letters)
-      #' @maestroIterateOver .input$asd
+      #' @maestroInputs get_letters
+      #' @maestroMap .input$asd
       make_message <- function(.input) {
         paste(.input$greeting, toupper(.input$letter))
       }",
@@ -273,7 +233,7 @@ test_that("iterateOver is misspecified name in return", {
     status <- get_status(schedule)
   })
   expect_snapshot(status[, c("invoked", "success")])
-  expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field(s) 'asd' specified in @maestroIterateOver not found in the output of the upstream pipeline.")
+  expect_equal(last_run_errors()$make_message, "Error before pipeline execution: Field(s) 'asd' specified in @maestroMap not found in the output of the upstream pipeline.")
 })
 
 test_that("iterateOver with unequal length vectors errors", {
@@ -290,8 +250,8 @@ test_that("iterateOver with unequal length vectors errors", {
         )
       }
 
-      #' @maestroInputs each(get_data)
-      #' @maestroIterateOver .input$ids .input$labels
+      #' @maestroInputs get_data
+      #' @maestroMap .input$ids .input$labels
       process <- function(.input) {
         paste(.input$ids, .input$labels)
       }",
@@ -322,8 +282,8 @@ test_that("Use iterateOver with multiple iterators", {
         )
       }
 
-      #' @maestroInputs each(get_letters)
-      #' @maestroIterateOver .input$letter .input$greeting
+      #' @maestroInputs get_letters
+      #' @maestroMap .input$letter .input$greeting
       make_message <- function(.input) {
         paste(.input$greeting, toupper(.input$letter))
       }",

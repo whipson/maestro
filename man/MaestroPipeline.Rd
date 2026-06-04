@@ -33,9 +33,9 @@ A pipeline is defined as a single R script with a schedule or input
     \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
     \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
     \item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
-    \item \href{#method-MaestroPipeline-get_is_each}{\code{MaestroPipeline$get_is_each()}}
     \item \href{#method-MaestroPipeline-get_is_collect}{\code{MaestroPipeline$get_is_collect()}}
-    \item \href{#method-MaestroPipeline-get_iterate_over}{\code{MaestroPipeline$get_iterate_over()}}
+    \item \href{#method-MaestroPipeline-get_map}{\code{MaestroPipeline$get_map()}}
+    \item \href{#method-MaestroPipeline-get_is_map}{\code{MaestroPipeline$get_is_map()}}
     \item \href{#method-MaestroPipeline-get_n_expected_iterations}{\code{MaestroPipeline$get_n_expected_iterations()}}
     \item \href{#method-MaestroPipeline-set_n_expected_iterations}{\code{MaestroPipeline$set_n_expected_iterations()}}
     \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
@@ -68,9 +68,8 @@ A pipeline is defined as a single R script with a schedule or input
   priority = Inf,
   flags = c(),
   run_if = NULL,
-  is_each = FALSE,
   is_collect = FALSE,
-  iterate_over = NULL
+  map = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -92,9 +91,8 @@ A pipeline is defined as a single R script with a schedule or input
       \item{\code{priority}}{priority of the pipeline}
       \item{\code{flags}}{arbitrary pipelines flags}
       \item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
-      \item{\code{is_each}}{logical; TRUE when @maestroInputs uses each() fan-out marker}
       \item{\code{is_collect}}{logical; TRUE when @maestroInputs uses collect() fan-in marker}
-      \item{\code{iterate_over}}{named list of key=expr_string pairs from @maestroIterateOver, or NULL}
+      \item{\code{map}}{named list of key=expr_string pairs from @maestroMap, or NULL}
     }
     \if{html}{\out{</div>}}
   }
@@ -363,7 +361,7 @@ A pipeline is defined as a single R script with a schedule or input
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_n_invocations}{}}}
 \subsection{\code{MaestroPipeline$get_n_invocations()}}{
   Get the number of times this pipeline was invoked (successes + errors).
-For each() pipelines this equals the number of iterations that have
+For @maestroMap pipelines this equals the number of iterations that have
 finished, regardless of outcome.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -452,21 +450,6 @@ iterations have run. Used by collect() to gather each-pipe outputs.
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroPipeline-get_is_each"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_is_each}{}}}
-\subsection{\code{MaestroPipeline$get_is_each()}}{
-  Get whether the pipeline uses \code{each} for dynamic scatter
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{MaestroPipeline$get_is_each()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    logical
-  }
-}
-
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_is_collect"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_is_collect}{}}}
 \subsection{\code{MaestroPipeline$get_is_collect()}}{
@@ -482,13 +465,13 @@ iterations have run. Used by collect() to gather each-pipe outputs.
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MaestroPipeline-get_iterate_over"></a>}}
-\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_iterate_over}{}}}
-\subsection{\code{MaestroPipeline$get_iterate_over()}}{
+\if{html}{\out{<a id="method-MaestroPipeline-get_map"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_map}{}}}
+\subsection{\code{MaestroPipeline$get_map()}}{
   Get the .input value to iterate over
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{MaestroPipeline$get_iterate_over()}
+    \preformatted{MaestroPipeline$get_map()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
@@ -497,13 +480,28 @@ iterations have run. Used by collect() to gather each-pipe outputs.
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_is_map"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_is_map}{}}}
+\subsection{\code{MaestroPipeline$get_is_map()}}{
+  Get whether the pipeline uses an iterator for dynamic fan out
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_is_map()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    logical
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MaestroPipeline-get_n_expected_iterations"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-get_n_expected_iterations}{}}}
 \subsection{\code{MaestroPipeline$get_n_expected_iterations()}}{
-  Get the number of iterations expected for this each() pipeline.
+  Get the number of iterations expected for this @maestroMap pipeline.
 Set by run_pipe() just before the scatter loop so that resolve_collect_input()
 can compare against get_n_invocations() without depending on the upstream
-return value's length (which is wrong when @maestroIterateOver is used).
+return value's length (which is wrong when a field selector is used).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroPipeline$get_n_expected_iterations()}
@@ -518,7 +516,7 @@ return value's length (which is wrong when @maestroIterateOver is used).
 \if{html}{\out{<a id="method-MaestroPipeline-set_n_expected_iterations"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-set_n_expected_iterations}{}}}
 \subsection{\code{MaestroPipeline$set_n_expected_iterations()}}{
-  Record the number of iterations that will be dispatched for this each() pipeline.
+  Record the number of iterations that will be dispatched for this @maestroMap pipeline.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroPipeline$set_n_expected_iterations(n)}
