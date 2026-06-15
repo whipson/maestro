@@ -103,7 +103,13 @@ MaestroSchedule <- R6::R6Class(
 
         tictoc::tic(quiet = quiet)
         pipes_that_ran <- do.call(pipes_to_run$run, dots)
-        if (is_multicore) self$PipelineList$update_pipelines(pipes_that_ran)
+        if (is_multicore) {
+          self$PipelineList$update_pipelines(pipes_that_ran)
+          # Collect pipelines whose inputs span independent branches were never
+          # triggered inside any worker. Run them now with fully-synced state,
+          # using run_pipe internally so their own downstream outputs recurse.
+          do.call(self$PipelineList$run_pending_collects, dots)
+        }
         elapsed <- tictoc::toc(quiet = TRUE)
         elapsed_ms <- elapsed$toc - elapsed$tic
 
@@ -229,39 +235,10 @@ MaestroSchedule <- R6::R6Class(
     },
 
     #' @description
-    #' Visualize the DAG relationships between pipelines in the schedule
-    #' @return interactive visualization
-    show_network = function() {
-
-      lifecycle::deprecate_warn(
-        "1.1.0",
-        "MaestroSchedule$show_network()",
-        details = "It will be removed entirely in 1.2.0."
-      )
-
-      pipe_names <- self$PipelineList$get_pipe_names()
-
-      if (length(pipe_names) == 0) cli::cli_abort("No pipelines in schedule.", call = NULL)
-
-      rlang::check_installed("DiagrammeR")
-
-      net <- self$get_network()
-
-      nodes_df <- dplyr::tibble(
-        name = pipe_names
-      ) |>
-        dplyr::mutate(id = 1:dplyr::n())
-
-      edges_df <- net |>
-        dplyr::mutate(
-          from = purrr::map_int(from, ~nodes_df$id[nodes_df$name == .x]),
-          to = purrr::map_int(to, ~nodes_df$id[nodes_df$name == .x])
-        )
-
-      node <- DiagrammeR::create_node_df(n = nrow(nodes_df), label = nodes_df$name)
-      edge <- DiagrammeR::create_edge_df(from = edges_df$from, to = edges_df$to)
-      g <- DiagrammeR::create_graph(node, edge)
-      DiagrammeR::render_graph(g, "tree")
+    #' Get all pipeline labels as a data.frame
+    #' @return data.frame
+    get_labels = function() {
+      self$PipelineList$get_labels()
     },
 
     #' @description

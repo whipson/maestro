@@ -11,6 +11,9 @@
 #' In other words, it is not recommended to make changes to it.
 #'
 #' @param pipeline_dir path to directory containing the pipeline scripts
+#' @param cores number of cpu cores to use when parsing pipeline scripts. If > 1,
+#'   `furrr` is used and a multisession plan must be set in the orchestrator
+#'   (e.g. `future::plan(future::multisession)`). See `run_schedule()` for details.
 #' @param quiet silence metrics to the console (default = `FALSE`)
 #'
 #' @return MaestroSchedule
@@ -25,7 +28,7 @@
 #'   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
 #'   build_schedule(pipeline_dir = pipeline_dir)
 #' }
-build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
+build_schedule <- function(pipeline_dir = "./pipelines", cores = 1L, quiet = FALSE) {
 
   if (!dir.exists(pipeline_dir)) {
     cli::cli_abort("No directory called {.emph {pipeline_dir}}")
@@ -46,21 +49,43 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
     return(invisible())
   }
 
-  # Try to generate a schedule entry for each script
-  # We use safely to ensure it continues in an error condition and capture the errors
-  pipeline_attempts <- purrr::map(
+  if (cores < 1 || (cores %% 1) != 0) cli::cli_abort("`cores` must be a positive integer")
+  is_multicore <- FALSE
+  if (cores > 1) {
+    tryCatch({
+      rlang::check_installed("furrr")
+      is_multicore <- TRUE
+    }, error = \(e) {
+      cli::cli_warn("{.pkg furrr} is required for running on multiple cores.")
+    })
+  }
+
+  mapper_fun <- if (is_multicore) {
+    function(...) {
+      furrr::future_map(
+        ...,
+        .options = furrr::furrr_options(
+          packages = c("maestro", "logger"),
+          stdout = FALSE,
+          seed = NULL
+        )
+      )
+    }
+  } else {
+    purrr::map
+  }
+
+  pipeline_attempts <- mapper_fun(
     pipelines, purrr::safely(build_schedule_entry)
   ) |>
     stats::setNames(basename(pipelines))
 
-  # Get the results
   pipeline_results <- purrr::map(
     pipeline_attempts,
     ~.x$result
   ) |>
     purrr::discard(is.null)
 
-  # Get the errors
   pipeline_errors <- purrr::map(
     pipeline_attempts,
     ~.x$error
@@ -85,10 +110,8 @@ build_schedule <- function(pipeline_dir = "./pipelines", quiet = FALSE) {
     )
   }
 
-  # Create the schedule
   schedule <- MaestroSchedule$new(Pipelines = pipeline_results)
 
-  # Validate the schedule
   schedule$PipelineList$validate_network()
 
   if (!quiet) {

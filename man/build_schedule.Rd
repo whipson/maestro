@@ -4,10 +4,14 @@
 \alias{build_schedule}
 \title{Build a schedule}
 \usage{
-build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
+build_schedule(pipeline_dir = "./pipelines", cores = 1L, quiet = FALSE)
 }
 \arguments{
 \item{pipeline_dir}{path to directory containing the pipeline scripts}
+
+\item{cores}{number of cpu cores to use when parsing pipeline scripts. If > 1,
+\code{furrr} is used and a multisession plan must be set in the orchestrator
+(e.g. \code{future::plan(future::multisession)}). See \code{run_schedule()} for details.}
 
 \item{quiet}{silence metrics to the console (default = \code{FALSE})}
 }

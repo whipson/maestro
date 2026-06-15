@@ -22,6 +22,7 @@ articles:
   - maestro-2-motivation-concepts
   - maestro-3-advanced-scheduling
   - maestro-4-directed-acyclic-graphs
+  - maestro-4b-directed-acyclic-graphs
   - maestro-5-logging
   - maestro-6-deployment
   - maestro-7-tag-reference

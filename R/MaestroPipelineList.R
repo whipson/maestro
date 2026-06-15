@@ -36,7 +36,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @param MaestroPipelines list of MaestroPipelines
     #' @return invisible
     add_pipelines = function(MaestroPipelines = NULL) {
-      if ("MaestroPipeline" %in% class(MaestroPipelines)) {
+      if (inherits(MaestroPipelines, "MaestroPipeline")) {
         self$n_pipelines <- self$n_pipelines + 1
         self$MaestroPipelines <- append(self$MaestroPipelines, MaestroPipelines)
       } else {
@@ -54,7 +54,7 @@ MaestroPipelineList <- R6::R6Class(
     #' @return invisible
     update_pipelines = function(MaestroPipelines = NULL) {
       pipe_names <- self$get_pipe_names()
-      if ("MaestroPipeline" %in% class(MaestroPipelines)) {
+      if (inherits(MaestroPipelines, "MaestroPipeline")) {
         pipe_to_update_name <- MaestroPipelines$get_pipe_name()
         idx_to_update <- which(pipe_names == pipe_to_update_name)
         self$MaestroPipelines[[idx_to_update]] <- MaestroPipelines
@@ -211,6 +211,17 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get the labels of the pipelines as a data.frame
+    #' @return data.frame
+    get_labels = function() {
+      purrr::map(self$MaestroPipelines, ~{
+        .x$get_labels() |> 
+          dplyr::mutate(pipe_name = .x$get_pipe_name(), .before = 0)
+      }) |>
+        purrr::list_rbind()
+    },
+
+    #' @description
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {
@@ -306,8 +317,29 @@ MaestroPipelineList <- R6::R6Class(
         })
       }
 
-      network <- self$get_network()
+      withCallingHandlers({
+        purrr::walk(self$MaestroPipelines, ~{
+          pipe <- .x
+          if (pipe$get_is_collect()) {
+            n <- length(pipe$get_inputs())
+            if (n < 2L) {
+              single_is_iter <- n == 1L &&
+                pipe$get_inputs()[[1]] %in% pipe_names &&
+                self$get_pipe_by_name(pipe$get_inputs()[[1]])$get_is_map()
+              if (!single_is_iter) {
+                cli::cli_abort(
+                  "Pipeline {.pkg {pipe$get_pipe_name()}} uses {.code collect()} but references {n} input{?s}. {.code collect()} requires at least two input pipelines or a single {.code maestroMap} pipeline.",
+                  call = NULL
+                )
+              }
+            }
+          }
+        })
+      }, purrr_error_indexed = function(err) {
+        rlang::cnd_signal(err$parent)
+      })
 
+      network <- self$get_network()
 
       if (nrow(network) > 0) {
 
@@ -374,6 +406,8 @@ MaestroPipelineList <- R6::R6Class(
         input_run_id = NA_character_, 
         run_results = list(),
         lineage = character(),
+        iter = NULL,
+        pre_error = NULL,
         ...
       ) {
 
@@ -390,7 +424,9 @@ MaestroPipelineList <- R6::R6Class(
                 run_id = run_id, 
                 input_run_id = input_run_id,
                 depth = depth,
-                lineage = lineage
+                lineage = lineage,
+                iter = iter,
+                pre_error = pre_error
               )
             )
           )
@@ -409,18 +445,137 @@ MaestroPipelineList <- R6::R6Class(
         }
         
         if (length(out_names) == 0) return(run_results)
-        
+
         for (i in out_names) {
           pipe <- self$get_pipe_by_name(i)
-          run_results <- run_pipe(
-            pipe,
-            .input = .input,
-            depth = depth,
-            run_id = run_id,
-            input_run_id = run_id,
-            run_results = run_results,
-            lineage = lineage
-          )
+
+          # For collect() fan-in, resolve_collect_input checks all readiness
+          collect_input <- NULL
+          if (pipe$get_is_collect()) {
+            if (pipe$get_status_chr() != "Not Run") next
+            collect_input <- private$resolve_collect_input(pipe, network)
+            if (is.null(collect_input)) next
+          }
+
+          # Use the collected named list as .input when this is a collect pipe,
+          # otherwise fall through to the normal .input from the current pipe.
+          effective_input <- if (!is.null(collect_input)) collect_input else .input
+
+          if (pipe$get_is_map()) {
+            pre_error <- NULL
+            map_over <- pipe$get_map()
+            scatter_vec <- purrr::map(
+              stats::setNames(map_over, map_over),
+              \(expr) eval(str2lang(expr), envir = list(.input = effective_input))
+            )
+            fields <- sub("^\\.input\\$", "", names(scatter_vec))
+
+            if (length(map_over) == 1 && trimws(map_over) == ".input") {
+              scatter_vec <- scatter_vec[[1]]
+              iter_names <- as.character(seq_len(length(scatter_vec)))
+              scatter_input <- purrr::map(scatter_vec, ~.x) |> 
+                stats::setNames(iter_names)
+
+            } else {
+              vec_lengths <- lengths(scatter_vec)
+              non_scalar_lengths <- unique(vec_lengths[vec_lengths > 1])
+              if (length(non_scalar_lengths) > 1) {
+                pre_error <- simpleError(
+                  paste0(
+                    "@maestroMap vectors must all be the same length or length 1. ",
+                    "Got lengths: ",
+                    paste(paste0(fields, "=", vec_lengths), collapse = ", ")
+                  )
+                )
+              }
+
+              # Check for any NULL results (field not found)
+              null_fields <- names(scatter_vec)[purrr::map_lgl(scatter_vec, is.null)]
+              if (length(null_fields) > 0) {
+                bad_fields <- sub("^\\.input\\$", "", null_fields)
+                pre_error <- simpleError(
+                  paste0(
+                    "Field(s) '", paste(bad_fields, collapse = "', '"),
+                    "' specified in @maestroMap not found in ",
+                    "the output of the upstream pipeline."
+                  )
+                )
+              }
+
+              if (is.null(pre_error)) {
+                n_iter <- max(vec_lengths)
+                # Recycle length-1 vectors
+                scatter_vec <- purrr::map(scatter_vec, \(v) if (length(v) == 1) rep(v, n_iter) else v)
+
+                iter_names <- as.character(seq_len(n_iter))
+                scatter_input <- purrr::map(seq_len(n_iter), \(i) {
+                  inp <- effective_input
+                  for (f in seq_along(fields)) {
+                    inp[[fields[[f]]]] <- scatter_vec[[f]][[i]]
+                  }
+                  inp
+                }) |>
+                  stats::setNames(iter_names)
+              } else {
+                scatter_input <- list(structure(list("0"), names = "N"))
+              }              
+            }
+
+            pipe$set_n_expected_iterations(length(scatter_input))
+            purrr::iwalk(scatter_input, ~{
+              res <- run_pipe(
+                pipe,
+                .input = .x,
+                depth = depth,
+                run_id = run_id,
+                input_run_id = run_id,
+                run_results = run_results,
+                lineage = lineage,
+                iter = .y,
+                pre_error = pre_error
+              )
+
+              run_results <<- append(run_results, res)
+            })
+          } else if (pipe$get_is_collect()) {
+            in_names <- network$from[network$to == pipe$get_pipe_name()]
+            in_pipes  <- purrr::map(in_names, self$get_pipe_by_name)
+            collect_input_run_id <- purrr::map(in_pipes, ~{
+              st <- .x$get_status()
+              st$run_id[!is.na(st$run_id) & st$success]
+            }) |>
+              purrr::list_c() |>
+              paste(collapse = ", ")
+
+            collect_lineage_prefix <- purrr::map(in_pipes, ~{
+              st <- .x$get_status()
+              st$lineage[!is.na(st$lineage) & st$success]
+            }) |>
+              purrr::list_c() |>
+              unique() |>
+              paste(collapse = "&")
+
+            run_results <- run_pipe(
+              pipe,
+              .input = effective_input,
+              depth = depth,
+              input_run_id = collect_input_run_id,
+              run_results = run_results,
+              lineage = collect_lineage_prefix,
+              pre_error = pre_error
+            )
+          } else {
+            run_results <- run_pipe(
+              pipe,
+              .input = effective_input,
+              depth = depth,
+              run_id = run_id,
+              input_run_id = run_id,
+              run_results = run_results,
+              lineage = lineage,
+              pre_error = pre_error
+            )
+          }
         }
 
         run_results
@@ -437,8 +592,118 @@ MaestroPipelineList <- R6::R6Class(
           )
         }, quiet = TRUE)
       )
-      
-      purrr::map(run_res, "result") |> 
+
+      purrr::map(run_res, "result") |>
+        purrr::list_flatten()
+    },
+
+    #' @description
+    #' Run any collect pipelines that are ready but were skipped during a
+    #' parallel run. Called on the main process after update_pipelines() has
+    #' synced worker state back. Uses run_pipe internally so that the collect
+    #' pipe's own downstream outputs are recursed into normally.
+    #' @param ... arguments forwarded to MaestroPipeline$run (same dots as run())
+    #' @return list of MaestroPipeline objects that were run
+    run_pending_collects = function(...) {
+      dots <- rlang::list2(...)
+      network <- self$get_network()
+
+      collect_pipes <- purrr::keep(self$MaestroPipelines, ~.x$get_is_collect())
+      pending <- purrr::keep(collect_pipes, ~.x$get_status_chr() == "Not Run")
+      if (length(pending) == 0) return(invisible(list()))
+
+      run_pipe <- function(
+        pipe,
+        .input = NULL,
+        depth = -1,
+        input_run_id = NA_character_,
+        run_results = list(),
+        lineage = character(),
+        iter = NULL,
+        pre_error = NULL,
+        ...
+      ) {
+        run_id <- make_id()
+        depth <- min(depth + 1, 6)
+
+        tryCatch({
+          do.call(
+            pipe$run,
+            append(
+              dots,
+              list(
+                .input = .input,
+                run_id = run_id,
+                input_run_id = input_run_id,
+                depth = depth,
+                lineage = lineage,
+                iter = iter,
+                pre_error = pre_error
+              )
+            )
+          )
+        }, error = \(e) return(pipe))
+
+        lineage <- append(lineage, pipe$get_pipe_name())
+        run_results <- append(run_results, pipe)
+
+        .input <- pipe$get_returns()
+        out_names <- network$to[network$from == pipe$get_pipe_name()]
+
+        if (pipe$get_status_chr() %in% c("Error", "Not Run")) return(run_results)
+        if (length(out_names) == 0) return(run_results)
+
+        for (i in out_names) {
+          pipe <- self$get_pipe_by_name(i)
+
+          collect_input <- NULL
+          if (pipe$get_is_collect()) {
+            if (pipe$get_status_chr() != "Not Run") next
+            collect_input <- private$resolve_collect_input(pipe, network)
+            if (is.null(collect_input)) next
+          }
+
+          effective_input <- if (!is.null(collect_input)) collect_input else .input
+
+          run_results <- run_pipe(
+            pipe,
+            .input = effective_input,
+            depth = depth,
+            input_run_id = run_id,
+            run_results = run_results,
+            lineage = lineage
+          )
+        }
+
+        run_results
+      }
+
+      purrr::map(pending, ~{
+        collect_input <- private$resolve_collect_input(.x, network)
+        if (is.null(collect_input)) return(list())
+        in_names <- network$from[network$to == .x$get_pipe_name()]
+        in_pipes  <- purrr::map(in_names, self$get_pipe_by_name)
+        collect_input_run_id <- purrr::map(in_pipes, ~{
+          st <- .x$get_status()
+          st$run_id[!is.na(st$run_id) & st$success]
+        }) |>
+          purrr::list_c() |>
+          paste(collapse = ", ")
+        collect_lineage_prefix <- purrr::map(in_pipes, ~{
+          st <- .x$get_status()
+          st$lineage[!is.na(st$lineage) & st$success]
+        }) |>
+          purrr::list_c() |>
+          unique() |>
+          paste(collapse = "&")
+        run_pipe(
+          .x,
+          .input = collect_input,
+          input_run_id = collect_input_run_id,
+          run_results = list(),
+          lineage = collect_lineage_prefix
+        )
+      }) |>
         purrr::list_flatten()
     },
     
@@ -450,6 +715,47 @@ MaestroPipelineList <- R6::R6Class(
   ),
 
   private = list(
-    network = NULL
+    network = NULL,
+
+    resolve_collect_input = function(pipe, network) {
+      i <- pipe$get_pipe_name()
+      in_names <- network$from[network$to == i]
+      in_pipes <- purrr::map(in_names, self$get_pipe_by_name) |>
+        stats::setNames(in_names)
+
+      # All non-iter inputs must have succeeded
+      non_iter_not_ready <- purrr::map_lgl(in_pipes, ~{
+        !.x$get_is_map() && .x$get_status_chr() != "Success"
+      })
+      if (any(non_iter_not_ready)) return(NULL)
+
+      # iter inputs must have all iterations finished (succeeded or errored)
+      iter_not_ready <- purrr::map_lgl(in_pipes, ~{
+        if (!.x$get_is_map()) return(FALSE)
+
+        expected_n <- .x$get_n_expected_iterations()
+        if (is.null(expected_n)) {
+
+          scatter_source_name <- network$from[network$to == .x$get_pipe_name()]
+          if (length(scatter_source_name) == 0) return(FALSE)
+          scatter_source <- self$get_pipe_by_name(scatter_source_name[[1]])
+          expected_n <- length(scatter_source$get_returns())
+        }
+        finished_n <- .x$get_n_invocations()
+        finished_n < expected_n
+      })
+      if (any(iter_not_ready)) return(NULL)
+
+      # Skip if every iteration of every iter input errored
+      iter_all_failed <- purrr::map_lgl(in_pipes, ~{
+        .x$get_is_map() && .x$get_n_artifacts() == 0L
+      })
+      if (any(iter_all_failed)) return(NULL)
+
+      purrr::map(in_pipes, ~{
+        if (.x$get_is_map()) .x$get_all_returns() else .x$get_returns()
+      }) |>
+        stats::setNames(in_names)
+    }
   )
 )

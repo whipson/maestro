@@ -332,8 +332,8 @@ test_that("parse maestroInputs works", {
     readLines(test_path("test_pipelines/test_pipeline_inputs_good.R"))
   )
 
-  expect_type(res$val, "character")
-  expect_length(res$val, 3L)
+  expect_type(res$val$inputs, "character")
+  expect_length(res$val$inputs, 3L)
 })
 
 test_that("parse maestroInputs warns if empty", {

@@ -202,3 +202,55 @@ test_that("Minutely frequency can be combined with maestroHours and other specif
     expect_no_error(build_schedule_entry("pipelines/minutely.R"))
   })
 })
+
+test_that("maestroMap with multiple space-separated expressions is stored as character vector", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      c(
+        "#' @maestroFrequency daily",
+        "upstream <- function() {",
+        "  list(ids = 1:3, labels = c('a', 'b', 'c'))",
+        "}",
+        "",
+        "#' @maestroInputs upstream",
+        "#' @maestroMap .input$ids .input$labels",
+        "downstream <- function(.input) {",
+        "  paste(.input$ids, .input$labels)",
+        "}"
+      ),
+      con = "pipelines/multi_iter.R"
+    )
+
+    entry <- build_schedule_entry("pipelines/multi_iter.R")
+    map <- entry$MaestroPipelines[[2]]$get_map()
+    expect_equal(map, c(".input$ids", ".input$labels"))
+    expect_length(map, 2L)
+  })
+})
+
+test_that("maestroMap with invalid R expression errors at build_schedule_entry", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    # Write the file directly to avoid roxygen2 interpreting escape sequences
+    # in a roxygen comment string. Use a genuinely unparseable fragment.
+    writeLines(
+      c(
+        "#' @maestroFrequency daily",
+        "upstream <- function() 1:3",
+        "",
+        "#' @maestroInputs upstream",
+        "#' @maestroMap .input$ids 1+",
+        "downstream <- function(.input) .input"
+      ),
+      con = "pipelines/bad_iter.R"
+    )
+
+    expect_error(
+      build_schedule_entry("pipelines/bad_iter.R"),
+      regexp = "invalid R expression"
+    )
+  })
+})

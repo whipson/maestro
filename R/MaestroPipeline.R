@@ -22,6 +22,9 @@ MaestroPipeline <- R6::R6Class(
     #' @param priority priority of the pipeline
     #' @param flags arbitrary pipelines flags
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
+    #' @param is_collect logical; TRUE when @maestroInputs uses collect() fan-in marker
+    #' @param map named list of key=expr_string pairs from @maestroMap, or NULL
+    #' @param labels list of key-value pairs for pipeline labeling
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -39,7 +42,10 @@ MaestroPipeline <- R6::R6Class(
       outputs = NULL,
       priority = Inf,
       flags = c(),
-      run_if = NULL
+      run_if = NULL,
+      is_collect = FALSE,
+      map = NULL,
+      labels = list()
     ) {
 
       # Update the private attributes
@@ -51,11 +57,14 @@ MaestroPipeline <- R6::R6Class(
       private$outputs <- outputs
       private$priority <- priority
       private$flags <- flags
+      private$labels <- labels
       private$run_if <- if (!is.null(run_if) && trimws(run_if) == "") {
         NULL
       } else {
         run_if
       }
+      private$is_collect <- is_collect
+      private$map <- map
 
       if (is.null(inputs)) {
         private$tz <- tz
@@ -166,6 +175,8 @@ MaestroPipeline <- R6::R6Class(
     #' @param run_id unique id for the run
     #' @param input_run_id unique id of the run that inputted into the current run (NA if there is no input)
     #' @param lineage character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)
+    #' @param iter iteration number for dynamic fanout
+    #' @param pre_error trigger error from outside execution
     #' @param ... additional arguments (unused)
     #'
     #' @return invisible
@@ -180,6 +191,8 @@ MaestroPipeline <- R6::R6Class(
       run_id = NA_character_,
       input_run_id = NA_character_,
       lineage = c(),
+      iter = NULL,
+      pre_error = NULL,
       ...
     ) {
       internal_run_id <- make_id()
@@ -199,6 +212,34 @@ MaestroPipeline <- R6::R6Class(
           messages = 0L
         )
       )
+
+      if (!is.null(pre_error)) {
+        private$insert_run_time_attributes(
+          internal_run_id,
+          list(
+            run_id = run_id,
+            invoked = TRUE,
+            input_run_id = input_run_id,
+            lineage = lineage
+          )
+        )
+        prepend <- if (depth == 0) {
+          ""
+        } else {
+          marker <- if (private$is_collect) "|-+" else "|-"
+          cli::format_inline(rep("  ", times = depth - 1), marker)
+        }
+        iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""
+        if (!quiet) {
+          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label}")
+        }
+        tryCatch(
+          stop(pre_error),
+          error = private$pre_error_handler(internal_run_id = internal_run_id)
+        )
+        if (!quiet) cli::cli_progress_done(result = "failed")
+        return(invisible())
+      }
 
       if (log_to_console) {
         logger_fun <- logger::appender_tee
@@ -235,13 +276,16 @@ MaestroPipeline <- R6::R6Class(
       prepend <- if (depth == 0) {
         ""
       } else {
-        cli::format_inline(rep("  ", times = depth - 1), "|-")
+        marker <- if (private$is_collect) "|-+" else "|-"
+        cli::format_inline(rep("  ", times = depth - 1), marker)
       }
+
+      iter_label <- if (!is.null(iter)) cli::format_inline(cli::col_blue("[{iter}]")) else ""
 
       do_run <- TRUE
       if (!is.null(private$run_if)) {
         if (!quiet) {
-          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)} (?)")
+          cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label} (?)")
         }
 
         cond <- withCallingHandlers(
@@ -284,7 +328,7 @@ MaestroPipeline <- R6::R6Class(
       private$run_time_start <- run_time_start
 
       if (!quiet) {
-        cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}")
+        cli::cli_progress_step("{prepend}{cli::col_blue(pipe_name)}{iter_label}")
       }
 
       private$insert_run_time_attributes(
@@ -567,6 +611,30 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the number of completed artifact runs (iterations) for this pipeline
+    #' @return integer
+    get_n_artifacts = function() {
+      length(private$run_time_artifacts)
+    },
+
+    #' @description
+    #' Get the number of times this pipeline was invoked (successes + errors).
+    #' For @maestroMap pipelines this equals the number of iterations that have
+    #' finished, regardless of outcome.
+    #' @return integer
+    get_n_invocations = function() {
+      sum(private$run_time_attributes$invoked, na.rm = TRUE)
+    },
+
+    #' @description
+    #' Get all artifact values as a plain unnamed list, regardless of how many
+    #' iterations have run. Used by collect() to gather each-pipe outputs.
+    #' @return list
+    get_all_returns = function() {
+      unname(as.list(private$run_time_artifacts))
+    },
+
+    #' @description
     #' Get list of errors from the pipeline
     #' @return list
     get_errors = function() {
@@ -592,6 +660,59 @@ MaestroPipeline <- R6::R6Class(
     #' @return character
     get_flags = function() {
       private$flags
+    },
+
+    #' @description
+    #' Get the labels of a pipeline as a data.frame
+    #' @return data.frame
+    get_labels = function() {
+      purrr::map(private$labels, ~{
+        dplyr::tibble(
+          label = .x[[1]],
+          value = .x[[2]]
+        )
+      }) |> 
+        purrr::list_rbind()
+    },
+
+    #' @description
+    #' Get whether the pipeline uses `collect` for fan in
+    #' @return logical
+    get_is_collect = function() {
+      private$is_collect
+    },
+
+    #' @description
+    #' Get the .input value to iterate over
+    #' @return character
+    get_map = function() {
+      private$map
+    },
+
+    #' @description
+    #' Get whether the pipeline uses an iterator for dynamic fan out
+    #' @return logical
+    get_is_map = function() {
+      !is.null(private$map)
+    },
+
+    #' @description
+    #' Get the number of iterations expected for this @maestroMap pipeline.
+    #' Set by run_pipe() just before the scatter loop so that resolve_collect_input()
+    #' can compare against get_n_invocations() without depending on the upstream
+    #' return value's length (which is wrong when a field selector is used).
+    #' @return integer or NULL
+    get_n_expected_iterations = function() {
+      private$n_expected_iterations
+    },
+
+    #' @description
+    #' Record the number of iterations that will be dispatched for this @maestroMap pipeline.
+    #' @param n integer
+    #' @return invisible
+    set_n_expected_iterations = function(n) {
+      private$n_expected_iterations <- as.integer(n)
+      invisible()
     },
 
     #' @description
@@ -633,6 +754,7 @@ MaestroPipeline <- R6::R6Class(
       private$messages <- NULL
       private$returns <- NULL
       private$run_time_start <- lubridate::NA_POSIXct_
+      private$n_expected_iterations <- NULL
     },
 
     #' @description
@@ -715,7 +837,11 @@ MaestroPipeline <- R6::R6Class(
     outputs = NULL,
     priority = Inf,
     flags = c(),
+    labels = list(),
     run_if = NULL,
+    is_collect = FALSE,
+    map = NULL,
+    n_expected_iterations = NULL,
 
     # Transformed attributes
     days_of_week = NULL,
@@ -876,6 +1002,27 @@ MaestroPipeline <- R6::R6Class(
           )
         )
         invokeRestart("muffleMessage")
+      }
+    },
+
+    pre_error_handler = function(internal_run_id) {
+      function(e) {
+        e$message <- paste("Error before pipeline execution:", e$message)
+        private$errors <- c(private$errors, e$message)
+        private$status <- "Error"
+        logger::log_error(
+          private$escape_for_glue(e$message),
+          namespace = private$pipe_name
+        )
+        run_time_end <- lubridate::now()
+        private$insert_run_time_attributes(
+          internal_run_id,
+          list(
+            pipeline_ended = run_time_end,
+            success = FALSE,
+            errors = 1L
+          )
+        )
       }
     },
 

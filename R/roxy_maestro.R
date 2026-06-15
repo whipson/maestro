@@ -437,7 +437,20 @@ roxy_tag_parse.roxy_tag_maestroInputs <- function(x) {
     return(x)
   }
 
-  x$val <- strsplit(x$raw, "\\s+")[[1]]
+  collect_match <- regmatches(x$raw, regexpr("^collect\\(([^)]+)\\)$", x$raw))
+
+  if (length(collect_match) == 1L) {
+    inner <- trimws(regmatches(collect_match, regexpr("(?<=\\()([^)]+)(?=\\))", collect_match, perl = TRUE)))
+    pipe_names <- strsplit(inner, "[[:space:],]+")[[1]]
+    pipe_names <- pipe_names[nzchar(pipe_names)]
+    x$val <- list(inputs = pipe_names, is_collect = TRUE)
+  } else {
+    # Plain list of pipeline names (existing behaviour)
+    x$val <- list(
+      inputs = strsplit(x$raw, "\\s+")[[1]],
+      is_collect = FALSE
+    )
+  }
 
   x
 }
@@ -449,6 +462,32 @@ maestroInputs_roclet <- function() {
 #' @exportS3Method
 roclet_process.roclet_maestroInputs <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroInputs")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
+
+# maestroMap ------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroMap <- function(x) {
+  # Split on whitespace to support pmap-style multiple iterators.
+  # Each element is an R expression string referencing `.input`.
+  # A single expression is stored as a length-1 character vector,
+  # keeping this fully backward-compatible with the old single-iterator form.
+  parts <- strsplit(trimws(x$raw), "\\s+")[[1]]
+  parts <- parts[nzchar(parts)]
+  if (length(parts) == 0) {
+    parts <- ".input"
+  }
+  x$val <- parts
+  x
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroMap <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroMap")
   list(
     val = tags$val,
     node = blocks[[1]]$object$topic
