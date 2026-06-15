@@ -17,7 +17,7 @@
   #' @maestroLabel domain transportation
   #' @maestroLabel database enterprise1
   ```
-`@maestroLabel` is not to be confused with `@maestroFlags` which is an arbitrary list of unnamed or unkeyed strings.
+  `@maestroLabel` is not to be confused with `@maestroFlags` which is an arbitrary list of unnamed or unkeyed strings.
 
 - Added helper function `get_labels()` to extract all labelled key-value pairs as a data.frame from a schedule.
 
