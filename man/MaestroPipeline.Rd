@@ -33,6 +33,7 @@ A pipeline is defined as a single R script with a schedule or input
     \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
     \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
     \item \href{#method-MaestroPipeline-get_flags}{\code{MaestroPipeline$get_flags()}}
+    \item \href{#method-MaestroPipeline-get_labels}{\code{MaestroPipeline$get_labels()}}
     \item \href{#method-MaestroPipeline-get_is_collect}{\code{MaestroPipeline$get_is_collect()}}
     \item \href{#method-MaestroPipeline-get_map}{\code{MaestroPipeline$get_map()}}
     \item \href{#method-MaestroPipeline-get_is_map}{\code{MaestroPipeline$get_is_map()}}
@@ -69,7 +70,8 @@ A pipeline is defined as a single R script with a schedule or input
   flags = c(),
   run_if = NULL,
   is_collect = FALSE,
-  map = NULL
+  map = NULL,
+  labels = list()
 )}
     \if{html}{\out{</div>}}
   }
@@ -93,6 +95,7 @@ A pipeline is defined as a single R script with a schedule or input
       \item{\code{run_if}}{string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL}
       \item{\code{is_collect}}{logical; TRUE when @maestroInputs uses collect() fan-in marker}
       \item{\code{map}}{named list of key=expr_string pairs from @maestroMap, or NULL}
+      \item{\code{labels}}{list of key-value pairs for pipeline labeling}
     }
     \if{html}{\out{</div>}}
   }
@@ -446,6 +449,21 @@ iterations have run. Used by collect() to gather each-pipe outputs.
   }
   \subsection{Returns}{
     character
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_labels"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_labels}{}}}
+\subsection{\code{MaestroPipeline$get_labels()}}{
+  Get the labels of a pipeline as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_labels()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
   }
 }
 

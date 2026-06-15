@@ -24,6 +24,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param run_if string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL
     #' @param is_collect logical; TRUE when @maestroInputs uses collect() fan-in marker
     #' @param map named list of key=expr_string pairs from @maestroMap, or NULL
+    #' @param labels list of key-value pairs for pipeline labeling
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -43,7 +44,8 @@ MaestroPipeline <- R6::R6Class(
       flags = c(),
       run_if = NULL,
       is_collect = FALSE,
-      map = NULL
+      map = NULL,
+      labels = list()
     ) {
 
       # Update the private attributes
@@ -55,6 +57,7 @@ MaestroPipeline <- R6::R6Class(
       private$outputs <- outputs
       private$priority <- priority
       private$flags <- flags
+      private$labels <- labels
       private$run_if <- if (!is.null(run_if) && trimws(run_if) == "") {
         NULL
       } else {
@@ -660,6 +663,19 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the labels of a pipeline as a data.frame
+    #' @return data.frame
+    get_labels = function() {
+      purrr::map(private$labels, ~{
+        dplyr::tibble(
+          label = .x[[1]],
+          value = .x[[2]]
+        )
+      }) |> 
+        purrr::list_rbind()
+    },
+
+    #' @description
     #' Get whether the pipeline uses `collect` for fan in
     #' @return logical
     get_is_collect = function() {
@@ -821,6 +837,7 @@ MaestroPipeline <- R6::R6Class(
     outputs = NULL,
     priority = Inf,
     flags = c(),
+    labels = list(),
     run_if = NULL,
     is_collect = FALSE,
     map = NULL,

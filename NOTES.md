@@ -210,7 +210,9 @@ run_pending_collects(dots)                            # fire collect + recurse o
 
 For a fan-in to actually execute, **all named upstream pipelines must be scheduled in the same orchestrator run**. If any upstream is not scheduled (wrong frequency, skipped, future start time, etc.), the collect node will wait indefinitely.
 
-**Status:** Runtime warning when a collect node's upstream set is only partially scheduled — deferred post-v1.2.0.
+**Status (deferred post-v1.2.0):**
+- Runtime warning when a collect node's upstream set is only partially scheduled.
+- `build_schedule()` warning when `collect()` names pipelines with differing schedules — such a collect can never fire because the upstreams will never be co-scheduled in the same orchestrator run.
 
 ---
 
@@ -263,5 +265,6 @@ Getters added: `get_is_collect()`, `get_is_map()`, `get_map()`, `get_n_artifacts
 - [ ] Cancel-on-first-failure for fan-out
 - [ ] Aliasing in `collect()`
 - [ ] Runtime warning when collect upstream is only partially scheduled
+- [ ] `build_schedule()` warning when a `collect()` names pipelines that run on different schedules (they will never be co-scheduled in the same orchestrator run, so the collect node will never fire)
 - [ ] CLI output improvements for fan-in/fan-out (docs and display)
 - [ ] Label-by-input-value for branch identity in `get_status()` / `get_artifacts()`

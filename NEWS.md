@@ -8,9 +8,18 @@
 
 - `build_schedule()` gains a `cores` argument, enabling parallel parsing of pipeline scripts via `furrr`. Usage mirrors `run_schedule()`: set `future::plan(future::multisession)` before calling `build_schedule(cores = n)`.
 
-- New `@maestroMap` tag enables dynamic fan-out (scatter). Use `@maestroInputs upstream_name` combined with `@maestroMap` on the downstream pipeline. An empty tag (`@maestroMap`) iterates over every element of the upstream return value. Providing one or more `.input$field` expressions (space-separated) selects which fields to scatter over, keeping the full list available as `.input` in each branch. Multiple expressions zip across several fields simultaneously, similar to `purrr::pmap()`. All vectors must be the same length or length 1 (scalars are recycled).
+- New `@maestroMap` tag enables dynamic fan-out (scatter). Use `@maestroInputs upstream_name` combined with `@maestroMap` on the downstream pipeline. An empty tag (`@maestroMap`) iterates over every element of the upstream return value. Providing one or more `.input$field` expressions (space-separated) selects which fields to scatter over, keeping the full list available as `.input` in each branch. Multiple expressions zip across several fields simultaneously, similar to `purrr::pmap()`.
 
 - Fan-in (collect): a downstream pipeline declared with `@maestroInputs collect(upstream1, upstream2, ...)` gathers the return values of all listed upstream pipelines into a single named list passed as `.input`. Works with both static multi-source fan-in and dynamic fan-out followed by fan-in (`@maestroMap` → `collect()`). In `get_status()`, `input_run_id` shows comma-separated IDs of all contributing upstream runs and `lineage` joins distinct upstream paths with `&` (e.g. `letter_a&letter_b->ab`). Note that `collect()` is not an actual maestro function, but syntactic sugar.
+
+- New `@maestroLabel` tag allows adding of metadata to a pipeline with key-value pairs. Multiple instances of `@maestroLabel` can be used to add any number of key-value pairs:
+  ```
+  #' @maestroLabel domain transportation
+  #' @maestroLabel database enterprise1
+  ```
+`@maestroLabel` is not to be confused with `@maestroFlags` which is an arbitrary list of unnamed or unkeyed strings.
+
+- Added helper function `get_labels()` to extract all labelled key-value pairs as a data.frame from a schedule.
 
 # maestro 1.1.1
 

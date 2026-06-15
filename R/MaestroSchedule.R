@@ -235,6 +235,13 @@ MaestroSchedule <- R6::R6Class(
     },
 
     #' @description
+    #' Get all pipeline labels as a data.frame
+    #' @return data.frame
+    get_labels = function() {
+      self$PipelineList$get_labels()
+    },
+
+    #' @description
     #' Get full sequence of scheduled executions for all pipelines
     #' @param n optional sequence limit
     #' @param min_datetime optional minimum datetime

@@ -485,10 +485,6 @@ roxy_tag_parse.roxy_tag_maestroMap <- function(x) {
   x
 }
 
-maestroMap_roclet <- function() {
-  roxygen2::roclet("maestroMap")
-}
-
 #' @exportS3Method
 roclet_process.roclet_maestroMap <- function(x, blocks, env, base_path) {
   tags <- roxygen2::block_get_tag(blocks[[1]], "maestroMap")

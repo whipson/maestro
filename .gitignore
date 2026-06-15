@@ -15,5 +15,5 @@ inst/doc
 /.quarto/
 **/*.quarto_ipynb
 
-.positai/
+.posit/assistant/
 .positai/settings.json

@@ -26,6 +26,11 @@ build_schedule_entry <- function(script_path) {
     map = "maestroMap"
   )
 
+  # List of maestro tags that can be used more than once
+  maestro_tag_names_mult <- list(
+    labels = "maestroLabel"
+  )
+
   # Initial Validation ------------------------------------------------------
 
   # Get all the roxygen tags - this actually executes the script, which is fine
@@ -52,17 +57,20 @@ build_schedule_entry <- function(script_path) {
   withCallingHandlers({
     maestro_tag_vals <- purrr::map(tag_list, ~{
       tag <- .x
-      val <- purrr::map(
+      single_vals <- purrr::map(
         maestro_tag_names,
         ~{
-          val <- roxygen2::block_get_tag_value(tag, .x)
-          if (is.null(val)) {
-            val <- NULL
-          }
-          val
+          roxygen2::block_get_tag_value(tag, .x)
         }
       )
-      val
+      multi_vals <- purrr::map(
+        maestro_tag_names_mult,
+        ~{
+          roxygen2::block_get_tags(tag, .x) |> 
+            purrr::map("val")
+        }
+      )
+      append(single_vals, multi_vals)
     })
   },
   purrr_error_indexed = function(err) {
@@ -99,7 +107,6 @@ build_schedule_entry <- function(script_path) {
   }, purrr_error_indexed = function(err) {
     rlang::cnd_signal(err$parent)
   })
-
 
   # Create MaestroPipelineList ----------------------------------------------
 
@@ -281,7 +288,8 @@ build_schedule_entry <- function(script_path) {
         flags = .y$flags %n% character(),
         run_if = .y$run_if %n% NULL,
         is_collect = is_collect,
-        map = map
+        map = map,
+        labels = .y$labels
       )
     })
   }, purrr_error_indexed = function(err) {

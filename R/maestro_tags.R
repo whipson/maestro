@@ -254,7 +254,7 @@
 #'
 #' # maestroFlags
 #'
-#' Arbitrary labeling tags which are then made accessible via `get_flags()`. A pipeline
+#' Arbitrary strings which are then made accessible via `get_flags()`. A pipeline
 #' can have multiple tags separated by spaces.
 #'
 #' Default:
@@ -263,6 +263,19 @@
 #' - `#' @maestroFlags critical etl cloud`
 #' - `#' @maestroFlags aviation`
 #'
+#' 
+#' # maestroLabel
+#' 
+#' Key-value pairs used for attributing metadata for a pipeline. Multiple labels
+#' can be assigned to a pipeline using multiple instances of `@maestroLabel`. These
+#' labels can be extracted as a data.frame. Each label must follow the pattern of 
+#' `key` `value`.
+#' 
+#' Default:
+#' 
+#' Examples:
+#' - `#' @maestroLabel domain transportation`
+#' - `#' @maestroLabel author will.hipson`
 #'
 #' # maestro
 #'

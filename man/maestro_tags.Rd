@@ -268,7 +268,7 @@ Examples:
 }
 
 \section{maestroFlags}{
-Arbitrary labeling tags which are then made accessible via \code{get_flags()}. A pipeline
+Arbitrary strings which are then made accessible via \code{get_flags()}. A pipeline
 can have multiple tags separated by spaces.
 
 Default:
@@ -277,6 +277,21 @@ Examples:
 \itemize{
 \item \verb{#' @maestroFlags critical etl cloud}
 \item \verb{#' @maestroFlags aviation}
+}
+}
+
+\section{maestroLabel}{
+Key-value pairs used for attributing metadata for a pipeline. Multiple labels
+can be assigned to a pipeline using multiple instances of \verb{@maestroLabel}. These
+labels can be extracted as a data.frame. Each label must follow the pattern of
+\code{key} \code{value}.
+
+Default:
+
+Examples:
+\itemize{
+\item \verb{#' @maestroLabel domain transportation}
+\item \verb{#' @maestroLabel author will.hipson}
 }
 }
 
