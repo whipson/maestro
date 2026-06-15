@@ -1,13 +1,12 @@
-# Get the network structure of pipelines in a MaestroSchedule object
+# Get the labels of pipelines in a MaestroSchedule object
 
-Returns the pipeline dependency structure as an edge list data.frame.
-Each row represents a directed dependency between two pipelines. The
-result will be empty if there are no DAG pipelines in the schedule.
+Creates a data.frame of labels for all labelled pipelines in the
+schedule.
 
 ## Usage
 
 ``` r
-get_network(schedule)
+get_labels(schedule)
 ```
 
 ## Arguments
@@ -19,7 +18,7 @@ get_network(schedule)
 
 ## Value
 
-data.frame with columns `from` and `to`
+data.frame
 
 ## Examples
 
@@ -29,9 +28,9 @@ if (interactive()) {
   create_pipeline("my_new_pipeline", pipeline_dir, open = FALSE)
   schedule <- build_schedule(pipeline_dir = pipeline_dir)
 
-  get_network(schedule)
+  get_labels(schedule)
 
   # Alternatively, use the underlying R6 method
-  schedule$get_network()
+  schedule$get_labels()
 }
 ```

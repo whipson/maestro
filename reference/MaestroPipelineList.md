@@ -55,11 +55,15 @@ when there are multiple maestro pipelines in a single script
 
 - [`MaestroPipelineList$get_flags()`](#method-MaestroPipelineList-get_flags)
 
+- [`MaestroPipelineList$get_labels()`](#method-MaestroPipelineList-get_labels)
+
 - [`MaestroPipelineList$get_network()`](#method-MaestroPipelineList-get_network)
 
 - [`MaestroPipelineList$validate_network()`](#method-MaestroPipelineList-validate_network)
 
 - [`MaestroPipelineList$run()`](#method-MaestroPipelineList-run)
+
+- [`MaestroPipelineList$run_pending_collects()`](#method-MaestroPipelineList-run_pending_collects)
 
 - [`MaestroPipelineList$reset_pipelines()`](#method-MaestroPipelineList-reset_pipelines)
 
@@ -399,6 +403,20 @@ list
 
 ------------------------------------------------------------------------
 
+### `MaestroPipelineList$get_labels()`
+
+Get the labels of the pipelines as a data.frame
+
+#### Usage
+
+    MaestroPipelineList$get_labels()
+
+#### Returns
+
+data.frame
+
+------------------------------------------------------------------------
+
 ### `MaestroPipelineList$get_network()`
 
 Get the network structure as a edge list
@@ -454,6 +472,29 @@ Runs all the pipelines in the list
 #### Returns
 
 invisible
+
+------------------------------------------------------------------------
+
+### `MaestroPipelineList$run_pending_collects()`
+
+Run any collect pipelines that are ready but were skipped during a
+parallel run. Called on the main process after update_pipelines() has
+synced worker state back. Uses run_pipe internally so that the collect
+pipe's own downstream outputs are recursed into normally.
+
+#### Usage
+
+    MaestroPipelineList$run_pending_collects(...)
+
+#### Arguments
+
+- `...`:
+
+  arguments forwarded to MaestroPipeline\$run (same dots as run())
+
+#### Returns
+
+list of MaestroPipeline objects that were run
 
 ------------------------------------------------------------------------
 

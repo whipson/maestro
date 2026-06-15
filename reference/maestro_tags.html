@@ -9,7 +9,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -52,7 +53,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Maestro Tags</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
       <div class="d-none name"><code>maestro_tags.Rd</code></div>
     </div>
 
@@ -172,8 +173,17 @@ These names must match the function name defining the inputting pipeline. Multip
 pipelines can be used as inputs and the input value is used in the target pipeline
 via the required <code>.input</code> parameter. Note that this tag could be redundant if the
 inputting pipeline uses <code>maestroOutputs</code>.</p>
+<p>To enable <strong>fan-in (collect)</strong>, wrap one or more input names with <code>collect()</code>.
+The downstream pipeline receives a named list as <code>.input</code>, where each name
+corresponds to an upstream pipeline and each value is that pipeline's return
+value. All listed upstream pipelines must have succeeded before the collect
+pipeline fires. Works with both static multi-source inputs and dynamic fan-out
+followed by fan-in (<code>@maestroMap</code> → <code>collect()</code>): in the latter case <code>.input</code>
+is a list of all successful iteration results.</p>
 <p>Default:</p>
 <p>Examples:</p><ul><li><p><code>#' @maestroInputs extract verify</code></p></li>
+<li><p><code>#' @maestroInputs collect(letter_a, letter_b)</code></p></li>
+<li><p><code>#' @maestroInputs collect(multiply)</code> <em>(collect all iterations of a <code>@maestroMap</code> upstream)</em></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="maestrooutputs">maestroOutputs<a class="anchor" aria-label="anchor" href="#maestrooutputs"></a></h2>
@@ -195,6 +205,37 @@ the presence of the tag indicates whether it is skipped. This tag is ignored whe
 <p>Examples:</p><ul><li><p><code>#' @maestroSkip</code></p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="maestrorunif">maestroRunIf<a class="anchor" aria-label="anchor" href="#maestrorunif"></a></h2>
+    <p>An R expression that is evaluated at run time to determine whether the pipeline
+should execute. The expression must return a single <code>TRUE</code> or <code>FALSE</code>. If the
+expression returns <code>FALSE</code>, the pipeline is silently skipped for that run. Resources
+passed via <code>run_schedule(..., resources = list(...))</code> are available inside the
+expression, as is <code>.input</code> for DAG pipelines.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroRunIf Sys.getenv("RUN_PIPELINE") == "true"</code></p></li>
+<li><p><code>#' @maestroRunIf lubridate::wday(lubridate::now()) == 2</code></p></li>
+<li><p><code>#' @maestroRunIf !is.null(.input)</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestromap">maestroMap<a class="anchor" aria-label="anchor" href="#maestromap"></a></h2>
+    <p>Enables <strong>dynamic fan-out (scatter)</strong>: the downstream pipeline executes once
+per element of the upstream return value. When the tag value is empty, each
+element of the upstream return value is passed directly as <code>.input</code>. When one
+or more R expressions referencing <code>.input</code> fields are provided (space-separated),
+those fields are scattered over and zipped together <code>pmap</code>-style: each iteration
+receives <code>.input</code> with all specified fields replaced by their i-th element.
+The full list remains accessible as <code>.input</code> in every branch.</p>
+<p>Vectors must all have the same length, unless a vector has length 1, in which
+case it is recycled across all iterations. Mismatched lengths produce a
+pipeline error.</p>
+<p>Requires <code>@maestroInputs</code> to reference an upstream pipeline.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroMap</code> <em>(iterate over each element of the upstream return value)</em></p></li>
+<li><p><code>#' @maestroMap .input$items</code></p></li>
+<li><p><code>#' @maestroMap .input$ids .input$labels</code></p></li>
+<li><p><code>#' @maestroMap .input$model .input$label .input$threshold</code></p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="maestropriority">maestroPriority<a class="anchor" aria-label="anchor" href="#maestropriority"></a></h2>
     <p>Determines the order in which pipelines that run at the same scheduled instance
 are executed. Values are positive integers from 1 to N. Order is determined in
@@ -208,11 +249,21 @@ By default, all pipelines are given equal priority.</p>
 </ul></div>
     <div class="section level2">
     <h2 id="maestroflags">maestroFlags<a class="anchor" aria-label="anchor" href="#maestroflags"></a></h2>
-    <p>Arbitrary labeling tags which are then made accessible via <code><a href="get_flags.html">get_flags()</a></code>. A pipeline
+    <p>Arbitrary strings which are then made accessible via <code><a href="get_flags.html">get_flags()</a></code>. A pipeline
 can have multiple tags separated by spaces.</p>
 <p>Default:</p>
 <p>Examples:</p><ul><li><p><code>#' @maestroFlags critical etl cloud</code></p></li>
 <li><p><code>#' @maestroFlags aviation</code></p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="maestrolabel">maestroLabel<a class="anchor" aria-label="anchor" href="#maestrolabel"></a></h2>
+    <p>Key-value pairs used for attributing metadata for a pipeline. Multiple labels
+can be assigned to a pipeline using multiple instances of <code>@maestroLabel</code>. These
+labels can be extracted as a data.frame. Each label must follow the pattern of
+<code>key</code> <code>value</code>.</p>
+<p>Default:</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroLabel domain transportation</code></p></li>
+<li><p><code>#' @maestroLabel author will.hipson</code></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a></h2>

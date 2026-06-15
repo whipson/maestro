@@ -28,7 +28,7 @@ Class for a schedule of pipelines
 
 - [`MaestroSchedule$get_flags()`](#method-MaestroSchedule-get_flags)
 
-- [`MaestroSchedule$show_network()`](#method-MaestroSchedule-show_network)
+- [`MaestroSchedule$get_labels()`](#method-MaestroSchedule-get_labels)
 
 - [`MaestroSchedule$get_run_sequence()`](#method-MaestroSchedule-get_run_sequence)
 
@@ -174,17 +174,17 @@ data.frame
 
 ------------------------------------------------------------------------
 
-### `MaestroSchedule$show_network()`
+### `MaestroSchedule$get_labels()`
 
-Visualize the DAG relationships between pipelines in the schedule
+Get all pipeline labels as a data.frame
 
 #### Usage
 
-    MaestroSchedule$show_network()
+    MaestroSchedule$get_labels()
 
 #### Returns
 
-interactive visualization
+data.frame
 
 ------------------------------------------------------------------------
 

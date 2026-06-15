@@ -119,9 +119,9 @@ Examples:
 
 ### maestroFlags
 
-Arbitrary labeling tags which are then made accessible via
+Arbitrary strings which are then made accessible via
 [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md).
-A pipeline can have multiple tags separated by spaces.
+A pipeline can have multiple flags separated by spaces.
 
 Default:
 
@@ -130,6 +130,22 @@ Examples
 - `#' @maestroFlags critical aviation`
 
 - `#' @maestroFlags time-series`
+
+### maestroLabel
+
+Key-value pairs used for attributing metadata for a pipeline. Multiple
+labels can be assigned to a pipeline using multiple instances of
+`@maestroLabel`. These labels can be extracted as a data.frame using
+[`get_labels()`](https://whipson.github.io/maestro/reference/get_labels.md).
+Each label must follow the pattern of `key` `value`.
+
+Default:
+
+Examples:
+
+- `#' @maestroLabel domain transportation`
+
+- `#' @maestroLabel author will.hipson`
 
 ------------------------------------------------------------------------
 
@@ -195,11 +211,57 @@ input value is used in the target pipeline via the required `.input`
 parameter. Note that this tag could be redundant if the inputting
 pipeline uses `maestroOutputs`.
 
+To enable **fan-in (collect)**, wrap one or more input names with
+`collect()`. The downstream pipeline receives a named list as `.input`,
+where each name corresponds to an upstream pipeline and each value is
+that pipeline’s return value. All listed upstream pipelines must have
+succeeded before the collect pipeline fires. Works with both static
+multi-source inputs and dynamic fan-out followed by fan-in
+(`@maestroMap` → `collect()`): in the latter case `.input` is a list of
+all successful iteration results.
+
 Default:
 
 Examples:
 
 - `#' @maestroInputs extract verify`
+
+- `#' @maestroInputs collect(letter_a, letter_b)`
+
+- `#' @maestroInputs collect(multiply)` *(collect all iterations of a
+  `@maestroMap` upstream)*
+
+### maestroMap
+
+Enables **dynamic fan-out (scatter)**: the downstream pipeline executes
+once per element of the upstream return value. When the tag value is
+empty, each element of the upstream return value is passed directly as
+`.input`. When one or more R expressions referencing `.input` fields are
+provided (space-separated), those fields are scattered over and zipped
+together `pmap`-style: each iteration receives `.input` with all
+specified fields replaced by their i-th element. The full list remains
+accessible as `.input` in every branch.
+
+All vectors must be the same length, unless a vector has length 1, in
+which case it is recycled across all iterations. Mismatched lengths
+produce a pipeline error.
+
+Requires `@maestroInputs` to reference an upstream pipeline.
+
+Default:
+
+Examples:
+
+- `#' @maestroMap` *(iterate over each element of the upstream return
+  value)*
+
+- `#' @maestroMap .input$letter`
+
+- `#' @maestroMap .input$ids .input$labels`
+
+- `#' @maestroMap .input$model .input$label .input$threshold`
+
+------------------------------------------------------------------------
 
 ### maestroOutputs
 

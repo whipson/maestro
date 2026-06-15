@@ -6,11 +6,12 @@ articles:
   maestro-2-motivation-concepts: maestro-2-motivation-concepts.html
   maestro-3-advanced-scheduling: maestro-3-advanced-scheduling.html
   maestro-4-directed-acyclic-graphs: maestro-4-directed-acyclic-graphs.html
+  maestro-4b-directed-acyclic-graphs: maestro-4b-directed-acyclic-graphs.html
   maestro-5-logging: maestro-5-logging.html
   maestro-6-deployment: maestro-6-deployment.html
   maestro-7-tag-reference: maestro-7-tag-reference.html
   maestro-8-conditionals: maestro-8-conditionals.html
-last_built: 2026-05-20T17:48Z
+last_built: 2026-06-15T13:53Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles

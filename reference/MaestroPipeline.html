@@ -9,7 +9,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -52,7 +53,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for an individual maestro pipeline A pipeline is defined as a single R script with a schedule or input</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
       <div class="d-none name"><code>MaestroPipeline.Rd</code></div>
     </div>
 
@@ -81,10 +82,19 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <li><p><a href="#method-MaestroPipeline-get_priority"><code>MaestroPipeline$get_priority()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_returns"><code>MaestroPipeline$get_returns()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_artifacts"><code>MaestroPipeline$get_artifacts()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_n_artifacts"><code>MaestroPipeline$get_n_artifacts()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_n_invocations"><code>MaestroPipeline$get_n_invocations()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_all_returns"><code>MaestroPipeline$get_all_returns()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_errors"><code>MaestroPipeline$get_errors()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_warnings"><code>MaestroPipeline$get_warnings()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_messages"><code>MaestroPipeline$get_messages()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_flags"><code>MaestroPipeline$get_flags()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_labels"><code>MaestroPipeline$get_labels()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_is_collect"><code>MaestroPipeline$get_is_collect()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_map"><code>MaestroPipeline$get_map()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_is_map"><code>MaestroPipeline$get_is_map()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_n_expected_iterations"><code>MaestroPipeline$get_n_expected_iterations()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-set_n_expected_iterations"><code>MaestroPipeline$set_n_expected_iterations()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_inputs"><code>MaestroPipeline$update_inputs()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_outputs"><code>MaestroPipeline$update_outputs()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-reset_run_time_attributes"><code>MaestroPipeline$reset_run_time_attributes()</code></a></p></li>
@@ -109,7 +119,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  outputs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  priority <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  run_if <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  run_if <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  is_collect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  map <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
@@ -158,6 +171,15 @@ A pipeline is defined as a single R script with a schedule or input</p>
       <dt><code>run_if</code></dt>
 <dd><p>string representing an R expression that can be evaluated and returns TRUE or FALSE; or NULL</p></dd>
 
+      <dt><code>is_collect</code></dt>
+<dd><p>logical; TRUE when @maestroInputs uses collect() fan-in marker</p></dd>
+
+      <dt><code>map</code></dt>
+<dd><p>named list of key=expr_string pairs from @maestroMap, or NULL</p></dd>
+
+      <dt><code>labels</code></dt>
+<dd><p>list of key-value pairs for pipeline labeling</p></dd>
+
 
 </dl><p></p></div>
 </div><p></p><div class="section">
@@ -191,6 +213,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  run_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  input_run_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  lineage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  iter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pre_error <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
@@ -224,6 +248,12 @@ A pipeline is defined as a single R script with a schedule or input</p>
 
       <dt><code>lineage</code></dt>
 <dd><p>character vector of upstream pipeline names ordered from first to latest (or empty if no upstream pipes)</p></dd>
+
+      <dt><code>iter</code></dt>
+<dd><p>iteration number for dynamic fanout</p></dd>
+
+      <dt><code>pre_error</code></dt>
+<dd><p>trigger error from outside execution</p></dd>
 
       <dt><code>...</code></dt>
 <dd><p>additional arguments (unused)</p></dd>
@@ -390,13 +420,52 @@ A pipeline is defined as a single R script with a schedule or input</p>
 
 </div>
 
+<p></p><hr><a id="method-MaestroPipeline-get_n_artifacts"></a><div class="section">
+<h3 id="maestropipeline-get-n-artifacts-"><code>MaestroPipeline$get_n_artifacts()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-n-artifacts-"></a></h3>
+<p>Get the number of completed artifact runs (iterations) for this pipeline</p><div class="section">
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_n_artifacts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
+<p>integer</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_n_invocations"></a><div class="section">
+<h3 id="maestropipeline-get-n-invocations-"><code>MaestroPipeline$get_n_invocations()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-n-invocations-"></a></h3>
+<p>Get the number of times this pipeline was invoked (successes + errors).
+For @maestroMap pipelines this equals the number of iterations that have
+finished, regardless of outcome.</p><div class="section">
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_n_invocations</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-14">Returns<a class="anchor" aria-label="anchor" href="#returns-14"></a></h4>
+<p>integer</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_all_returns"></a><div class="section">
+<h3 id="maestropipeline-get-all-returns-"><code>MaestroPipeline$get_all_returns()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-all-returns-"></a></h3>
+<p>Get all artifact values as a plain unnamed list, regardless of how many
+iterations have run. Used by collect() to gather each-pipe outputs.</p><div class="section">
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_all_returns</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-15">Returns<a class="anchor" aria-label="anchor" href="#returns-15"></a></h4>
+<p>list</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroPipeline-get_errors"></a><div class="section">
 <h3 id="maestropipeline-get-errors-"><code>MaestroPipeline$get_errors()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-errors-"></a></h3>
 <p>Get list of errors from the pipeline</p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_errors</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
+<h4 id="returns-16">Returns<a class="anchor" aria-label="anchor" href="#returns-16"></a></h4>
 <p>list</p>
 </div>
 
@@ -405,10 +474,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-get_warnings"></a><div class="section">
 <h3 id="maestropipeline-get-warnings-"><code>MaestroPipeline$get_warnings()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-warnings-"></a></h3>
 <p>Get list of warnings from the pipeline</p><div class="section">
-<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_warnings</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-14">Returns<a class="anchor" aria-label="anchor" href="#returns-14"></a></h4>
+<h4 id="returns-17">Returns<a class="anchor" aria-label="anchor" href="#returns-17"></a></h4>
 <p>list</p>
 </div>
 
@@ -417,10 +486,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-get_messages"></a><div class="section">
 <h3 id="maestropipeline-get-messages-"><code>MaestroPipeline$get_messages()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-messages-"></a></h3>
 <p>Get list of messages from the pipeline</p><div class="section">
-<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_messages</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-15">Returns<a class="anchor" aria-label="anchor" href="#returns-15"></a></h4>
+<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
 <p>list</p>
 </div>
 
@@ -429,11 +498,93 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-get_flags"></a><div class="section">
 <h3 id="maestropipeline-get-flags-"><code>MaestroPipeline$get_flags()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-flags-"></a></h3>
 <p>Get the flags of a pipeline as a vector</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-16">Returns<a class="anchor" aria-label="anchor" href="#returns-16"></a></h4>
+<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
 <p>character</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_labels"></a><div class="section">
+<h3 id="maestropipeline-get-labels-"><code>MaestroPipeline$get_labels()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-labels-"></a></h3>
+<p>Get the labels of a pipeline as a data.frame</p><div class="section">
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_labels</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_is_collect"></a><div class="section">
+<h3 id="maestropipeline-get-is-collect-"><code>MaestroPipeline$get_is_collect()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-is-collect-"></a></h3>
+<p>Get whether the pipeline uses <code>collect</code> for fan in</p><div class="section">
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_is_collect</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-21">Returns<a class="anchor" aria-label="anchor" href="#returns-21"></a></h4>
+<p>logical</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_map"></a><div class="section">
+<h3 id="maestropipeline-get-map-"><code>MaestroPipeline$get_map()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-map-"></a></h3>
+<p>Get the .input value to iterate over</p><div class="section">
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_map</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-22">Returns<a class="anchor" aria-label="anchor" href="#returns-22"></a></h4>
+<p>character</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_is_map"></a><div class="section">
+<h3 id="maestropipeline-get-is-map-"><code>MaestroPipeline$get_is_map()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-is-map-"></a></h3>
+<p>Get whether the pipeline uses an iterator for dynamic fan out</p><div class="section">
+<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_is_map</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-23">Returns<a class="anchor" aria-label="anchor" href="#returns-23"></a></h4>
+<p>logical</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_n_expected_iterations"></a><div class="section">
+<h3 id="maestropipeline-get-n-expected-iterations-"><code>MaestroPipeline$get_n_expected_iterations()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-n-expected-iterations-"></a></h3>
+<p>Get the number of iterations expected for this @maestroMap pipeline.
+Set by run_pipe() just before the scatter loop so that resolve_collect_input()
+can compare against get_n_invocations() without depending on the upstream
+return value's length (which is wrong when a field selector is used).</p><div class="section">
+<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_n_expected_iterations</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-24">Returns<a class="anchor" aria-label="anchor" href="#returns-24"></a></h4>
+<p>integer or NULL</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-set_n_expected_iterations"></a><div class="section">
+<h3 id="maestropipeline-set-n-expected-iterations-"><code>MaestroPipeline$set_n_expected_iterations()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-set-n-expected-iterations-"></a></h3>
+<p>Record the number of iterations that will be dispatched for this @maestroMap pipeline.</p><div class="section">
+<h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">set_n_expected_iterations</span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>n</code></dt>
+<dd><p>integer</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-25">Returns<a class="anchor" aria-label="anchor" href="#returns-25"></a></h4>
+<p>invisible</p>
 </div>
 
 </div>
@@ -441,17 +592,17 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-update_inputs"></a><div class="section">
 <h3 id="maestropipeline-update-inputs-"><code>MaestroPipeline$update_inputs()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-inputs-"></a></h3>
 <p>Update the inputs of a pipeline</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-27">Usage<a class="anchor" aria-label="anchor" href="#usage-27"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_inputs</span><span class="op">(</span><span class="va">inputs</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>inputs</code></dt>
 <dd><p>character vector of inputting pipeline names</p></dd>
 
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-17">Returns<a class="anchor" aria-label="anchor" href="#returns-17"></a></h4>
+<h4 id="returns-26">Returns<a class="anchor" aria-label="anchor" href="#returns-26"></a></h4>
 <p>vector</p>
 </div>
 
@@ -460,17 +611,17 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-update_outputs"></a><div class="section">
 <h3 id="maestropipeline-update-outputs-"><code>MaestroPipeline$update_outputs()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-outputs-"></a></h3>
 <p>Update the outputs of a pipeline</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-28">Usage<a class="anchor" aria-label="anchor" href="#usage-28"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_outputs</span><span class="op">(</span><span class="va">outputs</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>outputs</code></dt>
 <dd><p>character vector of outputting pipeline names</p></dd>
 
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
+<h4 id="returns-27">Returns<a class="anchor" aria-label="anchor" href="#returns-27"></a></h4>
 <p>vector</p>
 </div>
 
@@ -479,10 +630,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-reset_run_time_attributes"></a><div class="section">
 <h3 id="maestropipeline-reset-run-time-attributes-"><code>MaestroPipeline$reset_run_time_attributes()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-reset-run-time-attributes-"></a></h3>
 <p>Resets run time attributes</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">reset_run_time_attributes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<h4 id="returns-28">Returns<a class="anchor" aria-label="anchor" href="#returns-28"></a></h4>
 <p>invisible</p>
 </div>
 
@@ -491,14 +642,14 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-get_run_sequence"></a><div class="section">
 <h3 id="maestropipeline-get-run-sequence-"><code>MaestroPipeline$get_run_sequence()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-run-sequence-"></a></h3>
 <p>Get the run sequence of a pipeline</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-30">Usage<a class="anchor" aria-label="anchor" href="#usage-30"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>n</code></dt>
 <dd><p>optional sequence limit</p></dd>
 
@@ -511,7 +662,7 @@ A pipeline is defined as a single R script with a schedule or input</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
+<h4 id="returns-29">Returns<a class="anchor" aria-label="anchor" href="#returns-29"></a></h4>
 <p>vector</p>
 </div>
 
@@ -520,10 +671,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <p></p><hr><a id="method-MaestroPipeline-clone"></a><div class="section">
 <h3 id="maestropipeline-clone-"><code>MaestroPipeline$clone()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<h4 id="usage-31">Usage<a class="anchor" aria-label="anchor" href="#usage-31"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

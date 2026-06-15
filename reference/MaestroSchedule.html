@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -50,7 +51,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for a schedule of pipelines</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
       <div class="d-none name"><code>MaestroSchedule.Rd</code></div>
     </div>
 
@@ -80,7 +81,7 @@
 <li><p><a href="#method-MaestroSchedule-get_artifacts"><code>MaestroSchedule$get_artifacts()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_network"><code>MaestroSchedule$get_network()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_flags"><code>MaestroSchedule$get_flags()</code></a></p></li>
-<li><p><a href="#method-MaestroSchedule-show_network"><code>MaestroSchedule$show_network()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-get_labels"><code>MaestroSchedule$get_labels()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_run_sequence"><code>MaestroSchedule$get_run_sequence()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-clone"><code>MaestroSchedule$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroSchedule-initialize"></a><div class="section">
@@ -202,14 +203,14 @@
 
 </div>
 
-<p></p><hr><a id="method-MaestroSchedule-show_network"></a><div class="section">
-<h3 id="maestroschedule-show-network-"><code>MaestroSchedule$show_network()</code><a class="anchor" aria-label="anchor" href="#maestroschedule-show-network-"></a></h3>
-<p>Visualize the DAG relationships between pipelines in the schedule</p><div class="section">
+<p></p><hr><a id="method-MaestroSchedule-get_labels"></a><div class="section">
+<h3 id="maestroschedule-get-labels-"><code>MaestroSchedule$get_labels()</code><a class="anchor" aria-label="anchor" href="#maestroschedule-get-labels-"></a></h3>
+<p>Get all pipeline labels as a data.frame</p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">show_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_labels</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
-<p>interactive visualization</p>
+<p>data.frame</p>
 </div>
 
 </div>

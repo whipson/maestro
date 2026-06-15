@@ -27,7 +27,7 @@ Three R6 classes form the core object model:
   [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
   [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md),
   [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md),
-  [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md),
+  `show_network()`,
   [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md).
 
 ### Data flow
@@ -125,11 +125,12 @@ method that validates at parse time. Key tags:
 | `@maestroStartTime` | `2024-01-01 00:00:00` | date, datetime, or `HH:MM:SS` time |
 | `@maestroTz` | `UTC` | any [`OlsonNames()`](https://rdrr.io/r/base/timezones.html) value |
 | `@maestroLogLevel` | `INFO` | `ERROR`, `WARN`, `INFO` |
-| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param |
+| `@maestroInputs` / `@maestroOutputs` | — | DAG wiring; receiving pipeline needs `.input` param; use `collect()` for fan-in |
 | `@maestroSkip` | — | flag only, no value |
 | `@maestroPriority` | `Inf` | lower integer = higher priority |
 | `@maestroFlags` | — | space-separated arbitrary labels |
 | `@maestroRunIf` | — | R expression evaluated to a single `TRUE`/`FALSE` (see below) |
+| `@maestroMap` | — | enables dynamic fan-out; empty = scatter over each element, or `.input$field` to scatter over a named list field (see below) |
 | `@maestro` | — | generic tag to include pipeline with all defaults |
 
 **Pipeline scripts must not contain top-level code** (only function
@@ -189,6 +190,89 @@ extract <- function() { mtcars }
 transform <- function(.input) { dplyr::mutate(.input, hp2 = hp^2) }
 ```
 
+### Dynamic Fan-out (Scatter)
+
+Adding `@maestroMap` to a downstream pipeline enables **dynamic
+fan-out**: the pipeline executes once per element of the upstream return
+value. An empty `@maestroMap` tag iterates over each element directly; a
+`.input$field` expression selects a specific field of a named list
+return value.
+
+``` r
+
+#' @maestroFrequency daily
+get_letters <- function() {
+  c("a", "b", "c")
+}
+
+#' @maestroInputs get_letters
+#' @maestroMap
+shout <- function(.input) {
+  toupper(.input)  # called 3 times, .input = "a", "b", "c"
+}
+```
+
+Each branch appears in the CLI output labelled with its iteration index
+in blue square brackets, e.g. `|- shout[1]`.
+
+### `@maestroMap` — scatter over a named list field
+
+When the upstream pipeline returns a **named list**,
+`@maestroMap .input$field` selects which field to scatter over. The
+**full list** is passed as `.input` in each branch, so other fields
+remain accessible.
+
+``` r
+
+#' @maestroFrequency daily
+get_data <- function() {
+  list(letter = letters[1:3], greeting = "hello")
+}
+
+#' @maestroInputs get_data
+#' @maestroMap .input$letter
+make_message <- function(.input) {
+  paste(.input$greeting, toupper(.input$letter))  # .input$greeting always available
+}
+```
+
+**Implementation details** (in `MaestroPipelineList$run()`):
+
+1.  `pipe$get_map()` returns a character vector of expression strings,
+    e.g. `c(".input$letter")`.
+2.  Each expression is evaluated via
+    `eval(str2lang(expr), envir = list(.input = effective_input))` to
+    extract the scatter vector.
+3.  If a field doesn’t exist (result is `NULL`), a `simpleError` is
+    constructed and passed to `pipe$run()` via the `pre_error` argument
+    — **not** thrown directly — so `MaestroPipeline$run()` records it as
+    a pipeline error rather than crashing the orchestrator.
+4.  Otherwise,
+    [`purrr::iwalk`](https://purrr.tidyverse.org/reference/imap.html)
+    iterates over the scatter input, passing each element as `.input`
+    and the iteration index as the `iter` label shown in the CLI.
+
+### `pre_error` — pre-execution errors in `MaestroPipeline$run()`
+
+`MaestroPipeline$run()` accepts a `pre_error` argument (a `simpleError`
+or `NULL`). When non-`NULL`:
+
+1.  Run-time attributes (`invoked = TRUE`, `run_id`, `lineage`, etc.)
+    are set as normal.
+2.  The CLI step is emitted then immediately marked failed via
+    `cli::cli_progress_done(result = "failed")`.
+3.  `tryCatch(stop(pre_error), error = private$pre_error_handler(internal_run_id))`
+    records the error — `pre_error_handler` is structurally identical to
+    `cond_error_handler` but prefixes the message with
+    `"Error before pipeline execution:"`.
+4.  `return(invisible())` exits before any normal execution path runs.
+
+This pattern ensures pre-execution errors (e.g. bad `@maestroMap` field)
+appear correctly in
+[`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
+[`last_run_errors()`](https://whipson.github.io/maestro/reference/last_run_errors.md),
+and the CLI without crashing the run.
+
 ## Key User-Facing Functions
 
 Most schedule-level operations have both a **standalone function** and
@@ -202,14 +286,17 @@ get_flags(schedule)       # standalone
 schedule$get_flags()      # R6 equivalent — same result
 ```
 
-This dual API applies to:
+This dual API applies to: This dual API applies to:
 [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
 [`get_artifacts()`](https://whipson.github.io/maestro/reference/get_artifacts.md),
 [`get_schedule()`](https://whipson.github.io/maestro/reference/get_schedule.md),
 [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md),
 [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md),
-[`show_network()`](https://whipson.github.io/maestro/reference/show_network.md),
 [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md).
+
+Note: `show_network()` has been **fully removed** as of v1.2.0. Use
+[`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+instead.
 
 ### `invoke()` — ad-hoc single pipeline runs
 

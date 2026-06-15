@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,7 @@
 <li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -84,7 +85,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -159,12 +160,20 @@
 <li><p><code>#' @maestroLogLevel WARN</code></p></li>
 </ul></section><section class="level2"><h3 id="maestroflags">maestroFlags<a class="anchor" aria-label="anchor" href="#maestroflags"></a>
 </h3>
-<p>Arbitrary labeling tags which are then made accessible via <code><a href="../reference/get_flags.html">get_flags()</a></code>. A pipeline can have multiple tags separated by spaces.</p>
+<p>Arbitrary strings which are then made accessible via <code><a href="../reference/get_flags.html">get_flags()</a></code>. A pipeline can have multiple flags separated by spaces.</p>
 <p>Default:</p>
 <p>Examples</p>
 <ul>
 <li><p><code>#' @maestroFlags critical aviation</code></p></li>
 <li><p><code>#' @maestroFlags time-series</code></p></li>
+</ul></section><section class="level2"><h3 id="maestrolabel">maestroLabel<a class="anchor" aria-label="anchor" href="#maestrolabel"></a>
+</h3>
+<p>Key-value pairs used for attributing metadata for a pipeline. Multiple labels can be assigned to a pipeline using multiple instances of <code>@maestroLabel</code>. These labels can be extracted as a data.frame using <code><a href="../reference/get_labels.html">get_labels()</a></code>. Each label must follow the pattern of <code>key</code> <code>value</code>.</p>
+<p>Default:</p>
+<p>Examples:</p>
+<ul>
+<li><p><code>#' @maestroLabel domain transportation</code></p></li>
+<li><p><code>#' @maestroLabel author will.hipson</code></p></li>
 </ul>
 <hr></section></section><section class="section level2"><h2 id="specifier-tags">Specifier Tags<a class="anchor" aria-label="anchor" href="#specifier-tags"></a>
 </h2>
@@ -198,11 +207,27 @@
 <section class="level2"><h3 id="maestroinputs">maestroInputs<a class="anchor" aria-label="anchor" href="#maestroinputs"></a>
 </h3>
 <p>For a DAG style pipeline, the names of pipelines that input into the pipeline. These names must match the function name defining the inputting pipeline. Multiple pipelines can be used as inputs and the input value is used in the target pipeline via the required <code>.input</code> parameter. Note that this tag could be redundant if the inputting pipeline uses <code>maestroOutputs</code>.</p>
+<p>To enable <strong>fan-in (collect)</strong>, wrap one or more input names with <code>collect()</code>. The downstream pipeline receives a named list as <code>.input</code>, where each name corresponds to an upstream pipeline and each value is that pipeline’s return value. All listed upstream pipelines must have succeeded before the collect pipeline fires. Works with both static multi-source inputs and dynamic fan-out followed by fan-in (<code>@maestroMap</code> → <code>collect()</code>): in the latter case <code>.input</code> is a list of all successful iteration results.</p>
 <p>Default:</p>
 <p>Examples:</p>
 <ul>
-<li><code>#' @maestroInputs extract verify</code></li>
-</ul></section><section class="level2"><h3 id="maestrooutputs">maestroOutputs<a class="anchor" aria-label="anchor" href="#maestrooutputs"></a>
+<li><p><code>#' @maestroInputs extract verify</code></p></li>
+<li><p><code>#' @maestroInputs collect(letter_a, letter_b)</code></p></li>
+<li><p><code>#' @maestroInputs collect(multiply)</code> <em>(collect all iterations of a <code>@maestroMap</code> upstream)</em></p></li>
+</ul></section><section class="level2"><h3 id="maestromap">maestroMap<a class="anchor" aria-label="anchor" href="#maestromap"></a>
+</h3>
+<p>Enables <strong>dynamic fan-out (scatter)</strong>: the downstream pipeline executes once per element of the upstream return value. When the tag value is empty, each element of the upstream return value is passed directly as <code>.input</code>. When one or more R expressions referencing <code>.input</code> fields are provided (space-separated), those fields are scattered over and zipped together <code>pmap</code>-style: each iteration receives <code>.input</code> with all specified fields replaced by their i-th element. The full list remains accessible as <code>.input</code> in every branch.</p>
+<p>All vectors must be the same length, unless a vector has length 1, in which case it is recycled across all iterations. Mismatched lengths produce a pipeline error.</p>
+<p>Requires <code>@maestroInputs</code> to reference an upstream pipeline.</p>
+<p>Default:</p>
+<p>Examples:</p>
+<ul>
+<li><p><code>#' @maestroMap</code> <em>(iterate over each element of the upstream return value)</em></p></li>
+<li><p><code>#' @maestroMap .input$letter</code></p></li>
+<li><p><code>#' @maestroMap .input$ids .input$labels</code></p></li>
+<li><p><code>#' @maestroMap .input$model .input$label .input$threshold</code></p></li>
+</ul>
+<hr></section><section class="level2"><h3 id="maestrooutputs">maestroOutputs<a class="anchor" aria-label="anchor" href="#maestrooutputs"></a>
 </h3>
 <p>For a DAG style pipeline, the names of pipelines that receive the return value of this pipeline as input. These names must match the function name defining the outputting pipeline. Multiple pipelines can be outputted into. The return value of the pipeline will be passed into the receiving pipeline. Note that this tag could be redundant if pipeline to be inputted into uses <code>maestroInputs</code>.</p>
 <p>Default:</p>

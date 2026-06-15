@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
 <li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -83,7 +84,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Quick Start</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/vignettes/maestro-1-quick-start.Rmd" class="external-link"><code>vignettes/maestro-1-quick-start.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-1-quick-start.Rmd" class="external-link"><code>vignettes/maestro-1-quick-start.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-1-quick-start.Rmd</code></div>
     </div>
 
@@ -225,10 +226,10 @@ we’ll use a regular R script. Here is where you’ll run
                                                                                 
 ── [2026-04-21 03:00:00]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">my_pipe</span> <span style="color: #b8b8b8;">[41ms]</span>                                                                
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">my_pipe</span> <span style="color: #b8b8b8;">[43ms]</span>                                                                
                                                                                 
 ── [2026-04-21 03:00:00]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.075 sec elapsed                              
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.077 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 

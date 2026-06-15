@@ -1,6 +1,62 @@
 # Changelog
 
+## maestro 1.2.0
+
+#### Breaking changes
+
+- `show_network()` and `MaestroSchedule$show_network()` are fully
+  removed. Use
+  [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
+  instead.
+
+#### New features
+
+- [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
+  gains a `cores` argument, enabling parallel parsing of pipeline
+  scripts via `furrr`. Usage mirrors
+  [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md):
+  set `future::plan(future::multisession)` before calling
+  `build_schedule(cores = n)`.
+
+- New `@maestroMap` tag enables dynamic fan-out (scatter). Use
+  `@maestroInputs upstream_name` combined with `@maestroMap` on the
+  downstream pipeline. An empty tag (`@maestroMap`) iterates over every
+  element of the upstream return value. Providing one or more
+  `.input$field` expressions (space-separated) selects which fields to
+  scatter over, keeping the full list available as `.input` in each
+  branch. Multiple expressions zip across several fields simultaneously,
+  similar to
+  [`purrr::pmap()`](https://purrr.tidyverse.org/reference/pmap.html).
+
+- Fan-in (collect): a downstream pipeline declared with
+  `@maestroInputs collect(upstream1, upstream2, ...)` gathers the return
+  values of all listed upstream pipelines into a single named list
+  passed as `.input`. Works with both static multi-source fan-in and
+  dynamic fan-out followed by fan-in (`@maestroMap` → `collect()`). In
+  [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
+  `input_run_id` shows comma-separated IDs of all contributing upstream
+  runs and `lineage` joins distinct upstream paths with `&`
+  (e.g. `letter_a&letter_b->ab`). Note that `collect()` is not an actual
+  maestro function, but syntactic sugar.
+
+- New `@maestroLabel` tag allows adding of metadata to a pipeline with
+  key-value pairs. Multiple instances of `@maestroLabel` can be used to
+  add any number of key-value pairs:
+
+      #' @maestroLabel domain transportation
+      #' @maestroLabel database enterprise1
+
+  `@maestroLabel` is not to be confused with `@maestroFlags` which is an
+  arbitrary list of unnamed or unkeyed strings.
+
+- Added helper function
+  [`get_labels()`](https://whipson.github.io/maestro/reference/get_labels.md)
+  to extract all labelled key-value pairs as a data.frame from a
+  schedule.
+
 ## maestro 1.1.1
+
+CRAN release: 2026-05-20
 
 #### Bug fixes
 
@@ -30,8 +86,7 @@ CRAN release: 2026-04-20
   following the same pattern as
   [`get_status()`](https://whipson.github.io/maestro/reference/get_status.md),
   [`get_flags()`](https://whipson.github.io/maestro/reference/get_flags.md),
-  etc. Replaces the deprecated
-  [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md).
+  etc. Replaces the deprecated `show_network()`.
 
 - [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
   now returns an `is_primary` column: `TRUE` for pipelines that are not
@@ -57,9 +112,8 @@ CRAN release: 2026-04-20
 - [`suggest_orch_frequency()`](https://whipson.github.io/maestro/reference/suggest_orch_frequency.md)
   is deprecated with no replacement.
 
-- [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
-  (and `MaestroSchedule$show_network()`) is deprecated due to its
-  reliance on `DiagrammeR`, which brings in a large number of
+- `show_network()` (and `MaestroSchedule$show_network()`) is deprecated
+  due to its reliance on `DiagrammeR`, which brings in a large number of
   little-used dependencies. Use
   [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
   to retrieve the pipeline dependency edge list directly.
@@ -449,9 +503,8 @@ CRAN release: 2024-11-21
 
 - `MaestroSchedule` gains new methods
   [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
-  (returns a data.frame) and
-  [`show_network()`](https://whipson.github.io/maestro/reference/show_network.md)
-  (returns a visualization using {DiagrammeR}).
+  (returns a data.frame) and `show_network()` (returns a visualization
+  using {DiagrammeR}).
 
 - Added catch-all `maestro` tag to identify a function as a pipeline
   without specifying other configurations.

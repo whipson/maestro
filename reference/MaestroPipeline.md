@@ -35,6 +35,12 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$get_artifacts()`](#method-MaestroPipeline-get_artifacts)
 
+- [`MaestroPipeline$get_n_artifacts()`](#method-MaestroPipeline-get_n_artifacts)
+
+- [`MaestroPipeline$get_n_invocations()`](#method-MaestroPipeline-get_n_invocations)
+
+- [`MaestroPipeline$get_all_returns()`](#method-MaestroPipeline-get_all_returns)
+
 - [`MaestroPipeline$get_errors()`](#method-MaestroPipeline-get_errors)
 
 - [`MaestroPipeline$get_warnings()`](#method-MaestroPipeline-get_warnings)
@@ -42,6 +48,18 @@ single R script with a schedule or input
 - [`MaestroPipeline$get_messages()`](#method-MaestroPipeline-get_messages)
 
 - [`MaestroPipeline$get_flags()`](#method-MaestroPipeline-get_flags)
+
+- [`MaestroPipeline$get_labels()`](#method-MaestroPipeline-get_labels)
+
+- [`MaestroPipeline$get_is_collect()`](#method-MaestroPipeline-get_is_collect)
+
+- [`MaestroPipeline$get_map()`](#method-MaestroPipeline-get_map)
+
+- [`MaestroPipeline$get_is_map()`](#method-MaestroPipeline-get_is_map)
+
+- [`MaestroPipeline$get_n_expected_iterations()`](#method-MaestroPipeline-get_n_expected_iterations)
+
+- [`MaestroPipeline$set_n_expected_iterations()`](#method-MaestroPipeline-set_n_expected_iterations)
 
 - [`MaestroPipeline$update_inputs()`](#method-MaestroPipeline-update_inputs)
 
@@ -76,7 +94,10 @@ Create a new Pipeline object
       outputs = NULL,
       priority = Inf,
       flags = c(),
-      run_if = NULL
+      run_if = NULL,
+      is_collect = FALSE,
+      map = NULL,
+      labels = list()
     )
 
 #### Arguments
@@ -142,6 +163,18 @@ Create a new Pipeline object
   string representing an R expression that can be evaluated and returns
   TRUE or FALSE; or NULL
 
+- `is_collect`:
+
+  logical; TRUE when @maestroInputs uses collect() fan-in marker
+
+- `map`:
+
+  named list of key=expr_string pairs from @maestroMap, or NULL
+
+- `labels`:
+
+  list of key-value pairs for pipeline labeling
+
 #### Returns
 
 MaestroPipeline object
@@ -175,6 +208,8 @@ Runs the pipeline
       run_id = NA_character_,
       input_run_id = NA_character_,
       lineage = c(),
+      iter = NULL,
+      pre_error = NULL,
       ...
     )
 
@@ -222,6 +257,14 @@ Runs the pipeline
 
   character vector of upstream pipeline names ordered from first to
   latest (or empty if no upstream pipes)
+
+- `iter`:
+
+  iteration number for dynamic fanout
+
+- `pre_error`:
+
+  trigger error from outside execution
 
 - `...`:
 
@@ -412,6 +455,51 @@ list
 
 ------------------------------------------------------------------------
 
+### `MaestroPipeline$get_n_artifacts()`
+
+Get the number of completed artifact runs (iterations) for this pipeline
+
+#### Usage
+
+    MaestroPipeline$get_n_artifacts()
+
+#### Returns
+
+integer
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_n_invocations()`
+
+Get the number of times this pipeline was invoked (successes + errors).
+For @maestroMap pipelines this equals the number of iterations that have
+finished, regardless of outcome.
+
+#### Usage
+
+    MaestroPipeline$get_n_invocations()
+
+#### Returns
+
+integer
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_all_returns()`
+
+Get all artifact values as a plain unnamed list, regardless of how many
+iterations have run. Used by collect() to gather each-pipe outputs.
+
+#### Usage
+
+    MaestroPipeline$get_all_returns()
+
+#### Returns
+
+list
+
+------------------------------------------------------------------------
+
 ### `MaestroPipeline$get_errors()`
 
 Get list of errors from the pipeline
@@ -465,6 +553,101 @@ Get the flags of a pipeline as a vector
 #### Returns
 
 character
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_labels()`
+
+Get the labels of a pipeline as a data.frame
+
+#### Usage
+
+    MaestroPipeline$get_labels()
+
+#### Returns
+
+data.frame
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_is_collect()`
+
+Get whether the pipeline uses `collect` for fan in
+
+#### Usage
+
+    MaestroPipeline$get_is_collect()
+
+#### Returns
+
+logical
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_map()`
+
+Get the .input value to iterate over
+
+#### Usage
+
+    MaestroPipeline$get_map()
+
+#### Returns
+
+character
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_is_map()`
+
+Get whether the pipeline uses an iterator for dynamic fan out
+
+#### Usage
+
+    MaestroPipeline$get_is_map()
+
+#### Returns
+
+logical
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_n_expected_iterations()`
+
+Get the number of iterations expected for this @maestroMap pipeline. Set
+by run_pipe() just before the scatter loop so that
+resolve_collect_input() can compare against get_n_invocations() without
+depending on the upstream return value's length (which is wrong when a
+field selector is used).
+
+#### Usage
+
+    MaestroPipeline$get_n_expected_iterations()
+
+#### Returns
+
+integer or NULL
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$set_n_expected_iterations()`
+
+Record the number of iterations that will be dispatched for this
+@maestroMap pipeline.
+
+#### Usage
+
+    MaestroPipeline$set_n_expected_iterations(n)
+
+#### Arguments
+
+- `n`:
+
+  integer
+
+#### Returns
+
+invisible
 
 ------------------------------------------------------------------------
 

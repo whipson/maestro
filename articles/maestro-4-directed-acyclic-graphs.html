@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
 <li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -83,7 +84,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Directed Acyclic Graphs (DAGs)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-4-directed-acyclic-graphs.Rmd</code></div>
     </div>
 
@@ -147,14 +148,14 @@ console will reflect the network structure of the DAG.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-05-20 17:48:39]                                                        
+── [2026-06-15 13:54:13]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[23ms]</span>                                                                  
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[32ms]</span>                                                            
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[9ms]</span>                                                              
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[24ms]</span>                                                                  
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[29ms]</span>                                                            
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[10ms]</span>                                                             
                                                                                 
-── [2026-05-20 17:48:39]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.121 sec elapsed                              
+── [2026-06-15 13:54:13]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.163 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 $start                                                                          
@@ -177,7 +178,6 @@ Consider the example on the home page:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Example ETL pipeline</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
-<span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
 <span><span class="va">my_etl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
 <span>  <span class="co"># Pretend we're getting data from a source</span></span>
@@ -198,7 +198,6 @@ in practice, but let’s do it for illustrative purposes (and also get rid
 of the messaging).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' @maestroFrequency 1 day</span></span>
-<span><span class="co">#' @maestroStartTime 2024-03-25 12:30:00</span></span>
 <span><span class="co">#' @maestroOutputs transform</span></span>
 <span><span class="va">extract</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Imagine this is something way more complicated, like a database call</span></span>
@@ -227,14 +226,14 @@ of the messaging).</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-05-20 17:48:39]                                                        
+── [2026-06-15 13:54:13]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract</span> <span style="color: #b8b8b8;">[9ms]</span>                                                                 
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[14ms]</span>                                                            
-<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[10ms]</span>                                                               
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract</span> <span style="color: #b8b8b8;">[11ms]</span>                                                                
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[15ms]</span>                                                            
+<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[12ms]</span>                                                               
                                                                                 
-── [2026-05-20 17:48:39]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.066 sec elapsed                              
+── [2026-06-15 13:54:13]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.074 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 </pre>

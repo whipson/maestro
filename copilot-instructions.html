@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -50,7 +51,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="logo.png" class="logo" alt=""><h1>Copilot Instructions for maestro</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/.github/copilot-instructions.md" class="external-link"><code>.github/copilot-instructions.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/.github/copilot-instructions.md" class="external-link"><code>.github/copilot-instructions.md</code></a></small>
     </div>
 
 <div id="copilot-instructions-for-maestro" class="section level1">
@@ -67,7 +68,7 @@
 <li>
 <strong><code>MaestroPipelineList</code></strong> (<code>R/MaestroPipelineList.R</code>) — an ordered collection of <code>MaestroPipeline</code> objects sorted by priority. Handles bulk operations (run, get_status, validate_network).</li>
 <li>
-<strong><code>MaestroSchedule</code></strong> (<code>R/MaestroSchedule.R</code>) — the top-level user-facing object returned by <code><a href="reference/build_schedule.html">build_schedule()</a></code>. Wraps a <code>MaestroPipelineList</code> and exposes <code>run()</code>, <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</li>
+<strong><code>MaestroSchedule</code></strong> (<code>R/MaestroSchedule.R</code>) — the top-level user-facing object returned by <code><a href="reference/build_schedule.html">build_schedule()</a></code>. Wraps a <code>MaestroPipelineList</code> and exposes <code>run()</code>, <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code>show_network()</code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</li>
 </ul><div class="section level3">
 <h3 id="data-flow">Data flow<a class="anchor" aria-label="anchor" href="#data-flow"></a></h3>
 <pre><code>pipelines/*.R  →  build_schedule()  →  MaestroSchedule
@@ -130,7 +131,7 @@ MaestroSchedule  →  run_schedule()  →  side effects + returns MaestroSchedul
 <code>@maestroInputs</code> / <code>@maestroOutputs</code>
 </td>
 <td>—</td>
-<td>DAG wiring; receiving pipeline needs <code>.input</code> param</td>
+<td>DAG wiring; receiving pipeline needs <code>.input</code> param; use <code>collect()</code> for fan-in</td>
 </tr><tr><td><code>@maestroSkip</code></td>
 <td>—</td>
 <td>flag only, no value</td>
@@ -143,6 +144,9 @@ MaestroSchedule  →  run_schedule()  →  side effects + returns MaestroSchedul
 </tr><tr><td><code>@maestroRunIf</code></td>
 <td>—</td>
 <td>R expression evaluated to a single <code>TRUE</code>/<code>FALSE</code> (see below)</td>
+</tr><tr><td><code>@maestroMap</code></td>
+<td>—</td>
+<td>enables dynamic fan-out; empty = scatter over each element, or <code>.input$field</code> to scatter over a named list field (see below)</td>
 </tr><tr><td><code>@maestro</code></td>
 <td>—</td>
 <td>generic tag to include pipeline with all defaults</td>
@@ -182,14 +186,66 @@ MaestroSchedule  →  run_schedule()  →  side effects + returns MaestroSchedul
 <span></span>
 <span><span class="co">#' @maestroInputs extract</span></span>
 <span><span class="va">transform</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">.input</span>, hp2 <span class="op">=</span> <span class="va">hp</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="dynamic-fan-out-scatter">Dynamic Fan-out (Scatter)<a class="anchor" aria-label="anchor" href="#dynamic-fan-out-scatter"></a></h3>
+<p>Adding <code>@maestroMap</code> to a downstream pipeline enables <strong>dynamic fan-out</strong>: the pipeline executes once per element of the upstream return value. An empty <code>@maestroMap</code> tag iterates over each element directly; a <code>.input$field</code> expression selects a specific field of a named list return value.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' @maestroFrequency daily</span></span>
+<span><span class="va">get_letters</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' @maestroInputs get_letters</span></span>
+<span><span class="co">#' @maestroMap</span></span>
+<span><span class="va">shout</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="va">.input</span><span class="op">)</span>  <span class="co"># called 3 times, .input = "a", "b", "c"</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>Each branch appears in the CLI output labelled with its iteration index in blue square brackets, e.g. <code>|- shout[1]</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="maestromap--scatter-over-a-named-list-field">
+<code>@maestroMap</code> — scatter over a named list field<a class="anchor" aria-label="anchor" href="#maestromap--scatter-over-a-named-list-field"></a></h3>
+<p>When the upstream pipeline returns a <strong>named list</strong>, <code>@maestroMap .input$field</code> selects which field to scatter over. The <strong>full list</strong> is passed as <code>.input</code> in each branch, so other fields remain accessible.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#' @maestroFrequency daily</span></span>
+<span><span class="va">get_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>letter <span class="op">=</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, greeting <span class="op">=</span> <span class="st">"hello"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' @maestroInputs get_data</span></span>
+<span><span class="co">#' @maestroMap .input$letter</span></span>
+<span><span class="va">make_message</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">.input</span><span class="op">$</span><span class="va">greeting</span>, <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="va">.input</span><span class="op">$</span><span class="va">letter</span><span class="op">)</span><span class="op">)</span>  <span class="co"># .input$greeting always available</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><strong>Implementation details</strong> (in <code>MaestroPipelineList$run()</code>):</p>
+<ol style="list-style-type: decimal"><li>
+<code>pipe$get_map()</code> returns a character vector of expression strings, e.g. <code>c(".input$letter")</code>.</li>
+<li>Each expression is evaluated via <code>eval(str2lang(expr), envir = list(.input = effective_input))</code> to extract the scatter vector.</li>
+<li>If a field doesn’t exist (result is <code>NULL</code>), a <code>simpleError</code> is constructed and passed to <code>pipe$run()</code> via the <code>pre_error</code> argument — <strong>not</strong> thrown directly — so <code>MaestroPipeline$run()</code> records it as a pipeline error rather than crashing the orchestrator.</li>
+<li>Otherwise, <code><a href="https://purrr.tidyverse.org/reference/imap.html" class="external-link">purrr::iwalk</a></code> iterates over the scatter input, passing each element as <code>.input</code> and the iteration index as the <code>iter</code> label shown in the CLI.</li>
+</ol></div>
+<div class="section level3">
+<h3 id="pre_error--pre-execution-errors-in-maestropipelinerun">
+<code>pre_error</code> — pre-execution errors in <code>MaestroPipeline$run()</code>
+<a class="anchor" aria-label="anchor" href="#pre_error--pre-execution-errors-in-maestropipelinerun"></a></h3>
+<p><code>MaestroPipeline$run()</code> accepts a <code>pre_error</code> argument (a <code>simpleError</code> or <code>NULL</code>). When non-<code>NULL</code>:</p>
+<ol style="list-style-type: decimal"><li>Run-time attributes (<code>invoked = TRUE</code>, <code>run_id</code>, <code>lineage</code>, etc.) are set as normal.</li>
+<li>The CLI step is emitted then immediately marked failed via <code>cli::cli_progress_done(result = "failed")</code>.</li>
+<li>
+<code>tryCatch(stop(pre_error), error = private$pre_error_handler(internal_run_id))</code> records the error — <code>pre_error_handler</code> is structurally identical to <code>cond_error_handler</code> but prefixes the message with <code>"Error before pipeline execution:"</code>.</li>
+<li>
+<code>return(invisible())</code> exits before any normal execution path runs.</li>
+</ol><p>This pattern ensures pre-execution errors (e.g. bad <code>@maestroMap</code> field) appear correctly in <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/last_run_errors.html">last_run_errors()</a></code>, and the CLI without crashing the run.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="key-user-facing-functions">Key User-Facing Functions<a class="anchor" aria-label="anchor" href="#key-user-facing-functions"></a></h2>
 <p>Most schedule-level operations have both a <strong>standalone function</strong> and an equivalent <strong>R6 method</strong> on <code>MaestroSchedule</code>. Always implement the R6 method first; the standalone is a thin wrapper that validates the class then delegates:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_flags.html">get_flags</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span>       <span class="co"># standalone</span></span>
 <span><span class="va">schedule</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span>      <span class="co"># R6 equivalent — same result</span></span></code></pre></div>
-<p>This dual API applies to: <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_schedule.html">get_schedule()</a></code>, <code><a href="reference/get_flags.html">get_flags()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code><a href="reference/show_network.html">show_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</p>
+<p>This dual API applies to: This dual API applies to: <code><a href="reference/get_status.html">get_status()</a></code>, <code><a href="reference/get_artifacts.html">get_artifacts()</a></code>, <code><a href="reference/get_schedule.html">get_schedule()</a></code>, <code><a href="reference/get_flags.html">get_flags()</a></code>, <code><a href="reference/get_network.html">get_network()</a></code>, <code><a href="reference/get_run_sequence.html">get_run_sequence()</a></code>.</p>
+<p>Note: <code>show_network()</code> has been <strong>fully removed</strong> as of v1.2.0. Use <code><a href="reference/get_network.html">get_network()</a></code> instead.</p>
 <div class="section level3">
 <h3 id="invoke--ad-hoc-single-pipeline-runs">
 <code>invoke()</code> — ad-hoc single pipeline runs<a class="anchor" aria-label="anchor" href="#invoke--ad-hoc-single-pipeline-runs"></a></h3>
@@ -208,14 +264,14 @@ MaestroSchedule  →  run_schedule()  →  side effects + returns MaestroSchedul
 <h2 id="developer-workflows">Developer Workflows<a class="anchor" aria-label="anchor" href="#developer-workflows"></a></h2>
 <div class="section level3">
 <h3 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a></h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span>              <span class="co"># run all tests</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test_active_file</span><span class="op">(</span><span class="op">)</span>  <span class="co"># test current file</span></span></code></pre></div>
 <p>Tests use <code>testthat</code> (edition 3). Fixture pipeline scripts live under <code>tests/testthat/test_pipelines*/</code> directories—use <code>test_path()</code> to reference them. Snapshot tests (<code>expect_snapshot()</code>) are used for status outputs; update with <code>testthat::snapshot_update()</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="build--check">Build / Check<a class="anchor" aria-label="anchor" href="#build--check"></a></h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span>   <span class="co"># load package</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span>      <span class="co"># full R CMD check</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>   <span class="co"># regenerate docs (runs roxygen2)</span></span></code></pre></div>

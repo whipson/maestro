@@ -11,7 +11,7 @@ single script"><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@ single script"><meta property="og:image" content="https://whipson.github.io/maes
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -54,7 +55,7 @@ single script"><meta property="og:image" content="https://whipson.github.io/maes
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for a list of MaestroPipelines A MaestroPipelineList is created when there are multiple maestro pipelines in a single script</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/R/MaestroPipelineList.R" class="external-link"><code>R/MaestroPipelineList.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipelineList.R" class="external-link"><code>R/MaestroPipelineList.R</code></a></small>
       <div class="d-none name"><code>MaestroPipelineList.Rd</code></div>
     </div>
 
@@ -101,9 +102,11 @@ single script</p>
 <li><p><a href="#method-MaestroPipelineList-get_artifacts"><code>MaestroPipelineList$get_artifacts()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_run_sequences"><code>MaestroPipelineList$get_run_sequences()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_flags"><code>MaestroPipelineList$get_flags()</code></a></p></li>
+<li><p><a href="#method-MaestroPipelineList-get_labels"><code>MaestroPipelineList$get_labels()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-get_network"><code>MaestroPipelineList$get_network()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-validate_network"><code>MaestroPipelineList$validate_network()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-run"><code>MaestroPipelineList$run()</code></a></p></li>
+<li><p><a href="#method-MaestroPipelineList-run_pending_collects"><code>MaestroPipelineList$run_pending_collects()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-reset_pipelines"><code>MaestroPipelineList$reset_pipelines()</code></a></p></li>
 <li><p><a href="#method-MaestroPipelineList-clone"><code>MaestroPipelineList$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroPipelineList-initialize"></a><div class="section">
@@ -403,13 +406,25 @@ single script</p>
 
 </div>
 
+<p></p><hr><a id="method-MaestroPipelineList-get_labels"></a><div class="section">
+<h3 id="maestropipelinelist-get-labels-"><code>MaestroPipelineList$get_labels()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-get-labels-"></a></h3>
+<p>Get the labels of the pipelines as a data.frame</p><div class="section">
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_labels</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroPipelineList-get_network"></a><div class="section">
 <h3 id="maestropipelinelist-get-network-"><code>MaestroPipelineList$get_network()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-get-network-"></a></h3>
 <p>Get the network structure as a edge list</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">get_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
 <p>data.frame</p>
 </div>
 
@@ -418,10 +433,10 @@ single script</p>
 <p></p><hr><a id="method-MaestroPipelineList-validate_network"></a><div class="section">
 <h3 id="maestropipelinelist-validate-network-"><code>MaestroPipelineList$validate_network()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-validate-network-"></a></h3>
 <p>Validates whether all inputs and outputs exist and that the network is a valid DAG</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">validate_network</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
+<h4 id="returns-21">Returns<a class="anchor" aria-label="anchor" href="#returns-21"></a></h4>
 <p>warning or invisible</p>
 </div>
 
@@ -430,7 +445,7 @@ single script</p>
 <p></p><hr><a id="method-MaestroPipelineList-run"></a><div class="section">
 <h3 id="maestropipelinelist-run-"><code>MaestroPipelineList$run()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-run-"></a></h3>
 <p>Runs all the pipelines in the list</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">run</span><span class="op">(</span><span class="va">...</span>, cores <span class="op">=</span> <span class="fl">1L</span>, pipes_to_run <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
@@ -446,8 +461,30 @@ single script</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-21">Returns<a class="anchor" aria-label="anchor" href="#returns-21"></a></h4>
+<h4 id="returns-22">Returns<a class="anchor" aria-label="anchor" href="#returns-22"></a></h4>
 <p>invisible</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipelineList-run_pending_collects"></a><div class="section">
+<h3 id="maestropipelinelist-run-pending-collects-"><code>MaestroPipelineList$run_pending_collects()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-run-pending-collects-"></a></h3>
+<p>Run any collect pipelines that are ready but were skipped during a
+parallel run. Called on the main process after update_pipelines() has
+synced worker state back. Uses run_pipe internally so that the collect
+pipe's own downstream outputs are recursed into normally.</p><div class="section">
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">run_pending_collects</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>...</code></dt>
+<dd><p>arguments forwarded to MaestroPipeline$run (same dots as run())</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-23">Returns<a class="anchor" aria-label="anchor" href="#returns-23"></a></h4>
+<p>list of MaestroPipeline objects that were run</p>
 </div>
 
 </div>
@@ -455,7 +492,7 @@ single script</p>
 <p></p><hr><a id="method-MaestroPipelineList-reset_pipelines"></a><div class="section">
 <h3 id="maestropipelinelist-reset-pipelines-"><code>MaestroPipelineList$reset_pipelines()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-reset-pipelines-"></a></h3>
 <p>Resets the run time attributes</p><div class="section">
-<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">reset_pipelines</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -464,10 +501,10 @@ single script</p>
 <p></p><hr><a id="method-MaestroPipelineList-clone"></a><div class="section">
 <h3 id="maestropipelinelist-clone-"><code>MaestroPipelineList$clone()</code><a class="anchor" aria-label="anchor" href="#maestropipelinelist-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipelineList</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

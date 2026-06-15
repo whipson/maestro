@@ -6,7 +6,7 @@ Builds a `MaestroSchedule` object for use in
 ## Usage
 
 ``` r
-build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
+build_schedule(pipeline_dir = "./pipelines", cores = 1L, quiet = FALSE)
 ```
 
 ## Arguments
@@ -14,6 +14,14 @@ build_schedule(pipeline_dir = "./pipelines", quiet = FALSE)
 - pipeline_dir:
 
   path to directory containing the pipeline scripts
+
+- cores:
+
+  number of cpu cores to use when parsing pipeline scripts. If \> 1,
+  `furrr` is used and a multisession plan must be set in the
+  orchestrator (e.g. `future::plan(future::multisession)`). See
+  [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
+  for details.
 
 - quiet:
 

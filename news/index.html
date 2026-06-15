@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/maestro-2-motivation-concepts.html">Motivation and Concepts</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-3-advanced-scheduling.html">Advanced Scheduling</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-4-directed-acyclic-graphs.html">Directed Acyclic Graphs (DAGs)</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-4b-directed-acyclic-graphs.html">Advanced DAGs - Dynamic Fan-out and Collect</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-5-logging.html">Logging</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
@@ -50,11 +51,32 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/whipson/maestro/blob/1.1.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/whipson/maestro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.1" id="maestro-111">maestro 1.1.1<a class="anchor" aria-label="anchor" href="#maestro-111"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0" id="maestro-120">maestro 1.2.0<a class="anchor" aria-label="anchor" href="#maestro-120"></a></h2>
+<div class="section level4">
+<h4 id="breaking-changes-1-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-2-0"></a></h4>
+<ul><li>
+<code>show_network()</code> and <code>MaestroSchedule$show_network()</code> are fully removed. Use <code><a href="../reference/get_network.html">get_network()</a></code> instead.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="new-features-1-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0"></a></h4>
+<ul><li><p><code><a href="../reference/build_schedule.html">build_schedule()</a></code> gains a <code>cores</code> argument, enabling parallel parsing of pipeline scripts via <code>furrr</code>. Usage mirrors <code><a href="../reference/run_schedule.html">run_schedule()</a></code>: set <code>future::plan(future::multisession)</code> before calling <code>build_schedule(cores = n)</code>.</p></li>
+<li><p>New <code>@maestroMap</code> tag enables dynamic fan-out (scatter). Use <code>@maestroInputs upstream_name</code> combined with <code>@maestroMap</code> on the downstream pipeline. An empty tag (<code>@maestroMap</code>) iterates over every element of the upstream return value. Providing one or more <code>.input$field</code> expressions (space-separated) selects which fields to scatter over, keeping the full list available as <code>.input</code> in each branch. Multiple expressions zip across several fields simultaneously, similar to <code><a href="https://purrr.tidyverse.org/reference/pmap.html" class="external-link">purrr::pmap()</a></code>.</p></li>
+<li><p>Fan-in (collect): a downstream pipeline declared with <code>@maestroInputs collect(upstream1, upstream2, ...)</code> gathers the return values of all listed upstream pipelines into a single named list passed as <code>.input</code>. Works with both static multi-source fan-in and dynamic fan-out followed by fan-in (<code>@maestroMap</code> → <code>collect()</code>). In <code><a href="../reference/get_status.html">get_status()</a></code>, <code>input_run_id</code> shows comma-separated IDs of all contributing upstream runs and <code>lineage</code> joins distinct upstream paths with <code>&amp;</code> (e.g. <code>letter_a&amp;letter_b-&gt;ab</code>). Note that <code>collect()</code> is not an actual maestro function, but syntactic sugar.</p></li>
+<li>
+<p>New <code>@maestroLabel</code> tag allows adding of metadata to a pipeline with key-value pairs. Multiple instances of <code>@maestroLabel</code> can be used to add any number of key-value pairs:</p>
+<pre><code><span><span class="co">#' @maestroLabel domain transportation</span></span>
+<span><span class="co">#' @maestroLabel database enterprise1</span></span></code></pre>
+<p><code>@maestroLabel</code> is not to be confused with <code>@maestroFlags</code> which is an arbitrary list of unnamed or unkeyed strings.</p>
+</li>
+<li><p>Added helper function <code><a href="../reference/get_labels.html">get_labels()</a></code> to extract all labelled key-value pairs as a data.frame from a schedule.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="maestro-111">maestro 1.1.1<a class="anchor" aria-label="anchor" href="#maestro-111"></a></h2><p class="text-muted">CRAN release: 2026-05-20</p>
 <div class="section level4">
 <h4 id="bug-fixes-1-1-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-1-1"></a></h4>
 <ul><li><p>Fixed the calculation of <code>next_run</code></p></li>
@@ -69,7 +91,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="new-features-1-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-1-0"></a></h4>
-<ul><li><p><code><a href="../reference/get_network.html">get_network()</a></code> is a new standalone function equivalent to <code>schedule$get_network()</code>, following the same pattern as <code><a href="../reference/get_status.html">get_status()</a></code>, <code><a href="../reference/get_flags.html">get_flags()</a></code>, etc. Replaces the deprecated <code><a href="../reference/show_network.html">show_network()</a></code>.</p></li>
+<ul><li><p><code><a href="../reference/get_network.html">get_network()</a></code> is a new standalone function equivalent to <code>schedule$get_network()</code>, following the same pattern as <code><a href="../reference/get_status.html">get_status()</a></code>, <code><a href="../reference/get_flags.html">get_flags()</a></code>, etc. Replaces the deprecated <code>show_network()</code>.</p></li>
 <li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> now returns an <code>is_primary</code> column: <code>TRUE</code> for pipelines that are not downstream nodes in a DAG (i.e., root or standalone pipelines), <code>FALSE</code> for downstream DAG nodes.</p></li>
 <li><p><code><a href="../reference/get_run_sequence.html">get_run_sequence()</a></code> gains an <code>include_skipped</code> argument (default <code>TRUE</code>). Set to <code>FALSE</code> to exclude pipelines tagged with <code>@maestroSkip</code> from the output.</p></li>
 <li>
@@ -83,7 +105,7 @@
 <div class="section level4">
 <h4 id="deprecated-functionality-1-1-0">Deprecated functionality<a class="anchor" aria-label="anchor" href="#deprecated-functionality-1-1-0"></a></h4>
 <ul><li><p><code><a href="../reference/suggest_orch_frequency.html">suggest_orch_frequency()</a></code> is deprecated with no replacement.</p></li>
-<li><p><code><a href="../reference/show_network.html">show_network()</a></code> (and <code>MaestroSchedule$show_network()</code>) is deprecated due to its reliance on <code>DiagrammeR</code>, which brings in a large number of little-used dependencies. Use <code><a href="../reference/get_network.html">get_network()</a></code> to retrieve the pipeline dependency edge list directly.</p></li>
+<li><p><code>show_network()</code> (and <code>MaestroSchedule$show_network()</code>) is deprecated due to its reliance on <code>DiagrammeR</code>, which brings in a large number of little-used dependencies. Use <code><a href="../reference/get_network.html">get_network()</a></code> to retrieve the pipeline dependency edge list directly.</p></li>
 </ul></div>
 <div class="section level4">
 <h4 id="minor-changes-1-1-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-1-0"></a></h4>
@@ -283,7 +305,7 @@
 <h4 id="new-features-0-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-4-0"></a></h4>
 <ul><li><p>Directed acyclic graph (DAG) pipelines - where the output of one pipeline can feed into another - are now available using the <code>maestroOutputs</code> and <code>maestroInputs</code> tags. Pipelines that input into a downstream pipeline should use the <code>maestroOutputs</code> tag. Pipelines that receive input from an upstream pipeline should use the <code>maestroInputs</code> tag (<a href="https://github.com/whipson/maestro/issues/98" class="external-link">#98</a>).</p></li>
 <li><p>New function <code>show_network</code> for visualizing the connections between pipelines that are connected in a DAG.</p></li>
-<li><p><code>MaestroSchedule</code> gains new methods <code><a href="../reference/get_network.html">get_network()</a></code> (returns a data.frame) and <code><a href="../reference/show_network.html">show_network()</a></code> (returns a visualization using {DiagrammeR}).</p></li>
+<li><p><code>MaestroSchedule</code> gains new methods <code><a href="../reference/get_network.html">get_network()</a></code> (returns a data.frame) and <code>show_network()</code> (returns a visualization using {DiagrammeR}).</p></li>
 <li><p>Added catch-all <code>maestro</code> tag to identify a function as a pipeline without specifying other configurations.</p></li>
 </ul></div>
 <div class="section level4">

@@ -62,14 +62,14 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-05-20 17:48:39]                                                        
+    ── [2026-06-15 13:54:13]                                                        
     Running pipelines ▶                                                             
-    ✔ start [23ms]                                                                  
-    ✔ |-high_road [32ms]                                                            
-    ✔ |-low_road [9ms]                                                              
+    ✔ start [24ms]                                                                  
+    ✔ |-high_road [29ms]                                                            
+    ✔ |-low_road [10ms]                                                             
                                                                                     
-    ── [2026-05-20 17:48:39]                                                        
-    Pipeline execution completed ■ | 0.121 sec elapsed                              
+    ── [2026-06-15 13:54:13]                                                        
+    Pipeline execution completed ■ | 0.163 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
     $start                                                                          
@@ -92,7 +92,6 @@ Consider the example on the home page:
 
 #' Example ETL pipeline
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-03-25 12:30:00
 my_etl <- function() {
   
   # Pretend we're getting data from a source
@@ -117,7 +116,6 @@ the messaging).
 ``` r
 
 #' @maestroFrequency 1 day
-#' @maestroStartTime 2024-03-25 12:30:00
 #' @maestroOutputs transform
 extract <- function() {
   # Imagine this is something way more complicated, like a database call
@@ -150,14 +148,14 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-05-20 17:48:39]                                                        
+    ── [2026-06-15 13:54:13]                                                        
     Running pipelines ▶                                                             
-    ✔ extract [9ms]                                                                 
-    ✔ |-transform [14ms]                                                            
-    ✔   |-load [10ms]                                                               
+    ✔ extract [11ms]                                                                
+    ✔ |-transform [15ms]                                                            
+    ✔   |-load [12ms]                                                               
                                                                                     
-    ── [2026-05-20 17:48:39]                                                        
-    Pipeline execution completed ■ | 0.066 sec elapsed                              
+    ── [2026-06-15 13:54:13]                                                        
+    Pipeline execution completed ■ | 0.074 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
 
