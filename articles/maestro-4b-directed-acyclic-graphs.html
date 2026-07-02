@@ -132,15 +132,15 @@ brackets.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-06-15 13:54:16]                                                        
+── [2026-07-02 12:39:01]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">get_letters</span> <span style="color: #b8b8b8;">[24ms]</span>                                                            
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">shout[1]</span> <span style="color: #b8b8b8;">[29ms]</span>                                                             
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">get_letters</span> <span style="color: #b8b8b8;">[23ms]</span>                                                            
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">shout[1]</span> <span style="color: #b8b8b8;">[26ms]</span>                                                             
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">shout[2]</span> <span style="color: #b8b8b8;">[25ms]</span>                                                             
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">shout[3]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                             
                                                                                 
-── [2026-06-15 13:54:16]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.242 sec elapsed                              
+── [2026-07-02 12:39:01]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.23 sec elapsed                               
 <span style="color: #859900;">✔</span> 4 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 4 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
@@ -202,15 +202,15 @@ full list is passed as <code>.input</code> each time.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-06-15 13:54:17]                                                        
+── [2026-07-02 12:39:02]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">get_letters</span> <span style="color: #b8b8b8;">[10ms]</span>                                                            
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">make_message[1]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                      
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">make_message[2]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                      
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">make_message[3]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                      
                                                                                 
-── [2026-06-15 13:54:17]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.099 sec elapsed                              
+── [2026-07-02 12:39:02]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.097 sec elapsed                              
 <span style="color: #859900;">✔</span> 4 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 4 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
@@ -312,14 +312,14 @@ regular downstream pipelines.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-06-15 13:54:17]                                                        
+── [2026-07-02 12:39:02]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">letter_a</span> <span style="color: #b8b8b8;">[13ms]</span>                                                               
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">letter_b</span> <span style="color: #b8b8b8;">[10ms]</span>                                                               
-<span style="color: #859900;">✔</span> |-+<span style="color: #268BD2;">combine</span> <span style="color: #b8b8b8;">[13ms]</span>                                                             
+<span style="color: #859900;">✔</span> |-+<span style="color: #268BD2;">combine</span> <span style="color: #b8b8b8;">[12ms]</span>                                                             
                                                                                 
-── [2026-06-15 13:54:17]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.087 sec elapsed                              
+── [2026-07-02 12:39:02]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.084 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
@@ -376,16 +376,16 @@ list of the successful iteration return values.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-06-15 13:54:18]                                                        
+── [2026-07-02 12:39:03]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">numbers</span> <span style="color: #b8b8b8;">[10ms]</span>                                                                
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">multiply[1]</span> <span style="color: #b8b8b8;">[31ms]</span>                                                          
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">multiply[1]</span> <span style="color: #b8b8b8;">[36ms]</span>                                                          
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">multiply[2]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                          
 <span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">multiply[3]</span> <span style="color: #b8b8b8;">[10ms]</span>                                                          
-<span style="color: #859900;">✔</span>   |-+<span style="color: #268BD2;">add</span> <span style="color: #b8b8b8;">[11ms]</span>                                                               
+<span style="color: #859900;">✔</span>   |-+<span style="color: #268BD2;">add</span> <span style="color: #b8b8b8;">[10ms]</span>                                                               
                                                                                 
-── [2026-06-15 13:54:18]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.143 sec elapsed                              
+── [2026-07-02 12:39:03]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.144 sec elapsed                              
 <span style="color: #859900;">✔</span> 5 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 5 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
