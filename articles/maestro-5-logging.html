@@ -85,7 +85,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-5-logging.qmd" class="external-link"><code>vignettes/maestro-5-logging.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.2.0/vignettes/maestro-5-logging.qmd" class="external-link"><code>vignettes/maestro-5-logging.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -135,14 +135,14 @@
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
-── [2026-07-02 12:39:14]
+── [2026-07-02 12:51:22]
 Running pipelines <span style="color: #859900;">▶</span>
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[24ms]</span>
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[30ms]</span>
-<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[108ms]</span>
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[25ms]</span>
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[31ms]</span>
+<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[79ms]</span>
 
-── [2026-07-02 12:39:14]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.251 sec elapsed
+── [2026-07-02 12:51:22]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.226 sec elapsed
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 1 warning | <span style="color: #DC322F;">✖</span> 1 error | <span style="color: #2AA198;">◼</span> 3 total
 <span style="color: #DC322F;">✖</span> Use `last_run_errors()` to show pipeline errors.
 <span style="color: #B58900;">!</span> Use `last_run_warnings()` to show pipeline warnings.
@@ -155,9 +155,9 @@ Pipeline execution completed <span style="color: #525252;">■</span> | 0.251 se
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"maestro.log"</span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
-<pre>[1] "[hello] [INFO] [2026-07-02 12:39:14]: hello"
-[2] "[uhh] [WARN] [2026-07-02 12:39:14]: this could be a problem"
-[3] "[oh_no] [ERROR] [2026-07-02 12:39:14]: this is bad"
+<pre>[1] "[hello] [INFO] [2026-07-02 12:51:22]: hello"
+[2] "[uhh] [WARN] [2026-07-02 12:51:22]: this could be a problem"
+[3] "[oh_no] [ERROR] [2026-07-02 12:51:22]: this is bad"
 </pre>
 </div>
 </div>
@@ -176,17 +176,17 @@ Pipeline execution completed <span style="color: #525252;">■</span> | 0.251 se
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
-── [2026-07-02 12:39:15]
+── [2026-07-02 12:51:22]
 Running pipelines <span style="color: #859900;">▶</span>
-[hello] [INFO] [2026-07-02 12:39:15]: hello
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[10ms]</span>
-[uhh] [WARN] [2026-07-02 12:39:15]: this could be a problem
+[hello] [INFO] [2026-07-02 12:51:22]: hello
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[11ms]</span>
+[uhh] [WARN] [2026-07-02 12:51:22]: this could be a problem
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[13ms]</span>
-[oh_no] [ERROR] [2026-07-02 12:39:15]: this is bad
-<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[15ms]</span>
+[oh_no] [ERROR] [2026-07-02 12:51:22]: this is bad
+<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[14ms]</span>
 
-── [2026-07-02 12:39:15]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.065 sec elapsed
+── [2026-07-02 12:51:22]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.066 sec elapsed
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 1 warning | <span style="color: #DC322F;">✖</span> 1 error | <span style="color: #2AA198;">◼</span> 3 total
 <span style="color: #DC322F;">✖</span> Use `last_run_errors()` to show pipeline errors.
 <span style="color: #B58900;">!</span> Use `last_run_warnings()` to show pipeline warnings.
@@ -232,15 +232,15 @@ Pipeline execution completed <span style="color: #525252;">■</span> | 0.065 se
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
-── [2026-07-02 12:39:15]
+── [2026-07-02 12:51:22]
 Running pipelines <span style="color: #859900;">▶</span>
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[12ms]</span>
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[9ms]</span>
-[oh_no] [ERROR] [2026-07-02 12:39:15]: this is bad
-<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[11ms]</span>
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[10ms]</span>
+[oh_no] [ERROR] [2026-07-02 12:51:22]: this is bad
+<span style="color: #DC322F;">✖</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[12ms]</span>
 
-── [2026-07-02 12:39:15]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.062 sec elapsed
+── [2026-07-02 12:51:22]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.063 sec elapsed
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 1 warning | <span style="color: #DC322F;">✖</span> 1 error | <span style="color: #2AA198;">◼</span> 3 total
 <span style="color: #DC322F;">✖</span> Use `last_run_errors()` to show pipeline errors.
 <span style="color: #B58900;">!</span> Use `last_run_warnings()` to show pipeline warnings.
@@ -282,17 +282,17 @@ Pipeline execution completed <span style="color: #525252;">■</span> | 0.062 se
 <span><span class="op">)</span></span></code></pre></div>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
-── [2026-07-02 12:39:15]
+── [2026-07-02 12:51:22]
 Running pipelines <span style="color: #859900;">▶</span>
-[hello] [INFO] [2026-07-02 12:39:15]: hi
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[10ms]</span>
-[uhh] [WARN] [2026-07-02 12:39:15]: this could be a problem
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[15ms]</span>
-[oh_no] [ERROR] [2026-07-02 12:39:15]: this is bad
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[14ms]</span>
+[hello] [INFO] [2026-07-02 12:51:22]: hi
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">hello</span> <span style="color: #b8b8b8;">[11ms]</span>
+[uhh] [WARN] [2026-07-02 12:51:22]: this could be a problem
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">uhh</span> <span style="color: #b8b8b8;">[14ms]</span>
+[oh_no] [ERROR] [2026-07-02 12:51:22]: this is bad
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">oh_no</span> <span style="color: #b8b8b8;">[13ms]</span>
 
-── [2026-07-02 12:39:15]
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.071 sec elapsed
+── [2026-07-02 12:51:22]
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.069 sec elapsed
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total
 ────────────────────────────────────────────────────────────────────────────────
 </pre>

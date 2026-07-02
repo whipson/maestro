@@ -48,15 +48,15 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-07-02 12:39:01]                                                        
+    ── [2026-07-02 12:51:09]                                                        
     Running pipelines ▶                                                             
-    ✔ get_letters [23ms]                                                            
-    ✔ |-shout[1] [26ms]                                                             
-    ✔ |-shout[2] [25ms]                                                             
-    ✔ |-shout[3] [10ms]                                                             
+    ✔ get_letters [24ms]                                                            
+    ✔ |-shout[1] [28ms]                                                             
+    ✔ |-shout[2] [23ms]                                                             
+    ✔ |-shout[3] [12ms]                                                             
                                                                                     
-    ── [2026-07-02 12:39:01]                                                        
-    Pipeline execution completed ■ | 0.23 sec elapsed                               
+    ── [2026-07-02 12:51:09]                                                        
+    Pipeline execution completed ■ | 0.239 sec elapsed                              
     ✔ 4 successes | ! 0 warnings | ✖ 0 errors | ◼ 4 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -121,15 +121,15 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-07-02 12:39:02]                                                        
+    ── [2026-07-02 12:51:09]                                                        
     Running pipelines ▶                                                             
     ✔ get_letters [10ms]                                                            
     ✔ |-make_message[1] [10ms]                                                      
     ✔ |-make_message[2] [10ms]                                                      
     ✔ |-make_message[3] [10ms]                                                      
                                                                                     
-    ── [2026-07-02 12:39:02]                                                        
-    Pipeline execution completed ■ | 0.097 sec elapsed                              
+    ── [2026-07-02 12:51:09]                                                        
+    Pipeline execution completed ■ | 0.098 sec elapsed                              
     ✔ 4 successes | ! 0 warnings | ✖ 0 errors | ◼ 4 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -237,14 +237,14 @@ get_status(schedule)[, c("pipe_name", "invoked", "success", "input_run_id", "lin
 
 
                                                                                     
-    ── [2026-07-02 12:39:02]                                                        
+    ── [2026-07-02 12:51:10]                                                        
     Running pipelines ▶                                                             
     ✔ letter_a [13ms]                                                               
     ✔ letter_b [10ms]                                                               
     ✔ |-+combine [12ms]                                                             
                                                                                     
-    ── [2026-07-02 12:39:02]                                                        
-    Pipeline execution completed ■ | 0.084 sec elapsed                              
+    ── [2026-07-02 12:51:10]                                                        
+    Pipeline execution completed ■ | 0.086 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -306,16 +306,16 @@ get_artifacts(schedule)$add
 
 
                                                                                     
-    ── [2026-07-02 12:39:03]                                                        
+    ── [2026-07-02 12:51:10]                                                        
     Running pipelines ▶                                                             
     ✔ numbers [10ms]                                                                
-    ✔ |-multiply[1] [36ms]                                                          
+    ✔ |-multiply[1] [28ms]                                                          
     ✔ |-multiply[2] [10ms]                                                          
     ✔ |-multiply[3] [10ms]                                                          
     ✔   |-+add [10ms]                                                               
                                                                                     
-    ── [2026-07-02 12:39:03]                                                        
-    Pipeline execution completed ■ | 0.144 sec elapsed                              
+    ── [2026-07-02 12:51:10]                                                        
+    Pipeline execution completed ■ | 0.137 sec elapsed                              
     ✔ 5 successes | ! 0 warnings | ✖ 0 errors | ◼ 5 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
