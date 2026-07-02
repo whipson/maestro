@@ -54,3 +54,23 @@ test_that("works when there are no labeled pipelines", {
     expect_equal(nrow(schedule$get_labels()), 0)
   })
 })
+
+test_that("can get a double labeled pipeline with the same key", {
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      #' @maestroLabel author will
+      #' @maestroLabel author kaz
+      labelled <- function() {
+
+      }
+      ",
+      con = "pipelines/label.R"
+    )
+
+    schedule <- build_schedule(quiet = TRUE)
+    expect_snapshot(schedule$get_labels())
+  })
+})
