@@ -84,7 +84,7 @@ status <- run_schedule(
     ✔ daily_example [41ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.073 sec elapsed
+    Pipeline execution completed ■ | 0.06 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 

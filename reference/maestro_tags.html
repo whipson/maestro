@@ -9,7 +9,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ of pipelines."><meta property="og:image" content="https://whipson.github.io/maes
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Maestro Tags</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.2.0/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/maestro_tags.R" class="external-link"><code>R/maestro_tags.R</code></a></small>
       <div class="d-none name"><code>maestro_tags.Rd</code></div>
     </div>
 
@@ -266,6 +266,32 @@ labels can be extracted as a data.frame. Each label must follow the pattern of
 <li><p><code>#' @maestroLabel author will.hipson</code></p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="maestrocascadetags">maestroCascadeTags<a class="anchor" aria-label="anchor" href="#maestrocascadetags"></a></h2>
+    <p>Propagates selected metadata tags from the annotated pipeline to <strong>all of its
+downstream pipelines</strong> in the DAG, transitively (i.e., to every descendant,
+not just direct children).</p>
+<p>The tag value is a space-separated list of tag types to cascade. Accepted
+values are <code>label</code>, <code>flags</code>, and <code>loglevel</code> (case-insensitive, so <code>Label</code>,
+<code>LOGLEVEL</code>, etc. are all valid). If the tag is used with no value
+(<code>@maestroCascadeTags</code> alone), all three tag types are cascaded.</p>
+<p>When multiple ancestors each declare <code>@maestroCascadeTags</code>, they are applied
+in topological order (root → leaves), so the nearest ancestor wins on
+conflict.</p>
+<p><strong>Merge / conflict rules by tag type:</strong></p><ul><li><p><strong><code>label</code></strong> — Cascaded labels are added only for keys not already defined
+on the downstream pipeline locally (local wins). For keys not locally
+defined, a closer ancestor's value overrides a farther ancestor's value.</p></li>
+<li><p><strong><code>flags</code></strong> — Union: cascaded flags not already present are appended.</p></li>
+<li><p><strong><code>loglevel</code></strong> — Local wins. The cascade only applies if the downstream
+pipeline's own log level is <code>"INFO"</code> (the default, treated as "not
+explicitly set"). A downstream that explicitly sets any other level keeps
+it. Cascading <code>INFO</code> is always a no-op.</p></li>
+</ul><p>Default: (no cascade)</p>
+<p>Examples:</p><ul><li><p><code>#' @maestroCascadeTags label</code> <em>(cascade labels only)</em></p></li>
+<li><p><code>#' @maestroCascadeTags label flags</code> <em>(cascade labels and flags)</em></p></li>
+<li><p><code>#' @maestroCascadeTags</code> <em>(cascade all three tag types)</em></p></li>
+<li><p><code>#' @maestroCascadeTags LOGLEVEL</code> <em>(case-insensitive)</em></p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="maestro">maestro<a class="anchor" aria-label="anchor" href="#maestro"></a></h2>
     <p>Generic tag for identifying a maestro pipeline with all the defaults. Useful
 when you want a pipeline to be scheduled via maestro that accepts all default
@@ -284,7 +310,7 @@ no value.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

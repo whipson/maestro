@@ -67,6 +67,8 @@ when there are multiple maestro pipelines in a single script
 
 - [`MaestroPipelineList$reset_pipelines()`](#method-MaestroPipelineList-reset_pipelines)
 
+- [`MaestroPipelineList$apply_cascade()`](#method-MaestroPipelineList-apply_cascade)
+
 - [`MaestroPipelineList$clone()`](#method-MaestroPipelineList-clone)
 
 ------------------------------------------------------------------------
@@ -505,6 +507,24 @@ Resets the run time attributes
 #### Usage
 
     MaestroPipelineList$reset_pipelines()
+
+------------------------------------------------------------------------
+
+### `MaestroPipelineList$apply_cascade()`
+
+Propagate `@maestroCascadeTags` metadata through the DAG. For each
+pipeline that declares a non-empty cascade vector, the selected tag
+types (label, flags, loglevel) are applied to every downstream pipeline
+in topological order (root to leaves) so that the nearest ancestor wins
+on conflict.
+
+#### Usage
+
+    MaestroPipelineList$apply_cascade()
+
+#### Returns
+
+invisible
 
 ------------------------------------------------------------------------
 

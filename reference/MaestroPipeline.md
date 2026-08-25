@@ -65,6 +65,14 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$update_outputs()`](#method-MaestroPipeline-update_outputs)
 
+- [`MaestroPipeline$get_cascade()`](#method-MaestroPipeline-get_cascade)
+
+- [`MaestroPipeline$update_labels()`](#method-MaestroPipeline-update_labels)
+
+- [`MaestroPipeline$update_flags()`](#method-MaestroPipeline-update_flags)
+
+- [`MaestroPipeline$update_log_level()`](#method-MaestroPipeline-update_log_level)
+
 - [`MaestroPipeline$reset_run_time_attributes()`](#method-MaestroPipeline-reset_run_time_attributes)
 
 - [`MaestroPipeline$get_run_sequence()`](#method-MaestroPipeline-get_run_sequence)
@@ -97,7 +105,8 @@ Create a new Pipeline object
       run_if = NULL,
       is_collect = FALSE,
       map = NULL,
-      labels = list()
+      labels = list(),
+      cascade = character()
     )
 
 #### Arguments
@@ -174,6 +183,10 @@ Create a new Pipeline object
 - `labels`:
 
   list of key-value pairs for pipeline labeling
+
+- `cascade`:
+
+  character vector of tag types to cascade to downstream pipelines
 
 #### Returns
 
@@ -688,6 +701,84 @@ Update the outputs of a pipeline
 #### Returns
 
 vector
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_cascade()`
+
+Get the cascade tag types for this pipeline
+
+#### Usage
+
+    MaestroPipeline$get_cascade()
+
+#### Returns
+
+character vector
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$update_labels()`
+
+Merge cascaded labels in; local keys always win. For keys not present in
+the pipeline's own (original) labels, adds or overwrites with the
+cascaded value — allowing a nearer ancestor to overwrite a farther one
+when processed in topological order.
+
+#### Usage
+
+    MaestroPipeline$update_labels(labels)
+
+#### Arguments
+
+- `labels`:
+
+  list of character vectors c(key, value) to cascade in
+
+#### Returns
+
+invisible
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$update_flags()`
+
+Union-append cascaded flags; flags already present are not duplicated.
+
+#### Usage
+
+    MaestroPipeline$update_flags(flags)
+
+#### Arguments
+
+- `flags`:
+
+  character vector of flags to cascade in
+
+#### Returns
+
+invisible
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$update_log_level()`
+
+Cascade a log level; only applies when the pipeline's own log level is
+"INFO" (the default, treated as "not explicitly set").
+
+#### Usage
+
+    MaestroPipeline$update_log_level(log_level)
+
+#### Arguments
+
+- `log_level`:
+
+  character scalar log level to cascade
+
+#### Returns
+
+invisible
 
 ------------------------------------------------------------------------
 

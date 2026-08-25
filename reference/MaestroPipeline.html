@@ -9,7 +9,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for an individual maestro pipeline A pipeline is defined as a single R script with a schedule or input</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.2.0/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
       <div class="d-none name"><code>MaestroPipeline.Rd</code></div>
     </div>
 
@@ -97,6 +97,10 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <li><p><a href="#method-MaestroPipeline-set_n_expected_iterations"><code>MaestroPipeline$set_n_expected_iterations()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_inputs"><code>MaestroPipeline$update_inputs()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-update_outputs"><code>MaestroPipeline$update_outputs()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_cascade"><code>MaestroPipeline$get_cascade()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-update_labels"><code>MaestroPipeline$update_labels()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-update_flags"><code>MaestroPipeline$update_flags()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-update_log_level"><code>MaestroPipeline$update_log_level()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-reset_run_time_attributes"><code>MaestroPipeline$reset_run_time_attributes()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_run_sequence"><code>MaestroPipeline$get_run_sequence()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-clone"><code>MaestroPipeline$clone()</code></a></p></li>
@@ -122,7 +126,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <span>  run_if <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  is_collect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  map <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  cascade <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
@@ -179,6 +184,9 @@ A pipeline is defined as a single R script with a schedule or input</p>
 
       <dt><code>labels</code></dt>
 <dd><p>list of key-value pairs for pipeline labeling</p></dd>
+
+      <dt><code>cascade</code></dt>
+<dd><p>character vector of tag types to cascade to downstream pipelines</p></dd>
 
 
 </dl><p></p></div>
@@ -627,13 +635,86 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 
 </div>
 
+<p></p><hr><a id="method-MaestroPipeline-get_cascade"></a><div class="section">
+<h3 id="maestropipeline-get-cascade-"><code>MaestroPipeline$get_cascade()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-cascade-"></a></h3>
+<p>Get the cascade tag types for this pipeline</p><div class="section">
+<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_cascade</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-28">Returns<a class="anchor" aria-label="anchor" href="#returns-28"></a></h4>
+<p>character vector</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-update_labels"></a><div class="section">
+<h3 id="maestropipeline-update-labels-"><code>MaestroPipeline$update_labels()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-labels-"></a></h3>
+<p>Merge cascaded labels in; local keys always win.
+For keys not present in the pipeline's own (original) labels, adds or
+overwrites with the cascaded value — allowing a nearer ancestor to
+overwrite a farther one when processed in topological order.</p><div class="section">
+<h4 id="usage-30">Usage<a class="anchor" aria-label="anchor" href="#usage-30"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_labels</span><span class="op">(</span><span class="va">labels</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>labels</code></dt>
+<dd><p>list of character vectors c(key, value) to cascade in</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-29">Returns<a class="anchor" aria-label="anchor" href="#returns-29"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-update_flags"></a><div class="section">
+<h3 id="maestropipeline-update-flags-"><code>MaestroPipeline$update_flags()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-flags-"></a></h3>
+<p>Union-append cascaded flags; flags already present are not duplicated.</p><div class="section">
+<h4 id="usage-31">Usage<a class="anchor" aria-label="anchor" href="#usage-31"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_flags</span><span class="op">(</span><span class="va">flags</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>flags</code></dt>
+<dd><p>character vector of flags to cascade in</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-30">Returns<a class="anchor" aria-label="anchor" href="#returns-30"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-update_log_level"></a><div class="section">
+<h3 id="maestropipeline-update-log-level-"><code>MaestroPipeline$update_log_level()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-log-level-"></a></h3>
+<p>Cascade a log level; only applies when the pipeline's own log level is
+"INFO" (the default, treated as "not explicitly set").</p><div class="section">
+<h4 id="usage-32">Usage<a class="anchor" aria-label="anchor" href="#usage-32"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_log_level</span><span class="op">(</span><span class="va">log_level</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>log_level</code></dt>
+<dd><p>character scalar log level to cascade</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-31">Returns<a class="anchor" aria-label="anchor" href="#returns-31"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroPipeline-reset_run_time_attributes"></a><div class="section">
 <h3 id="maestropipeline-reset-run-time-attributes-"><code>MaestroPipeline$reset_run_time_attributes()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-reset-run-time-attributes-"></a></h3>
 <p>Resets run time attributes</p><div class="section">
-<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
+<h4 id="usage-33">Usage<a class="anchor" aria-label="anchor" href="#usage-33"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">reset_run_time_attributes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-28">Returns<a class="anchor" aria-label="anchor" href="#returns-28"></a></h4>
+<h4 id="returns-32">Returns<a class="anchor" aria-label="anchor" href="#returns-32"></a></h4>
 <p>invisible</p>
 </div>
 
@@ -642,14 +723,14 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-get_run_sequence"></a><div class="section">
 <h3 id="maestropipeline-get-run-sequence-"><code>MaestroPipeline$get_run_sequence()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-run-sequence-"></a></h3>
 <p>Get the run sequence of a pipeline</p><div class="section">
-<h4 id="usage-30">Usage<a class="anchor" aria-label="anchor" href="#usage-30"></a></h4>
+<h4 id="usage-34">Usage<a class="anchor" aria-label="anchor" href="#usage-34"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>n</code></dt>
 <dd><p>optional sequence limit</p></dd>
 
@@ -662,7 +743,7 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-29">Returns<a class="anchor" aria-label="anchor" href="#returns-29"></a></h4>
+<h4 id="returns-33">Returns<a class="anchor" aria-label="anchor" href="#returns-33"></a></h4>
 <p>vector</p>
 </div>
 
@@ -671,10 +752,10 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-clone"></a><div class="section">
 <h3 id="maestropipeline-clone-"><code>MaestroPipeline$clone()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-31">Usage<a class="anchor" aria-label="anchor" href="#usage-31"></a></h4>
+<h4 id="usage-35">Usage<a class="anchor" aria-label="anchor" href="#usage-35"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -696,7 +777,7 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>
