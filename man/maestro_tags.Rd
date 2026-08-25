@@ -295,6 +295,43 @@ Examples:
 }
 }
 
+\section{maestroCascadeTags}{
+Propagates selected metadata tags from the annotated pipeline to \strong{all of its
+downstream pipelines} in the DAG, transitively (i.e., to every descendant,
+not just direct children).
+
+The tag value is a space-separated list of tag types to cascade. Accepted
+values are \code{label}, \code{flags}, and \code{loglevel} (case-insensitive, so \code{Label},
+\code{LOGLEVEL}, etc. are all valid). If the tag is used with no value
+(\verb{@maestroCascadeTags} alone), all three tag types are cascaded.
+
+When multiple ancestors each declare \verb{@maestroCascadeTags}, they are applied
+in topological order (root → leaves), so the nearest ancestor wins on
+conflict.
+
+\strong{Merge / conflict rules by tag type:}
+\itemize{
+\item \strong{\code{label}} — Cascaded labels are added only for keys not already defined
+on the downstream pipeline locally (local wins). For keys not locally
+defined, a closer ancestor's value overrides a farther ancestor's value.
+\item \strong{\code{flags}} — Union: cascaded flags not already present are appended.
+\item \strong{\code{loglevel}} — Local wins. The cascade only applies if the downstream
+pipeline's own log level is \code{"INFO"} (the default, treated as "not
+explicitly set"). A downstream that explicitly sets any other level keeps
+it. Cascading \code{INFO} is always a no-op.
+}
+
+Default: (no cascade)
+
+Examples:
+\itemize{
+\item \verb{#' @maestroCascadeTags label} \emph{(cascade labels only)}
+\item \verb{#' @maestroCascadeTags label flags} \emph{(cascade labels and flags)}
+\item \verb{#' @maestroCascadeTags} \emph{(cascade all three tag types)}
+\item \verb{#' @maestroCascadeTags LOGLEVEL} \emph{(case-insensitive)}
+}
+}
+
 \section{maestro}{
 Generic tag for identifying a maestro pipeline with all the defaults. Useful
 when you want a pipeline to be scheduled via maestro that accepts all default

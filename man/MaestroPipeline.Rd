@@ -41,6 +41,10 @@ A pipeline is defined as a single R script with a schedule or input
     \item \href{#method-MaestroPipeline-set_n_expected_iterations}{\code{MaestroPipeline$set_n_expected_iterations()}}
     \item \href{#method-MaestroPipeline-update_inputs}{\code{MaestroPipeline$update_inputs()}}
     \item \href{#method-MaestroPipeline-update_outputs}{\code{MaestroPipeline$update_outputs()}}
+    \item \href{#method-MaestroPipeline-get_cascade}{\code{MaestroPipeline$get_cascade()}}
+    \item \href{#method-MaestroPipeline-update_labels}{\code{MaestroPipeline$update_labels()}}
+    \item \href{#method-MaestroPipeline-update_flags}{\code{MaestroPipeline$update_flags()}}
+    \item \href{#method-MaestroPipeline-update_log_level}{\code{MaestroPipeline$update_log_level()}}
     \item \href{#method-MaestroPipeline-reset_run_time_attributes}{\code{MaestroPipeline$reset_run_time_attributes()}}
     \item \href{#method-MaestroPipeline-get_run_sequence}{\code{MaestroPipeline$get_run_sequence()}}
     \item \href{#method-MaestroPipeline-clone}{\code{MaestroPipeline$clone()}}
@@ -71,7 +75,8 @@ A pipeline is defined as a single R script with a schedule or input
   run_if = NULL,
   is_collect = FALSE,
   map = NULL,
-  labels = list()
+  labels = list(),
+  cascade = character()
 )}
     \if{html}{\out{</div>}}
   }
@@ -96,6 +101,7 @@ A pipeline is defined as a single R script with a schedule or input
       \item{\code{is_collect}}{logical; TRUE when @maestroInputs uses collect() fan-in marker}
       \item{\code{map}}{named list of key=expr_string pairs from @maestroMap, or NULL}
       \item{\code{labels}}{list of key-value pairs for pipeline labeling}
+      \item{\code{cascade}}{character vector of tag types to cascade to downstream pipelines}
     }
     \if{html}{\out{</div>}}
   }
@@ -593,6 +599,91 @@ return value's length (which is wrong when a field selector is used).
   }
   \subsection{Returns}{
     vector
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_cascade"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_cascade}{}}}
+\subsection{\code{MaestroPipeline$get_cascade()}}{
+  Get the cascade tag types for this pipeline
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_cascade()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    character vector
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-update_labels"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-update_labels}{}}}
+\subsection{\code{MaestroPipeline$update_labels()}}{
+  Merge cascaded labels in; local keys always win.
+For keys not present in the pipeline's own (original) labels, adds or
+overwrites with the cascaded value — allowing a nearer ancestor to
+overwrite a farther one when processed in topological order.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$update_labels(labels)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{labels}}{list of character vectors c(key, value) to cascade in}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-update_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-update_flags}{}}}
+\subsection{\code{MaestroPipeline$update_flags()}}{
+  Union-append cascaded flags; flags already present are not duplicated.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$update_flags(flags)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{flags}}{character vector of flags to cascade in}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-update_log_level"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-update_log_level}{}}}
+\subsection{\code{MaestroPipeline$update_log_level()}}{
+  Cascade a log level; only applies when the pipeline's own log level is
+"INFO" (the default, treated as "not explicitly set").
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$update_log_level(log_level)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_level}}{character scalar log level to cascade}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
   }
 }
 
