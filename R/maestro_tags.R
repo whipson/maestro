@@ -277,6 +277,41 @@
 #' - `#' @maestroLabel domain transportation`
 #' - `#' @maestroLabel author will.hipson`
 #'
+#' # maestroCascadeTags
+#'
+#' Propagates selected metadata tags from the annotated pipeline to **all of its
+#' downstream pipelines** in the DAG, transitively (i.e., to every descendant,
+#' not just direct children).
+#'
+#' The tag value is a space-separated list of tag types to cascade. Accepted
+#' values are `label`, `flags`, and `loglevel` (case-insensitive, so `Label`,
+#' `LOGLEVEL`, etc. are all valid). If the tag is used with no value
+#' (`@maestroCascadeTags` alone), all three tag types are cascaded.
+#'
+#' When multiple ancestors each declare `@maestroCascadeTags`, they are applied
+#' in topological order (root → leaves), so the nearest ancestor wins on
+#' conflict.
+#'
+#' **Merge / conflict rules by tag type:**
+#'
+#' - **`label`** — Cascaded labels are added only for keys not already defined
+#'   on the downstream pipeline locally (local wins). For keys not locally
+#'   defined, a closer ancestor's value overrides a farther ancestor's value.
+#' - **`flags`** — Union: cascaded flags not already present are appended.
+#' - **`loglevel`** — Local wins. The cascade only applies if the downstream
+#'   pipeline's own log level is `"INFO"` (the default, treated as "not
+#'   explicitly set"). A downstream that explicitly sets any other level keeps
+#'   it. Cascading `INFO` is always a no-op.
+#'
+#' Default: (no cascade)
+#'
+#' Examples:
+#' - `#' @maestroCascadeTags label` *(cascade labels only)*
+#' - `#' @maestroCascadeTags label flags` *(cascade labels and flags)*
+#' - `#' @maestroCascadeTags` *(cascade all three tag types)*
+#' - `#' @maestroCascadeTags LOGLEVEL` *(case-insensitive)*
+#'
+#'
 #' # maestro
 #'
 #' Generic tag for identifying a maestro pipeline with all the defaults. Useful

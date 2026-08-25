@@ -113,6 +113,7 @@ build_schedule <- function(pipeline_dir = "./pipelines", cores = 1L, quiet = FAL
   schedule <- MaestroSchedule$new(Pipelines = pipeline_results)
 
   schedule$PipelineList$validate_network()
+  schedule$PipelineList$apply_cascade()
 
   if (!quiet) {
     maestro_parse_cli(pipeline_results, pipeline_errors)

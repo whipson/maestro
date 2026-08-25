@@ -23,7 +23,8 @@ build_schedule_entry <- function(script_path) {
     priority = "maestroPriority",
     flags = "maestroFlags",
     run_if = "maestroRunIf",
-    map = "maestroMap"
+    map = "maestroMap",
+    cascade = "maestroCascadeTags"
   )
 
   # List of maestro tags that can be used more than once
@@ -145,6 +146,24 @@ build_schedule_entry <- function(script_path) {
               contains an output with the same name."),
             call = NULL
           )
+        }
+      }
+
+      # Validate @maestroCascadeTags values (warn here, not in the roxy tag
+      # parser, to avoid being caught by the tryCatch(warning=) around parse_file)
+      cascade_tag <- roxygen2::block_get_tag(block, "maestroCascadeTags")
+      if (!is.null(cascade_tag)) {
+        allowed_cascade <- c("label", "flags", "loglevel")
+        raw_cascade <- trimws(cascade_tag$raw)
+        if (nchar(raw_cascade) > 0) {
+          raw_parts <- tolower(strsplit(raw_cascade, "\\s+")[[1]])
+          invalid_cascade <- setdiff(raw_parts, allowed_cascade)
+          if (length(invalid_cascade) > 0) {
+            cli::cli_warn(
+              c("Unrecognised value(s) in `@maestroCascadeTags` for pipeline {.pkg {.x}}: {.val {invalid_cascade}}.",
+                "i" = "Allowed values are: {.val {allowed_cascade}}. Unrecognised values are ignored.")
+            )
+          }
         }
       }
 
@@ -289,7 +308,8 @@ build_schedule_entry <- function(script_path) {
         run_if = .y$run_if %n% NULL,
         is_collect = is_collect,
         map = map,
-        labels = .y$labels
+        labels = .y$labels,
+        cascade = .y$cascade %n% character()
       )
     })
   }, purrr_error_indexed = function(err) {

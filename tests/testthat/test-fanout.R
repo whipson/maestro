@@ -300,3 +300,34 @@ test_that("Use maestroMap with multiple iterators", {
   expect_equal(unlist(unname(get_artifacts(schedule)$make_message)), c("hello A", "cheers B", "hi C"))
   expect_equal(length(unique(status$run_id)), length(status$run_id))
 })
+
+test_that("Specified iterator value but no it's empty list", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      get_letters <- function() {
+        list(
+          greeting = 'hello',
+          letters = list()
+        )
+      }
+
+      #' @maestroInputs get_letters
+      #' @maestroMap .input$letter
+      make_message <- function(.input) {
+        paste(.input$greeting, toupper(.input$letter))
+      }",
+      con = "pipelines/fanout.R"
+    )
+
+    schedule <- build_schedule()
+    run_schedule(
+      schedule, orch_frequency = "1 day"
+    )
+    status <- get_status(schedule)
+  })
+  expect_snapshot(status[, c("invoked", "success")])
+})

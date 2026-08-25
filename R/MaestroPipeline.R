@@ -25,6 +25,7 @@ MaestroPipeline <- R6::R6Class(
     #' @param is_collect logical; TRUE when @maestroInputs uses collect() fan-in marker
     #' @param map named list of key=expr_string pairs from @maestroMap, or NULL
     #' @param labels list of key-value pairs for pipeline labeling
+    #' @param cascade character vector of tag types to cascade to downstream pipelines
     #'
     #' @return MaestroPipeline object
     initialize = function(
@@ -45,7 +46,8 @@ MaestroPipeline <- R6::R6Class(
       run_if = NULL,
       is_collect = FALSE,
       map = NULL,
-      labels = list()
+      labels = list(),
+      cascade = character()
     ) {
 
       # Update the private attributes
@@ -58,6 +60,9 @@ MaestroPipeline <- R6::R6Class(
       private$priority <- priority
       private$flags <- flags
       private$labels <- labels
+      private$cascade <- cascade
+      private$original_labels <- labels
+      private$original_log_level <- log_level
       private$run_if <- if (!is.null(run_if) && trimws(run_if) == "") {
         NULL
       } else {
@@ -732,6 +737,58 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
+    #' Get the cascade tag types for this pipeline
+    #' @return character vector
+    get_cascade = function() {
+      private$cascade
+    },
+
+    #' @description
+    #' Merge cascaded labels in; local keys always win.
+    #' For keys not present in the pipeline's own (original) labels, adds or
+    #' overwrites with the cascaded value — allowing a nearer ancestor to
+    #' overwrite a farther one when processed in topological order.
+    #' @param labels list of character vectors c(key, value) to cascade in
+    #' @return invisible
+    update_labels = function(labels) {
+      original_keys <- purrr::map_chr(private$original_labels, ~.x[[1]])
+      purrr::walk(labels, ~{
+        key <- .x[[1]]
+        if (!key %in% original_keys) {
+          cur_keys <- purrr::map_chr(private$labels, ~.x[[1]])
+          existing_idx <- which(cur_keys == key)
+          if (length(existing_idx) > 0) {
+            private$labels[[existing_idx[1]]] <- .x
+          } else {
+            private$labels <- c(private$labels, list(.x))
+          }
+        }
+      })
+      invisible()
+    },
+
+    #' @description
+    #' Union-append cascaded flags; flags already present are not duplicated.
+    #' @param flags character vector of flags to cascade in
+    #' @return invisible
+    update_flags = function(flags) {
+      private$flags <- unique(c(private$flags, flags))
+      invisible()
+    },
+
+    #' @description
+    #' Cascade a log level; only applies when the pipeline's own log level is
+    #' "INFO" (the default, treated as "not explicitly set").
+    #' @param log_level character scalar log level to cascade
+    #' @return invisible
+    update_log_level = function(log_level) {
+      if (private$original_log_level == "INFO") {
+        private$log_level <- log_level
+      }
+      invisible()
+    },
+
+    #' @description
     #' Resets run time attributes
     #' @return invisible
     reset_run_time_attributes = function() {
@@ -838,6 +895,9 @@ MaestroPipeline <- R6::R6Class(
     priority = Inf,
     flags = c(),
     labels = list(),
+    cascade = character(),
+    original_labels = list(),
+    original_log_level = NA_character_,
     run_if = NULL,
     is_collect = FALSE,
     map = NULL,

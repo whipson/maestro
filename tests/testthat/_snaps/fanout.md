@@ -105,3 +105,14 @@
       3 TRUE    TRUE   
       4 TRUE    TRUE   
 
+# Specified iterator value but no it's empty list
+
+    Code
+      status[, c("invoked", "success")]
+    Output
+      # A tibble: 2 x 2
+        invoked success
+        <lgl>   <lgl>  
+      1 TRUE    TRUE   
+      2 FALSE   NA     
+

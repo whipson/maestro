@@ -1,3 +1,9 @@
+# maestro 1.3.0.9000
+
+### New features
+
+- New `@maestroCascadeTags` tag propagates selected metadata tags from a pipeline to all of its downstream pipelines in the DAG. The tag value is a space-separated list of tag types to cascade: `label`, `flags`, and/or `loglevel` (case-insensitive). Using the tag with no value cascades all three types. See `?maestro_tags` for full documentation.
+
 # maestro 1.2.0
 
 ### Breaking changes
