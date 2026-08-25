@@ -699,18 +699,10 @@ roxy_tag_parse.roxy_tag_maestroCascadeTags <- function(x) {
     x$val <- allowed
   } else {
     parts <- tolower(strsplit(x$raw, "\\s+")[[1]])
-    invalid <- setdiff(parts, allowed)
-    if (length(invalid) > 0) {
-      roxygen2::roxy_tag_warning(
-        x,
-        glue::glue(
-          "Unrecognised value(s) in maestroCascadeTags: {paste(invalid, collapse = ', ')}. ",
-          "Allowed values are: {paste(allowed, collapse = ', ')}."
-        )
-      )
-      parts <- intersect(parts, allowed)
-    }
-    x$val <- parts
+    # Strip unrecognised values silently here; a cli::cli_warn is emitted in
+    # build_schedule_entry where it can propagate without being caught by the
+    # tryCatch(warning = ...) that wraps parse_file().
+    x$val <- intersect(parts, allowed)
   }
 
   x

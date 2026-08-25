@@ -313,3 +313,37 @@ test_that("Nearest ancestor label wins over farther ancestor", {
   expect_equal(nrow(load_labels), 1)
   expect_equal(load_labels$value[load_labels$label == "domain"], "marketing")
 })
+
+test_that("Unrecognised @maestroCascadeTags value warns and schedule still builds", {
+
+  withr::with_tempdir({
+    dir.create("pipelines")
+    writeLines(
+      "
+      #' @maestroFrequency daily
+      #' @maestroCascadeTags blah
+      #' @maestroLabel domain finance
+      extract <- function() {}
+
+      #' @maestroInputs extract
+      #' @maestroLabel domain marketing
+      transform <- function(.input) {}
+
+      #' @maestroInputs transform
+      load <- function(.input) {}
+      ",
+      con = "pipelines/cascade.R"
+    )
+    expect_warning(
+      schedule <- build_schedule(quiet = TRUE),
+      "blah"
+    )
+  })
+
+  # All three pipelines must still be present
+  expect_equal(schedule$PipelineList$n_pipelines, 3)
+
+  # Invalid cascade is ignored: load inherits no labels (transform has no @maestroCascadeTags)
+  load_labels <- get_labels(schedule) |> dplyr::filter(pipe_name == "load")
+  expect_equal(nrow(load_labels), 0)
+})
