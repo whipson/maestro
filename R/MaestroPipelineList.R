@@ -711,11 +711,115 @@ MaestroPipelineList <- R6::R6Class(
     #' Resets the run time attributes
     reset_pipelines = function() {
       purrr::walk(self$MaestroPipelines, ~.x$reset_run_time_attributes())
+    },
+
+    #' @description
+    #' Propagate \code{@maestroCascadeTags} metadata through the DAG.
+    #' For each pipeline that declares a non-empty cascade vector, the selected
+    #' tag types (label, flags, loglevel) are applied to every downstream
+    #' pipeline in topological order (root to leaves) so that the nearest
+    #' ancestor wins on conflict.
+    #' @return invisible
+    apply_cascade = function() {
+      network <- self$get_network()
+      pipe_names <- self$get_pipe_names()
+
+      cascade_sources <- purrr::keep(
+        self$MaestroPipelines,
+        ~length(.x$get_cascade()) > 0
+      )
+
+      if (length(cascade_sources) == 0) return(invisible())
+
+      # Process sources in topological order (root → leaves)
+      topo_order <- private$topo_sort(pipe_names, network)
+      cascade_names <- purrr::map_chr(cascade_sources, ~.x$get_pipe_name())
+      ordered_cascade_names <- topo_order[topo_order %in% cascade_names]
+
+      purrr::walk(ordered_cascade_names, ~{
+        source_name <- .x
+        source_pipe <- self$get_pipe_by_name(source_name)
+        cascade_types <- source_pipe$get_cascade()
+
+        downstream_names <- private$get_downstream_names(source_name, network)
+        if (length(downstream_names) == 0) return(invisible())
+
+        purrr::walk(downstream_names, ~{
+          target_pipe <- self$get_pipe_by_name(.x)
+
+          if ("label" %in% cascade_types) {
+            source_labels_df <- source_pipe$get_labels()
+            if (nrow(source_labels_df) > 0) {
+              source_label_pairs <- purrr::map(
+                seq_len(nrow(source_labels_df)),
+                ~c(source_labels_df$label[.x], source_labels_df$value[.x])
+              )
+              target_pipe$update_labels(source_label_pairs)
+            }
+          }
+
+          if ("flags" %in% cascade_types) {
+            source_flags <- source_pipe$get_flags()
+            if (length(source_flags) > 0) {
+              target_pipe$update_flags(source_flags)
+            }
+          }
+
+          if ("loglevel" %in% cascade_types) {
+            source_log_level <- source_pipe$get_schedule()$log_level
+            if (!is.na(source_log_level) && source_log_level != "INFO") {
+              target_pipe$update_log_level(source_log_level)
+            }
+          }
+        })
+      })
+
+      invisible()
     }
   ),
 
   private = list(
     network = NULL,
+
+    # BFS from pipe_name; returns names of all reachable downstream nodes.
+    get_downstream_names = function(pipe_name, network) {
+      visited <- character()
+      queue <- pipe_name
+      while (length(queue) > 0) {
+        current <- queue[1]
+        queue <- queue[-1]
+        children <- network$to[network$from == current]
+        new_children <- setdiff(children, c(visited, pipe_name))
+        visited <- c(visited, new_children)
+        queue <- c(queue, new_children)
+      }
+      visited
+    },
+
+    # Kahn's algorithm topological sort; isolated nodes appended at the end.
+    topo_sort = function(pipe_names, network) {
+      in_degree <- stats::setNames(integer(length(pipe_names)), pipe_names)
+      for (edge_to in network$to) {
+        if (edge_to %in% pipe_names) {
+          in_degree[edge_to] <- in_degree[edge_to] + 1L
+        }
+      }
+      queue <- names(in_degree)[in_degree == 0L]
+      result <- character()
+      while (length(queue) > 0) {
+        node <- queue[1]
+        queue <- queue[-1]
+        result <- c(result, node)
+        children <- network$to[network$from == node]
+        for (child in children) {
+          in_degree[child] <- in_degree[child] - 1L
+          if (in_degree[child] == 0L) {
+            queue <- c(queue, child)
+          }
+        }
+      }
+      c(result, setdiff(pipe_names, result))
+    },
 
     resolve_collect_input = function(pipe, network) {
       i <- pipe$get_pipe_name()

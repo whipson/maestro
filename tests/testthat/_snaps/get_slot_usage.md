@@ -67,14 +67,14 @@
          slot  n_runs pipe_names              
          <chr>  <int> <chr>                   
        1 01         3 hourly1, daily1, weekly1
-       2 02         3 hourly1, daily1, weekly1
-       3 03         3 hourly1, daily1, weekly1
+       2 02         2 hourly1, daily1         
+       3 03         2 hourly1, weekly1        
        4 04         3 hourly1, daily1, weekly1
        5 05         3 hourly1, daily1, weekly1
-       6 06         3 hourly1, daily1, weekly1
+       6 06         1 hourly1                 
        7 07         3 hourly1, daily1, weekly1
        8 08         3 hourly1, daily1, weekly1
-       9 09         3 hourly1, daily1, weekly1
+       9 09         1 hourly1                 
       10 10         3 hourly1, daily1, weekly1
       # i 21 more rows
 

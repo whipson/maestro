@@ -48,6 +48,7 @@ single script
     \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
     \item \href{#method-MaestroPipelineList-run_pending_collects}{\code{MaestroPipelineList$run_pending_collects()}}
     \item \href{#method-MaestroPipelineList-reset_pipelines}{\code{MaestroPipelineList$reset_pipelines()}}
+    \item \href{#method-MaestroPipelineList-apply_cascade}{\code{MaestroPipelineList$apply_cascade()}}
     \item \href{#method-MaestroPipelineList-clone}{\code{MaestroPipelineList$clone()}}
   }
 }
@@ -502,6 +503,25 @@ pipe's own downstream outputs are recursed into normally.
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroPipelineList$reset_pipelines()}
     \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-apply_cascade"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-apply_cascade}{}}}
+\subsection{\code{MaestroPipelineList$apply_cascade()}}{
+  Propagate \code{@maestroCascadeTags} metadata through the DAG.
+For each pipeline that declares a non-empty cascade vector, the selected
+tag types (label, flags, loglevel) are applied to every downstream
+pipeline in topological order (root to leaves) so that the nearest
+ancestor wins on conflict.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipelineList$apply_cascade()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
   }
 }
 
