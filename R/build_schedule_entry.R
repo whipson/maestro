@@ -23,7 +23,8 @@ build_schedule_entry <- function(script_path) {
     priority = "maestroPriority",
     flags = "maestroFlags",
     run_if = "maestroRunIf",
-    map = "maestroMap"
+    map = "maestroMap",
+    cascade = "maestroCascadeTags"
   )
 
   # List of maestro tags that can be used more than once
@@ -289,7 +290,8 @@ build_schedule_entry <- function(script_path) {
         run_if = .y$run_if %n% NULL,
         is_collect = is_collect,
         map = map,
-        labels = .y$labels
+        labels = .y$labels,
+        cascade = .y$cascade %n% character()
       )
     })
   }, purrr_error_indexed = function(err) {

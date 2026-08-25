@@ -683,3 +683,48 @@ roclet_process.roclet_maestroRunIf <- function(x, blocks, env, base_path) {
     node = blocks[[1]]$object$topic
   )
 }
+
+
+# maestroCascadeTags --------------------------------------------------------
+
+#' @exportS3Method
+roxy_tag_parse.roxy_tag_maestroCascadeTags <- function(x) {
+
+  allowed <- c("label", "flags", "loglevel")
+
+  x$raw <- x$raw |>
+    trimws()
+
+  if (x$raw == "") {
+    x$val <- allowed
+  } else {
+    parts <- tolower(strsplit(x$raw, "\\s+")[[1]])
+    invalid <- setdiff(parts, allowed)
+    if (length(invalid) > 0) {
+      roxygen2::roxy_tag_warning(
+        x,
+        glue::glue(
+          "Unrecognised value(s) in maestroCascadeTags: {paste(invalid, collapse = ', ')}. ",
+          "Allowed values are: {paste(allowed, collapse = ', ')}."
+        )
+      )
+      parts <- intersect(parts, allowed)
+    }
+    x$val <- parts
+  }
+
+  x
+}
+
+maestroCascadeTags_roclet <- function() {
+  roxygen2::roclet("maestroCascadeTags")
+}
+
+#' @exportS3Method
+roclet_process.roclet_maestroCascadeTags <- function(x, blocks, env, base_path) {
+  tags <- roxygen2::block_get_tag(blocks[[1]], "maestroCascadeTags")
+  list(
+    val = tags$val,
+    node = blocks[[1]]$object$topic
+  )
+}
