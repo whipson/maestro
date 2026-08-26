@@ -150,7 +150,10 @@
 <li><p><code>#' @maestroTz Europe/Paris</code></p></li>
 <li><p><code>#' @maestroTz America/Halifax</code></p></li>
 <li><p><code>#' @maestroTz US/Pacific</code></p></li>
-</ul></section><section class="level2"><h3 id="maestrologlevel">maestroLogLevel<a class="anchor" aria-label="anchor" href="#maestrologlevel"></a>
+</ul>
+<hr></section></section><section class="section level2"><h2 id="metadata-tags">Metadata Tags<a class="anchor" aria-label="anchor" href="#metadata-tags"></a>
+</h2>
+<section class="level2"><h3 id="maestrologlevel">maestroLogLevel<a class="anchor" aria-label="anchor" href="#maestrologlevel"></a>
 </h3>
 <p>Minimum logging threshold for messages, warnings, and errors that come from the pipeline. These levels correspond to those in <code>logger:::log_levels_supported</code> but most commonly used are ERROR, WARN, INFO. For example, if you use <code>WARN</code> then any messages of lower urgency (i.e., INFO) will be suppressed, but errors will be logged.</p>
 <p>Default: <code>INFO</code></p>
@@ -174,6 +177,27 @@
 <ul>
 <li><p><code>#' @maestroLabel domain transportation</code></p></li>
 <li><p><code>#' @maestroLabel author will.hipson</code></p></li>
+</ul></section><section class="level2"><h3 id="maestrocascadetags">maestroCascadeTags<a class="anchor" aria-label="anchor" href="#maestrocascadetags"></a>
+</h3>
+<p>Propagates selected metadata tags from the annotated pipeline to <strong>all of its downstream pipelines</strong> in the DAG, transitively (i.e., to every descendant, not just direct children).</p>
+<p>The tag value is a space-separated list of tag types to cascade. Accepted values are <code>label</code>, <code>flags</code>, and <code>loglevel</code> (case-insensitive). If the tag is used with no value (<code>@maestroCascadeTags</code> alone), all three tag types are cascaded.</p>
+<p>When multiple ancestors each declare <code>@maestroCascadeTags</code>, they are applied in topological order (root → leaves), so the nearest ancestor wins on conflict.</p>
+<p><strong>Merge / conflict rules by tag type:</strong></p>
+<ul>
+<li>
+<strong><code>label</code></strong> — Cascaded labels are added only for keys not already defined on the downstream pipeline locally (local wins). For keys not locally defined, a closer ancestor’s value overrides a farther ancestor’s.</li>
+<li>
+<strong><code>flags</code></strong> — Union: cascaded flags not already present are appended.</li>
+<li>
+<strong><code>loglevel</code></strong> — Local wins. The cascade only applies if the downstream pipeline’s own log level is <code>"INFO"</code> (the default, treated as “not explicitly set”). A downstream that explicitly sets any other level keeps it. Cascading <code>INFO</code> is always a no-op.</li>
+</ul>
+<p>Default: (no cascade)</p>
+<p>Examples:</p>
+<ul>
+<li><p><code>#' @maestroCascadeTags label</code> <em>(cascade labels only)</em></p></li>
+<li><p><code>#' @maestroCascadeTags label flags</code> <em>(cascade labels and flags)</em></p></li>
+<li><p><code>#' @maestroCascadeTags</code> <em>(cascade all three tag types)</em></p></li>
+<li><p><code>#' @maestroCascadeTags LOGLEVEL</code> <em>(case-insensitive)</em></p></li>
 </ul>
 <hr></section></section><section class="section level2"><h2 id="specifier-tags">Specifier Tags<a class="anchor" aria-label="anchor" href="#specifier-tags"></a>
 </h2>

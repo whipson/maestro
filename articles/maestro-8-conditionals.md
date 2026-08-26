@@ -42,14 +42,14 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-25 18:39:19]                                                        
+    ── [2026-08-26 11:34:26]                                                        
     Running pipelines ▶                                                             
-    ✔ random_execution (?) [18ms]                                                   
-    [random_execution] [INFO] [2026-08-25 18:39:19]: Maybe, maybe not               
-    ✔ random_execution [45ms]                                                       
+    ✔ random_execution (?) [15ms]                                                   
+    [random_execution] [INFO] [2026-08-26 11:34:27]: Maybe, maybe not               
+    ✔ random_execution [36ms]                                                       
                                                                                     
-    ── [2026-08-25 18:39:19]                                                        
-    Pipeline execution completed ■ | 0.083 sec elapsed                              
+    ── [2026-08-26 11:34:26]                                                        
+    Pipeline execution completed ■ | 0.068 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -126,21 +126,21 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-25 18:39:20]                                                        
+    ── [2026-08-26 11:34:27]                                                        
     Running pipelines ▶                                                             
-    ✔ extract_flights [11ms]                                                        
-    ✔ |-transform_flights (?) [10ms]                                                
-    ✔ |-transform_flights [22ms]                                                    
-    ✔   |-load_flights (?) [12ms]                                                   
+    ✔ extract_flights [9ms]                                                         
+    ✔ |-transform_flights (?) [8ms]                                                 
+    ✔ |-transform_flights [18ms]                                                    
+    ✔   |-load_flights (?) [10ms]                                                   
                                                                                     
-    ── [2026-08-25 18:39:20]                                                        
-    Pipeline execution completed ■ | 0.133 sec elapsed                              
+    ── [2026-08-26 11:34:27]                                                        
+    Pipeline execution completed ■ | 0.109 sec elapsed                              
     ✔ 2 successes | ! 0 warnings | ✖ 0 errors | ◼ 2 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • extract_flights | 2026-08-25 20:00:00                                         
+    • extract_flights | 2026-08-26 13:00:00                                         
 
 ## Resource Conditionals
 
@@ -185,14 +185,14 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-25 18:39:20]                                                        
+    ── [2026-08-26 11:34:27]                                                        
     Running pipelines ▶                                                             
-    ✔ process_payments (?) [9ms]                                                    
-    [process_payments] [INFO] [2026-08-25 18:39:20]: Payments processed             
-    ✔ process_payments [20ms]                                                       
+    ✔ process_payments (?) [8ms]                                                    
+    [process_payments] [INFO] [2026-08-26 11:34:27]: Payments processed             
+    ✔ process_payments [17ms]                                                       
                                                                                     
-    ── [2026-08-25 18:39:20]                                                        
-    Pipeline execution completed ■ | 0.042 sec elapsed                              
+    ── [2026-08-26 11:34:27]                                                        
+    Pipeline execution completed ■ | 0.034 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
