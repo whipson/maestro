@@ -1,4 +1,4 @@
-# maestro 1.3.0.9000
+# maestro 1.3.0
 
 ### New features
 
