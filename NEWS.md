@@ -2,7 +2,7 @@
 
 ### Minor changes
 
-- Fixed example in vignette Conditional Tags where the `.input` was not used in downstream pipeline.
+- Fixed various typos and syntax errors in documentation.
 
 # maestro 1.3.0
 
@@ -327,7 +327,7 @@ This version refactors much of the code base to rely on R6 classes for pipelines
 
 ### Minor changes
 
-- Changed from `example_schedule` data the pipeline with a schedule of 1 minute to 30 minutes in keeping with best practices for minimum pipeline frequency.
+- Changed the pipeline in `example_schedule` data from a 1 minute schedule to 30 minutes, in keeping with best practices for minimum pipeline frequency.
 
 - `suggest_orch_frequency` now uses the smallest interval between any two pipelines (#99).
 
@@ -349,13 +349,13 @@ This version refactors much of the code base to rely on R6 classes for pipelines
 
 ### Breaking changes
 
-- Creater functions `create_pipeline()` and `create_maestro` no longer have default arguments for the path to where the scripts are created. Users must explicitly define these paths.
+- Creator functions `create_pipeline()` and `create_maestro` no longer have default arguments for the path to where the scripts are created. Users must explicitly define these paths.
 
 - Argument `log_file` in `run_schedule()` no longer defaults to `./maestro.log` but instead defaults to `NULL`.
 
 ### Minor changes
 
-- Creater functions `create_*` now take a boolean `overwrite` argument to make the overwriting of existing pipelines, projects, and orchestrators more explicit.
+- Creator functions `create_*` now take a boolean `overwrite` argument to make the overwriting of existing pipelines, projects, and orchestrators more explicit.
 
 # maestro 0.1.0
 
