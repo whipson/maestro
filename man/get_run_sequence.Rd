@@ -25,7 +25,7 @@ If specified, only returns runs scheduled at or after this datetime.}
 If specified, only returns runs scheduled at or before this datetime.}
 
 \item{include_only_primary}{only primary pipelines are included
-(this are pipelines that are scheduled and not downstream nodes in a DAG)}
+(these are pipelines that are scheduled and not downstream nodes in a DAG)}
 
 \item{include_skipped}{whether to include pipelines tagged with \verb{@maestroSkip}
 (default \code{TRUE} for backwards compatibility)}

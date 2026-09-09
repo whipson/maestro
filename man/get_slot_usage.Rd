@@ -4,7 +4,13 @@
 \alias{get_slot_usage}
 \title{Get time slot usage of a schedule}
 \usage{
-get_slot_usage(schedule, orch_frequency, slot_interval = "hour")
+get_slot_usage(
+  schedule,
+  orch_frequency,
+  slot_interval = "hour",
+  min_datetime = NULL,
+  max_datetime = NULL
+)
 }
 \arguments{
 \item{schedule}{object of type MaestroSchedule created using \code{build_schedule()}}
@@ -12,6 +18,12 @@ get_slot_usage(schedule, orch_frequency, slot_interval = "hour")
 \item{orch_frequency}{of the orchestrator, a single string formatted like "1 day", "2 weeks", "hourly", etc.}
 
 \item{slot_interval}{a time unit indicating the interval of time to consider between slots (e.g., 'hour', 'day')}
+
+\item{min_datetime}{Optional minimum datetime filter. Can be a \code{Date} or \code{POSIXct} object.
+If specified, the run sequence starts from this datetime instead of the current time.}
+
+\item{max_datetime}{Optional maximum datetime filter. Can be a \code{Date} or \code{POSIXct} object.
+If specified, only returns runs scheduled at or before this datetime.}
 }
 \value{
 data.frame
