@@ -25,16 +25,23 @@ test_that("get_slot_usage works as expected", {
     schedule <- build_schedule(quiet = TRUE)
   })
 
+  min_dt <- as.POSIXct("2025-01-01", tz = "UTC")
+  max_dt <- as.POSIXct("2025-02-01", tz = "UTC")
+
   avail_hour <- get_slot_usage(
     schedule,
-    orch_frequency = "1 hour"
+    orch_frequency = "1 hour",
+    min_datetime = min_dt,
+    max_datetime = max_dt
   )
   expect_snapshot(avail_hour)
 
   avail_day <- get_slot_usage(
     schedule,
     orch_frequency = "1 hour",
-    slot_interval = "day"
+    slot_interval = "day",
+    min_datetime = min_dt,
+    max_datetime = max_dt
   )
 
   expect_snapshot(avail_day)
@@ -68,16 +75,23 @@ test_that("get_slot_usage works with variety of frequencies", {
     schedule <- build_schedule(quiet = TRUE)
   })
 
+  min_dt <- as.POSIXct("2025-01-01", tz = "UTC")
+  max_dt <- as.POSIXct("2025-04-01", tz = "UTC")
+
   avail_hour <- get_slot_usage(
     schedule,
-    orch_frequency = "1 hour"
+    orch_frequency = "1 hour",
+    min_datetime = min_dt,
+    max_datetime = max_dt
   )
   expect_snapshot(avail_hour)
 
   avail_day <- get_slot_usage(
     schedule,
     orch_frequency = "1 hour",
-    slot_interval = "day"
+    slot_interval = "day",
+    min_datetime = min_dt,
+    max_datetime = max_dt
   )
 
   expect_snapshot(avail_day)
@@ -85,7 +99,9 @@ test_that("get_slot_usage works with variety of frequencies", {
   avail_week <- get_slot_usage(
     schedule,
     orch_frequency = "1 hour",
-    slot_interval = "week"
+    slot_interval = "week",
+    min_datetime = min_dt,
+    max_datetime = max_dt
   )
 
   expect_snapshot(avail_week)

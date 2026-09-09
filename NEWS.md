@@ -2,6 +2,8 @@
 
 ### Minor changes
 
+- `get_slot_usage()` gains `min_datetime` and `max_datetime` parameters, passed through to the underlying run sequence calculation. This allows the time window to be fixed rather than anchored to the current time.
+
 - Fixed various typos and syntax errors in documentation.
 
 # maestro 1.3.0
