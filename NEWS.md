@@ -1,3 +1,9 @@
+# maestro 1.3.1.9000
+
+### Minor changes
+
+- Fixed example in vignette Conditional Tags where the `.input` was not used in downstream pipeline.
+
 # maestro 1.3.0
 
 ### New features
