@@ -10,7 +10,7 @@
 #' @param max_datetime Optional maximum datetime filter. Can be a `Date` or `POSIXct` object.
 #'   If specified, only returns runs scheduled at or before this datetime.
 #' @param include_only_primary only primary pipelines are included 
-#'   (this are pipelines that are scheduled and not downstream nodes in a DAG)
+#'   (these are pipelines that are scheduled and not downstream nodes in a DAG)
 #' @param include_skipped whether to include pipelines tagged with `@maestroSkip`
 #'   (default `TRUE` for backwards compatibility)
 #'
