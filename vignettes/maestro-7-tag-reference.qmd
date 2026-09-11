@@ -110,7 +110,7 @@ Arbitrary strings which are then made accessible via `get_flags()`. A pipeline c
 
 Default: 
 
-Examples
+Examples:
 
 -   `#' @maestroFlags critical aviation`
 
@@ -184,7 +184,7 @@ Examples:
 
 ## maestroMonths
 
-Specific months of the year on which to run the pipeline. This only applies for pipelines that do run at least monthly. Acceptable values are integers (1-12) corresponding to the month of the year (e.g., 1 = January, 2 = February, etc.).
+Specific months of the year on which to run the pipeline. This only applies for pipelines that run at least monthly. Acceptable values are integers (1-12) corresponding to the month of the year (e.g., 1 = January, 2 = February, etc.).
 
 Default:
 
@@ -275,11 +275,11 @@ Examples:
 
 Sets the pipeline to be conditional based on a TRUE/FALSE value returned from an R expression. R code following the tag
 must evaluate to a single TRUE or FALSE, where TRUE causes the pipeline to run (assuming it meets scheduling criteria). If 
-the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the `resources` argument of `run_schedule()` are also accessible in expression following the tag.
+the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the `resources` argument of `run_schedule()` are also accessible in the expression following the tag.
 
 Default:
 
-Examples
+Examples:
 
 -   `#' @maestroRunIf sample(c(TRUE, FALSE), 1)`
 -   ```

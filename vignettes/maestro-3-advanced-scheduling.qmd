@@ -28,7 +28,7 @@ asciicast::init_knitr_engine(
 options(asciicast_theme = "pkgdown")
 ```
 
-This vignette covers more advanced concepts and examples related to scheduling. At it's core, maestro adheres to two keys principles:
+This vignette covers more advanced concepts and examples related to scheduling. At its core, maestro adheres to two key principles:
 
 1.  Stateless: It does not need to be continuously running - it can be run in a serverless architecture
 2.  Use of *rounded scheduling*: The timeliness of pipeline executions depends on how often you run your orchestrator
@@ -198,7 +198,7 @@ If your pipeline runs at least monthly, you can run it on specific months. Use i
 ```{r, eval=FALSE}
 #' specific_months maestro pipeline
 #'
-#' @maestroFrequency months
+#' @maestroFrequency monthly
 #' @maestroMonths 1 7 10
 some_months <- function() {
 

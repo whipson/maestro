@@ -20,6 +20,10 @@
 #'
 #' @inheritParams run_schedule
 #' @param slot_interval a time unit indicating the interval of time to consider between slots (e.g., 'hour', 'day')
+#' @param min_datetime Optional minimum datetime filter. Can be a `Date` or `POSIXct` object.
+#'   If specified, the run sequence starts from this datetime instead of the current time.
+#' @param max_datetime Optional maximum datetime filter. Can be a `Date` or `POSIXct` object.
+#'   If specified, only returns runs scheduled at or before this datetime.
 #'
 #' @returns data.frame
 #' @export
@@ -36,7 +40,7 @@
 #'     slot_interval = "hour"
 #'   )
 #' }
-get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
+get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour", min_datetime = NULL, max_datetime = NULL) {
 
   if (!"MaestroSchedule" %in% class(schedule)) {
     cli::cli_abort(
@@ -51,6 +55,33 @@ get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
     return(invisible())
   }
 
+  if (!is.null(min_datetime)) {
+    if (!inherits(min_datetime, c("Date", "POSIXct", "POSIXlt"))) {
+      cli::cli_abort(
+        "`min_datetime` must be a Date or POSIXct object.",
+        call = rlang::caller_env()
+      )
+    }
+  }
+
+  if (!is.null(max_datetime)) {
+    if (!inherits(max_datetime, c("Date", "POSIXct", "POSIXlt"))) {
+      cli::cli_abort(
+        "`max_datetime` must be a Date or POSIXct object.",
+        call = rlang::caller_env()
+      )
+    }
+  }
+
+  if (!is.null(min_datetime) && !is.null(max_datetime)) {
+    if (min_datetime > max_datetime) {
+      cli::cli_abort(
+        "`min_datetime` cannot be greater than `max_datetime`.",
+        call = rlang::caller_env()
+      )
+    }
+  }
+
   # Get the orchestrator nunits
   orch_nunits <- validate_orch_frequency(orch_frequency)
 
@@ -62,7 +93,7 @@ get_slot_usage <- function(schedule, orch_frequency, slot_interval = "hour") {
     )
   }
 
-  run_sequences <- schedule$PipelineList$get_run_sequences()
+  run_sequences <- schedule$PipelineList$get_run_sequences(min_datetime = min_datetime, max_datetime = max_datetime)
 
   run_sequences_all <- run_sequences |>
     purrr::imap(

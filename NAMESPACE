@@ -58,6 +58,8 @@ import(logger)
 import(tictoc)
 import(utils)
 importFrom(R.utils,countLines)
-importFrom(roxygen2,roclet_output)
-importFrom(roxygen2,roclet_process)
-importFrom(roxygen2,roxy_tag_parse)
+importFrom(roxygen2,
+  roclet_output,
+  roclet_process,
+  roxy_tag_parse
+)

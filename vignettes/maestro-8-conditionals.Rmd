@@ -73,7 +73,7 @@ status <- run_schedule(
 
 ## DAG Conditionals
 
-[DAG pipelines](maestro-4-directed-acyclic-graphs.html) are several pipelines chained together such that the input from an upstream pipeline is passed to a downstream pipeline. The return value of the upstream pipeline is passed to the downstream pipeline via the `.input` parameter. This same .input can be accessed in the `@maestroRunIf` tag.
+[DAG pipelines](maestro-4-directed-acyclic-graphs.html) are several pipelines chained together such that the input from an upstream pipeline is passed to a downstream pipeline. The return value of the upstream pipeline is passed to the downstream pipeline via the `.input` parameter. This same `.input` can be accessed in the `@maestroRunIf` tag.
 
 The example below executes the `transform_flights` and `load_flights` pipelines only if the incoming value is a dataframe and its row count is greater than 0.
 
@@ -113,7 +113,7 @@ transform_flights <- function(.input) {
 #' is.data.frame(.input) && nrow(.input) > 0
 load_flights <- function(.input) {
 
-  write.csv("flights.csv")
+  write.csv(.input, "flights.csv")
 }
 ```
 
@@ -157,7 +157,7 @@ writeLines(
   #' is.data.frame(.input) && nrow(.input) > 0
   load_flights <- function(.input) {
 
-    write.csv('flights.csv')
+    write.csv(.input, 'flights.csv')
   }
   ",
   con = "pipelines/conditional2.R"
@@ -177,7 +177,7 @@ status <- run_schedule(
 
 ## Resource Conditionals
 
-In maestro, a resource is an argument or variable passed from the orchestrator to all the pipelines that are designed to make use of that resource. It's a way of allowing a pipeline to use a variable created from the orchestrator context - often it's useful for global configuration type stuff. Conditional pipeline logic can also make use of these resources. Let's see a concrete example where we only want to execute a pipeline if we get a `prod = TRUE` signal from the orchestator:
+In maestro, a resource is an argument or variable passed from the orchestrator to all the pipelines that are designed to make use of that resource. It's a way of allowing a pipeline to use a variable created from the orchestrator context - often it's useful for global configuration type stuff. Conditional pipeline logic can also make use of these resources. Let's see a concrete example where we only want to execute a pipeline if we get a `prod = TRUE` signal from the orchestrator:
 
 ```{r, eval=FALSE}
 #' ./pipelines/conditional3.R

@@ -132,7 +132,7 @@ my_pipe <- function() {
 
 ### Adding New Pipelines
 
-A project with a single pipeline is ok, but in `maestro` is more useful when you have multiple jobs to run. You can add more pipelines to your pipelines directory manually or use `create_pipeline()`:
+A project with a single pipeline is ok, but `maestro` is more useful when you have multiple jobs to run. You can add more pipelines to your pipelines directory manually or use `create_pipeline()`:
 
 ```{r example-pipe}
 #| eval: false

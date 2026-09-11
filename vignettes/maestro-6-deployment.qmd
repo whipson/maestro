@@ -117,7 +117,7 @@ Once it has been published you can set the schedule using the Schedule tab. Be s
 This is a relatively easy way to deploy a maestro project assuming you have a Posit Connect license.
 
 ::: callout-note
-[Posit Connect Cloud](https://connect.posit.cloud/), a managed instance of Posit Connect, may be another option for deploying maestro projects, although currently this has not be tested.
+[Posit Connect Cloud](https://connect.posit.cloud/), a managed instance of Posit Connect, may be another option for deploying maestro projects, although currently this has not been tested.
 :::
 
 ### Limitations

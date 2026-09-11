@@ -1,6 +1,6 @@
 
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # maestro <a href="https://whipson.github.io/maestro/"><img src="man/figures/logo.png" alt="maestro website" align="right" height="138"/></a>
 
@@ -41,7 +41,8 @@ install.packages("maestro")
 Or, try out the development version via:
 
 ``` r
-devtools::install_github("https://github.com/whipson/maestro")
+install.packages("remotes")
+remotes::install_github("whipson/maestro")
 ```
 
 ## Big Picture
@@ -96,7 +97,7 @@ output <- run_schedule(
 )
 ```
 
-<img src="man/figures/README-/unnamed-chunk-2.svg"
+<img src="man/figures/README-/unnamed-chunk-3.svg"
 style="width:100.0%" />
 
 The function `build_schedule()` scours through all the pipelines in the
@@ -106,11 +107,11 @@ rounding and calls those pipelines to run.
 
 ### Pipelines
 
-A pipeline is task we want to run. This task may involve retrieving data
-from a source, performing cleaning and computation on the data, then
-sending it to a destination. `maestro` is not concerned with what your
-pipeline does, but rather *when* you want to run it. Here’s a simple
-pipeline in `maestro`:
+A pipeline is a task we want to run. This task may involve retrieving
+data from a source, performing cleaning and computation on the data,
+then sending it to a destination. `maestro` is not concerned with what
+your pipeline does, but rather *when* you want to run it. Here’s a
+simple pipeline in `maestro`:
 
 ``` r
 #' Example ETL pipeline
