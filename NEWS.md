@@ -1,4 +1,4 @@
-# maestro 1.3.1.9000
+# maestro 1.3.1
 
 ### Minor changes
 
