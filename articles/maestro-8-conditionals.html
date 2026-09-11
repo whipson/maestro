@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Conditional Pipelines</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.3.0/vignettes/maestro-8-conditionals.Rmd" class="external-link"><code>vignettes/maestro-8-conditionals.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-8-conditionals.Rmd" class="external-link"><code>vignettes/maestro-8-conditionals.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-8-conditionals.Rmd</code></div>
     </div>
 
@@ -126,20 +126,20 @@ will only execute if a <code>TRUE</code> is randomly sampled.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-08-31 16:45:07]                                                        
+── [2026-09-11 14:21:44]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> (?) <span style="color: #b8b8b8;">[19ms]</span>                                                   
-[random_execution] [INFO] [2026-08-31 16:45:07]: Maybe, maybe not               
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> (?) <span style="color: #b8b8b8;">[17ms]</span>                                                   
+[random_execution] [INFO] [2026-09-11 14:21:44]: Maybe, maybe not               
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">random_execution</span> <span style="color: #b8b8b8;">[48ms]</span>                                                       
                                                                                 
-── [2026-08-31 16:45:07]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.089 sec elapsed                              
+── [2026-09-11 14:21:44]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.088 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• random_execution | 2026-09-02                                                 
+• random_execution | 2026-09-13                                                 
 </pre>
 </div>
 </div>
@@ -150,8 +150,8 @@ Pipe name | Next scheduled run
 are several pipelines chained together such that the input from an
 upstream pipeline is passed to a downstream pipeline. The return value
 of the upstream pipeline is passed to the downstream pipeline via the
-<code>.input</code> parameter. This same .input can be accessed in the
-<code>@maestroRunIf</code> tag.</p>
+<code>.input</code> parameter. This same <code>.input</code> can be
+accessed in the <code>@maestroRunIf</code> tag.</p>
 <p>The example below executes the <code>transform_flights</code> and
 <code>load_flights</code> pipelines only if the incoming value is a
 dataframe and its row count is greater than 0.</p>
@@ -191,7 +191,7 @@ dataframe and its row count is greater than 0.</p>
 <span><span class="co">#' is.data.frame(.input) &amp;&amp; nrow(.input) &gt; 0</span></span>
 <span><span class="va">load_flights</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">.input</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="st">"flights.csv"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">.input</span>, <span class="st">"flights.csv"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span>
@@ -205,21 +205,21 @@ dataframe and its row count is greater than 0.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-08-31 16:45:07]                                                        
+── [2026-09-11 14:21:44]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract_flights</span> <span style="color: #b8b8b8;">[11ms]</span>                                                        
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> (?) <span style="color: #b8b8b8;">[11ms]</span>                                                
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[25ms]</span>                                                    
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> (?) <span style="color: #b8b8b8;">[10ms]</span>                                                
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform_flights</span> <span style="color: #b8b8b8;">[23ms]</span>                                                    
 <span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load_flights</span> (?) <span style="color: #b8b8b8;">[13ms]</span>                                                   
                                                                                 
-── [2026-08-31 16:45:07]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.147 sec elapsed                              
+── [2026-09-11 14:21:44]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.142 sec elapsed                              
 <span style="color: #859900;">✔</span> 2 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 2 total                           
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• extract_flights | 2026-08-31 18:00:00                                         
+• extract_flights | 2026-09-11 15:00:00                                         
 </pre>
 </div>
 </div>
@@ -233,7 +233,7 @@ from the orchestrator context - often it’s useful for global
 configuration type stuff. Conditional pipeline logic can also make use
 of these resources. Let’s see a concrete example where we only want to
 execute a pipeline if we get a <code>prod = TRUE</code> signal from the
-orchestator:</p>
+orchestrator:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' ./pipelines/conditional3.R</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
@@ -261,20 +261,20 @@ orchestator:</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-08-31 16:45:08]                                                        
+── [2026-09-11 14:21:45]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
 <span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> (?) <span style="color: #b8b8b8;">[10ms]</span>                                                   
-[process_payments] [INFO] [2026-08-31 16:45:08]: Payments processed             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[23ms]</span>                                                       
+[process_payments] [INFO] [2026-09-11 14:21:45]: Payments processed             
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">process_payments</span> <span style="color: #b8b8b8;">[22ms]</span>                                                       
                                                                                 
-── [2026-08-31 16:45:08]                                                        
+── [2026-09-11 14:21:45]                                                        
 Pipeline execution completed <span style="color: #525252;">■</span> | 0.046 sec elapsed                              
 <span style="color: #859900;">✔</span> 1 success | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 1 total                             
 ────────────────────────────────────────────────────────────────────────────────
                                                                                 
 ── Next scheduled pipelines <span style="color: #2AA198;">❯</span>                                                   
 Pipe name | Next scheduled run                                                  
-• process_payments | 2026-09-02                                                 
+• process_payments | 2026-09-13                                                 
 </pre>
 </div>
 </div>

@@ -1,6 +1,19 @@
 # Changelog
 
+## maestro 1.3.1
+
+#### Minor changes
+
+- [`get_slot_usage()`](https://whipson.github.io/maestro/reference/get_slot_usage.md)
+  gains `min_datetime` and `max_datetime` parameters, passed through to
+  the underlying run sequence calculation. This allows the time window
+  to be fixed rather than anchored to the current time.
+
+- Fixed various typos and syntax errors in documentation.
+
 ## maestro 1.3.0
+
+CRAN release: 2026-08-31
 
 #### New features
 
@@ -611,8 +624,8 @@ CRAN release: 2024-08-27
 
 #### Minor changes
 
-- Changed from `example_schedule` data the pipeline with a schedule of 1
-  minute to 30 minutes in keeping with best practices for minimum
+- Changed the pipeline in `example_schedule` data from a 1 minute
+  schedule to 30 minutes, in keeping with best practices for minimum
   pipeline frequency.
 
 - `suggest_orch_frequency` now uses the smallest interval between any
@@ -645,7 +658,7 @@ CRAN release: 2024-08-01
 
 #### Breaking changes
 
-- Creater functions
+- Creator functions
   [`create_pipeline()`](https://whipson.github.io/maestro/reference/create_pipeline.md)
   and `create_maestro` no longer have default arguments for the path to
   where the scripts are created. Users must explicitly define these
@@ -657,7 +670,7 @@ CRAN release: 2024-08-01
 
 #### Minor changes
 
-- Creater functions `create_*` now take a boolean `overwrite` argument
+- Creator functions `create_*` now take a boolean `overwrite` argument
   to make the overwriting of existing pipelines, projects, and
   orchestrators more explicit.
 

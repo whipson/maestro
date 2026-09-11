@@ -42,20 +42,20 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-31 16:45:07]                                                        
+    ── [2026-09-11 14:21:44]                                                        
     Running pipelines ▶                                                             
-    ✔ random_execution (?) [19ms]                                                   
-    [random_execution] [INFO] [2026-08-31 16:45:07]: Maybe, maybe not               
+    ✔ random_execution (?) [17ms]                                                   
+    [random_execution] [INFO] [2026-09-11 14:21:44]: Maybe, maybe not               
     ✔ random_execution [48ms]                                                       
                                                                                     
-    ── [2026-08-31 16:45:07]                                                        
-    Pipeline execution completed ■ | 0.089 sec elapsed                              
+    ── [2026-09-11 14:21:44]                                                        
+    Pipeline execution completed ■ | 0.088 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • random_execution | 2026-09-02                                                 
+    • random_execution | 2026-09-13                                                 
 
 ## DAG Conditionals
 
@@ -64,7 +64,7 @@ pipelines](https://whipson.github.io/maestro/articles/maestro-4-directed-acyclic
 are several pipelines chained together such that the input from an
 upstream pipeline is passed to a downstream pipeline. The return value
 of the upstream pipeline is passed to the downstream pipeline via the
-`.input` parameter. This same .input can be accessed in the
+`.input` parameter. This same `.input` can be accessed in the
 `@maestroRunIf` tag.
 
 The example below executes the `transform_flights` and `load_flights`
@@ -108,7 +108,7 @@ transform_flights <- function(.input) {
 #' is.data.frame(.input) && nrow(.input) > 0
 load_flights <- function(.input) {
 
-  write.csv("flights.csv")
+  write.csv(.input, "flights.csv")
 }
 ```
 
@@ -126,21 +126,21 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-31 16:45:07]                                                        
+    ── [2026-09-11 14:21:44]                                                        
     Running pipelines ▶                                                             
     ✔ extract_flights [11ms]                                                        
-    ✔ |-transform_flights (?) [11ms]                                                
-    ✔ |-transform_flights [25ms]                                                    
+    ✔ |-transform_flights (?) [10ms]                                                
+    ✔ |-transform_flights [23ms]                                                    
     ✔   |-load_flights (?) [13ms]                                                   
                                                                                     
-    ── [2026-08-31 16:45:07]                                                        
-    Pipeline execution completed ■ | 0.147 sec elapsed                              
+    ── [2026-09-11 14:21:44]                                                        
+    Pipeline execution completed ■ | 0.142 sec elapsed                              
     ✔ 2 successes | ! 0 warnings | ✖ 0 errors | ◼ 2 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • extract_flights | 2026-08-31 18:00:00                                         
+    • extract_flights | 2026-09-11 15:00:00                                         
 
 ## Resource Conditionals
 
@@ -151,7 +151,7 @@ from the orchestrator context - often it’s useful for global
 configuration type stuff. Conditional pipeline logic can also make use
 of these resources. Let’s see a concrete example where we only want to
 execute a pipeline if we get a `prod = TRUE` signal from the
-orchestator:
+orchestrator:
 
 ``` r
 
@@ -185,17 +185,17 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-31 16:45:08]                                                        
+    ── [2026-09-11 14:21:45]                                                        
     Running pipelines ▶                                                             
     ✔ process_payments (?) [10ms]                                                   
-    [process_payments] [INFO] [2026-08-31 16:45:08]: Payments processed             
-    ✔ process_payments [23ms]                                                       
+    [process_payments] [INFO] [2026-09-11 14:21:45]: Payments processed             
+    ✔ process_payments [22ms]                                                       
                                                                                     
-    ── [2026-08-31 16:45:08]                                                        
+    ── [2026-09-11 14:21:45]                                                        
     Pipeline execution completed ■ | 0.046 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
     ── Next scheduled pipelines ❯                                                   
     Pipe name | Next scheduled run                                                  
-    • process_payments | 2026-09-02                                                 
+    • process_payments | 2026-09-13                                                 

@@ -8,7 +8,13 @@ consider.
 ## Usage
 
 ``` r
-get_slot_usage(schedule, orch_frequency, slot_interval = "hour")
+get_slot_usage(
+  schedule,
+  orch_frequency,
+  slot_interval = "hour",
+  min_datetime = NULL,
+  max_datetime = NULL
+)
 ```
 
 ## Arguments
@@ -27,6 +33,17 @@ get_slot_usage(schedule, orch_frequency, slot_interval = "hour")
 
   a time unit indicating the interval of time to consider between slots
   (e.g., 'hour', 'day')
+
+- min_datetime:
+
+  Optional minimum datetime filter. Can be a `Date` or `POSIXct` object.
+  If specified, the run sequence starts from this datetime instead of
+  the current time.
+
+- max_datetime:
+
+  Optional maximum datetime filter. Can be a `Date` or `POSIXct` object.
+  If specified, only returns runs scheduled at or before this datetime.
 
 ## Value
 

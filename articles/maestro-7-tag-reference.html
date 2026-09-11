@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.3.0/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-7-tag-reference.qmd" class="external-link"><code>vignettes/maestro-7-tag-reference.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -165,7 +165,7 @@
 </h3>
 <p>Arbitrary strings which are then made accessible via <code><a href="../reference/get_flags.html">get_flags()</a></code>. A pipeline can have multiple flags separated by spaces.</p>
 <p>Default:</p>
-<p>Examples</p>
+<p>Examples:</p>
 <ul>
 <li><p><code>#' @maestroFlags critical aviation</code></p></li>
 <li><p><code>#' @maestroFlags time-series</code></p></li>
@@ -219,7 +219,7 @@
 <li><p><code>#' @maestroDays Mon Tue Wed Thu Fri</code></p></li>
 </ul></section><section class="level2"><h3 id="maestromonths">maestroMonths<a class="anchor" aria-label="anchor" href="#maestromonths"></a>
 </h3>
-<p>Specific months of the year on which to run the pipeline. This only applies for pipelines that do run at least monthly. Acceptable values are integers (1-12) corresponding to the month of the year (e.g., 1 = January, 2 = February, etc.).</p>
+<p>Specific months of the year on which to run the pipeline. This only applies for pipelines that run at least monthly. Acceptable values are integers (1-12) corresponding to the month of the year (e.g., 1 = January, 2 = February, etc.).</p>
 <p>Default:</p>
 <p>Examples:</p>
 <ul>
@@ -278,9 +278,9 @@
 <li><code>#' @maestroPriority 3</code></li>
 </ul></section><section class="level2"><h3 id="maestrorunif">maestroRunIf<a class="anchor" aria-label="anchor" href="#maestrorunif"></a>
 </h3>
-<p>Sets the pipeline to be conditional based on a TRUE/FALSE value returned from an R expression. R code following the tag must evaluate to a single TRUE or FALSE, where TRUE causes the pipeline to run (assuming it meets scheduling criteria). If the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the <code>resources</code> argument of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> are also accessible in expression following the tag.</p>
+<p>Sets the pipeline to be conditional based on a TRUE/FALSE value returned from an R expression. R code following the tag must evaluate to a single TRUE or FALSE, where TRUE causes the pipeline to run (assuming it meets scheduling criteria). If the pipeline is part of a DAG it can use the upstream return value as .input. Variables passed through the <code>resources</code> argument of <code><a href="../reference/run_schedule.html">run_schedule()</a></code> are also accessible in the expression following the tag.</p>
 <p>Default:</p>
-<p>Examples</p>
+<p>Examples:</p>
 <ul>
 <li><code>#' @maestroRunIf sample(c(TRUE, FALSE), 1)</code></li>
 <li><pre><code><span><span class="co">#' @maestroRunIf</span></span>

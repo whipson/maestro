@@ -40,7 +40,7 @@ get_run_sequence(
 
 - include_only_primary:
 
-  only primary pipelines are included (this are pipelines that are
+  only primary pipelines are included (these are pipelines that are
   scheduled and not downstream nodes in a DAG)
 
 - include_skipped:

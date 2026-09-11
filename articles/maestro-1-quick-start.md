@@ -107,7 +107,7 @@ my_pipe <- function() {
 
 ### Adding New Pipelines
 
-A project with a single pipeline is ok, but in `maestro` is more useful
+A project with a single pipeline is ok, but `maestro` is more useful
 when you have multiple jobs to run. You can add more pipelines to your
 pipelines directory manually or use
 [`create_pipeline()`](https://whipson.github.io/maestro/reference/create_pipeline.md):
@@ -154,10 +154,10 @@ output <- run_schedule(
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
     Running pipelines ▶                                                             
-    ✔ my_pipe [43ms]                                                                
+    ✔ my_pipe [42ms]                                                                
                                                                                     
     ── [2026-04-21 03:00:00]                                                        
-    Pipeline execution completed ■ | 0.06 sec elapsed                               
+    Pipeline execution completed ■ | 0.059 sec elapsed                              
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total                             
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     

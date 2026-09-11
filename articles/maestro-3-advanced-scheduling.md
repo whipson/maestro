@@ -1,7 +1,7 @@
 # Advanced Scheduling
 
 This vignette covers more advanced concepts and examples related to
-scheduling. At it’s core, maestro adheres to two keys principles:
+scheduling. At its core, maestro adheres to two key principles:
 
 1.  Stateless: It does not need to be continuously running - it can be
     run in a serverless architecture
@@ -81,10 +81,10 @@ status <- run_schedule(
 
     ── [2024-06-20 08:00:00]
     Running pipelines ▶
-    ✔ daily_example [44ms]
+    ✔ daily_example [42ms]
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0.063 sec elapsed
+    Pipeline execution completed ■ | 0.059 sec elapsed
     ✔ 1 success | ! 0 warnings | ✖ 0 errors | ◼ 1 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -113,7 +113,7 @@ status <- run_schedule(
     Running pipelines ▶
 
     ── [2024-06-20 08:00:00]
-    Pipeline execution completed ■ | 0 sec elapsed
+    Pipeline execution completed ■ | 0.001 sec elapsed
     ✔ 0 successes | ! 0 warnings | ✖ 0 errors | ◼ 0 total
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -243,7 +243,7 @@ months. Use integers \[1-12\] to specify the months.
 
 #' specific_months maestro pipeline
 #'
-#' @maestroFrequency months
+#' @maestroFrequency monthly
 #' @maestroMonths 1 7 10
 some_months <- function() {
 

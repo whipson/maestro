@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,8 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"maestro"</span><span class="op">)</span></span></code></pre></div>
 <p>Or, try out the development version via:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"https://github.com/whipson/maestro"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"whipson/maestro"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="big-picture">Big Picture<a class="anchor" aria-label="anchor" href="#big-picture"></a>
@@ -140,13 +141,13 @@
 <span>  <span class="va">schedule</span>, </span>
 <span>  orch_frequency <span class="op">=</span> <span class="st">"15 minutes"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-/unnamed-chunk-2.svg" style="width:100.0%"></p>
+<p><img src="reference/figures/README-/unnamed-chunk-3.svg" style="width:100.0%"></p>
 <p>The function <code><a href="reference/build_schedule.html">build_schedule()</a></code> scours through all the pipelines in the project and builds a schedule. Then <code><a href="reference/run_schedule.html">run_schedule()</a></code> checks each pipeline’s scheduled time against the system time within some margin of rounding and calls those pipelines to run.</p>
 </div>
 <div class="section level3">
 <h3 id="pipelines">Pipelines<a class="anchor" aria-label="anchor" href="#pipelines"></a>
 </h3>
-<p>A pipeline is task we want to run. This task may involve retrieving data from a source, performing cleaning and computation on the data, then sending it to a destination. <code>maestro</code> is not concerned with what your pipeline does, but rather <em>when</em> you want to run it. Here’s a simple pipeline in <code>maestro</code>:</p>
+<p>A pipeline is a task we want to run. This task may involve retrieving data from a source, performing cleaning and computation on the data, then sending it to a destination. <code>maestro</code> is not concerned with what your pipeline does, but rather <em>when</em> you want to run it. Here’s a simple pipeline in <code>maestro</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Example ETL pipeline</span></span>
 <span><span class="co">#' @maestroFrequency daily</span></span>

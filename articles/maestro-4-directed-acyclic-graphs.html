@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Directed Acyclic Graphs (DAGs)</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.3.0/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-4-directed-acyclic-graphs.Rmd" class="external-link"><code>vignettes/maestro-4-directed-acyclic-graphs.Rmd</code></a></small>
       <div class="d-none name"><code>maestro-4-directed-acyclic-graphs.Rmd</code></div>
     </div>
 
@@ -95,7 +95,7 @@ acyclic graph</a> or DAG is a kind of network graph where nodes are
 connected by edges, and these connections cannot loop back or cycle.
 Most data orchestration tools lay out a data pipeline as a DAG where
 data is passed from one function to the next until it reaches the end.
-This allows for more module, single-purpose functions and can make it
+This allows for more modular, single-purpose functions and can make it
 easier to identify where errors are occurring.</p>
 <p>You can create DAG pipelines in maestro using the
 <code>maestroInputs</code> and/or <code>maestroOutputs</code> tags.
@@ -110,7 +110,7 @@ indicate the names of pipelines that are used as input.<a class="footnote-ref" t
 specify just the outputs or just the inputs if you like, but make sure
 all pipelines are identified as maestro pipelines by including at least
 one maestro tag (you could make use of the catch-all
-&lt;code&gt;@maestro&lt;/code&gt; tag for this.&lt;/p&gt;"><sup>1</sup></a></p>
+&lt;code&gt;@maestro&lt;/code&gt; tag for this).&lt;/p&gt;"><sup>1</sup></a></p>
 <p>Note the use of <code>.input</code> as a parameter for all pipelines
 that receive an input. It is important to have this here to enable the
 passing of data from inputs to outputs. It must be named
@@ -148,14 +148,14 @@ console will reflect the network structure of the DAG.</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-08-31 16:44:59]                                                        
+── [2026-09-11 14:21:36]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[26ms]</span>                                                                  
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[30ms]</span>                                                            
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[11ms]</span>                                                             
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">start</span> <span style="color: #b8b8b8;">[24ms]</span>                                                                  
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">high_road</span> <span style="color: #b8b8b8;">[29ms]</span>                                                            
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">low_road</span> <span style="color: #b8b8b8;">[10ms]</span>                                                             
                                                                                 
-── [2026-08-31 16:44:59]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.167 sec elapsed                              
+── [2026-09-11 14:21:36]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.158 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 $start                                                                          
@@ -226,14 +226,14 @@ of the messaging).</p>
 <div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
 <pre>
                                                                                 
-── [2026-08-31 16:44:59]                                                        
+── [2026-09-11 14:21:36]                                                        
 Running pipelines <span style="color: #859900;">▶</span>                                                             
-<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract</span> <span style="color: #b8b8b8;">[12ms]</span>                                                                
-<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[21ms]</span>                                                            
-<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[13ms]</span>                                                               
+<span style="color: #859900;">✔</span> <span style="color: #268BD2;">extract</span> <span style="color: #b8b8b8;">[11ms]</span>                                                                
+<span style="color: #859900;">✔</span> |-<span style="color: #268BD2;">transform</span> <span style="color: #b8b8b8;">[16ms]</span>                                                            
+<span style="color: #859900;">✔</span>   |-<span style="color: #268BD2;">load</span> <span style="color: #b8b8b8;">[11ms]</span>                                                               
                                                                                 
-── [2026-08-31 16:44:59]                                                        
-Pipeline execution completed <span style="color: #525252;">■</span> | 0.084 sec elapsed                              
+── [2026-09-11 14:21:36]                                                        
+Pipeline execution completed <span style="color: #525252;">■</span> | 0.075 sec elapsed                              
 <span style="color: #859900;">✔</span> 3 successes | <span style="color: #D33682;">!</span> 0 warnings | <span style="color: #DC322F;">✖</span> 0 errors | <span style="color: #2AA198;">◼</span> 3 total                           
 ────────────────────────────────────────────────────────────────────────────────
 </pre>

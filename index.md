@@ -27,7 +27,8 @@ Or, try out the development version via:
 
 ``` r
 
-devtools::install_github("https://github.com/whipson/maestro")
+install.packages("remotes")
+remotes::install_github("whipson/maestro")
 ```
 
 ## Big Picture
@@ -89,7 +90,7 @@ output <- run_schedule(
 )
 ```
 
-![](reference/figures/README-/unnamed-chunk-2.svg)
+![](reference/figures/README-/unnamed-chunk-3.svg)
 
 The function
 [`build_schedule()`](https://whipson.github.io/maestro/reference/build_schedule.md)
@@ -101,11 +102,11 @@ some margin of rounding and calls those pipelines to run.
 
 ### Pipelines
 
-A pipeline is task we want to run. This task may involve retrieving data
-from a source, performing cleaning and computation on the data, then
-sending it to a destination. `maestro` is not concerned with what your
-pipeline does, but rather *when* you want to run it. Here’s a simple
-pipeline in `maestro`:
+A pipeline is a task we want to run. This task may involve retrieving
+data from a source, performing cleaning and computation on the data,
+then sending it to a destination. `maestro` is not concerned with what
+your pipeline does, but rather *when* you want to run it. Here’s a
+simple pipeline in `maestro`:
 
 ``` r
 

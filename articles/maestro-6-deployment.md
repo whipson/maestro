@@ -161,7 +161,7 @@ have a Posit Connect license.
 >
 > [Posit Connect Cloud](https://connect.posit.cloud/), a managed
 > instance of Posit Connect, may be another option for deploying maestro
-> projects, although currently this has not be tested.
+> projects, although currently this has not been tested.
 
 ### Limitations
 

@@ -5,7 +5,7 @@ graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) or DAG is a
 kind of network graph where nodes are connected by edges, and these
 connections cannot loop back or cycle. Most data orchestration tools lay
 out a data pipeline as a DAG where data is passed from one function to
-the next until it reaches the end. This allows for more module,
+the next until it reaches the end. This allows for more modular,
 single-purpose functions and can make it easier to identify where errors
 are occurring.
 
@@ -62,14 +62,14 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-08-31 16:44:59]                                                        
+    ── [2026-09-11 14:21:36]                                                        
     Running pipelines ▶                                                             
-    ✔ start [26ms]                                                                  
-    ✔ |-high_road [30ms]                                                            
-    ✔ |-low_road [11ms]                                                             
+    ✔ start [24ms]                                                                  
+    ✔ |-high_road [29ms]                                                            
+    ✔ |-low_road [10ms]                                                             
                                                                                     
-    ── [2026-08-31 16:44:59]                                                        
-    Pipeline execution completed ■ | 0.167 sec elapsed                              
+    ── [2026-09-11 14:21:36]                                                        
+    Pipeline execution completed ■ | 0.158 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
     $start                                                                          
@@ -148,14 +148,14 @@ status <- run_schedule(
 
 
                                                                                     
-    ── [2026-08-31 16:44:59]                                                        
+    ── [2026-09-11 14:21:36]                                                        
     Running pipelines ▶                                                             
-    ✔ extract [12ms]                                                                
-    ✔ |-transform [21ms]                                                            
-    ✔   |-load [13ms]                                                               
+    ✔ extract [11ms]                                                                
+    ✔ |-transform [16ms]                                                            
+    ✔   |-load [11ms]                                                               
                                                                                     
-    ── [2026-08-31 16:44:59]                                                        
-    Pipeline execution completed ■ | 0.084 sec elapsed                              
+    ── [2026-09-11 14:21:36]                                                        
+    Pipeline execution completed ■ | 0.075 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
 
@@ -163,4 +163,4 @@ status <- run_schedule(
     just the outputs or just the inputs if you like, but make sure all
     pipelines are identified as maestro pipelines by including at least
     one maestro tag (you could make use of the catch-all `@maestro` tag
-    for this.
+    for this).

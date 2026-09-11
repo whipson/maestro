@@ -129,7 +129,7 @@ A pipeline can have multiple flags separated by spaces.
 
 Default:
 
-Examples
+Examples:
 
 - `#' @maestroFlags critical aviation`
 
@@ -229,8 +229,8 @@ Examples:
 ### maestroMonths
 
 Specific months of the year on which to run the pipeline. This only
-applies for pipelines that do run at least monthly. Acceptable values
-are integers (1-12) corresponding to the month of the year (e.g., 1 =
+applies for pipelines that run at least monthly. Acceptable values are
+integers (1-12) corresponding to the month of the year (e.g., 1 =
 January, 2 = February, etc.).
 
 Default:
@@ -367,11 +367,11 @@ scheduling criteria). If the pipeline is part of a DAG it can use the
 upstream return value as .input. Variables passed through the
 `resources` argument of
 [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
-are also accessible in expression following the tag.
+are also accessible in the expression following the tag.
 
 Default:
 
-Examples
+Examples:
 
 - `#' @maestroRunIf sample(c(TRUE, FALSE), 1)`
 

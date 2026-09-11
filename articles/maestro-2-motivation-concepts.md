@@ -76,7 +76,7 @@ An orchestrator is a process that triggers pipelines to run. Think of it
 as the factory manager who turns on various assembly lines as needed. It
 also monitors all the pipelines to ensure smooth operation. Just like
 the factory manager, the orchestrator operates in “shifts” and so needs
-to be scheduled to perform it’s job too.
+to be scheduled to perform its job too.
 
 ### Rounded Scheduling
 
@@ -165,7 +165,7 @@ in `maestro` (and there are ways of maximizing its efficiency as the
 number of pipelines increases, such as using multiple cores), we advise
 against using `maestro` to run *this* many pipelines - at least not in a
 single project. There are several reasons for this: (1) the orchestrator
-execution time will be become a problem even with multiple cores; (2)
+execution time will become a problem even with multiple cores; (2)
 organizing and keeping track of this many pipelines in a single R
 project becomes difficult; (3) the number of dependencies to manage in
 the project will likely balloon.
