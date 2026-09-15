@@ -48,15 +48,15 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-09-15 15:02:04]                                                        
+    ── [2026-09-15 15:04:37]                                                        
     Running pipelines ▶                                                             
-    ✔ get_letters [18ms]                                                            
-    ✔ |-shout[1] [21ms]                                                             
-    ✔ |-shout[2] [19ms]                                                             
-    ✔ |-shout[3] [8ms]                                                              
+    ✔ get_letters [25ms]                                                            
+    ✔ |-shout[1] [28ms]                                                             
+    ✔ |-shout[2] [24ms]                                                             
+    ✔ |-shout[3] [10ms]                                                             
                                                                                     
-    ── [2026-09-15 15:02:04]                                                        
-    Pipeline execution completed ■ | 0.179 sec elapsed                              
+    ── [2026-09-15 15:04:37]                                                        
+    Pipeline execution completed ■ | 0.233 sec elapsed                              
     ✔ 4 successes | ! 0 warnings | ✖ 0 errors | ◼ 4 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -121,15 +121,15 @@ get_artifacts(schedule)
 
 
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
+    ── [2026-09-15 15:04:37]                                                        
     Running pipelines ▶                                                             
-    ✔ get_letters [8ms]                                                             
-    ✔ |-make_message[1] [8ms]                                                       
-    ✔ |-make_message[2] [8ms]                                                       
-    ✔ |-make_message[3] [8ms]                                                       
+    ✔ get_letters [10ms]                                                            
+    ✔ |-make_message[1] [10ms]                                                      
+    ✔ |-make_message[2] [10ms]                                                      
+    ✔ |-make_message[3] [10ms]                                                      
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
-    Pipeline execution completed ■ | 0.078 sec elapsed                              
+    ── [2026-09-15 15:04:37]                                                        
+    Pipeline execution completed ■ | 0.095 sec elapsed                              
     ✔ 4 successes | ! 0 warnings | ✖ 0 errors | ◼ 4 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -237,14 +237,14 @@ get_status(schedule)[, c("pipe_name", "invoked", "success", "input_run_id", "lin
 
 
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
+    ── [2026-09-15 15:04:37]                                                        
     Running pipelines ▶                                                             
-    ✔ letter_a [11ms]                                                               
-    ✔ letter_b [8ms]                                                                
-    ✔ |-+combine [11ms]                                                             
+    ✔ letter_a [13ms]                                                               
+    ✔ letter_b [10ms]                                                               
+    ✔ |-+combine [14ms]                                                             
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
-    Pipeline execution completed ■ | 0.072 sec elapsed                              
+    ── [2026-09-15 15:04:37]                                                        
+    Pipeline execution completed ■ | 0.089 sec elapsed                              
     ✔ 3 successes | ! 0 warnings | ✖ 0 errors | ◼ 3 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
@@ -306,16 +306,16 @@ get_artifacts(schedule)$add
 
 
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
+    ── [2026-09-15 15:04:38]                                                        
     Running pipelines ▶                                                             
-    ✔ numbers [8ms]                                                                 
-    ✔ |-multiply[1] [35ms]                                                          
-    ✔ |-multiply[2] [8ms]                                                           
-    ✔ |-multiply[3] [8ms]                                                           
-    ✔   |-+add [9ms]                                                                
+    ✔ numbers [10ms]                                                                
+    ✔ |-multiply[1] [37ms]                                                          
+    ✔ |-multiply[2] [10ms]                                                          
+    ✔ |-multiply[3] [10ms]                                                          
+    ✔   |-+add [10ms]                                                               
                                                                                     
-    ── [2026-09-15 15:02:05]                                                        
-    Pipeline execution completed ■ | 0.125 sec elapsed                              
+    ── [2026-09-15 15:04:38]                                                        
+    Pipeline execution completed ■ | 0.144 sec elapsed                              
     ✔ 5 successes | ! 0 warnings | ✖ 0 errors | ◼ 5 total                           
     ────────────────────────────────────────────────────────────────────────────────
                                                                                     
