@@ -111,6 +111,10 @@ otherwise get passed down to downstream DAG pipelines even when unused).
   previous value (last write wins), unless `increment = TRUE`, in which case `value` is
   added to the existing value instead (a negative `value` decrements). `increment = TRUE`
   behaves like a regular update when the metric hasn't been set yet in the current run.
+  Calling `update_metric()` outside of a pipeline run (nothing set in `maestro_pkgenv`) is
+  not an error — it emits an informational message via `cli::cli_inform()` and returns
+  `invisible(NULL)` as a no-op, so pipeline functions can be developed/tested interactively
+  without `update_metric()` calls failing.
 - `get_metrics(schedule)` / `schedule$get_metrics()` — returns a long data.frame
   (`pipe_name`, `run_id`, `metric`, `value`) covering every run recorded so far. `value`
   is a plain numeric vector column, since metric values are restricted to numeric scalars.
@@ -122,7 +126,8 @@ otherwise get passed down to downstream DAG pipelines even when unused).
 both via `on.exit()`. `update_metric()` reads that context and calls
 `pipe$set_metric(name, value, run_id)`, which writes into `private$run_time_metrics`
 (a list keyed by `run_id`, mirroring `private$run_time_artifacts`). Calling
-`update_metric()` outside of a pipeline run (nothing set in `maestro_pkgenv`) is an error.
+`update_metric()` outside of a pipeline run (nothing set in `maestro_pkgenv`) is a
+no-op that emits an informational message rather than an error.
 
 This design survives `cores > 1` (`furrr`/multisession) for free: the whole
 `MaestroPipeline` R6 object — including the newly-populated `run_time_metrics` field —

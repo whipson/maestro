@@ -18,6 +18,10 @@
 #'   (within the current pipeline run) instead of overwriting it. A negative `value`
 #'   will therefore decrement it. Default `FALSE`.
 #'
+#' Calling `update_metric()` outside of a pipeline run (e.g. while developing or testing a
+#' pipeline function interactively) is not an error - it emits an informational message and
+#' has no effect.
+#'
 #' @return invisible `NULL`
 #' @export
 #' @examples
@@ -73,10 +77,10 @@ update_metric <- function(name, value, increment = FALSE) {
   run_id <- maestro_pkgenv$run_context_run_id
 
   if (is.null(pipe)) {
-    cli::cli_abort(
-      "{.fn update_metric} can only be called from within a pipeline function that is being executed by {.fn run_schedule}.",
-      call = rlang::caller_env()
+    cli::cli_inform(
+      "{.fn update_metric} was called outside of a pipeline run and will have no effect. Metrics are only recorded when the pipeline is executed by {.fn run_schedule}."
     )
+    return(invisible(NULL))
   }
 
   pipe$set_metric(name, value, run_id, increment = increment)

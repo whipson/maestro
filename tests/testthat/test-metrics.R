@@ -170,11 +170,12 @@ test_that("metrics accumulate separately across multiple schedule runs", {
   })
 })
 
-test_that("update_metric errors when called outside a pipeline run", {
-  expect_error(
-    update_metric("rows_in", 1),
-    regexp = "can only be called from within a pipeline"
+test_that("update_metric emits a message and has no effect when called outside a pipeline run", {
+  expect_message(
+    result <- update_metric("rows_in", 1),
+    regexp = "outside of a pipeline run"
   )
+  expect_null(result)
 })
 
 test_that("update_metric validates name and value", {
