@@ -653,16 +653,22 @@ MaestroPipeline <- R6::R6Class(
     },
 
     #' @description
-    #' Record or overwrite a metric value for a given run of this pipeline.
-    #' Intended to be called via the exported `update_metric()` function during
-    #' pipeline execution, not called directly.
+    #' Record, overwrite, or increment a metric value for a given run of this
+    #' pipeline. Intended to be called via the exported `update_metric()`
+    #' function during pipeline execution, not called directly.
     #' @param name character scalar; the metric name
     #' @param value numeric scalar value to record for `name`
     #' @param run_id character; the run id to record the metric against
+    #' @param increment logical; if `TRUE`, `value` is added to the existing
+    #'   metric value (or set as-is if the metric doesn't exist yet) instead
+    #'   of overwriting it. Default `FALSE`.
     #' @return invisible
-    set_metric = function(name, value, run_id) {
+    set_metric = function(name, value, run_id, increment = FALSE) {
       if (is.null(private$run_time_metrics[[run_id]])) {
         private$run_time_metrics[[run_id]] <- list()
+      }
+      if (increment && !is.null(private$run_time_metrics[[run_id]][[name]])) {
+        value <- private$run_time_metrics[[run_id]][[name]] + value
       }
       private$run_time_metrics[[run_id]][[name]] <- value
       invisible()

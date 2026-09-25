@@ -6,11 +6,17 @@
 #' run that is currently executing, so there's no need to pass the pipe name yourself.
 #'
 #' Calling `update_metric()` again with the same `name` during the same pipeline run
-#' overwrites the previous value (last write wins). Metrics from prior runs of the
-#' same pipeline are preserved and returned separately by `get_metrics()`.
+#' overwrites the previous value (last write wins), unless `increment = TRUE`, in which
+#' case `value` is added to the existing value instead (accumulating across calls). This
+#' works even if the metric hasn't been set yet in the current run - the first call just
+#' sets it, same as a regular update. Metrics from prior runs of the same pipeline are
+#' preserved and returned separately by `get_metrics()`.
 #'
 #' @param name character scalar; the name of the metric to set (e.g. `"rows_in"`).
 #' @param value numeric scalar to record for `name`.
+#' @param increment logical; if `TRUE`, `value` is added to the metric's current value
+#'   (within the current pipeline run) instead of overwriting it. A negative `value`
+#'   will therefore decrement it. Default `FALSE`.
 #'
 #' @return invisible `NULL`
 #' @export
@@ -24,10 +30,16 @@
 #'     out <- process(data)
 #'     update_metric("rows_out", nrow(out))
 #'
+#'     # Accumulate a count across a loop
+#'     for (chunk in split_into_chunks(data)) {
+#'       process_chunk(chunk)
+#'       update_metric("chunks_processed", 1, increment = TRUE)
+#'     }
+#'
 #'     out
 #'   }
 #' }
-update_metric <- function(name, value) {
+update_metric <- function(name, value, increment = FALSE) {
 
   if (!rlang::is_scalar_character(name) || is.na(name) || trimws(name) == "") {
     cli::cli_abort(
@@ -50,6 +62,13 @@ update_metric <- function(name, value) {
     )
   }
 
+  if (!rlang::is_scalar_logical(increment) || is.na(increment)) {
+    cli::cli_abort(
+      "`increment` must be a single, non-missing logical value.",
+      call = rlang::caller_env()
+    )
+  }
+
   pipe <- maestro_pkgenv$run_context_pipe
   run_id <- maestro_pkgenv$run_context_run_id
 
@@ -60,7 +79,7 @@ update_metric <- function(name, value) {
     )
   }
 
-  pipe$set_metric(name, value, run_id)
+  pipe$set_metric(name, value, run_id, increment = increment)
 
   invisible(NULL)
 }

@@ -104,10 +104,13 @@ otherwise get passed down to downstream DAG pipelines even when unused).
 
 ### API
 
-- `update_metric(name, value)` — called from *within* a pipeline function body. `name`
-  must be a non-empty character scalar; `value` must be a non-missing numeric scalar
-  (double or integer). Calling it again with the same `name` in the same run
-  overwrites the previous value (last write wins).
+- `update_metric(name, value, increment = FALSE)` — called from *within* a pipeline
+  function body. `name` must be a non-empty character scalar; `value` must be a
+  non-missing numeric scalar (double or integer); `increment` must be a non-missing
+  logical scalar. Calling it again with the same `name` in the same run overwrites the
+  previous value (last write wins), unless `increment = TRUE`, in which case `value` is
+  added to the existing value instead (a negative `value` decrements). `increment = TRUE`
+  behaves like a regular update when the metric hasn't been set yet in the current run.
 - `get_metrics(schedule)` / `schedule$get_metrics()` — returns a long data.frame
   (`pipe_name`, `run_id`, `metric`, `value`) covering every run recorded so far. `value`
   is a plain numeric vector column, since metric values are restricted to numeric scalars.

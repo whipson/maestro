@@ -404,12 +404,12 @@ iterations have run. Used by collect() to gather each-pipe outputs.
 \if{html}{\out{<a id="method-MaestroPipeline-set_metric"></a>}}
 \if{latex}{\out{\hypertarget{method-MaestroPipeline-set_metric}{}}}
 \subsection{\code{MaestroPipeline$set_metric()}}{
-  Record or overwrite a metric value for a given run of this pipeline.
-Intended to be called via the exported \code{update_metric()} function during
-pipeline execution, not called directly.
+  Record, overwrite, or increment a metric value for a given run of this
+pipeline. Intended to be called via the exported \code{update_metric()}
+function during pipeline execution, not called directly.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{MaestroPipeline$set_metric(name, value, run_id)}
+    \preformatted{MaestroPipeline$set_metric(name, value, run_id, increment = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -418,6 +418,9 @@ pipeline execution, not called directly.
       \item{\code{name}}{character scalar; the metric name}
       \item{\code{value}}{numeric scalar value to record for \code{name}}
       \item{\code{run_id}}{character; the run id to record the metric against}
+      \item{\code{increment}}{logical; if \code{TRUE}, \code{value} is added to the existing
+metric value (or set as-is if the metric doesn't exist yet) instead
+of overwriting it. Default \code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }
