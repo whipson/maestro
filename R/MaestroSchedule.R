@@ -83,8 +83,11 @@ MaestroSchedule <- R6::R6Class(
         return(invisible())
       }
 
+      orchestrator_warned <- FALSE
+
       tryCatch({
-        
+        withCallingHandlers({
+
         pipes_to_run <- self$PipelineList
 
         if (private$sch_status != "Not Run") {
@@ -175,18 +178,23 @@ MaestroSchedule <- R6::R6Class(
             cli::cli_ul(next_run_strs)
           }
         }
+        }, warning = function(w) {
+          # Log and muffle so an incidental warning (e.g. from furrr/future,
+          # or unrelated package machinery) doesn't unwind the stack and skip
+          # merging worker results back via update_pipelines().
+          orchestrator_warned <<- TRUE
+          cli::cli_warn(
+            "Orchestrator warned with {conditionMessage(w)}"
+          )
+          invokeRestart("muffleWarning")
+        })
       }, error = function(e) {
         private$sch_status <- "Error"
         cli::cli_abort(
           "Failed to execute orchestrator with error: {e}"
         )
-      }, warning = function(w) {
-        private$sch_status <- "Warning"
-        cli::cli_warn(
-          "Orchestrator warned with {w}"
-        )
       })
-      private$sch_status <- "Success"
+      private$sch_status <- if (orchestrator_warned) "Warning" else "Success"
 
       return(invisible())
     },
@@ -239,6 +247,13 @@ MaestroSchedule <- R6::R6Class(
     #' @return data.frame
     get_labels = function() {
       self$PipelineList$get_labels()
+    },
+
+    #' @description
+    #' Get all pipeline metrics (recorded via `update_metric()`) as a data.frame
+    #' @return data.frame
+    get_metrics = function() {
+      self$PipelineList$get_metrics()
     },
 
     #' @description

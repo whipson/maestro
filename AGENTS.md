@@ -94,6 +94,54 @@ Accepted values (space-separated, case-insensitive): `label`, `flags`, `loglevel
 - **`R/maestro_tags.R`** — user-facing docs.
 - **`tests/testthat/test-cascade.R`** + fixture directory `test_pipelines_cascade/`.
 
+## Metrics (`update_metric()` / `get_metrics()`, added in v1.4.0)
+
+### Purpose
+
+Lets a pipeline record simple named metrics (e.g. `rows_in`, `rows_out`) during execution
+without returning them as part of the pipeline's artifact/return value (which would
+otherwise get passed down to downstream DAG pipelines even when unused).
+
+### API
+
+- `update_metric(name, value)` — called from *within* a pipeline function body. `name`
+  must be a non-empty character scalar; `value` must be a non-missing numeric scalar
+  (double or integer). Calling it again with the same `name` in the same run
+  overwrites the previous value (last write wins).
+- `get_metrics(schedule)` / `schedule$get_metrics()` — returns a long data.frame
+  (`pipe_name`, `run_id`, `metric`, `value`) covering every run recorded so far. `value`
+  is a plain numeric vector column, since metric values are restricted to numeric scalars.
+
+### How `update_metric()` knows which pipeline is calling it
+
+`MaestroPipeline$run()` assigns `self` and the current `run_id` into the package-level
+`maestro_pkgenv` environment immediately before invoking the pipeline function, and clears
+both via `on.exit()`. `update_metric()` reads that context and calls
+`pipe$set_metric(name, value, run_id)`, which writes into `private$run_time_metrics`
+(a list keyed by `run_id`, mirroring `private$run_time_artifacts`). Calling
+`update_metric()` outside of a pipeline run (nothing set in `maestro_pkgenv`) is an error.
+
+This design survives `cores > 1` (`furrr`/multisession) for free: the whole
+`MaestroPipeline` R6 object — including the newly-populated `run_time_metrics` field —
+is what gets returned from each worker and merged back via `update_pipelines()`, exactly
+like `run_time_artifacts` and `run_time_attributes` already do. No new cross-process
+plumbing was needed.
+
+### Implementation touchpoints
+
+- **`R/metrics.R`** — `update_metric()` and `get_metrics()` (exported functions).
+- **`R/MaestroPipeline.R`** — `run()` sets/clears `maestro_pkgenv$run_context_pipe` and
+  `maestro_pkgenv$run_context_run_id` around the pipeline function call; `set_metric()`
+  and `get_metrics()` methods; `private$run_time_metrics` field (not reset by
+  `reset_run_time_attributes()`, so metric history survives repeated `run_schedule()`
+  calls on the same schedule object).
+- **`R/MaestroPipelineList.R`** / **`R/MaestroSchedule.R`** — `get_metrics()` delegates,
+  mirroring the `get_labels()` pattern.
+- **`tests/testthat/test-metrics.R`** + fixture directory `test_pipelines_run_metrics/`
+  (used only by the multicore test — multisession workers don't share the main process's
+  working directory, so relative paths from `withr::with_tempdir()` don't resolve there;
+  use `test_path()` fixtures for any multicore test).
+
 ## Adding a new `@maestro*` tag — integration checklist
 
 When a new metadata tag is introduced, **all of the following must be updated**:

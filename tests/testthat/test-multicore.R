@@ -121,3 +121,32 @@ test_that("Collect pipeline with its own downstream output runs the downstream",
   expect_true(all(status$success))
   expect_equal(get_artifacts(schedule)$ab_upper, "AB")
 })
+
+test_that("An incidental orchestrator-level warning during a multicore run doesn't discard merged results", {
+
+  # Regression test: MaestroSchedule$run() used to wrap its whole body in a
+  # single tryCatch(warning = ...), so *any* warning surfacing while
+  # collecting future results (e.g. future's own RNG-misuse check below)
+  # unwound the stack before update_pipelines() could merge worker results
+  # back into the main process, silently discarding an otherwise successful
+  # multicore run. See R/MaestroSchedule.R.
+  testthat::skip_if(Sys.getenv("MAESTRO_TEST_FUTURE") != "true")
+  withr::local_options(future.rng.onMisuse = "warning")
+  future::plan(future::multisession(workers = 2))
+  withr::defer(future::plan(future::sequential))
+
+  schedule <- build_schedule(test_path("test_pipelines_run_rng_warning"))
+
+  expect_message({
+    run_schedule(schedule, cores = 2, run_all = TRUE)
+  })
+
+  status <- get_status(schedule)
+  expect_true(all(status$invoked))
+  expect_true(all(status$success))
+
+  metrics <- get_metrics(schedule)
+  expect_equal(nrow(metrics), 1)
+  expect_equal(metrics$metric, "draw")
+}) |>
+  suppressMessages()

@@ -222,6 +222,17 @@ MaestroPipelineList <- R6::R6Class(
     },
 
     #' @description
+    #' Get the metrics of the pipelines (recorded via `update_metric()`) as a data.frame
+    #' @return data.frame
+    get_metrics = function() {
+      purrr::map(self$MaestroPipelines, ~{
+        .x$get_metrics() |>
+          dplyr::mutate(pipe_name = .x$get_pipe_name(), .before = 0)
+      }) |>
+        purrr::list_rbind()
+    },
+
+    #' @description
     #' Get the network structure as a edge list
     #' @return data.frame
     get_network = function() {

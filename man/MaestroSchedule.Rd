@@ -32,6 +32,7 @@ if (interactive()) {
     \item \href{#method-MaestroSchedule-get_network}{\code{MaestroSchedule$get_network()}}
     \item \href{#method-MaestroSchedule-get_flags}{\code{MaestroSchedule$get_flags()}}
     \item \href{#method-MaestroSchedule-get_labels}{\code{MaestroSchedule$get_labels()}}
+    \item \href{#method-MaestroSchedule-get_metrics}{\code{MaestroSchedule$get_metrics()}}
     \item \href{#method-MaestroSchedule-get_run_sequence}{\code{MaestroSchedule$get_run_sequence()}}
     \item \href{#method-MaestroSchedule-clone}{\code{MaestroSchedule$clone()}}
   }
@@ -181,6 +182,21 @@ if (interactive()) {
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroSchedule$get_labels()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroSchedule-get_metrics"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroSchedule-get_metrics}{}}}
+\subsection{\code{MaestroSchedule$get_metrics()}}{
+  Get all pipeline metrics (recorded via \code{update_metric()}) as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroSchedule$get_metrics()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
