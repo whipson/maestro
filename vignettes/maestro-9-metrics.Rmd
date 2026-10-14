@@ -2,7 +2,7 @@
 title: "Custom Pipeline Metrics"
 vignette: >
   %\VignetteIndexEntry{Custom Pipeline Metrics}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
