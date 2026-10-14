@@ -13,7 +13,11 @@ update_metric(name, value, increment = FALSE)
 
 \item{increment}{logical; if \code{TRUE}, \code{value} is added to the metric's current value
 (within the current pipeline run) instead of overwriting it. A negative \code{value}
-will therefore decrement it. Default \code{FALSE}.}
+will therefore decrement it. Default \code{FALSE}.
+
+Calling \code{update_metric()} outside of a pipeline run (e.g. while developing or testing a
+pipeline function interactively) is not an error - it emits an informational message and
+has no effect.}
 }
 \value{
 invisible \code{NULL}

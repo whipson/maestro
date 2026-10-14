@@ -1,7 +1,7 @@
 Package: maestro
 Type: Package
 Title: Orchestration of Data Pipelines
-Version: 1.4.0.9000
+Version: 1.4.0
 Authors@R: 
     c(
       person("Will", "Hipson", , "will.e.hipson@gmail.com", role = c("cre", "aut", "cph"), 
@@ -46,4 +46,4 @@ Config/testthat/edition: 3
 VignetteBuilder: 
     knitr,
     quarto
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

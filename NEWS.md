@@ -1,4 +1,4 @@
-# maestro 1.4.0 (development)
+# maestro 1.4.0
 
 ### New features
 

@@ -1,0 +1,243 @@
+---
+title: "Custom Pipeline Metrics"
+vignette: >
+  %\VignetteIndexEntry{Custom Pipeline Metrics}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+#| echo: false
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  same_process = TRUE,
+  startup = quote({
+    library(maestro)
+    set.seed(1) 
+  })
+)
+options(asciicast_theme = "pkgdown")
+```
+
+Pipeline metrics are numeric values that track the performance of executed pipelines. Any value that can be represented as a single number can be a metric, but typical metrics are things like the number of rows of a data.frame processed, data volume in bytes, number of API calls, or number of attempts made on a task. Metrics are recorded without being part of the pipeline's return value, so they never get passed downstream in a [DAG](maestro-4-directed-acyclic-graphs.html).
+
+Other common metrics like execution time and success/fail are already tracked by the orchestrator and are available via `get_status()` and `get_schedule()`, so there's no need to record those yourself.
+
+## Recording Metrics
+
+Custom metrics are recorded using the `update_metric()` function. It is called from within a pipeline function and takes the name of the metric and a numeric value (a single, non-missing number). Maestro automatically attributes the metric to the pipeline (and run) that is currently executing.
+
+```{r}
+#| eval: false
+#' ./pipelines/metric_example.R
+#' @maestroFrequency 1 hour
+extract_flights <- function() {
+
+  # Pretends to fetch data from an API
+  df <- data.frame(
+    flight_id = 1:5,
+    airline_code = c("UA", "AC", "AC", "AA", "DE"),
+    departure_time = as.POSIXct("2026-10-14 12:00:00") + c(100, 450, 750, 1450, 1750)
+  )
+
+  update_metric("rows_read", nrow(df))
+  update_metric("bytes_read", as.numeric(object.size(df)))
+
+  df
+}
+
+#' @maestroInputs extract_flights
+load_flights <- function(.input) {
+
+  write.csv(.input, tempfile(fileext = ".csv"))
+
+  update_metric("rows_written", nrow(.input))
+}
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+invisible(unlink("pipelines", recursive = TRUE))
+dir.create("pipelines")
+writeLines(
+  "
+  #' @maestroFrequency 1 hour
+  extract_flights <- function() {
+
+    df <- data.frame(
+      flight_id = 1:5,
+      airline_code = c('UA', 'AC', 'AC', 'AA', 'DE'),
+      departure_time = as.POSIXct('2026-10-14 12:00:00') + c(100, 450, 750, 1450, 1750)
+    )
+
+    update_metric('rows_read', nrow(df))
+    update_metric('bytes_read', as.numeric(object.size(df)))
+
+    df
+  }
+
+  #' @maestroInputs extract_flights
+  load_flights <- function(.input) {
+
+    write.csv(.input, tempfile(fileext = '.csv'))
+
+    update_metric('rows_written', nrow(.input))
+  }
+  ",
+  con = "pipelines/metric_example.R"
+)
+```
+
+After running the schedule, `get_metrics()` returns a long data.frame (tibble) of every metric recorded: the pipeline it came from (`pipe_name`), the run it was recorded in (`run_id`), the `metric` name, and its numeric `value`.
+
+```{r}
+#| echo: true
+library(maestro)
+
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule,
+  orch_frequency = "1 hour",
+  quiet = TRUE
+)
+
+get_metrics(schedule)
+```
+
+Note that each pipeline gets its own `run_id`, even within a DAG. Since the result is a data.frame, it's straightforward to summarise further or write out to a database or file.
+
+::: {.callout-note}
+Metrics are only recorded when a pipeline is executed by `run_schedule()`. Calling `update_metric()` while developing or testing a pipeline function interactively is harmless: it emits an informational message and does nothing.
+:::
+
+## Metrics Are Per Execution
+
+Metrics belong to a single execution of a pipeline. Each time a pipeline runs it gets a new `run_id`, and its metrics are stored separately from those of earlier runs. Within one execution, calling `update_metric()` again with the same name overwrites the earlier value (the last write wins).
+
+Running the same schedule a second time shows this. The metrics from both runs are retained and distinguished by `run_id`.
+
+```{r}
+#| echo: true
+status <- run_schedule(
+  schedule,
+  orch_frequency = "1 hour",
+  quiet = TRUE
+)
+
+get_metrics(schedule)
+```
+
+## Accumulating with `increment = TRUE`
+
+Sometimes a metric is built up over the course of a pipeline rather than computed once, such as counting API calls inside a loop or the number of attempts on a task. Setting `increment = TRUE` adds `value` to the metric's current value instead of overwriting it. If the metric hasn't been set yet in the current run, the first call simply sets it. A negative `value` decrements.
+
+In this example, a pipeline pages through an API and retries a flaky request. Both the number of API calls and the number of attempts accumulate.
+
+```{r}
+#| eval: false
+#' ./pipelines/metric_increment.R
+#' @maestroFrequency 1 day
+fetch_paginated <- function() {
+
+  pages <- 1:3
+  results <- list()
+
+  for (page in pages) {
+    attempts <- 0
+    repeat {
+      attempts <- attempts + 1
+      update_metric("attempts", 1, increment = TRUE)
+
+      # Pretends to call an API that sometimes fails
+      ok <- runif(1) > 0.5
+      if (ok || attempts >= 3) break
+    }
+
+    update_metric("api_calls", 1, increment = TRUE)
+    results[[page]] <- data.frame(page = page, value = rnorm(10))
+  }
+
+  df <- do.call(rbind, results)
+
+  # Overwriting (default) is fine for a one-off value
+  update_metric("rows_read", nrow(df))
+
+  df
+}
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+invisible(unlink("pipelines", recursive = TRUE))
+dir.create("pipelines")
+writeLines(
+  "
+  #' @maestroFrequency 1 day
+  fetch_paginated <- function() {
+
+    pages <- 1:3
+    results <- list()
+
+    for (page in pages) {
+      attempts <- 0
+      repeat {
+        attempts <- attempts + 1
+        update_metric('attempts', 1, increment = TRUE)
+
+        # Pretends to call an API that sometimes fails
+        ok <- runif(1) > 0.5
+        if (ok || attempts >= 3) break
+      }
+
+      update_metric('api_calls', 1, increment = TRUE)
+      results[[page]] <- data.frame(page = page, value = rnorm(10))
+    }
+
+    df <- do.call(rbind, results)
+
+    update_metric('rows_read', nrow(df))
+
+    df
+  }
+  ",
+  con = "pipelines/metric_increment.R"
+)
+```
+
+```{r}
+#| echo: true
+set.seed(2718)
+
+schedule <- build_schedule(quiet = TRUE)
+
+status <- run_schedule(
+  schedule,
+  orch_frequency = "1 day",
+  quiet = TRUE
+)
+
+get_metrics(schedule)
+```
+
+Each metric has a single value per pipeline run: `api_calls` ends at 3 (one per page) while `attempts` is at least 3, depending on how many retries were needed.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+invisible(unlink("pipelines", recursive = TRUE))
+```
