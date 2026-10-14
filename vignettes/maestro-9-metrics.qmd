@@ -6,6 +6,28 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+#| echo: false
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "",
+  out.width = "100%",
+  cache = FALSE,
+  asciicast_knitr_output = "html"
+)
+
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  same_process = TRUE,
+  startup = quote({
+    library(maestro)
+    set.seed(1) 
+  })
+)
+options(asciicast_theme = "pkgdown")
+```
+
 Pipeline metrics are numeric values that track the performance of executed pipelines. Any value that can be represented as a single number can be a metric, but typical metrics are things like the number of rows of a data.frame processed, data volume in bytes, number of API calls, or number of attempts made on a task. Metrics are recorded without being part of the pipeline's return value, so they never get passed downstream in a [DAG](maestro-4-directed-acyclic-graphs.html).
 
 Other common metrics like execution time and success/fail are already tracked by the orchestrator and are available via `get_status()` and `get_schedule()`, so there's no need to record those yourself.
@@ -79,8 +101,7 @@ writeLines(
 
 After running the schedule, `get_metrics()` returns a long data.frame (tibble) of every metric recorded: the pipeline it came from (`pipe_name`), the run it was recorded in (`run_id`), the `metric` name, and its numeric `value`.
 
-```{r}
-#| echo: true
+```{asciicast}
 library(maestro)
 
 schedule <- build_schedule(quiet = TRUE)
@@ -106,8 +127,7 @@ Metrics belong to a single execution of a pipeline. Each time a pipeline runs it
 
 Running the same schedule a second time shows this. The metrics from both runs are retained and distinguished by `run_id`.
 
-```{r}
-#| echo: true
+```{asciicast}
 status <- run_schedule(
   schedule,
   orch_frequency = "1 hour",
@@ -196,8 +216,7 @@ writeLines(
 )
 ```
 
-```{r}
-#| echo: true
+```{asciicast}
 set.seed(2718)
 
 schedule <- build_schedule(quiet = TRUE)
