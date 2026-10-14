@@ -74,23 +74,25 @@ status <- run_schedule(
 get_metrics(schedule)
 ```
 
-     [38;5;246m# A tibble: 3 × 4 [39m
+    # A tibble: 3 × 4
       pipe_name       run_id metric       value
-       [3m [38;5;246m<chr> [39m [23m            [3m [38;5;246m<chr> [39m [23m   [3m [38;5;246m<chr> [39m [23m         [3m [38;5;246m<dbl> [39m [23m
-     [38;5;250m1 [39m extract_flights SwlKLU rows_read        5
-     [38;5;250m2 [39m extract_flights SwlKLU bytes_read     [4m1 [24m648
-     [38;5;250m3 [39m load_flights    exomb9 rows_written     5
+      <chr>           <chr>  <chr>        <dbl>
+    1 extract_flights dMaH8w rows_read        5
+    2 extract_flights dMaH8w bytes_read    1648
+    3 load_flights    uuP1Tj rows_written     5
 
 Note that each pipeline gets its own `run_id`, even within a DAG. Since
 the result is a data.frame, it’s straightforward to summarise further or
 write out to a database or file.
 
-Metrics are only recorded when a pipeline is executed by
-[`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md).
-Calling
-[`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md)
-while developing or testing a pipeline function interactively is
-harmless: it emits an informational message and does nothing.
+> **Note**
+>
+> Metrics are only recorded when a pipeline is executed by
+> [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md).
+> Calling
+> [`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md)
+> while developing or testing a pipeline function interactively is
+> harmless: it emits an informational message and does nothing.
 
 ## Metrics Are Per Execution
 
@@ -115,15 +117,15 @@ status <- run_schedule(
 get_metrics(schedule)
 ```
 
-     [38;5;246m# A tibble: 6 × 4 [39m
+    # A tibble: 6 × 4
       pipe_name       run_id metric       value
-       [3m [38;5;246m<chr> [39m [23m            [3m [38;5;246m<chr> [39m [23m   [3m [38;5;246m<chr> [39m [23m         [3m [38;5;246m<dbl> [39m [23m
-     [38;5;250m1 [39m extract_flights SwlKLU rows_read        5
-     [38;5;250m2 [39m extract_flights SwlKLU bytes_read     [4m1 [24m648
-     [38;5;250m3 [39m extract_flights HfdVHI rows_read        5
-     [38;5;250m4 [39m extract_flights HfdVHI bytes_read     [4m1 [24m648
-     [38;5;250m5 [39m load_flights    exomb9 rows_written     5
-     [38;5;250m6 [39m load_flights    fivjF0 rows_written     5
+      <chr>           <chr>  <chr>        <dbl>
+    1 extract_flights dMaH8w rows_read        5
+    2 extract_flights dMaH8w bytes_read    1648
+    3 extract_flights yTKKHP rows_read        5
+    4 extract_flights yTKKHP bytes_read    1648
+    5 load_flights    uuP1Tj rows_written     5
+    6 load_flights    fjPLUt rows_written     5
 
 ## Accumulating with `increment = TRUE`
 
@@ -186,12 +188,12 @@ status <- run_schedule(
 get_metrics(schedule)
 ```
 
-     [38;5;246m# A tibble: 3 × 4 [39m
+    # A tibble: 3 × 4
       pipe_name       run_id metric    value
-       [3m [38;5;246m<chr> [39m [23m            [3m [38;5;246m<chr> [39m [23m   [3m [38;5;246m<chr> [39m [23m      [3m [38;5;246m<dbl> [39m [23m
-     [38;5;250m1 [39m fetch_paginated SYyFTx attempts      4
-     [38;5;250m2 [39m fetch_paginated SYyFTx api_calls     3
-     [38;5;250m3 [39m fetch_paginated SYyFTx rows_read    30
+      <chr>           <chr>  <chr>     <dbl>
+    1 fetch_paginated SYyFTx attempts      4
+    2 fetch_paginated SYyFTx api_calls     3
+    3 fetch_paginated SYyFTx rows_read    30
 
 Each metric has a single value per pipeline run: `api_calls` ends at 3
 (one per page) while `attempts` is at least 3, depending on how many

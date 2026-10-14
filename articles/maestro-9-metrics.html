@@ -15,7 +15,10 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Custom Pipeline Metrics">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="maestro-9-metrics_files/libs/quarto-html/popper.min.js"></script><script src="maestro-9-metrics_files/libs/quarto-html/tippy.umd.min.js"></script><link href="maestro-9-metrics_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="maestro-9-metrics_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Custom Pipeline Metrics">
+<meta property="og:image" content="https://whipson.github.io/maestro/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -75,42 +78,30 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Custom Pipeline Metrics</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.4.0/vignettes/maestro-9-metrics.Rmd" class="external-link"><code>vignettes/maestro-9-metrics.Rmd</code></a></small>
-      <div class="d-none name"><code>maestro-9-metrics.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/vignettes/maestro-9-metrics.qmd" class="external-link"><code>vignettes/maestro-9-metrics.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<p>Pipeline metrics are numeric values that track the performance of
-executed pipelines. Any value that can be represented as a single number
-can be a metric, but typical metrics are things like the number of rows
-of a data.frame processed, data volume in bytes, number of API calls, or
-number of attempts made on a task. Metrics are recorded without being
-part of the pipeline’s return value, so they never get passed downstream
-in a <a href="maestro-4-directed-acyclic-graphs.html">DAG</a>.</p>
-<p>Other common metrics like execution time and success/fail are already
-tracked by the orchestrator and are available via
-<code><a href="../reference/get_status.html">get_status()</a></code> and <code><a href="../reference/get_schedule.html">get_schedule()</a></code>, so there’s no
-need to record those yourself.</p>
-<div class="section level2">
-<h2 id="recording-metrics">Recording Metrics<a class="anchor" aria-label="anchor" href="#recording-metrics"></a>
+
+
+
+
+
+    <p>Pipeline metrics are numeric values that track the performance of executed pipelines. Any value that can be represented as a single number can be a metric, but typical metrics are things like the number of rows of a data.frame processed, data volume in bytes, number of API calls, or number of attempts made on a task. Metrics are recorded without being part of the pipeline’s return value, so they never get passed downstream in a <a href="maestro-4-directed-acyclic-graphs.html">DAG</a>.</p>
+<p>Other common metrics like execution time and success/fail are already tracked by the orchestrator and are available via <code><a href="../reference/get_status.html">get_status()</a></code> and <code><a href="../reference/get_schedule.html">get_schedule()</a></code>, so there’s no need to record those yourself.</p>
+<section class="level2"><h2 id="recording-metrics">Recording Metrics<a class="anchor" aria-label="anchor" href="#recording-metrics"></a>
 </h2>
-<p>Custom metrics are recorded using the <code><a href="../reference/update_metric.html">update_metric()</a></code>
-function. It is called from within a pipeline function and takes the
-name of the metric and a numeric value (a single, non-missing number).
-Maestro automatically attributes the metric to the pipeline (and run)
-that is currently executing.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>Custom metrics are recorded using the <code><a href="../reference/update_metric.html">update_metric()</a></code> function. It is called from within a pipeline function and takes the name of the metric and a numeric value (a single, non-missing number). Maestro automatically attributes the metric to the pipeline (and run) that is currently executing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' ./pipelines/metric_example.R</span></span>
 <span><span class="co">#' @maestroFrequency 1 hour</span></span>
 <span><span class="va">extract_flights</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
@@ -135,12 +126,10 @@ that is currently executing.</p>
 <span></span>
 <span>  <span class="fu"><a href="../reference/update_metric.html">update_metric</a></span><span class="op">(</span><span class="st">"rows_written"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">.input</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>After running the schedule, <code><a href="../reference/get_metrics.html">get_metrics()</a></code> returns a long
-data.frame (tibble) of every metric recorded: the pipeline it came from
-(<code>pipe_name</code>), the run it was recorded in
-(<code>run_id</code>), the <code>metric</code> name, and its numeric
-<code>value</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+</div>
+<p>After running the schedule, <code><a href="../reference/get_metrics.html">get_metrics()</a></code> returns a long data.frame (tibble) of every metric recorded: the pipeline it came from (<code>pipe_name</code>), the run it was recorded in (<code>run_id</code>), the <code>metric</code> name, and its numeric <code>value</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whipson/maestro" class="external-link">maestro</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -152,33 +141,29 @@ data.frame (tibble) of every metric recorded: the pipeline it came from
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_metrics.html">get_metrics</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 3 × 4 [39m
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre><span style="color: #999999;"># A tibble: 3 × 4</span>
   pipe_name       run_id metric       value
-   [3m [38;5;246m&lt;chr&gt; [39m [23m            [3m [38;5;246m&lt;chr&gt; [39m [23m   [3m [38;5;246m&lt;chr&gt; [39m [23m         [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m1 [39m extract_flights SwlKLU rows_read        5
- [38;5;250m2 [39m extract_flights SwlKLU bytes_read     [4m1 [24m648
- [38;5;250m3 [39m load_flights    exomb9 rows_written     5</code></pre>
-<p>Note that each pipeline gets its own <code>run_id</code>, even within
-a DAG. Since the result is a data.frame, it’s straightforward to
-summarise further or write out to a database or file.</p>
-<div class="callout-note">
-<p>Metrics are only recorded when a pipeline is executed by
-<code><a href="../reference/run_schedule.html">run_schedule()</a></code>. Calling <code><a href="../reference/update_metric.html">update_metric()</a></code> while
-developing or testing a pipeline function interactively is harmless: it
-emits an informational message and does nothing.</p>
+  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>           <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+<span style="color: #c2c2c2;">1</span> extract_flights dMaH8w rows_read        5
+<span style="color: #c2c2c2;">2</span> extract_flights dMaH8w bytes_read    <span style="text-decoration: underline;">1</span>648
+<span style="color: #c2c2c2;">3</span> load_flights    uuP1Tj rows_written     5
+</pre>
 </div>
 </div>
-<div class="section level2">
-<h2 id="metrics-are-per-execution">Metrics Are Per Execution<a class="anchor" aria-label="anchor" href="#metrics-are-per-execution"></a>
+<p>Note that each pipeline gets its own <code>run_id</code>, even within a DAG. Since the result is a data.frame, it’s straightforward to summarise further or write out to a database or file.</p>
+<div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Metrics are only recorded when a pipeline is executed by <code><a href="../reference/run_schedule.html">run_schedule()</a></code>. Calling <code><a href="../reference/update_metric.html">update_metric()</a></code> while developing or testing a pipeline function interactively is harmless: it emits an informational message and does nothing.</p>
+</blockquote>
+</div>
+</section><section class="level2"><h2 id="metrics-are-per-execution">Metrics Are Per Execution<a class="anchor" aria-label="anchor" href="#metrics-are-per-execution"></a>
 </h2>
-<p>Metrics belong to a single execution of a pipeline. Each time a
-pipeline runs it gets a new <code>run_id</code>, and its metrics are
-stored separately from those of earlier runs. Within one execution,
-calling <code><a href="../reference/update_metric.html">update_metric()</a></code> again with the same name overwrites
-the earlier value (the last write wins).</p>
-<p>Running the same schedule a second time shows this. The metrics from
-both runs are retained and distinguished by <code>run_id</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>Metrics belong to a single execution of a pipeline. Each time a pipeline runs it gets a new <code>run_id</code>, and its metrics are stored separately from those of earlier runs. Within one execution, calling <code><a href="../reference/update_metric.html">update_metric()</a></code> again with the same name overwrites the earlier value (the last write wins).</p>
+<p>Running the same schedule a second time shows this. The metrics from both runs are retained and distinguished by <code>run_id</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_schedule.html">run_schedule</a></span><span class="op">(</span></span>
 <span>  <span class="va">schedule</span>,</span>
 <span>  orch_frequency <span class="op">=</span> <span class="st">"1 hour"</span>,</span>
@@ -186,29 +171,26 @@ both runs are retained and distinguished by <code>run_id</code>.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_metrics.html">get_metrics</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 6 × 4 [39m
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre><span style="color: #999999;"># A tibble: 6 × 4</span>
   pipe_name       run_id metric       value
-   [3m [38;5;246m&lt;chr&gt; [39m [23m            [3m [38;5;246m&lt;chr&gt; [39m [23m   [3m [38;5;246m&lt;chr&gt; [39m [23m         [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m1 [39m extract_flights SwlKLU rows_read        5
- [38;5;250m2 [39m extract_flights SwlKLU bytes_read     [4m1 [24m648
- [38;5;250m3 [39m extract_flights HfdVHI rows_read        5
- [38;5;250m4 [39m extract_flights HfdVHI bytes_read     [4m1 [24m648
- [38;5;250m5 [39m load_flights    exomb9 rows_written     5
- [38;5;250m6 [39m load_flights    fivjF0 rows_written     5</code></pre>
+  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>           <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>        <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+<span style="color: #c2c2c2;">1</span> extract_flights dMaH8w rows_read        5
+<span style="color: #c2c2c2;">2</span> extract_flights dMaH8w bytes_read    <span style="text-decoration: underline;">1</span>648
+<span style="color: #c2c2c2;">3</span> extract_flights yTKKHP rows_read        5
+<span style="color: #c2c2c2;">4</span> extract_flights yTKKHP bytes_read    <span style="text-decoration: underline;">1</span>648
+<span style="color: #c2c2c2;">5</span> load_flights    uuP1Tj rows_written     5
+<span style="color: #c2c2c2;">6</span> load_flights    fjPLUt rows_written     5
+</pre>
 </div>
-<div class="section level2">
-<h2 id="accumulating-with-increment-true">Accumulating with <code>increment = TRUE</code><a class="anchor" aria-label="anchor" href="#accumulating-with-increment-true"></a>
+</div>
+</section><section class="level2"><h2 id="accumulating-with-increment-true">Accumulating with <code>increment = TRUE</code>
+<a class="anchor" aria-label="anchor" href="#accumulating-with-increment-true"></a>
 </h2>
-<p>Sometimes a metric is built up over the course of a pipeline rather
-than computed once, such as counting API calls inside a loop or the
-number of attempts on a task. Setting <code>increment = TRUE</code> adds
-<code>value</code> to the metric’s current value instead of overwriting
-it. If the metric hasn’t been set yet in the current run, the first call
-simply sets it. A negative <code>value</code> decrements.</p>
-<p>In this example, a pipeline pages through an API and retries a flaky
-request. Both the number of API calls and the number of attempts
-accumulate.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Sometimes a metric is built up over the course of a pipeline rather than computed once, such as counting API calls inside a loop or the number of attempts on a task. Setting <code>increment = TRUE</code> adds <code>value</code> to the metric’s current value instead of overwriting it. If the metric hasn’t been set yet in the current run, the first call simply sets it. A negative <code>value</code> decrements.</p>
+<p>In this example, a pipeline pages through an API and retries a flaky request. Both the number of API calls and the number of attempts accumulate.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' ./pipelines/metric_increment.R</span></span>
 <span><span class="co">#' @maestroFrequency 1 day</span></span>
 <span><span class="va">fetch_paginated</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
@@ -238,7 +220,9 @@ accumulate.</p>
 <span></span>
 <span>  <span class="va">df</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2718</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_schedule.html">build_schedule</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -250,21 +234,103 @@ accumulate.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/get_metrics.html">get_metrics</a></span><span class="op">(</span><span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
-<pre><code> [38;5;246m# A tibble: 3 × 4 [39m
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre><span style="color: #999999;"># A tibble: 3 × 4</span>
   pipe_name       run_id metric    value
-   [3m [38;5;246m&lt;chr&gt; [39m [23m            [3m [38;5;246m&lt;chr&gt; [39m [23m   [3m [38;5;246m&lt;chr&gt; [39m [23m      [3m [38;5;246m&lt;dbl&gt; [39m [23m
- [38;5;250m1 [39m fetch_paginated SYyFTx attempts      4
- [38;5;250m2 [39m fetch_paginated SYyFTx api_calls     3
- [38;5;250m3 [39m fetch_paginated SYyFTx rows_read    30</code></pre>
-<p>Each metric has a single value per pipeline run:
-<code>api_calls</code> ends at 3 (one per page) while
-<code>attempts</code> is at least 3, depending on how many retries were
-needed.</p>
+  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>           <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>  <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>     <span style="font-style: italic;color: #999999;">&lt;dbl&gt;</span>
+<span style="color: #c2c2c2;">1</span> fetch_paginated SYyFTx attempts      4
+<span style="color: #c2c2c2;">2</span> fetch_paginated SYyFTx api_calls     3
+<span style="color: #c2c2c2;">3</span> fetch_paginated SYyFTx rows_read    30
+</pre>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</div>
+<p>Each metric has a single value per pipeline run: <code>api_calls</code> ends at 3 (one per page) while <code>attempts</code> is at least 3, depending on how many retries were needed.</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">
