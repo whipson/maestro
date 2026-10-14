@@ -19,6 +19,8 @@
   : Get the flags of pipelines in a MaestroSchedule object
 - [`get_labels()`](https://whipson.github.io/maestro/reference/get_labels.md)
   : Get the labels of pipelines in a MaestroSchedule object
+- [`get_metrics()`](https://whipson.github.io/maestro/reference/get_metrics.md)
+  : Get metrics recorded by pipelines in a MaestroSchedule object
 - [`get_network()`](https://whipson.github.io/maestro/reference/get_network.md)
   : Get the network structure of pipelines in a MaestroSchedule object
 - [`get_run_sequence()`](https://whipson.github.io/maestro/reference/get_run_sequence.md)
@@ -43,3 +45,5 @@
   : Maestro Tags
 - [`run_schedule()`](https://whipson.github.io/maestro/reference/run_schedule.md)
   : Run a schedule
+- [`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md)
+  : Update a metric for the currently running pipeline

@@ -57,6 +57,8 @@ when there are multiple maestro pipelines in a single script
 
 - [`MaestroPipelineList$get_labels()`](#method-MaestroPipelineList-get_labels)
 
+- [`MaestroPipelineList$get_metrics()`](#method-MaestroPipelineList-get_metrics)
+
 - [`MaestroPipelineList$get_network()`](#method-MaestroPipelineList-get_network)
 
 - [`MaestroPipelineList$validate_network()`](#method-MaestroPipelineList-validate_network)
@@ -412,6 +414,22 @@ Get the labels of the pipelines as a data.frame
 #### Usage
 
     MaestroPipelineList$get_labels()
+
+#### Returns
+
+data.frame
+
+------------------------------------------------------------------------
+
+### `MaestroPipelineList$get_metrics()`
+
+Get the metrics of the pipelines (recorded via
+[`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md))
+as a data.frame
+
+#### Usage
+
+    MaestroPipelineList$get_metrics()
 
 #### Returns
 

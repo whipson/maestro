@@ -41,6 +41,10 @@ single R script with a schedule or input
 
 - [`MaestroPipeline$get_all_returns()`](#method-MaestroPipeline-get_all_returns)
 
+- [`MaestroPipeline$set_metric()`](#method-MaestroPipeline-set_metric)
+
+- [`MaestroPipeline$get_metrics()`](#method-MaestroPipeline-get_metrics)
+
 - [`MaestroPipeline$get_errors()`](#method-MaestroPipeline-get_errors)
 
 - [`MaestroPipeline$get_warnings()`](#method-MaestroPipeline-get_warnings)
@@ -510,6 +514,59 @@ iterations have run. Used by collect() to gather each-pipe outputs.
 #### Returns
 
 list
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$set_metric()`
+
+Record, overwrite, or increment a metric value for a given run of this
+pipeline. Intended to be called via the exported
+[`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md)
+function during pipeline execution, not called directly.
+
+#### Usage
+
+    MaestroPipeline$set_metric(name, value, run_id, increment = FALSE)
+
+#### Arguments
+
+- `name`:
+
+  character scalar; the metric name
+
+- `value`:
+
+  numeric scalar value to record for `name`
+
+- `run_id`:
+
+  character; the run id to record the metric against
+
+- `increment`:
+
+  logical; if `TRUE`, `value` is added to the existing metric value (or
+  set as-is if the metric doesn't exist yet) instead of overwriting it.
+  Default `FALSE`.
+
+#### Returns
+
+invisible
+
+------------------------------------------------------------------------
+
+### `MaestroPipeline$get_metrics()`
+
+Get metrics recorded for this pipeline (via
+[`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md))
+as a long data.frame, one row per run/metric combination.
+
+#### Usage
+
+    MaestroPipeline$get_metrics()
+
+#### Returns
+
+data.frame
 
 ------------------------------------------------------------------------
 

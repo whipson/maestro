@@ -13,6 +13,7 @@
 <url><loc>https://whipson.github.io/maestro/articles/maestro-6-deployment.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/articles/maestro-7-tag-reference.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/articles/maestro-8-conditionals.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/articles/maestro-9-metrics.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/authors.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/copilot-instructions.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/index.html</loc></url>
@@ -32,6 +33,7 @@
 <url><loc>https://whipson.github.io/maestro/reference/get_artifacts.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_flags.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_labels.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/get_metrics.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_network.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_pipeline_run_sequence.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/get_run_sequence.html</loc></url>
@@ -52,5 +54,6 @@
 <url><loc>https://whipson.github.io/maestro/reference/parse_rounding_unit.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/run_schedule.html</loc></url>
 <url><loc>https://whipson.github.io/maestro/reference/suggest_orch_frequency.html</loc></url>
+<url><loc>https://whipson.github.io/maestro/reference/update_metric.html</loc></url>
 </urlset>
 

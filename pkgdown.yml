@@ -11,7 +11,8 @@ articles:
   maestro-6-deployment: maestro-6-deployment.html
   maestro-7-tag-reference: maestro-7-tag-reference.html
   maestro-8-conditionals: maestro-8-conditionals.html
-last_built: 2026-09-15T15:04Z
+  maestro-9-metrics: maestro-9-metrics.html
+last_built: 2026-10-14T13:31Z
 urls:
   reference: https://whipson.github.io/maestro/reference
   article: https://whipson.github.io/maestro/articles

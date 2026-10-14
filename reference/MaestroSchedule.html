@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-9-metrics.html">Custom Pipeline Metrics</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -51,7 +52,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for a schedule of pipelines</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.3.1/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroSchedule.R" class="external-link"><code>R/MaestroSchedule.R</code></a></small>
       <div class="d-none name"><code>MaestroSchedule.Rd</code></div>
     </div>
 
@@ -82,6 +83,7 @@
 <li><p><a href="#method-MaestroSchedule-get_network"><code>MaestroSchedule$get_network()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_flags"><code>MaestroSchedule$get_flags()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_labels"><code>MaestroSchedule$get_labels()</code></a></p></li>
+<li><p><a href="#method-MaestroSchedule-get_metrics"><code>MaestroSchedule$get_metrics()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-get_run_sequence"><code>MaestroSchedule$get_run_sequence()</code></a></p></li>
 <li><p><a href="#method-MaestroSchedule-clone"><code>MaestroSchedule$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-MaestroSchedule-initialize"></a><div class="section">
@@ -215,10 +217,22 @@
 
 </div>
 
+<p></p><hr><a id="method-MaestroSchedule-get_metrics"></a><div class="section">
+<h3 id="maestroschedule-get-metrics-"><code>MaestroSchedule$get_metrics()</code><a class="anchor" aria-label="anchor" href="#maestroschedule-get-metrics-"></a></h3>
+<p>Get all pipeline metrics (recorded via <code><a href="update_metric.html">update_metric()</a></code>) as a data.frame</p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_metrics</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroSchedule-get_run_sequence"></a><div class="section">
 <h3 id="maestroschedule-get-run-sequence-"><code>MaestroSchedule$get_run_sequence()</code><a class="anchor" aria-label="anchor" href="#maestroschedule-get-run-sequence-"></a></h3>
 <p>Get full sequence of scheduled executions for all pipelines</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -248,7 +262,7 @@
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>data.frame</p>
 </div>
 
@@ -257,7 +271,7 @@
 <p></p><hr><a id="method-MaestroSchedule-clone"></a><div class="section">
 <h3 id="maestroschedule-clone-"><code>MaestroSchedule$clone()</code><a class="anchor" aria-label="anchor" href="#maestroschedule-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroSchedule</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>

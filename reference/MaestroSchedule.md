@@ -30,6 +30,8 @@ Class for a schedule of pipelines
 
 - [`MaestroSchedule$get_labels()`](#method-MaestroSchedule-get_labels)
 
+- [`MaestroSchedule$get_metrics()`](#method-MaestroSchedule-get_metrics)
+
 - [`MaestroSchedule$get_run_sequence()`](#method-MaestroSchedule-get_run_sequence)
 
 - [`MaestroSchedule$clone()`](#method-MaestroSchedule-clone)
@@ -181,6 +183,22 @@ Get all pipeline labels as a data.frame
 #### Usage
 
     MaestroSchedule$get_labels()
+
+#### Returns
+
+data.frame
+
+------------------------------------------------------------------------
+
+### `MaestroSchedule$get_metrics()`
+
+Get all pipeline metrics (recorded via
+[`update_metric()`](https://whipson.github.io/maestro/reference/update_metric.md))
+as a data.frame
+
+#### Usage
+
+    MaestroSchedule$get_metrics()
 
 #### Returns
 

@@ -9,7 +9,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-9-metrics.html">Custom Pipeline Metrics</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -53,7 +54,7 @@ A pipeline is defined as a single R script with a schedule or input"><meta prope
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Class for an individual maestro pipeline A pipeline is defined as a single R script with a schedule or input</h1>
-      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/1.3.1/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/whipson/maestro/blob/main/R/MaestroPipeline.R" class="external-link"><code>R/MaestroPipeline.R</code></a></small>
       <div class="d-none name"><code>MaestroPipeline.Rd</code></div>
     </div>
 
@@ -85,6 +86,8 @@ A pipeline is defined as a single R script with a schedule or input</p>
 <li><p><a href="#method-MaestroPipeline-get_n_artifacts"><code>MaestroPipeline$get_n_artifacts()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_n_invocations"><code>MaestroPipeline$get_n_invocations()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_all_returns"><code>MaestroPipeline$get_all_returns()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-set_metric"><code>MaestroPipeline$set_metric()</code></a></p></li>
+<li><p><a href="#method-MaestroPipeline-get_metrics"><code>MaestroPipeline$get_metrics()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_errors"><code>MaestroPipeline$get_errors()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_warnings"><code>MaestroPipeline$get_warnings()</code></a></p></li>
 <li><p><a href="#method-MaestroPipeline-get_messages"><code>MaestroPipeline$get_messages()</code></a></p></li>
@@ -467,13 +470,58 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 
 </div>
 
+<p></p><hr><a id="method-MaestroPipeline-set_metric"></a><div class="section">
+<h3 id="maestropipeline-set-metric-"><code>MaestroPipeline$set_metric()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-set-metric-"></a></h3>
+<p>Record, overwrite, or increment a metric value for a given run of this
+pipeline. Intended to be called via the exported <code><a href="update_metric.html">update_metric()</a></code>
+function during pipeline execution, not called directly.</p><div class="section">
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">set_metric</span><span class="op">(</span><span class="va">name</span>, <span class="va">value</span>, <span class="va">run_id</span>, increment <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>name</code></dt>
+<dd><p>character scalar; the metric name</p></dd>
+
+      <dt><code>value</code></dt>
+<dd><p>numeric scalar value to record for <code>name</code></p></dd>
+
+      <dt><code>run_id</code></dt>
+<dd><p>character; the run id to record the metric against</p></dd>
+
+      <dt><code>increment</code></dt>
+<dd><p>logical; if <code>TRUE</code>, <code>value</code> is added to the existing
+metric value (or set as-is if the metric doesn't exist yet) instead
+of overwriting it. Default <code>FALSE</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-16">Returns<a class="anchor" aria-label="anchor" href="#returns-16"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-get_metrics"></a><div class="section">
+<h3 id="maestropipeline-get-metrics-"><code>MaestroPipeline$get_metrics()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-metrics-"></a></h3>
+<p>Get metrics recorded for this pipeline (via <code><a href="update_metric.html">update_metric()</a></code>) as a long
+data.frame, one row per run/metric combination.</p><div class="section">
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_metrics</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-17">Returns<a class="anchor" aria-label="anchor" href="#returns-17"></a></h4>
+<p>data.frame</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroPipeline-get_errors"></a><div class="section">
 <h3 id="maestropipeline-get-errors-"><code>MaestroPipeline$get_errors()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-errors-"></a></h3>
 <p>Get list of errors from the pipeline</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_errors</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-16">Returns<a class="anchor" aria-label="anchor" href="#returns-16"></a></h4>
+<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
 <p>list</p>
 </div>
 
@@ -482,10 +530,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_warnings"></a><div class="section">
 <h3 id="maestropipeline-get-warnings-"><code>MaestroPipeline$get_warnings()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-warnings-"></a></h3>
 <p>Get list of warnings from the pipeline</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_warnings</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-17">Returns<a class="anchor" aria-label="anchor" href="#returns-17"></a></h4>
+<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
 <p>list</p>
 </div>
 
@@ -494,10 +542,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_messages"></a><div class="section">
 <h3 id="maestropipeline-get-messages-"><code>MaestroPipeline$get_messages()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-messages-"></a></h3>
 <p>Get list of messages from the pipeline</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_messages</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-18">Returns<a class="anchor" aria-label="anchor" href="#returns-18"></a></h4>
+<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
 <p>list</p>
 </div>
 
@@ -506,10 +554,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_flags"></a><div class="section">
 <h3 id="maestropipeline-get-flags-"><code>MaestroPipeline$get_flags()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-flags-"></a></h3>
 <p>Get the flags of a pipeline as a vector</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_flags</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-19">Returns<a class="anchor" aria-label="anchor" href="#returns-19"></a></h4>
+<h4 id="returns-21">Returns<a class="anchor" aria-label="anchor" href="#returns-21"></a></h4>
 <p>character</p>
 </div>
 
@@ -518,10 +566,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_labels"></a><div class="section">
 <h3 id="maestropipeline-get-labels-"><code>MaestroPipeline$get_labels()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-labels-"></a></h3>
 <p>Get the labels of a pipeline as a data.frame</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_labels</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-20">Returns<a class="anchor" aria-label="anchor" href="#returns-20"></a></h4>
+<h4 id="returns-22">Returns<a class="anchor" aria-label="anchor" href="#returns-22"></a></h4>
 <p>data.frame</p>
 </div>
 
@@ -530,10 +578,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_is_collect"></a><div class="section">
 <h3 id="maestropipeline-get-is-collect-"><code>MaestroPipeline$get_is_collect()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-is-collect-"></a></h3>
 <p>Get whether the pipeline uses <code>collect</code> for fan in</p><div class="section">
-<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_is_collect</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-21">Returns<a class="anchor" aria-label="anchor" href="#returns-21"></a></h4>
+<h4 id="returns-23">Returns<a class="anchor" aria-label="anchor" href="#returns-23"></a></h4>
 <p>logical</p>
 </div>
 
@@ -542,10 +590,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_map"></a><div class="section">
 <h3 id="maestropipeline-get-map-"><code>MaestroPipeline$get_map()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-map-"></a></h3>
 <p>Get the .input value to iterate over</p><div class="section">
-<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_map</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-22">Returns<a class="anchor" aria-label="anchor" href="#returns-22"></a></h4>
+<h4 id="returns-24">Returns<a class="anchor" aria-label="anchor" href="#returns-24"></a></h4>
 <p>character</p>
 </div>
 
@@ -554,10 +602,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 <p></p><hr><a id="method-MaestroPipeline-get_is_map"></a><div class="section">
 <h3 id="maestropipeline-get-is-map-"><code>MaestroPipeline$get_is_map()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-is-map-"></a></h3>
 <p>Get whether the pipeline uses an iterator for dynamic fan out</p><div class="section">
-<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
+<h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_is_map</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-23">Returns<a class="anchor" aria-label="anchor" href="#returns-23"></a></h4>
+<h4 id="returns-25">Returns<a class="anchor" aria-label="anchor" href="#returns-25"></a></h4>
 <p>logical</p>
 </div>
 
@@ -569,10 +617,10 @@ iterations have run. Used by collect() to gather each-pipe outputs.</p><div clas
 Set by run_pipe() just before the scatter loop so that resolve_collect_input()
 can compare against get_n_invocations() without depending on the upstream
 return value's length (which is wrong when a field selector is used).</p><div class="section">
-<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
+<h4 id="usage-27">Usage<a class="anchor" aria-label="anchor" href="#usage-27"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_n_expected_iterations</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-24">Returns<a class="anchor" aria-label="anchor" href="#returns-24"></a></h4>
+<h4 id="returns-26">Returns<a class="anchor" aria-label="anchor" href="#returns-26"></a></h4>
 <p>integer or NULL</p>
 </div>
 
@@ -581,17 +629,17 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-set_n_expected_iterations"></a><div class="section">
 <h3 id="maestropipeline-set-n-expected-iterations-"><code>MaestroPipeline$set_n_expected_iterations()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-set-n-expected-iterations-"></a></h3>
 <p>Record the number of iterations that will be dispatched for this @maestroMap pipeline.</p><div class="section">
-<h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
+<h4 id="usage-28">Usage<a class="anchor" aria-label="anchor" href="#usage-28"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">set_n_expected_iterations</span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>n</code></dt>
 <dd><p>integer</p></dd>
 
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-25">Returns<a class="anchor" aria-label="anchor" href="#returns-25"></a></h4>
+<h4 id="returns-27">Returns<a class="anchor" aria-label="anchor" href="#returns-27"></a></h4>
 <p>invisible</p>
 </div>
 
@@ -600,17 +648,17 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-update_inputs"></a><div class="section">
 <h3 id="maestropipeline-update-inputs-"><code>MaestroPipeline$update_inputs()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-inputs-"></a></h3>
 <p>Update the inputs of a pipeline</p><div class="section">
-<h4 id="usage-27">Usage<a class="anchor" aria-label="anchor" href="#usage-27"></a></h4>
+<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_inputs</span><span class="op">(</span><span class="va">inputs</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>inputs</code></dt>
 <dd><p>character vector of inputting pipeline names</p></dd>
 
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-26">Returns<a class="anchor" aria-label="anchor" href="#returns-26"></a></h4>
+<h4 id="returns-28">Returns<a class="anchor" aria-label="anchor" href="#returns-28"></a></h4>
 <p>vector</p>
 </div>
 
@@ -619,17 +667,17 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-update_outputs"></a><div class="section">
 <h3 id="maestropipeline-update-outputs-"><code>MaestroPipeline$update_outputs()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-outputs-"></a></h3>
 <p>Update the outputs of a pipeline</p><div class="section">
-<h4 id="usage-28">Usage<a class="anchor" aria-label="anchor" href="#usage-28"></a></h4>
+<h4 id="usage-30">Usage<a class="anchor" aria-label="anchor" href="#usage-30"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_outputs</span><span class="op">(</span><span class="va">outputs</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>outputs</code></dt>
 <dd><p>character vector of outputting pipeline names</p></dd>
 
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-27">Returns<a class="anchor" aria-label="anchor" href="#returns-27"></a></h4>
+<h4 id="returns-29">Returns<a class="anchor" aria-label="anchor" href="#returns-29"></a></h4>
 <p>vector</p>
 </div>
 
@@ -638,10 +686,10 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 <p></p><hr><a id="method-MaestroPipeline-get_cascade"></a><div class="section">
 <h3 id="maestropipeline-get-cascade-"><code>MaestroPipeline$get_cascade()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-cascade-"></a></h3>
 <p>Get the cascade tag types for this pipeline</p><div class="section">
-<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
+<h4 id="usage-31">Usage<a class="anchor" aria-label="anchor" href="#usage-31"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_cascade</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-28">Returns<a class="anchor" aria-label="anchor" href="#returns-28"></a></h4>
+<h4 id="returns-30">Returns<a class="anchor" aria-label="anchor" href="#returns-30"></a></h4>
 <p>character vector</p>
 </div>
 
@@ -653,51 +701,12 @@ return value's length (which is wrong when a field selector is used).</p><div cl
 For keys not present in the pipeline's own (original) labels, adds or
 overwrites with the cascaded value — allowing a nearer ancestor to
 overwrite a farther one when processed in topological order.</p><div class="section">
-<h4 id="usage-30">Usage<a class="anchor" aria-label="anchor" href="#usage-30"></a></h4>
+<h4 id="usage-32">Usage<a class="anchor" aria-label="anchor" href="#usage-32"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_labels</span><span class="op">(</span><span class="va">labels</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>labels</code></dt>
 <dd><p>list of character vectors c(key, value) to cascade in</p></dd>
-
-
-</dl><p></p></div>
-</div><p></p><div class="section">
-<h4 id="returns-29">Returns<a class="anchor" aria-label="anchor" href="#returns-29"></a></h4>
-<p>invisible</p>
-</div>
-
-</div>
-
-<p></p><hr><a id="method-MaestroPipeline-update_flags"></a><div class="section">
-<h3 id="maestropipeline-update-flags-"><code>MaestroPipeline$update_flags()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-flags-"></a></h3>
-<p>Union-append cascaded flags; flags already present are not duplicated.</p><div class="section">
-<h4 id="usage-31">Usage<a class="anchor" aria-label="anchor" href="#usage-31"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_flags</span><span class="op">(</span><span class="va">flags</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>flags</code></dt>
-<dd><p>character vector of flags to cascade in</p></dd>
-
-
-</dl><p></p></div>
-</div><p></p><div class="section">
-<h4 id="returns-30">Returns<a class="anchor" aria-label="anchor" href="#returns-30"></a></h4>
-<p>invisible</p>
-</div>
-
-</div>
-
-<p></p><hr><a id="method-MaestroPipeline-update_log_level"></a><div class="section">
-<h3 id="maestropipeline-update-log-level-"><code>MaestroPipeline$update_log_level()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-log-level-"></a></h3>
-<p>Cascade a log level; only applies when the pipeline's own log level is
-"INFO" (the default, treated as "not explicitly set").</p><div class="section">
-<h4 id="usage-32">Usage<a class="anchor" aria-label="anchor" href="#usage-32"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_log_level</span><span class="op">(</span><span class="va">log_level</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>log_level</code></dt>
-<dd><p>character scalar log level to cascade</p></dd>
 
 
 </dl><p></p></div>
@@ -708,13 +717,52 @@ overwrite a farther one when processed in topological order.</p><div class="sect
 
 </div>
 
+<p></p><hr><a id="method-MaestroPipeline-update_flags"></a><div class="section">
+<h3 id="maestropipeline-update-flags-"><code>MaestroPipeline$update_flags()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-flags-"></a></h3>
+<p>Union-append cascaded flags; flags already present are not duplicated.</p><div class="section">
+<h4 id="usage-33">Usage<a class="anchor" aria-label="anchor" href="#usage-33"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_flags</span><span class="op">(</span><span class="va">flags</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>flags</code></dt>
+<dd><p>character vector of flags to cascade in</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-32">Returns<a class="anchor" aria-label="anchor" href="#returns-32"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-MaestroPipeline-update_log_level"></a><div class="section">
+<h3 id="maestropipeline-update-log-level-"><code>MaestroPipeline$update_log_level()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-update-log-level-"></a></h3>
+<p>Cascade a log level; only applies when the pipeline's own log level is
+"INFO" (the default, treated as "not explicitly set").</p><div class="section">
+<h4 id="usage-34">Usage<a class="anchor" aria-label="anchor" href="#usage-34"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">update_log_level</span><span class="op">(</span><span class="va">log_level</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>log_level</code></dt>
+<dd><p>character scalar log level to cascade</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-33">Returns<a class="anchor" aria-label="anchor" href="#returns-33"></a></h4>
+<p>invisible</p>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-MaestroPipeline-reset_run_time_attributes"></a><div class="section">
 <h3 id="maestropipeline-reset-run-time-attributes-"><code>MaestroPipeline$reset_run_time_attributes()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-reset-run-time-attributes-"></a></h3>
 <p>Resets run time attributes</p><div class="section">
-<h4 id="usage-33">Usage<a class="anchor" aria-label="anchor" href="#usage-33"></a></h4>
+<h4 id="usage-35">Usage<a class="anchor" aria-label="anchor" href="#usage-35"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">reset_run_time_attributes</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-32">Returns<a class="anchor" aria-label="anchor" href="#returns-32"></a></h4>
+<h4 id="returns-34">Returns<a class="anchor" aria-label="anchor" href="#returns-34"></a></h4>
 <p>invisible</p>
 </div>
 
@@ -723,14 +771,14 @@ overwrite a farther one when processed in topological order.</p><div class="sect
 <p></p><hr><a id="method-MaestroPipeline-get_run_sequence"></a><div class="section">
 <h3 id="maestropipeline-get-run-sequence-"><code>MaestroPipeline$get_run_sequence()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-get-run-sequence-"></a></h3>
 <p>Get the run sequence of a pipeline</p><div class="section">
-<h4 id="usage-34">Usage<a class="anchor" aria-label="anchor" href="#usage-34"></a></h4>
+<h4 id="usage-36">Usage<a class="anchor" aria-label="anchor" href="#usage-36"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">get_run_sequence</span><span class="op">(</span></span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_datetime <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_datetime <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
+<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>n</code></dt>
 <dd><p>optional sequence limit</p></dd>
 
@@ -743,7 +791,7 @@ overwrite a farther one when processed in topological order.</p><div class="sect
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-33">Returns<a class="anchor" aria-label="anchor" href="#returns-33"></a></h4>
+<h4 id="returns-35">Returns<a class="anchor" aria-label="anchor" href="#returns-35"></a></h4>
 <p>vector</p>
 </div>
 
@@ -752,10 +800,10 @@ overwrite a farther one when processed in topological order.</p><div class="sect
 <p></p><hr><a id="method-MaestroPipeline-clone"></a><div class="section">
 <h3 id="maestropipeline-clone-"><code>MaestroPipeline$clone()</code><a class="anchor" aria-label="anchor" href="#maestropipeline-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-35">Usage<a class="anchor" aria-label="anchor" href="#usage-35"></a></h4>
+<h4 id="usage-37">Usage<a class="anchor" aria-label="anchor" href="#usage-37"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">MaestroPipeline</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
+<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

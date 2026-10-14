@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">maestro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/maestro-6-deployment.html">Deployment</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-7-tag-reference.html">Maestro Tag Reference</a></li>
     <li><a class="dropdown-item" href="../articles/maestro-8-conditionals.html">Conditional Pipelines</a></li>
+    <li><a class="dropdown-item" href="../articles/maestro-9-metrics.html">Custom Pipeline Metrics</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -51,11 +52,19 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/whipson/maestro/blob/1.3.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/whipson/maestro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.1" id="maestro-131">maestro 1.3.1<a class="anchor" aria-label="anchor" href="#maestro-131"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.4.0" id="maestro-140">maestro 1.4.0<a class="anchor" aria-label="anchor" href="#maestro-140"></a></h2>
+<div class="section level4">
+<h4 id="new-features-1-4-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-4-0"></a></h4>
+<ul><li><p>New <code>update_metric(name, value, increment = FALSE)</code> function records or overwrites a named metric for the pipeline currently being executed. Call it from within a pipeline function’s body - <code>maestro</code> automatically attributes the metric to the currently-running pipeline and run. Repeated calls with the same <code>name</code> in the same run overwrite the previous value by default; <code>value</code> must be a non-missing numeric scalar. Set <code>increment = TRUE</code> to add <code>value</code> to the metric’s current value instead of overwriting it (this also works when the metric hasn’t been set yet in the current run); a negative <code>value</code> decrements it.</p></li>
+<li><p>New <code>get_metrics(schedule)</code> (and <code>schedule$get_metrics()</code>) returns all recorded metrics as a long data.frame with columns <code>pipe_name</code>, <code>run_id</code>, <code>metric</code>, and <code>value</code> (numeric), across all runs of a schedule.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.1" id="maestro-131">maestro 1.3.1<a class="anchor" aria-label="anchor" href="#maestro-131"></a></h2><p class="text-muted">CRAN release: 2026-09-15</p>
 <div class="section level4">
 <h4 id="minor-changes-1-3-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1-3-1"></a></h4>
 <ul><li><p><code><a href="../reference/get_slot_usage.html">get_slot_usage()</a></code> gains <code>min_datetime</code> and <code>max_datetime</code> parameters, passed through to the underlying run sequence calculation. This allows the time window to be fixed rather than anchored to the current time.</p></li>
