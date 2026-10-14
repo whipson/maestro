@@ -29,6 +29,8 @@ A pipeline is defined as a single R script with a schedule or input
     \item \href{#method-MaestroPipeline-get_n_artifacts}{\code{MaestroPipeline$get_n_artifacts()}}
     \item \href{#method-MaestroPipeline-get_n_invocations}{\code{MaestroPipeline$get_n_invocations()}}
     \item \href{#method-MaestroPipeline-get_all_returns}{\code{MaestroPipeline$get_all_returns()}}
+    \item \href{#method-MaestroPipeline-set_metric}{\code{MaestroPipeline$set_metric()}}
+    \item \href{#method-MaestroPipeline-get_metrics}{\code{MaestroPipeline$get_metrics()}}
     \item \href{#method-MaestroPipeline-get_errors}{\code{MaestroPipeline$get_errors()}}
     \item \href{#method-MaestroPipeline-get_warnings}{\code{MaestroPipeline$get_warnings()}}
     \item \href{#method-MaestroPipeline-get_messages}{\code{MaestroPipeline$get_messages()}}
@@ -395,6 +397,51 @@ iterations have run. Used by collect() to gather each-pipe outputs.
   }
   \subsection{Returns}{
     list
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-set_metric"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-set_metric}{}}}
+\subsection{\code{MaestroPipeline$set_metric()}}{
+  Record, overwrite, or increment a metric value for a given run of this
+pipeline. Intended to be called via the exported \code{update_metric()}
+function during pipeline execution, not called directly.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$set_metric(name, value, run_id, increment = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{character scalar; the metric name}
+      \item{\code{value}}{numeric scalar value to record for \code{name}}
+      \item{\code{run_id}}{character; the run id to record the metric against}
+      \item{\code{increment}}{logical; if \code{TRUE}, \code{value} is added to the existing
+metric value (or set as-is if the metric doesn't exist yet) instead
+of overwriting it. Default \code{FALSE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    invisible
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipeline-get_metrics"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipeline-get_metrics}{}}}
+\subsection{\code{MaestroPipeline$get_metrics()}}{
+  Get metrics recorded for this pipeline (via \code{update_metric()}) as a long
+data.frame, one row per run/metric combination.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipeline$get_metrics()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
   }
 }
 

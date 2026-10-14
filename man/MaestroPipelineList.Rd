@@ -43,6 +43,7 @@ single script
     \item \href{#method-MaestroPipelineList-get_run_sequences}{\code{MaestroPipelineList$get_run_sequences()}}
     \item \href{#method-MaestroPipelineList-get_flags}{\code{MaestroPipelineList$get_flags()}}
     \item \href{#method-MaestroPipelineList-get_labels}{\code{MaestroPipelineList$get_labels()}}
+    \item \href{#method-MaestroPipelineList-get_metrics}{\code{MaestroPipelineList$get_metrics()}}
     \item \href{#method-MaestroPipelineList-get_network}{\code{MaestroPipelineList$get_network()}}
     \item \href{#method-MaestroPipelineList-validate_network}{\code{MaestroPipelineList$validate_network()}}
     \item \href{#method-MaestroPipelineList-run}{\code{MaestroPipelineList$run()}}
@@ -408,6 +409,21 @@ single script
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{MaestroPipelineList$get_labels()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    data.frame
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MaestroPipelineList-get_metrics"></a>}}
+\if{latex}{\out{\hypertarget{method-MaestroPipelineList-get_metrics}{}}}
+\subsection{\code{MaestroPipelineList$get_metrics()}}{
+  Get the metrics of the pipelines (recorded via \code{update_metric()}) as a data.frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MaestroPipelineList$get_metrics()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{

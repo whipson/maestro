@@ -1,3 +1,11 @@
+# maestro 1.4.0
+
+### New features
+
+- New `update_metric(name, value, increment = FALSE)` function records or overwrites a named metric for the pipeline currently being executed. Call it from within a pipeline function's body - `maestro` automatically attributes the metric to the currently-running pipeline and run. Repeated calls with the same `name` in the same run overwrite the previous value by default; `value` must be a non-missing numeric scalar. Set `increment = TRUE` to add `value` to the metric's current value instead of overwriting it (this also works when the metric hasn't been set yet in the current run); a negative `value` decrements it.
+
+- New `get_metrics(schedule)` (and `schedule$get_metrics()`) returns all recorded metrics as a long data.frame with columns `pipe_name`, `run_id`, `metric`, and `value` (numeric), across all runs of a schedule.
+
 # maestro 1.3.1
 
 ### Minor changes

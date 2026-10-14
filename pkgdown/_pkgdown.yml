@@ -27,6 +27,7 @@ articles:
   - maestro-6-deployment
   - maestro-7-tag-reference
   - maestro-8-conditionals
+  - maestro-9-metrics
 
 news:
   releases:

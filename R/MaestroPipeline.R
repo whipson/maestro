@@ -347,6 +347,19 @@ MaestroPipeline <- R6::R6Class(
         )
       )
 
+      # Make this pipeline's identity available to update_metric() for the
+      # duration of the pipeline body's execution, without requiring the user
+      # to pass the pipe name themselves. Cleared unconditionally afterwards.
+      maestro_pkgenv$run_context_pipe <- self
+      maestro_pkgenv$run_context_run_id <- run_id
+      on.exit(
+        {
+          maestro_pkgenv$run_context_pipe <- NULL
+          maestro_pkgenv$run_context_run_id <- NULL
+        },
+        add = TRUE
+      )
+
       results <- withCallingHandlers(
         {
           # Identify args with no default value (i.e. required args)
@@ -637,6 +650,43 @@ MaestroPipeline <- R6::R6Class(
     #' @return list
     get_all_returns = function() {
       unname(as.list(private$run_time_artifacts))
+    },
+
+    #' @description
+    #' Record, overwrite, or increment a metric value for a given run of this
+    #' pipeline. Intended to be called via the exported `update_metric()`
+    #' function during pipeline execution, not called directly.
+    #' @param name character scalar; the metric name
+    #' @param value numeric scalar value to record for `name`
+    #' @param run_id character; the run id to record the metric against
+    #' @param increment logical; if `TRUE`, `value` is added to the existing
+    #'   metric value (or set as-is if the metric doesn't exist yet) instead
+    #'   of overwriting it. Default `FALSE`.
+    #' @return invisible
+    set_metric = function(name, value, run_id, increment = FALSE) {
+      if (is.null(private$run_time_metrics[[run_id]])) {
+        private$run_time_metrics[[run_id]] <- list()
+      }
+      if (increment && !is.null(private$run_time_metrics[[run_id]][[name]])) {
+        value <- private$run_time_metrics[[run_id]][[name]] + value
+      }
+      private$run_time_metrics[[run_id]][[name]] <- value
+      invisible()
+    },
+
+    #' @description
+    #' Get metrics recorded for this pipeline (via `update_metric()`) as a long
+    #' data.frame, one row per run/metric combination.
+    #' @return data.frame
+    get_metrics = function() {
+      purrr::imap(private$run_time_metrics, ~{
+        dplyr::tibble(
+          run_id = .y,
+          metric = names(.x),
+          value = as.numeric(unlist(.x, use.names = FALSE))
+        )
+      }) |>
+        purrr::list_rbind()
     },
 
     #' @description
@@ -966,6 +1016,7 @@ MaestroPipeline <- R6::R6Class(
     ),
 
     run_time_artifacts = list(),
+    run_time_metrics = list(),
 
     insert_run_time_attributes = function(internal_run_id, attributes) {
       row_idx <- which(
