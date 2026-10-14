@@ -2,7 +2,7 @@
 title: "Custom Pipeline Metrics"
 vignette: >
   %\VignetteIndexEntry{Custom Pipeline Metrics}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -101,8 +101,7 @@ writeLines(
 
 After running the schedule, `get_metrics()` returns a long data.frame (tibble) of every metric recorded: the pipeline it came from (`pipe_name`), the run it was recorded in (`run_id`), the `metric` name, and its numeric `value`.
 
-```{r}
-#| echo: true
+```{asciicast}
 library(maestro)
 
 schedule <- build_schedule(quiet = TRUE)
@@ -128,8 +127,7 @@ Metrics belong to a single execution of a pipeline. Each time a pipeline runs it
 
 Running the same schedule a second time shows this. The metrics from both runs are retained and distinguished by `run_id`.
 
-```{r}
-#| echo: true
+```{asciicast}
 status <- run_schedule(
   schedule,
   orch_frequency = "1 hour",
@@ -218,8 +216,7 @@ writeLines(
 )
 ```
 
-```{r}
-#| echo: true
+```{asciicast}
 set.seed(2718)
 
 schedule <- build_schedule(quiet = TRUE)
