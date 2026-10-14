@@ -2,31 +2,9 @@
 title: "Custom Pipeline Metrics"
 vignette: >
   %\VignetteIndexEntry{Custom Pipeline Metrics}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r}
-#| echo: false
-knitr::opts_chunk$set(
-  collapse = FALSE,
-  comment = "",
-  out.width = "100%",
-  cache = FALSE,
-  asciicast_knitr_output = "html"
-)
-
-asciicast::init_knitr_engine(
-  echo = TRUE,
-  echo_input = FALSE,
-  same_process = TRUE,
-  startup = quote({
-    library(maestro)
-    set.seed(1) 
-  })
-)
-options(asciicast_theme = "pkgdown")
-```
 
 Pipeline metrics are numeric values that track the performance of executed pipelines. Any value that can be represented as a single number can be a metric, but typical metrics are things like the number of rows of a data.frame processed, data volume in bytes, number of API calls, or number of attempts made on a task. Metrics are recorded without being part of the pipeline's return value, so they never get passed downstream in a [DAG](maestro-4-directed-acyclic-graphs.html).
 
