@@ -2,6 +2,8 @@
 
 ## maestro 1.4.0
 
+CRAN release: 2026-10-14
+
 #### New features
 
 - New `update_metric(name, value, increment = FALSE)` function records
