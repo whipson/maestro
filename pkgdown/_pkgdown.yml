@@ -31,6 +31,8 @@ articles:
 
 news:
   releases:
+  - text: "1.4.0"
+    href: https://whipson.github.io/data-in-flight/posts/maestro-1-4-0/maestro-1-4-0-release.html
   - text: "1.1.0"
     href: https://whipson.github.io/data-in-flight/posts/maestro-1-1-0/maestro-1-1-0-release.html
   - text: "0.7.0"
